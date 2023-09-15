@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    // --- Options de base ---
+    "target": "ES2021",
+    "module": "ESNext", // Définit la spécification du module ECMAScript à utiliser
+    "lib": ["ES2020", "DOM", "DOM.Iterable"], // Librairies de déclarations incluses par défaut
+
+    // --- Options de chemins et de fichiers ---
+    "baseUrl": "./src", // Définit la base URL pour les imports relatifs
+    "paths": {
+      // Configure des alias pour les chemins d'import
+      "@components/*": ["components/*"],
+      "@views/*": ["views/*"],
+      "@utils/*": ["utils/*"],
+      "@styles/*": ["styles/*"],
+      "@assets/*": ["assets/*"],
+      "@hooks/*": ["hooks/*"],
+      "@api/*": ["api/*"]
+    },
+
+    // --- Options JSX et React ---
+    "jsx": "react-jsx", // Spécifie comment transformer les fichiers JSX
+
+    // --- Options de contrôle de la qualité du code ---
+    "strict": false, // Active un ensemble de vérifications strictes
+    "noUnusedLocals": true, // Signale les variables locales qui ne sont pas utilisées
+    "noUnusedParameters": true, // Signale les paramètres de fonction non utilisés
+    "noFallthroughCasesInSwitch": true, // Signale les cas de non-rebond dans les instructions switch
+
+    // --- Options avancées ---
+    "esModuleInterop": true, // Permet une interopérabilité fluide entre les modules CommonJS et ES
+    "skipLibCheck": true, // Ignore les vérifications de type dans les fichiers de déclaration
+    "moduleResolution": "bundler", // Spécifie la stratégie de résolution des modules
+    "resolveJsonModule": true, // Permet l'importation de modules JSON
+    "isolatedModules": true, // Assure que chaque fichier est un module
+    "noEmit": true, // Ne génère pas de fichiers de sortie (utile lors de l'utilisation d'un bundler)
+    "importHelpers": true, // Importe des fonctions helpers depuis 'tslib' au lieu de les dupliquer dans chaque fichier
+    "downlevelIteration": true, // Fournit un support pour les itérations sur les nouvelles structures de données ECMAScript
+    "useDefineForClassFields": true, // Utilise la sémantique ECMAScript pour générer les champs de classe
+    "forceConsistentCasingInFileNames": true, // Assure que les noms de fichiers sont cohérents pour éviter des problèmes sur des systèmes sensibles à la casse
+    "typeRoots": [
+      // Définit les répertoires où chercher les définitions de types
+      "./node_modules/@types",
+      "./src/types"
+    ]
+  },
+
+  // --- Références de projet ---
+  "references": [
+    { "path": "./tsconfig.node.json" } // Référence à un autre projet TypeScript
+  ]
+}

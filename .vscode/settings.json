@@ -1,0 +1,19 @@
+{
+  // Typescript (node_modules)
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "**/node_modules/@types/node"
+  ],
+  // Config Prettier par défaut
+  "[json][jsonc][typescript][typescriptreact][javascript][javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  // Spelling / Dictionnaire
+  "cSpell.language": "en,fr",
+  "cSpell.caseSensitive": false,
+  "cSpell.showAutocompleteSuggestions": true,
+  // Ajouter dans cette liste les mots non détectés par cSpell
+  "cSpell.words": ["pepite", "tanstack"]
+}

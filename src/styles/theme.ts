@@ -23,11 +23,18 @@ const theme = createTheme({
     secondary: {
       // Orange
       main: '#F29E50',
+      contrastText: '#fff',
     },
     // background: {
     //   paper: '#ffffff',
-    //   default: '#0E6666'
-    // }
+    //   default: '#0E6666',
+    // },
+    a_renommer: {
+      main: '#0E6666',
+      light: '#24A5A5',
+      dark: '#094B4B',
+      // contrastText: '#242105', TODO
+    },
   },
   components: {
     MuiTypography: {
@@ -91,5 +98,31 @@ const theme = createTheme({
     },
   },
 });
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    a_renommer: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    a_renommer?: PaletteOptions['primary'];
+  }
+}
+
+declare module '@mui/material/Container' {
+  interface ContainerPropsColorOverrides {
+    a_renommer: true;
+  }
+}
+declare module '@mui/material/Box' {
+  interface BoxPropsColorOverrides {
+    a_renommer: true;
+  }
+}
+declare module '@mui/material/Stack' {
+  interface StackPropsColorOverrides {
+    a_renommer: true;
+  }
+}
 
 export default theme;

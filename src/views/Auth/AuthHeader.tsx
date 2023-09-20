@@ -1,28 +1,32 @@
-import { Box, Typography } from '@mui/material';
+// Import de libs externes
+import { Stack, Typography } from '@mui/material';
 
 const AuthHeader = () => {
   return (
-    <Box
-      sx={{
-        marginBottom: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
+    <Stack
+      marginBottom={'20px'}
+      borderRadius={'20px'}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
     >
       <Typography
         variant="h1"
-        sx={{ color: '#24A5A5', fontSize: '4em', marginBottom: '20px' }}
+        color={'#24A5A5'}
+        fontSize={'4em'}
+        marginBottom={'20px'}
       >
-        Pépite.
+        {'Pépite.'}
       </Typography>
       <Typography
         variant="h2"
-        sx={{ color: '#FEFEFE', fontSize: '1.5em', maxWidth: '250px' }}
+        color={'#FEFEFE'}
+        fontSize={'1.5em'}
+        maxWidth={'250px'}
       >
-        Partagez vos films et séries préférés avec vos amis.
+        {'Partagez vos films et séries préférés avec vos amis.'}
       </Typography>
-    </Box>
+    </Stack>
   );
 };
 

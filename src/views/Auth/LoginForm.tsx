@@ -66,7 +66,7 @@ const LoginForm = () => {
                   fullWidth
                   sx={{ color: '#ffffff' }}
                 >
-                  Se connecter
+                  {'Se connecter'}
                 </Button>
               </Grid>
             </Grid>
@@ -79,7 +79,7 @@ const LoginForm = () => {
                   '&:hover': { color: '#24A5A5' },
                 }}
               >
-                Mot de passe oublié ?
+                {'Mot de passe oublié ?'}
               </Typography>
             </Box>
           </form>
@@ -100,7 +100,7 @@ const LoginForm = () => {
               '&:hover': { color: '#24A5A5' },
             }}
           >
-            Vous n'avez pas de compte ?
+            {"Vous n'avez pas de compte ?"}
           </Typography>
           <Button
             type="submit"
@@ -109,7 +109,7 @@ const LoginForm = () => {
             sx={{ color: '#ffffff' }}
             href="http://127.0.0.1:5173/register"
           >
-            S'inscrire
+            {"S'inscrire"}
           </Button>
         </Box>
       </Container>

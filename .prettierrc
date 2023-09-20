@@ -8,5 +8,6 @@
   "useTabs": false,
   "bracketSpacing": true,
   "bracketSameLine": false,
-  "htmlWhitespaceSensitivity": "ignore"
+  "htmlWhitespaceSensitivity": "ignore",
+  "endOfLine": "crlf"
 }

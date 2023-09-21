@@ -15,5 +15,5 @@
   "cSpell.caseSensitive": false,
   "cSpell.showAutocompleteSuggestions": true,
   // Ajouter dans cette liste les mots non détectés par cSpell
-  "cSpell.words": ["pepite", "tanstack"]
+  "cSpell.words": ["fontfaceobserver", "pepite", "Pragati", "tanstack"]
 }

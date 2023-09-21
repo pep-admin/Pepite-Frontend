@@ -35,9 +35,9 @@ const Home = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component={'h1'} sx={{ flexGrow: 1 }}>
-            Pépite
+            {'Pépite'}
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit">{'Login'}</Button>
         </Toolbar>
       </AppBar>
       <Container>
@@ -69,7 +69,7 @@ const Home = () => {
                       </Typography>
                     </Stack>
                     <Button variant="outlined" endIcon={<StarIcon />}>
-                      J'aime
+                      {"J'aime"}
                     </Button>
                   </Stack>
                 </CardContent>

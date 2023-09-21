@@ -29,7 +29,6 @@
 
     // --- Options avancées ---
     "esModuleInterop": true, // Permet une interopérabilité fluide entre les modules CommonJS et ES
-    "skipLibCheck": true, // Ignore les vérifications de type dans les fichiers de déclaration
     "moduleResolution": "bundler", // Spécifie la stratégie de résolution des modules
     "resolveJsonModule": true, // Permet l'importation de modules JSON
     "isolatedModules": true, // Assure que chaque fichier est un module

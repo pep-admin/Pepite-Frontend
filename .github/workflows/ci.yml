@@ -9,6 +9,7 @@ env:
 jobs:
   dependency-check:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,6 +38,7 @@ jobs:
   prepare:
     needs: dependency-check
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -52,15 +54,16 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Run ESLint
+      - name: Run Linter
         run: npm run lint
 
-      - name: Run Prettier
+      - name: Run Formatter
         run: npm run format
 
   test:
     needs: prepare
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -85,6 +88,7 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

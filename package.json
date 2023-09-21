@@ -8,9 +8,9 @@
     "build": "tsc && vite build",
     "changelog": "standard-version",
     "dev": "vite",
-    "lint": "eslint \"src/**/*.{js,ts}\"",
-    "lint:fix": "eslint \"src/**/*.{js,ts}\" --fix",
-    "format": "prettier --write src/**/*",
+    "lint": "eslint \"src/**/*.{js,ts,jsx,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{js,ts,jsx,tsx}\" --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\"",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1",
     "type-check": "tsc --noEmit"
@@ -19,18 +19,22 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.9",
-    "@mui/material": "^5.14.9",
+    "@mui/material": "^5.14.10",
     "@tanstack/react-query": "^4.35.3",
+    "fontfaceobserver": "^2.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.15",
+    "@types/babel__core": "^7.20.2",
+    "@types/fontfaceobserver": "^2.1.1",
+    "@types/node": "^20.6.3",
+    "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react": "^4.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "@vitejs/plugin-react": "^4.0.4",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
@@ -38,7 +42,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "prettier": "^3.0.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9"
   }
 }

@@ -46,13 +46,13 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
       justifyContent="center"
       alignItems="center"
       sx={{
-        bgcolor: 'a_renommer.main',
+        bgcolor: 'form.main',
       }}
     >
       <Container
         maxWidth="xs"
         sx={{
-          bgcolor: 'a_renommer.main',
+          bgcolor: 'form.main',
           height: '90%',
           textAlign: 'center',
           padding: '0 10%',
@@ -69,7 +69,7 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
               paddingY={'30px'}
               paddingX={'12%'}
               sx={{
-                backgroundColor: 'a_renommer.dark',
+                backgroundColor: 'form.dark',
               }}
             >
               <TextField
@@ -78,7 +78,12 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
                 variant="outlined"
                 autoComplete="family-name"
                 required
-                InputProps={detectAutoFill('lastName')}
+                InputProps={{
+                  ...detectAutoFill('lastName'),
+                  inputProps: {
+                    className: 'auto-fill-state',
+                  },
+                }}
                 InputLabelProps={{ shrink: isAutoFill.firstName || undefined }}
                 {...formik.getFieldProps('lastName')}
                 error={
@@ -92,7 +97,12 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
                 variant="outlined"
                 autoComplete="given-name"
                 required
-                InputProps={detectAutoFill('firstName')}
+                InputProps={{
+                  ...detectAutoFill('firstName'),
+                  inputProps: {
+                    className: 'auto-fill-state',
+                  },
+                }}
                 InputLabelProps={{ shrink: isAutoFill.lastName || undefined }}
                 {...formik.getFieldProps('firstName')}
                 error={
@@ -106,7 +116,12 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
                 variant="outlined"
                 autoComplete="email"
                 required
-                InputProps={detectAutoFill('email')}
+                InputProps={{
+                  ...detectAutoFill('email'),
+                  inputProps: {
+                    className: 'auto-fill-state',
+                  },
+                }}
                 InputLabelProps={{ shrink: isAutoFill.email || undefined }}
                 {...formik.getFieldProps('email')}
                 error={formik.touched.email && Boolean(formik.errors.email)}
@@ -166,7 +181,7 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
             borderRadius={'20px'}
             padding={'25px 12% 30px 12%'}
             sx={{
-              backgroundColor: 'a_renommer.dark',
+              backgroundColor: 'form.dark',
             }}
           >
             <Typography

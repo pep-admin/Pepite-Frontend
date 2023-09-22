@@ -6,6 +6,7 @@ import {
   Button,
   Grid,
 } from '@mui/material';
+
 import AuthHeader from './AuthHeader';
 
 const LoginForm = () => {
@@ -46,7 +47,9 @@ const LoginForm = () => {
                   fullWidth
                   label="Email"
                   variant="outlined"
+                  autoComplete="e-mail"
                   required
+                  className="disable-autofill"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -55,6 +58,7 @@ const LoginForm = () => {
                   label="Mot de passe"
                   type="password"
                   variant="outlined"
+                  autoComplete="current-password"
                   required
                 />
               </Grid>

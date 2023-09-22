@@ -28,7 +28,7 @@ const theme = createTheme({
     // error: {
     //   main
     // },
-    a_renommer: {
+    form: {
       main: '#0E6666',
       light: '#24A5A5',
       dark: '#094B4B',
@@ -76,7 +76,7 @@ const theme = createTheme({
             caretColor: '#8E8E8E', // Couleur du curseur vertical
             animationName: 'onAutoFillStart', // Permet de capturer l'évènement d'autocomplétion
           },
-          '&:not(:-webkit-autofill)': {
+          '&.auto-fill-state:not(:-webkit-autofill)': {
             animationName: 'onAutoFillCancel',
           },
         },
@@ -112,27 +112,27 @@ const theme = createTheme({
 
 declare module '@mui/material/styles' {
   interface Palette {
-    a_renommer: Palette['primary'];
+    form: Palette['primary'];
   }
 
   interface PaletteOptions {
-    a_renommer?: PaletteOptions['primary'];
+    form?: PaletteOptions['primary'];
   }
 }
 
 declare module '@mui/material/Container' {
   interface ContainerPropsColorOverrides {
-    a_renommer: true;
+    form: true;
   }
 }
 declare module '@mui/material/Box' {
   interface BoxPropsColorOverrides {
-    a_renommer: true;
+    form: true;
   }
 }
 declare module '@mui/material/Stack' {
   interface StackPropsColorOverrides {
-    a_renommer: true;
+    form: true;
   }
 }
 

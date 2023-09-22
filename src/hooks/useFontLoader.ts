@@ -1,7 +1,7 @@
 // Import de libs externes
 import { useEffect } from 'react';
 import FontFaceObserver from 'fontfaceobserver';
-import assert from 'assert';
+// import assert from 'assert';
 
 /**
  * Charge les polices de caractères spécifiées et affiche le contenu de l'élément root une fois le chargement terminé.
@@ -15,10 +15,13 @@ function loadFontAndShowContent() {
   Promise.all(promises)
     .then(() => {
       const rootElement = document.getElementById('root');
-      assert(
-        rootElement !== null,
-        "L'élément root n'a pas été trouvé dans le DOM.",
-      );
+      // assert(
+      //   rootElement !== null,
+      //   "L'élément root n'a pas été trouvé dans le DOM.",
+      // );
+      if (rootElement === null) {
+        throw new Error("L'élément root n'a pas été trouvé dans le DOM.");
+      }
       rootElement.style.display = 'block';
     })
     .catch(error => {

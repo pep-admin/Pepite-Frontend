@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import AuthHeader from './AuthHeader';
 import '../../styles/autofill.css';
 
-function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
+function RegistrationFormComponent({ formik, setIsBtnClicked }) {
   // Status de l'autocomplétion de chrome sur les inputs
   const [isAutoFill, setIsAutoFill] = useState({
     lastName: false,
@@ -166,13 +166,13 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
               >
                 {"S'inscrire"}
               </Button>
-              {registerState.state === 'success' ? (
-                <Typography variant="body1" color="success.light">
-                  {registerState.message}
+              {formik.status && formik.status.state === 'success' ? (
+                <Typography variant="body1" color="success.main">
+                  {formik.status.message}
                 </Typography>
-              ) : registerState.state === 'error' ? (
+              ) : formik.status && formik.status.state === 'error' ? (
                 <Typography variant="body1" color="error.main">
-                  {registerState.message}
+                  {formik.status.message}
                 </Typography>
               ) : null}
             </Stack>
@@ -211,7 +211,6 @@ function RegistrationFormComponent({ formik, registerState, setIsBtnClicked }) {
 // Règle les erreurs es-lint
 RegistrationFormComponent.propTypes = {
   formik: PropTypes.object.isRequired,
-  registerState: PropTypes.object.isRequired,
   setIsBtnClicked: PropTypes.func.isRequired,
 };
 

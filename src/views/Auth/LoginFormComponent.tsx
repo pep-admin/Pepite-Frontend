@@ -1,3 +1,4 @@
+// Import de libs externes
 import {
   Container,
   Box,
@@ -6,10 +7,12 @@ import {
   Button,
   Grid,
 } from '@mui/material';
+import PropTypes from 'prop-types';
 
+// Import des composants internes
 import AuthHeader from './AuthHeader';
 
-const LoginForm = () => {
+const LoginFormComponent = ({ formik }) => {
   return (
     <div
       style={{
@@ -40,7 +43,7 @@ const LoginForm = () => {
             marginBottom: '20px',
           }}
         >
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
@@ -49,7 +52,9 @@ const LoginForm = () => {
                   variant="outlined"
                   autoComplete="e-mail"
                   required
-                  className="disable-autofill"
+                  {...formik.getFieldProps('email')}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -60,6 +65,11 @@ const LoginForm = () => {
                   variant="outlined"
                   autoComplete="current-password"
                   required
+                  {...formik.getFieldProps('password')}
+                  error={
+                    formik.touched.password && Boolean(formik.errors.password)
+                  }
+                  helperText={formik.touched.password && formik.errors.password}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -75,6 +85,11 @@ const LoginForm = () => {
               </Grid>
             </Grid>
             <Box sx={{ marginTop: '13px' }}>
+              {formik.status && formik.status.state === 'error' ? (
+                <Typography variant="body1" color="error.main">
+                  {formik.status.message}
+                </Typography>
+              ) : null}
               <Typography
                 variant="body1"
                 sx={{
@@ -119,4 +134,9 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+// Règle les erreurs es-lint
+LoginFormComponent.propTypes = {
+  formik: PropTypes.object.isRequired,
+};
+
+export default LoginFormComponent;

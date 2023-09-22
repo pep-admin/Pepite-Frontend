@@ -25,9 +25,8 @@ const theme = createTheme({
       main: '#F29E50',
       contrastText: '#fff',
     },
-    // background: {
-    //   paper: '#ffffff',
-    //   default: '#0E6666',
+    // error: {
+    //   main
     // },
     a_renommer: {
       main: '#0E6666',
@@ -70,6 +69,17 @@ const theme = createTheme({
         root: {
           height: '45px',
         },
+        input: {
+          '&:-webkit-autofill': {
+            backgroundClip: 'text', // Supprime le fond blanc par défaut de l'autocomplétion
+            WebkitTextFillColor: '#8E8E8E', // Couleur du texte de l'autocomplétion
+            caretColor: '#8E8E8E', // Couleur du curseur vertical
+            animationName: 'onAutoFillStart', // Permet de capturer l'évènement d'autocomplétion
+          },
+          '&:not(:-webkit-autofill)': {
+            animationName: 'onAutoFillCancel',
+          },
+        },
       },
     },
     // Couleur et arrondi des inputs
@@ -81,6 +91,7 @@ const theme = createTheme({
         },
         input: {
           color: '#8E8E8E',
+          padding: '16.5px 0px 16.5px 14px',
         },
       },
     },

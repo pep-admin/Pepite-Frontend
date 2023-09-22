@@ -96,8 +96,6 @@ const LoginForm = () => {
             gutterBottom
             sx={{
               color: '#8E8E8E',
-              cursor: 'pointer',
-              '&:hover': { color: '#24A5A5' },
             }}
           >
             {"Vous n'avez pas de compte ?"}

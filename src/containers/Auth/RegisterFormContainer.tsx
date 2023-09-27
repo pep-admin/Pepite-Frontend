@@ -49,10 +49,6 @@ let redirection;
 const RegisterFormContainer = () => {
   const navigate = useNavigate();
 
-  const [registerState, setRegisterState] = useState({
-    state: 'none',
-    message: 'none',
-  });
   const [isBtnClicked, setIsBtnClicked] = useState(false);
 
   const onSubmit = async values => {
@@ -71,7 +67,7 @@ const RegisterFormContainer = () => {
       });
 
       // Fait apparaître un message de succès
-      setRegisterState({ state: 'success', message: `${response.data}` });
+      formik.setStatus({ state: 'success', message: `${response.data}` });
 
       // Redirige vers la page de connexion
       redirection = setTimeout(() => {
@@ -79,7 +75,7 @@ const RegisterFormContainer = () => {
       }, 2000);
     } catch (error) {
       // Fais apparaitre un message d'erreur
-      setRegisterState({ state: 'error', message: `${error.response.data}` });
+      formik.setStatus({ state: 'error', message: `${error.response.data}` });
     }
   };
 
@@ -98,11 +94,7 @@ const RegisterFormContainer = () => {
   }, [isBtnClicked]);
 
   return (
-    <RegisterFormComponent
-      formik={formik}
-      registerState={registerState}
-      setIsBtnClicked={setIsBtnClicked}
-    />
+    <RegisterFormComponent formik={formik} setIsBtnClicked={setIsBtnClicked} />
   );
 };
 

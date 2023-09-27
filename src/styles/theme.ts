@@ -2,17 +2,23 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   typography: {
-    h1: {
-      fontFamily: 'Nixie One',
-    },
-    h2: {
+    allVariants: {
+      letterSpacing: '0.03em',
       fontFamily: 'Pragati Narrow',
       fontWeight: 'normal',
+    },
+    h1: {
+      fontFamily: 'Nixie One',
     },
     body1: {
       fontFamily: 'Pragati Narrow',
       fontWeight: 'normal',
       fontSize: '1.2em',
+    },
+    body2: {
+      fontFamily: 'Pragati Narrow',
+      fontWeight: 'normal',
+      fontSize: '0.9em',
     },
   },
   palette: {
@@ -23,11 +29,8 @@ const theme = createTheme({
     secondary: {
       // Orange
       main: '#F29E50',
-      contrastText: '#fff',
+      contrastText: '#FEFEFE',
     },
-    // error: {
-    //   main
-    // },
     form: {
       main: '#0E6666',
       light: '#24A5A5',
@@ -37,9 +40,17 @@ const theme = createTheme({
   },
   components: {
     MuiTypography: {
+      variants: [
+        {
+          props: { variant: 'h3', component: 'span', className: 'brand-font' },
+          style: {
+            fontFamily: 'Nixie One',
+          },
+        },
+      ],
       styleOverrides: {
         gutterBottom: {
-          marginBottom: '15px',
+          marginBottom: '20px',
         },
       },
     },
@@ -104,6 +115,21 @@ const theme = createTheme({
           fontSize: '1em',
           fontWeight: 'bold',
           padding: '8px 25px',
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          listStyleType: 'disc',
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          display: 'list-item',
+          paddingLeft: '10px',
         },
       },
     },

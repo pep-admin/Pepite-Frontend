@@ -37,9 +37,20 @@ const LoginFormContainer = () => {
 
       console.log('succès', response.data);
 
-      navigate('/');
+      if (response.data.last_login_date === null) {
+        navigate('/about');
+      } else {
+        navigate('/');
+      }
     } catch (error) {
-      formik.setStatus({ state: 'error', message: `${error.response.data}` });
+      if (error.response && error.response.data) {
+        formik.setStatus({ state: 'error', message: `${error.response.data}` });
+      } else {
+        formik.setStatus({
+          state: 'error',
+          message: 'Erreur lors de la connexion.',
+        });
+      }
     }
   };
 

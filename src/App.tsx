@@ -24,9 +24,9 @@ export function App() {
           <Routes>
             <Route path="/login" element={<LoginFormContainer />} />
             <Route path="/register" element={<RegisterFormContainer />} />
+            <Route path="/about" element={<About />} />
             <Route path="/" element={<Home />} />
             <Route path="/film/:id" element={<Film />} />
-            <Route path="/about" element={<About />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

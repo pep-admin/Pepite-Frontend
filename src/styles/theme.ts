@@ -25,6 +25,7 @@ const theme = createTheme({
     primary: {
       // Bleu/vert clair
       main: '#24A5A5',
+      dark: '#0E6666',
     },
     secondary: {
       // Orange
@@ -77,9 +78,6 @@ const theme = createTheme({
     // Hauteur des inputs
     MuiInputBase: {
       styleOverrides: {
-        root: {
-          height: '45px',
-        },
         input: {
           '&:-webkit-autofill': {
             backgroundClip: 'text', // Supprime le fond blanc par défaut de l'autocomplétion
@@ -93,9 +91,39 @@ const theme = createTheme({
         },
       },
     },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          height: '35px',
+          borderRadius: '10px',
+          '&::before': {
+            width: 'calc(100% - 17px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          },
+          '&::after': {
+            width: 'calc(100% - 17px)',
+            left: '50%',
+            transform: 'scaleX(0) translateX(-50%)',
+          },
+          '&.Mui-focused::after': { 
+            width: 'calc(100% - 17px)',
+            left: '50%',
+            transform: 'scaleX(1) translateX(-50%)',
+          },
+        },
+
+        input: {
+          height: '10px' // Diminue la taille pour diminuer le curseur d'insertion clignotant
+        }
+      },
+    },
     // Couleur et arrondi des inputs
     MuiOutlinedInput: {
       styleOverrides: {
+        root: {
+          height: '45px',
+        },
         notchedOutline: {
           borderColor: '#8E8E8E',
           borderRadius: '10px',
@@ -133,6 +161,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#0E6666'
+        }
+      }
+    }
   },
 });
 

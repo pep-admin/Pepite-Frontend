@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  NODE_VERSION: 18.12.0
+  NODE_VERSION: 18.18.0
 
 jobs:
   dependency-check:
@@ -43,16 +43,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Restore cached node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
 
       - name: Run Linter
         run: npm run lint
@@ -68,16 +66,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Restore cached node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
 
       # - name: Run tests
       #   run: npm run test
@@ -93,16 +89,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Restore cached node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
 
       - name: Setup Git
         run: |

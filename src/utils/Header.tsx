@@ -1,16 +1,20 @@
 import * as React from 'react';
 
 // Import des libs externes
-import {AppBar, Container, Typography, Box, IconButton, Menu, MenuItem, Tooltip, Toolbar, Avatar, Badge} from '@mui/material';
+import {AppBar, Container, Typography, Box, IconButton, Menu, MenuItem, Tooltip, Toolbar, Avatar, Badge, ToggleButton, ToggleButtonGroup} from '@mui/material';
+
+// Import du contexte
+import { useData } from "@hooks/DataContext";
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Header = () => {
+
+  const { displayType, setDisplayType } = useData();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -30,20 +34,70 @@ const Header = () => {
     setAnchorElUser(null);
   };
 
+  const [alignment, setAlignment] = React.useState('web');
+
+  const handleChange = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };  
+
   return (
     <AppBar position="static" sx={{ height: '60px' }}>
       <Container maxWidth="xl" sx={{ margin: 'auto' }}>
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
           <Typography
             variant="h1"
             color={'#24A5A5'}
-            fontSize={'2em'}
+            fontSize={'1.8em'}
             sx={{ position: 'relative', bottom: '1px' }}
           >
             {'Pépite.'}
           </Typography>
+          <ToggleButtonGroup
+            color="primary"
+            value={alignment}
+            exclusive
+            onChange={handleChange}
+            aria-label="Platform"
+            sx={{ margin: 'auto' }}
+          >
+            <ToggleButton 
+              value="films" 
+              sx={{
+                padding: '5px',
+                fontSize: '0.7em',
+                fontWeight: 'bold',
+              }}
+              onClick={() => setDisplayType("films")}
+              selected={displayType === 'films'}
+            >
+              Films
+            </ToggleButton>
+            <ToggleButton 
+              value="series" 
+              sx={{
+                padding: '5px',
+                fontSize: '0.7em',
+                fontWeight: 'bold',
+              }}
+              onClick={() => setDisplayType("series")}
+              selected={displayType === 'series'}
+            >
+              Séries
+            </ToggleButton>
+            <ToggleButton 
+              value="tous" 
+              sx={{
+                padding: '5px',
+                fontSize: '0.7em',
+                fontWeight: 'bold',
+              }}
+              onClick={() => setDisplayType("tous")}
+              selected={displayType === 'tous'}
+            >
+              Tous
+            </ToggleButton>
+          </ToggleButtonGroup>
           <Box sx={{ 
-            flexGrow: 1, 
             display: 'flex',
             justifyContent: 'flex-end',
           }}>
@@ -82,28 +136,12 @@ const Header = () => {
               ))}
             </Menu>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', paddingRight: '25px'}}>
-            <Badge badgeContent={4} color="primary">
-              <NotificationsIcon sx={{ color: '#052525'}}/>
-            </Badge>
-          </Box>
-        
-          {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, order: 2 }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box> */}
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Badge badgeContent={4} color="primary">
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </Badge>
               </IconButton>
             </Tooltip>
             <Menu

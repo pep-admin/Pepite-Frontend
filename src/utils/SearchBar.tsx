@@ -17,7 +17,13 @@ const SearchBar = ({Item}) => {
     <Box 
       component='form'
     >
-      <Item sx={{  padding: '2% 10%', display: 'flex', alignItems: 'center', gap: '20px'}}>
+      <Item sx={{  
+        height: '40px',
+        padding: '0 10%', 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '20px'}}
+      >
         <TextField 
           id="filled-basic" 
           label="Rechercher un film, une série, une personne" 

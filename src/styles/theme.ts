@@ -5,7 +5,6 @@ const theme = createTheme({
     allVariants: {
       letterSpacing: '0.03em',
       fontFamily: 'Pragati Narrow',
-      fontWeight: 'normal',
     },
     h1: {
       fontFamily: 'Nixie One',
@@ -73,6 +72,12 @@ const theme = createTheme({
           top: '-5px',
           fontSize: '1.1em',
         },
+        filled: {
+          "&.MuiInputLabel-filled": {
+            fontSize: '0.95em',
+            top: '-7px'
+          }
+        }
       },
     },
     // Hauteur des inputs
@@ -94,7 +99,7 @@ const theme = createTheme({
     MuiFilledInput: {
       styleOverrides: {
         root: {
-          height: '35px',
+          height: '30px',
           borderRadius: '10px',
           '&::before': {
             width: 'calc(100% - 17px)',
@@ -114,7 +119,9 @@ const theme = createTheme({
         },
 
         input: {
-          height: '10px' // Diminue la taille pour diminuer le curseur d'insertion clignotant
+          position: 'relative',
+          bottom: '2px',
+          height: '5px' // Diminue la taille pour réduire le curseur d'insertion clignotant
         }
       },
     },
@@ -166,6 +173,11 @@ const theme = createTheme({
         root: {
           backgroundColor: '#0E6666'
         }
+      }
+    },
+    MuiPaper: {
+      defaultProps: {
+        elevation: 3, 
       }
     }
   },

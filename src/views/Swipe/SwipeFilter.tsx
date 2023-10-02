@@ -68,9 +68,6 @@ const SwipeFilter = ({Item}) => {
       justifyContent: 'space-around', 
       padding: '0 3%'
     }}>
-      <Typography variant='body1' sx={{ color: '#fefefe', fontSize: '1em' }}>
-        Filtrer par
-      </Typography>
 
       {/* Filtre par type */}
       <Button

@@ -1,6 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
+
+  spacing: factor => `${factor * 6}px`,
+
   typography: {
     allVariants: {
       letterSpacing: '0.03em',
@@ -105,6 +108,7 @@ const theme = createTheme({
             width: 'calc(100% - 17px)',
             left: '50%',
             transform: 'translateX(-50%)',
+            borderBottom: 'none !important'
           },
           '&::after': {
             width: 'calc(100% - 17px)',
@@ -179,7 +183,16 @@ const theme = createTheme({
       defaultProps: {
         elevation: 3, 
       }
-    }
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          "&:last-child": {
+            padding: "16px",
+          },
+        },
+      },
+    },
   },
 });
 

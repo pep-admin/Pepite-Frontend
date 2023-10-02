@@ -84,18 +84,6 @@ const Header = () => {
             >
               Séries
             </ToggleButton>
-            <ToggleButton 
-              value="tous" 
-              sx={{
-                padding: '5px',
-                fontSize: '0.7em',
-                fontWeight: 'bold',
-              }}
-              onClick={() => setDisplayType("tous")}
-              selected={displayType === 'tous'}
-            >
-              Tous
-            </ToggleButton>
           </ToggleButtonGroup>
           <Box sx={{ 
             display: 'flex',

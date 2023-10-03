@@ -2,7 +2,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from '@styles/theme';
-import { createContext } from 'react';
 
 // Import des hooks
 import useFontLoader from '@hooks/useFontLoader';
@@ -17,7 +16,6 @@ import LoginFormContainer from './containers/Auth/LoginFormContainer';
 import SwipeContainer from './containers/Swipe/SwipeContainer';
 
 export function App() {
-
   // Permet d'afficher la page dès que les polices sont chargées
   useFontLoader();
 

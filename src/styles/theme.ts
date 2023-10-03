@@ -1,7 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-
   spacing: factor => `${factor * 6}px`,
 
   typography: {
@@ -76,11 +75,11 @@ const theme = createTheme({
           fontSize: '1.1em',
         },
         filled: {
-          "&.MuiInputLabel-filled": {
+          '&.MuiInputLabel-filled': {
             fontSize: '0.95em',
-            top: '-7px'
-          }
-        }
+            top: '-7px',
+          },
+        },
       },
     },
     // Hauteur des inputs
@@ -108,14 +107,14 @@ const theme = createTheme({
             width: 'calc(100% - 17px)',
             left: '50%',
             transform: 'translateX(-50%)',
-            borderBottom: 'none !important'
+            borderBottom: 'none !important',
           },
           '&::after': {
             width: 'calc(100% - 17px)',
             left: '50%',
             transform: 'scaleX(0) translateX(-50%)',
           },
-          '&.Mui-focused::after': { 
+          '&.Mui-focused::after': {
             width: 'calc(100% - 17px)',
             left: '50%',
             transform: 'scaleX(1) translateX(-50%)',
@@ -125,8 +124,8 @@ const theme = createTheme({
         input: {
           position: 'relative',
           bottom: '2px',
-          height: '5px' // Diminue la taille pour réduire le curseur d'insertion clignotant
-        }
+          height: '5px', // Diminue la taille pour réduire le curseur d'insertion clignotant
+        },
       },
     },
     // Couleur et arrondi des inputs
@@ -175,21 +174,28 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#0E6666'
-        }
-      }
+          backgroundColor: '#0E6666',
+        },
+      },
     },
     MuiPaper: {
       defaultProps: {
-        elevation: 3, 
-      }
+        elevation: 3,
+      },
     },
     MuiCardContent: {
       styleOverrides: {
         root: {
-          "&:last-child": {
-            padding: "16px",
+          '&:last-child': {
+            padding: '16px',
           },
+        },
+      },
+    },
+    MuiRating: {
+      styleOverrides: {
+        root: {
+          fontSize: '1em',
         },
       },
     },

@@ -1,18 +1,23 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext } from 'react';
 
-const DataContext = createContext({ 
-    displayType: "films",  
-    setDisplayType: (string) => {} 
+interface DataContextProps {
+  displayType: string;
+  setDisplayType: (value: string) => void;
+}
+
+const DataContext = createContext<DataContextProps>({
+  displayType: 'films',
+  setDisplayType: (_value: string) => {},
 });
 
-export const DataProvider = ({ children }) => {
-    const [displayType, setDisplayType] = useState("films");
+export const DataProvider = ({ children }: { children: React.ReactNode }) => {
+  const [displayType, setDisplayType] = useState<string>('films');
 
-    return (
-        <DataContext.Provider value={{ displayType, setDisplayType }}>
-            {children}
-        </DataContext.Provider>
-    );
+  return (
+    <DataContext.Provider value={{ displayType, setDisplayType }}>
+      {children}
+    </DataContext.Provider>
+  );
 };
 
 export const useData = () => useContext(DataContext);

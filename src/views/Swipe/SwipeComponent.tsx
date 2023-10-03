@@ -2,14 +2,14 @@
 import { styled, Paper, Container, Stack, Box } from '@mui/material';
 
 // Import des composants internes
-import Header from "@utils/Header";
+import Header from '@utils/Header';
 import SearchBar from '@utils/SearchBar';
 import SwipeFilter from '@views/Swipe/SwipeFilter';
 import SwipeMain from '@views/Swipe/SwipeMain';
 
 type ItemProps = {
-  customheight?: string; 
-}
+  customheight?: string;
+};
 
 // Item pour les conteneurs principaux
 const Item = styled(Paper)<ItemProps>(({ theme, customheight }) => ({
@@ -18,39 +18,35 @@ const Item = styled(Paper)<ItemProps>(({ theme, customheight }) => ({
   ...theme.typography.body2,
   borderRadius: '10px',
   textAlign: 'center',
-  color: theme.palette.text.secondary
+  color: theme.palette.text.secondary,
 }));
 
 const SwipeComponent = () => {
-
   return (
     <>
       <Header />
-      <Container 
-        maxWidth="xl" 
-        sx={{ 
+      <Container
+        maxWidth="xl"
+        sx={{
           padding: '0 2%',
-          backgroundColor: '#F4F4F4', 
-          height: 'calc(100vh - 60px)' 
-          }}
-        >
-        <Stack spacing={ 1 } sx={{ height: '100%', padding: '6px 0'}}>
-          <SearchBar Item={ Item } />
+          backgroundColor: '#F4F4F4',
+          height: 'calc(100vh - 60px)',
+        }}
+      >
+        <Stack spacing={1} sx={{ height: '100%', padding: '6px 0' }}>
+          <SearchBar Item={Item} />
           <Box>
-            <SwipeFilter Item={ Item } />
+            <SwipeFilter Item={Item} />
           </Box>
-          <Box sx={{ height: 'calc(100% - 92px)'}}>
-            <SwipeMain Item={ Item } />
+          <Box sx={{ height: 'calc(100% - 92px)' }}>
+            <SwipeMain Item={Item} />
           </Box>
           <Box>
-            <Item>
-            </Item>
+            <Item></Item>
           </Box>
-          
         </Stack>
       </Container>
     </>
-   
   );
 };
 

@@ -1,10 +1,24 @@
 import * as React from 'react';
 
 // Import des libs externes
-import {AppBar, Container, Typography, Box, IconButton, Menu, MenuItem, Tooltip, Toolbar, Avatar, Badge, ToggleButton, ToggleButtonGroup} from '@mui/material';
+import {
+  AppBar,
+  Container,
+  Typography,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Toolbar,
+  Avatar,
+  Badge,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@mui/material';
 
 // Import du contexte
-import { useData } from "@hooks/DataContext";
+import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
@@ -13,11 +27,14 @@ const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Header = () => {
-
   const { displayType, setDisplayType } = useData();
 
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null,
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null,
+  );
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -38,7 +55,7 @@ const Header = () => {
 
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
-  };  
+  };
 
   return (
     <AppBar position="static" sx={{ height: '60px' }}>
@@ -60,42 +77,44 @@ const Header = () => {
             aria-label="Platform"
             sx={{ margin: 'auto' }}
           >
-            <ToggleButton 
-              value="films" 
+            <ToggleButton
+              value="films"
               sx={{
                 padding: '5px',
                 fontSize: '0.7em',
                 fontWeight: 'bold',
               }}
-              onClick={() => setDisplayType("films")}
+              onClick={() => setDisplayType('films')}
               selected={displayType === 'films'}
             >
               Films
             </ToggleButton>
-            <ToggleButton 
-              value="series" 
+            <ToggleButton
+              value="series"
               sx={{
                 padding: '5px',
                 fontSize: '0.7em',
                 fontWeight: 'bold',
               }}
-              onClick={() => setDisplayType("series")}
+              onClick={() => setDisplayType('series')}
               selected={displayType === 'series'}
             >
               Séries
             </ToggleButton>
           </ToggleButtonGroup>
-          <Box sx={{ 
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
             <IconButton
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              sx={{ color: '#052525', paddingRight: '15px'}}
+              sx={{ color: '#052525', paddingRight: '15px' }}
             >
               <MenuIcon />
             </IconButton>
@@ -117,8 +136,8 @@ const Header = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu} >
+              {pages.map(page => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -148,7 +167,7 @@ const Header = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {settings.map(setting => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>

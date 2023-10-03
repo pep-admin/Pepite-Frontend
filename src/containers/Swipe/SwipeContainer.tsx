@@ -1,9 +1,7 @@
 import SwipeComponent from '@views/Swipe/SwipeComponent';
 
 const SwipeContainer = () => {
-  return (
-    <SwipeComponent />
-  );
+  return <SwipeComponent />;
 };
 
 export default SwipeContainer;

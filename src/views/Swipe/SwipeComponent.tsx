@@ -41,9 +41,6 @@ const SwipeComponent = () => {
           <Box sx={{ height: 'calc(100% - 92px)' }}>
             <SwipeMain Item={Item} />
           </Box>
-          <Box>
-            <Item></Item>
-          </Box>
         </Stack>
       </Container>
     </>

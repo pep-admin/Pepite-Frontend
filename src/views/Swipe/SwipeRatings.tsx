@@ -1,10 +1,5 @@
 // Import des libs externes
-import {
-  styled,
-  Rating,
-  Typography,
-  Box,
-} from '@mui/material';
+import { styled, Rating, Typography, Box } from '@mui/material';
 
 // Import de l'icône étoile vide
 import StarIcon from '@mui/icons-material/Star';
@@ -30,7 +25,7 @@ const TurquoiseRating = styled(Rating)({
   },
 });
 
-const SwipeRatings = () => {
+const SwipeRatings = ({ roundedScore }) => {
   return (
     <>
       <Box
@@ -43,15 +38,10 @@ const SwipeRatings = () => {
         <YellowRating
           name="half-rating-read"
           size="small"
-          value={2.5}
-          precision={0.25}
+          value={roundedScore}
+          precision={0.1}
           readOnly
-          emptyIcon={
-            <StarIcon
-              sx={{ color: '#E1E1E1' }}
-              fontSize="inherit"
-            />
-          }
+          emptyIcon={<StarIcon sx={{ color: '#E1E1E1' }} fontSize="inherit" />}
           sx={{ marginRight: '5px' }}
         />
         <Typography
@@ -65,14 +55,9 @@ const SwipeRatings = () => {
             top: 0.5,
           }}
         >
-          {'2.5' + '/5'}
+          {`${roundedScore}` + ' / 5'}
         </Typography>
-        <Box
-          minWidth="170px"
-          position="relative"
-          bottom="5px"
-          textAlign="left"
-        >
+        <Box minWidth="170px" position="relative" bottom="5px" textAlign="left">
           <Typography
             component="span"
             variant="body2"
@@ -83,118 +68,98 @@ const SwipeRatings = () => {
         </Box>
       </Box>
       <Box
-      width="100%"
-      display="flex"
-      justifyContent="flex-start"
-      alignItems="center"
-      flexWrap="wrap"
-    >
-      <OrangeRating
-        name="half-rating-read"
-        size="small"
-        value={2.5}
-        precision={0.25}
-        readOnly
-        emptyIcon={
-          <StarIcon
-            sx={{ color: '#E1E1E1' }}
-            fontSize="inherit"
-          />
-        }
-        sx={{ marginRight: '5px' }}
-      />
-      <Typography
-        variant="body2"
-        component="span"
-        sx={{
-          color: '#F29E50',
-          fontSize: '1em',
-          fontWeight: 'bold',
-          position: 'relative',
-          top: 0.5,
-        }}
+        width="100%"
+        display="flex"
+        justifyContent="flex-start"
+        alignItems="center"
+        flexWrap="wrap"
       >
-        {'2.5' + '/5'}
-      </Typography>
-      <Box
-        minWidth="170px"
-        position="relative"
-        bottom="5px"
-        textAlign="left"
-      >
+        <OrangeRating
+          name="half-rating-read"
+          size="small"
+          value={2.5}
+          precision={0.25}
+          readOnly
+          emptyIcon={<StarIcon sx={{ color: '#E1E1E1' }} fontSize="inherit" />}
+          sx={{ marginRight: '5px' }}
+        />
         <Typography
-          component="span"
           variant="body2"
-          sx={{ color: '#F29E50', fontWeight: 'bold' }}
-        >
-          {'2 amis'}
-        </Typography>
-        <Typography
           component="span"
-          variant="body2"
-          sx={{ color: '#fefefe' }}
+          sx={{
+            color: '#F29E50',
+            fontSize: '1em',
+            fontWeight: 'bold',
+            position: 'relative',
+            top: 0.5,
+          }}
         >
-          {' ont noté ce film'}
+          {'2.5' + ' / 5'}
         </Typography>
+        <Box minWidth="170px" position="relative" bottom="5px" textAlign="left">
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{ color: '#F29E50', fontWeight: 'bold' }}
+          >
+            {'2 amis'}
+          </Typography>
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{ color: '#fefefe' }}
+          >
+            {' ont noté ce film'}
+          </Typography>
+        </Box>
       </Box>
-    </Box>
-    <Box
-      width="100%"
-      display="flex"
-      justifyContent="flex-start"
-      alignItems="center"
-      flexWrap="wrap"
-    >
-      <TurquoiseRating
-        name="half-rating-read"
-        size="small"
-        value={2.5}
-        precision={0.25}
-        readOnly
-        emptyIcon={
-          <StarIcon
-            sx={{ color: '#E1E1E1' }}
-            fontSize="inherit"
-          />
-        }
-        sx={{ marginRight: '5px' }}
-      />
-      <Typography
-        variant="body2"
-        component="span"
-        sx={{
-          color: '#24A5A5',
-          fontSize: '1em',
-          fontWeight: 'bold',
-          position: 'relative',
-          top: 0.5,
-        }}
-      >
-        {'2.5' + '/5'}
-      </Typography>
       <Box
-        minWidth="170px"
-        position="relative"
-        bottom="5px"
-        textAlign="left"
+        width="100%"
+        display="flex"
+        justifyContent="flex-start"
+        alignItems="center"
+        flexWrap="wrap"
       >
+        <TurquoiseRating
+          name="half-rating-read"
+          size="small"
+          value={2.5}
+          precision={0.25}
+          readOnly
+          emptyIcon={<StarIcon sx={{ color: '#E1E1E1' }} fontSize="inherit" />}
+          sx={{ marginRight: '5px' }}
+        />
         <Typography
-          component="span"
           variant="body2"
-          sx={{ color: '#24A5A5', fontWeight: 'bold' }}
-        >
-          {'3 abonnements'}
-        </Typography>
-        <Typography
           component="span"
-          variant="body2"
-          sx={{ color: '#fefefe' }}
+          sx={{
+            color: '#24A5A5',
+            fontSize: '1em',
+            fontWeight: 'bold',
+            position: 'relative',
+            top: 0.5,
+          }}
         >
-          {' ont noté ce film'}
+          {'2.5' + ' / 5'}
         </Typography>
+        <Box minWidth="170px" position="relative" bottom="5px" textAlign="left">
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{ color: '#24A5A5', fontWeight: 'bold' }}
+          >
+            {'3 abonnements'}
+          </Typography>
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{ color: '#fefefe' }}
+          >
+            {' ont noté ce film'}
+          </Typography>
+        </Box>
       </Box>
-    </Box>
-  </>
+    </>
   );
 };
 

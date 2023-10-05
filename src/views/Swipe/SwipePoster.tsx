@@ -1,11 +1,12 @@
 // Import des libs externes
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import {
   styled,
   Badge,
   Stack,
   Box,
   CardMedia,
+  CircularProgress,
 } from '@mui/material';
 
 // Import des icônes
@@ -29,20 +30,23 @@ const StyledBadge = styled(Badge)(() => ({
   },
 }));
 
-const SwipePoster = ({handleSwipe, movies, movieDetail, currentMovieIndex}) => {
-
+const SwipePoster = ({
+  loading,
+  setSwipeDirection,
+  setCurrentMovieIndex,
+  movies,
+  currentMovieIndex,
+  generalRatings,
+}) => {
+  // Largeur de l'affiche pour déterminer le container des notes
   const [posterWidth, setPosterWidth] = useState(null);
 
   // Image du film affiché
   const posterRef = useRef<HTMLImageElement | null>(null);
 
-  // Détecte la largeur dynamique de l'image pour pouvoir l'assigner à la div qui contient les notes
-  useEffect(() => {
-    if (posterRef.current) {
-      const posterWidth = posterRef.current.clientWidth;
-      setPosterWidth(posterWidth);
-    }
-  }, [movieDetail, currentMovieIndex]);
+  const originalScore = generalRatings;
+  const scoreOutOfFive = originalScore / 2;
+  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
 
   return (
     <Stack
@@ -50,86 +54,109 @@ const SwipePoster = ({handleSwipe, movies, movieDetail, currentMovieIndex}) => {
       sx={{
         height: 'calc(65% - 16.5px)',
         justifyContent: 'space-around',
+        alignItems: 'center',
       }}
     >
-      <Box
-        sx={{
-          width: '65px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <SwipeLeftIcon
-          color="error"
-          sx={{
-            height: '1.3em',
-            width: '1.3em',
-            color: '#0E6666',
-          }}
-          onClick={() => handleSwipe('left')}
-        />
-      </Box>
-      <Box
-        width="calc(100% - 130px)"
-        height="100%"
-        display="flex"
-        justifyContent="center"
-        position="relative"
-      >
-        <StyledBadge
-          variant="standard"
-          badgeContent={'Déjà vu ?'}
-          color="primary"
-          overlap="rectangular"
-        >
-          {movies.length > 0 && movies[currentMovieIndex] ? (
-            <CardMedia
-              ref={posterRef}
-              component="img"
-              alt={movies[currentMovieIndex].title}
-              image={`https://image.tmdb.org/t/p/w500/${movies[currentMovieIndex].poster_path}`}
+      {loading.movies || loading.details ? (
+        <CircularProgress color="primary" />
+      ) : (
+        <>
+          <Box
+            sx={{
+              width: '65px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <SwipeLeftIcon
+              color="error"
               sx={{
-                height: '100%',
-                objectFit: 'contain',
+                height: '1.3em',
+                width: '1.3em',
+                color: currentMovieIndex > 0 ? '#0E6666' : '#CCCCCC',
+              }}
+              onClick={() => {
+                if (currentMovieIndex > 0) {
+                  setSwipeDirection('left'); 
+                  setCurrentMovieIndex(prevIndex => prevIndex - 1);
+                }
               }}
             />
-          ) : null}
-        </StyledBadge>
-        <Stack
-          position="absolute"
-          bottom="0"
-          left="50%"
-          height="fit-content"
-          width={posterWidth}
-          sx={{
-            padding: '6px 6px 0 15px',
-            transform: 'translateX(-50%)',
-            backgroundColor: 'rgba(0, 0, 0, 0.65)',
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-          }}
-        >
-          <SwipeRatings />
-        </Stack>
-      </Box>
-      <Box
-        sx={{
-          width: '65px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <SwipeRightIcon
-          sx={{
-            height: '1.3em',
-            width: '1.3em',
-            color: '#0E6666',
-          }}
-          onClick={() => handleSwipe('right')}
-        />
-      </Box>
+          </Box>
+          <Box
+            width="calc(100% - 130px)"
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            position="relative"
+          >
+            <StyledBadge
+              variant="standard"
+              badgeContent={'Déjà vu ?'}
+              color="primary"
+              overlap="rectangular"
+            >
+              {movies.length > 0 && movies[currentMovieIndex] ? (
+                <CardMedia
+                  ref={posterRef}
+                  component="img"
+                  alt={movies[currentMovieIndex].title}
+                  image={`https://image.tmdb.org/t/p/w500/${movies[currentMovieIndex].poster_path}`}
+                  sx={{
+                    height: '100%',
+                    objectFit: 'contain',
+                    boxShadow: '8px 7px 12px 0px rgba(0,0,0,0.24)',
+                  }}
+                  onLoad={() => {
+                    if (posterRef.current) {
+                      setPosterWidth(posterRef.current.clientWidth);
+                    }
+                  }}
+                />
+              ) : null}
+            </StyledBadge>
+            {posterWidth !== null ? (
+              <Stack
+                position="absolute"
+                bottom="0"
+                left="50%"
+                height="fit-content"
+                width={posterWidth}
+                sx={{
+                  padding: '6px 6px 0 15px',
+                  transform: 'translateX(-50%)',
+                  backgroundColor: 'rgba(0, 0, 0, 0.65)',
+                  justifyContent: 'space-evenly',
+                  alignItems: 'center',
+                }}
+              >
+                <SwipeRatings roundedScore={roundedScore} />
+              </Stack>
+            ) : null}
+          </Box>
+          <Box
+            sx={{
+              width: '65px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <SwipeRightIcon
+              sx={{
+                height: '1.3em',
+                width: '1.3em',
+                color: '#0E6666',
+              }}
+              onClick={() => {
+                setSwipeDirection('right') 
+                setCurrentMovieIndex(prevIndex => (prevIndex + 1));
+            }}
+            />
+          </Box>
+        </>
+      )}
     </Stack>
   );
 };

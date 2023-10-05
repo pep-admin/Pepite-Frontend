@@ -4,6 +4,9 @@ import { Box, Menu, MenuItem, Button, Fade, Rating } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import PropTypes from 'prop-types';
 
+// Import de la liste de tous les pays
+import { countries } from '@utils/data/Countries';
+
 // Liste des genres proposés
 const kindList = [
   'Action',
@@ -47,13 +50,13 @@ function getLabelText(value: number) {
 
 const SwipeFilter = ({ Item }) => {
   // Filtre selon films ou séries
-  const [typeFilter, setTypeFilter] = React.useState(null);
-  const openType = Boolean(typeFilter);
-  const handleTypeClick = event => {
-    setTypeFilter(event.currentTarget);
+  const [countryFilter, setCountryFilter] = React.useState(null);
+  const openCountry = Boolean(countryFilter);
+  const handleCountryClick = event => {
+    setCountryFilter(event.currentTarget);
   };
-  const handleTypeClose = () => {
-    setTypeFilter(null);
+  const handleCountryClose = () => {
+    setCountryFilter(null);
   };
 
   // Filtre selon le genre
@@ -89,30 +92,34 @@ const SwipeFilter = ({ Item }) => {
         padding: '0 3%',
       }}
     >
-      {/* Filtre par type */}
+      {/* Filtre par pays */}
       <Button
         id="fade-button"
-        aria-controls={openType ? 'fade-menu' : undefined}
+        aria-controls={openCountry ? 'fade-menu' : undefined}
         aria-haspopup="true"
-        aria-expanded={openType ? 'true' : undefined}
-        onClick={handleTypeClick}
+        aria-expanded={openCountry ? 'true' : undefined}
+        onClick={handleCountryClick}
       >
-        Type
+        Pays
       </Button>
       <Menu
         id="fade-menu"
         MenuListProps={{
           'aria-labelledby': 'fade-button',
         }}
-        anchorEl={typeFilter}
-        open={openType}
-        onClose={handleTypeClose}
+        anchorEl={countryFilter}
+        open={openCountry}
+        onClose={handleCountryClose}
         TransitionComponent={Fade}
       >
-        <MenuItem onClick={handleTypeClose}>Films</MenuItem>
-        <MenuItem onClick={handleTypeClose}>Séries</MenuItem>
+        {countries.map(country => {
+          return (
+            <MenuItem key={country.native_name} onClick={handleCountryClose}>
+              {country.native_name}
+            </MenuItem>
+          );
+        })}
       </Menu>
-
       {/* Filtre par genre */}
       <Button
         id="fade-button"
@@ -162,7 +169,7 @@ const SwipeFilter = ({ Item }) => {
         onClose={handleRatingsClose}
         TransitionComponent={Fade}
       >
-        <MenuItem onClick={handleTypeClose}>
+        <MenuItem onClick={handleCountryClose}>
           <Rating
             name="hover-feedback"
             value={value}

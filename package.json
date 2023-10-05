@@ -28,6 +28,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
+    "react-spring": "^9.7.3",
     "yup": "^1.2.0"
   },
   "devDependencies": {

@@ -21,7 +21,17 @@ const Item = styled(Paper)<ItemProps>(({ theme, customheight }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const SwipeComponent = () => {
+const SwipeComponent = ({
+  movies,
+  movieDetail,
+  generalRatings,
+  error,
+  loading,
+  currentMovieIndex,
+  setCurrentMovieIndex,
+  setSwipeDirection
+}) => {
+
   return (
     <>
       <Header />
@@ -39,7 +49,17 @@ const SwipeComponent = () => {
             <SwipeFilter Item={Item} />
           </Box>
           <Box sx={{ height: 'calc(100% - 92px)' }}>
-            <SwipeMain Item={Item} />
+            <SwipeMain
+              Item={Item}
+              movies={movies}
+              movieDetail={movieDetail}
+              generalRatings={generalRatings}
+              error={error}
+              loading={loading}
+              currentMovieIndex={currentMovieIndex}
+              setCurrentMovieIndex={setCurrentMovieIndex}
+              setSwipeDirection={setSwipeDirection}
+            />
           </Box>
         </Stack>
       </Container>

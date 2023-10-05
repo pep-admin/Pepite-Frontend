@@ -1,23 +1,27 @@
-import {
-  Stack,
-  Typography,
-  Divider,
-} from '@mui/material';
+import { Stack, Typography, Divider } from '@mui/material';
 
-const SwipeContent = ({ movieDetail, movies, currentMovieIndex}) => {
+const SwipeContent = ({ movieDetail, movies, currentMovieIndex }) => {
   return (
     <Stack
       direction="row"
-      divider={<Divider orientation="vertical" flexItem sx={{ margin: '0 12px' }} />}
+      divider={
+        <Divider orientation="vertical" flexItem sx={{ margin: '0 10px' }} />
+      }
       sx={{
-        height: '100%'
+        height: '100%',
       }}
     >
-      <Stack width="calc(35% - 10px)" spacing={1} sx={{ overflowY: 'scroll' }} >
+      <Stack width="calc(35% - 10px)" spacing={1} sx={{ overflowY: 'scroll' }}>
         {movieDetail.length > 0
-          ? movieDetail.map((detail) => {
+          ? movieDetail.map(detail => {
               return (
-                <Stack key={detail.label} flexDirection='row' flexWrap='wrap' columnGap='5px'>
+                <Stack
+                  key={detail.label}
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  textAlign="center"
+                >
                   <Typography
                     align="left"
                     variant="body2"
@@ -28,20 +32,19 @@ const SwipeContent = ({ movieDetail, movies, currentMovieIndex}) => {
                   >
                     {detail.label + ':'}
                   </Typography>
-                  <Typography
-                    align="left"
-                    variant="body2"
-                  >
+                  <Typography variant="body2">
                     {detail.value}
                   </Typography>
-                </Stack>   
+                </Stack>
               );
             })
           : null}
       </Stack>
-      <Stack width='calc(65% - 10px)' sx={{ flex: 1, overflowY: 'scroll' }}>
+      <Stack width="calc(65% - 10px)" sx={{ overflowY: 'scroll' }}>
         <Typography variant="body2" align="left">
-          {movies[currentMovieIndex].overview}
+          {movies[currentMovieIndex].overview === ''
+            ? "Désolé, il n'y a pas de synopsis disponible pour ce film..."
+            : movies[currentMovieIndex].overview}
         </Typography>
       </Stack>
     </Stack>

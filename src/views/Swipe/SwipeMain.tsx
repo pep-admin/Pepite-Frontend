@@ -23,11 +23,11 @@ const SwipeMain = ({
   loading,
   setCurrentMovieIndex,
   currentMovieIndex,
-  setSwipeDirection
+  setSwipeDirection,
 }) => {
   return (
     <Item customheight="100%">
-      {error !== null ? (
+      {error.error !== null ? (
         <Alert
           severity="error"
           sx={{
@@ -37,7 +37,7 @@ const SwipeMain = ({
             alignItems: 'center',
           }}
         >
-          {error}
+          {error.message}
         </Alert>
       ) : (
         <>
@@ -214,8 +214,18 @@ const SwipeMain = ({
   );
 };
 
-SwipeMain.propTypes = {
+const SwipeMainPropTypes = {
   Item: PropTypes.elementType.isRequired,
+  movies: PropTypes.array.isRequired,
+  movieDetail: PropTypes.array.isRequired,
+  generalRatings: PropTypes.number.isRequired,
+  error: PropTypes.object.isRequired,
+  loading: PropTypes.object.isRequired,
+  setCurrentMovieIndex: PropTypes.func.isRequired,
+  currentMovieIndex: PropTypes.number.isRequired,
+  setSwipeDirection: PropTypes.func.isRequired,
 };
+
+SwipeMain.propTypes = SwipeMainPropTypes;
 
 export default SwipeMain;

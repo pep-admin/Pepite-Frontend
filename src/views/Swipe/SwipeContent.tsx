@@ -1,4 +1,5 @@
-import { Stack, Typography, Divider } from '@mui/material';
+import { Stack, Box, Typography, Divider } from '@mui/material';
+import PropTypes from 'prop-types';
 
 const SwipeContent = ({ movieDetail, movies, currentMovieIndex }) => {
   return (
@@ -11,34 +12,67 @@ const SwipeContent = ({ movieDetail, movies, currentMovieIndex }) => {
         height: '100%',
       }}
     >
-      <Stack width="calc(35% - 10px)" spacing={1} sx={{ overflowY: 'scroll' }}>
-        {movieDetail.length > 0
-          ? movieDetail.map(detail => {
-              return (
-                <Stack
-                  key={detail.label}
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  textAlign="center"
-                >
-                  <Typography
-                    align="left"
-                    variant="body2"
-                    sx={{
-                      color: '#0E6666',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {detail.label + ':'}
-                  </Typography>
-                  <Typography variant="body2">
-                    {detail.value}
-                  </Typography>
-                </Stack>
-              );
-            })
-          : null}
+      <Stack width="calc(35% - 10px)" sx={{ overflowY: 'scroll' }}>
+        <Stack
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          textAlign="center"
+          spacing={1}
+        >
+          <Box>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#0E6666',
+                fontWeight: 'bold',
+              }}
+            >
+              {'Type :'}
+            </Typography>
+            <Typography variant="body2">{'Film'}</Typography>
+          </Box>
+          <Box>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#0E6666',
+                fontWeight: 'bold',
+              }}
+            >
+              {'Genre :'}
+            </Typography>
+            <Typography variant="body2">
+              {movieDetail[0].genres.map(genre => genre.name).join(', ')}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#0E6666',
+                fontWeight: 'bold',
+              }}
+            >
+              {'Année :'}
+            </Typography>
+            <Typography variant="body2">
+              {movieDetail[0].release_date.split('-')[0]}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#0E6666',
+                fontWeight: 'bold',
+              }}
+            >
+              {'Pays :'}
+            </Typography>
+            <Typography variant="body2">{movieDetail[1].join(', ')}</Typography>
+          </Box>
+        </Stack>
       </Stack>
       <Stack width="calc(65% - 10px)" sx={{ overflowY: 'scroll' }}>
         <Typography variant="body2" align="left">
@@ -50,5 +84,13 @@ const SwipeContent = ({ movieDetail, movies, currentMovieIndex }) => {
     </Stack>
   );
 };
+
+const SwipeContentPropTypes = {
+  movies: PropTypes.array.isRequired,
+  movieDetail: PropTypes.array.isRequired,
+  currentMovieIndex: PropTypes.number.isRequired,
+};
+
+SwipeContent.propTypes = SwipeContentPropTypes;
 
 export default SwipeContent;

@@ -1,5 +1,6 @@
 // Import des libs externes
 import { styled, Paper, Container, Stack, Box } from '@mui/material';
+import PropTypes from 'prop-types';
 
 // Import des composants internes
 import Header from '@utils/Header';
@@ -29,9 +30,8 @@ const SwipeComponent = ({
   loading,
   currentMovieIndex,
   setCurrentMovieIndex,
-  setSwipeDirection
+  setSwipeDirection,
 }) => {
-
   return (
     <>
       <Header />
@@ -65,6 +65,23 @@ const SwipeComponent = ({
       </Container>
     </>
   );
+};
+
+SwipeComponent.propTypes = {
+  movies: PropTypes.array.isRequired,
+  movieDetail: PropTypes.array.isRequired,
+  generalRatings: PropTypes.number.isRequired,
+  error: PropTypes.shape({
+    message: PropTypes.string,
+    error: PropTypes.object,
+  }).isRequired,
+  loading: PropTypes.shape({
+    movies: PropTypes.bool,
+    details: PropTypes.bool,
+  }).isRequired,
+  currentMovieIndex: PropTypes.number.isRequired,
+  setCurrentMovieIndex: PropTypes.func.isRequired,
+  setSwipeDirection: PropTypes.func.isRequired,
 };
 
 export default SwipeComponent;

@@ -1,5 +1,6 @@
 // Import des libs externes
 import { styled, Rating, Typography, Box } from '@mui/material';
+import PropTypes from 'prop-types';
 
 // Import de l'icône étoile vide
 import StarIcon from '@mui/icons-material/Star';
@@ -162,5 +163,11 @@ const SwipeRatings = ({ roundedScore }) => {
     </>
   );
 };
+
+const SwipeRatingsPropTypes = {
+  roundedScore: PropTypes.number.isRequired,
+};
+
+SwipeRatings.propTypes = SwipeRatingsPropTypes;
 
 export default SwipeRatings;

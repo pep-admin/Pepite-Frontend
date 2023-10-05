@@ -1,5 +1,5 @@
 // Libs externes
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // Imports internes
 import SwipeComponent from '@views/Swipe/SwipeComponent';
@@ -9,52 +9,53 @@ import {
 } from '@utils/request/swipe/fetchData';
 
 const SwipeContainer = () => {
-  // Movie Id pour récupérer les infos détaillées du film affiché
-  const [movieId, setMovieId] = useState(null);
+  const [initialRender, setInitialRender] = useState(false);
+  const [movieId, setMovieId] = useState(null); // Movie Id pour récupérer les infos détaillées du film affiché
+  const [movies, setMovies] = useState([]); // 20 films pour laisser une marge de swipe
+  const [movieDetail, setMovieDetail] = useState([]); // Informations détaillées sur le film affiché
+  const [generalRatings, setGeneralRatings] = useState(0); // Note générale
+  const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
+  const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
+  const [swipeDirection, setSwipeDirection] = useState(null); // Gauche ou droite
+  const [loading, setLoading] = useState({ movies: true, details: true }); // Premier chargement
+  const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
 
-  // 20 films pour laisser une marge de swipe et film détaillé
-  const [movies, setMovies] = useState([]);
-  const [movieDetail, setMovieDetail] = useState([]);
-  const [generalRatings, setGeneralRatings] = useState(null);
-
-  // Index permettant de swiper, commence à l'index 9 pour laisser une marge de 10 de chaque côté
-  const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
-  const [moviePage, setMoviePage] = useState(1);
-  const [swipeDirection, setSwipeDirection] = useState(null);
-
-  // Gestion du chargement et erreurs
-  const [loading, setLoading] = useState({ movies: true, details: true });
-  const [error, setError] = useState(null);
-
-  const getMovies = async (moviePage) => {
+  // Récupère 20 films selon la page
+  const getMovies = useCallback(async moviePage => {
     try {
       const moviesData = await fetchTwentyMovies(moviePage);
 
-      if(swipeDirection === 'right' || swipeDirection === null) {
+      if (swipeDirection === 'right' || swipeDirection === null) {
         setMovies(prevMovies => [...prevMovies, ...moviesData]);
       }
-    } catch (err) {      
-      setError('Erreur lors de la récupération des détails du film.');
+    } catch (err) {
+      setError({
+        message: 'Erreur dans la récupération de la page de films.',
+        error: err,
+      });
     } finally {
-      setLoading({ movies: false, details: loading.details });
+      setLoading(prevLoading => ({
+        movies: false,
+        details: prevLoading.details,
+      }));
     }
-  };
+  }, []);
 
   // Ajoute 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
-    const threshold = 3; 
-    console.log('swipe direction', swipeDirection);
-    console.log('index', currentMovieIndex);
-    console.log('longueur du tableau de films', movies.length);
+    const threshold = 3;
 
-    if(swipeDirection === 'right' && movies.length - currentMovieIndex <= threshold) {
+    if (
+      swipeDirection === 'right' &&
+      movies.length - currentMovieIndex <= threshold
+    ) {
+      console.log('20 nouveaux films');
+
       const newPage = moviePage + 1;
       setMoviePage(newPage);
       getMovies(newPage);
     }
-
   }, [swipeDirection, movies.length, currentMovieIndex]);
-
 
   // Récupère les informations détaillées d'un film
   useEffect(() => {
@@ -62,48 +63,45 @@ const SwipeContainer = () => {
 
     const getMovieDetails = async () => {
       try {
-        const movieDetailsData = await fetchMovieDetails(movieId);
- 
-        console.log('requêtes film détaillé effectué', movieDetailsData);        
+        let movieDetailsData;
 
-        setMovieDetail([
-          { label: 'Type', value: 'Film' },
-          {
-            label: 'Genre',
-            value: movieDetailsData[0].genres
-              .map(genre => genre.name)
-              .join(', '),
-          },
-          { label: 'Pays', 
-            value: movieDetailsData[1].join(', ')
-          },
-          {
-            label: 'Année',
-            value: movieDetailsData[0].release_date.split('-')[0],
-          },
-          {
-            label: 'Réalisation',
-            value: '',
-          },
-          {
-            label: 'Acteurs',
-            value: '',
-          },
-        ]);
+        const cachedData = localStorage.getItem(`movieDetails-${movieId}`);
 
+        // Si les données sont présentes dans le local storage
+        if (cachedData) {
+          movieDetailsData = JSON.parse(cachedData);
+          console.log('utilisation du cache local storage pour', movieId);
+        }
+        // Si nouvelles données, on fait la requête
+        else {
+          movieDetailsData = await fetchMovieDetails(movieId);
+          console.log('requêtes film détaillé effectué', movieDetailsData);
+
+          // Ajout des données au local storage
+          localStorage.setItem(
+            `movieDetails-${movieId}`,
+            JSON.stringify(movieDetailsData),
+          );
+        }
+
+        setMovieDetail(movieDetailsData);
         setGeneralRatings(movieDetailsData[0].vote_average);
-
       } catch (err) {
-        console.log('erreur', err);
-        setError('Erreur lors de la récupération des détails du film.');
+        setError({
+          message: 'Erreur dans la récupération des détails du film.',
+          error: err,
+        });
       } finally {
-        setTimeout(() => {
-          setLoading({ movies: loading.movies, details: false });
-        }, 2000);
+        if (initialRender) {
+          setLoading(prevLoading => ({
+            movies: prevLoading.movies,
+            details: false,
+          }));
+        }
       }
     };
     getMovieDetails();
-  }, [movieId]);
+  }, [movieId, initialRender]);
 
   // Récupère l'id du film affiché
   useEffect(() => {
@@ -113,21 +111,33 @@ const SwipeContainer = () => {
     }
   }, [movies, currentMovieIndex]);
 
+  // Récupération de la page 1 des films
   useEffect(() => {
-    console.log('rendu de base page 1');
-    
     getMovies(moviePage);
-  }, [])
+    setTimeout(() => {
+      setInitialRender(true);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     console.log('page de films', movies);
-    
-  }, [movies])
+  }, [movies]);
 
   useEffect(() => {
     console.log('numéro de page', moviePage);
-    
-  }, [moviePage])
+  }, [moviePage]);
+
+  useEffect(() => {
+    console.log(`index ${currentMovieIndex}`);
+  }, [currentMovieIndex]);
+
+  useEffect(() => {
+    console.log('chargement', loading);
+  }, [loading]);
+
+  useEffect(() => {
+    console.log(initialRender);
+  }, [initialRender]);
 
   return (
     <SwipeComponent

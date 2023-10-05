@@ -8,6 +8,7 @@ import {
   CardMedia,
   CircularProgress,
 } from '@mui/material';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
@@ -78,7 +79,7 @@ const SwipePoster = ({
               }}
               onClick={() => {
                 if (currentMovieIndex > 0) {
-                  setSwipeDirection('left'); 
+                  setSwipeDirection('left');
                   setCurrentMovieIndex(prevIndex => prevIndex - 1);
                 }
               }}
@@ -150,9 +151,9 @@ const SwipePoster = ({
                 color: '#0E6666',
               }}
               onClick={() => {
-                setSwipeDirection('right') 
-                setCurrentMovieIndex(prevIndex => (prevIndex + 1));
-            }}
+                setSwipeDirection('right');
+                setCurrentMovieIndex(prevIndex => prevIndex + 1);
+              }}
             />
           </Box>
         </>
@@ -160,5 +161,16 @@ const SwipePoster = ({
     </Stack>
   );
 };
+
+const SwipePosterPropTypes = {
+  movies: PropTypes.array.isRequired,
+  generalRatings: PropTypes.number.isRequired,
+  loading: PropTypes.object.isRequired,
+  setCurrentMovieIndex: PropTypes.func.isRequired,
+  currentMovieIndex: PropTypes.number.isRequired,
+  setSwipeDirection: PropTypes.func.isRequired,
+};
+
+SwipePoster.propTypes = SwipePosterPropTypes;
 
 export default SwipePoster;

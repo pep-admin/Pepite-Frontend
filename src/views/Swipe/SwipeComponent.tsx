@@ -1,12 +1,14 @@
 // Import des libs externes
 import { styled, Paper, Container, Stack, Box } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useSpring } from 'react-spring';
+import { useState, useEffect } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
 import SearchBar from '@utils/SearchBar';
 import SwipeFilter from '@views/Swipe/SwipeFilter';
-import SwipeMain from '@views/Swipe/SwipeMain';
+import SwipeCard from '@views/Swipe/SwipeCard';
 
 type ItemProps = {
   customheight?: string;
@@ -29,9 +31,44 @@ const SwipeComponent = ({
   error,
   loading,
   currentMovieIndex,
-  setCurrentMovieIndex,
   setSwipeDirection,
 }) => {
+
+  // Bibilothèque react-spring pour gérer les animations
+  const [firstCardProps, setFirstCardProps] = useSpring(() => ({ transform: 'translateX(-100%)', config: {duration: 300}}));
+  const [secondCardProps, setSecondCardProps] = useSpring(() => ({ transform: 'translateX(0%)', config: {duration: 300}}));
+  const [thirdCardProps, setThirdCardProps] = useSpring(() => ({ transform: 'translateX(100%)', config: {duration: 300}}));
+
+  // Définition des 3 cards
+  const [cards, setCards] = useState([
+    {id: 'card1', index: -1, cardProps: firstCardProps, setCardProps: setFirstCardProps},
+    {id: 'card2', index: 0, cardProps: secondCardProps, setCardProps: setSecondCardProps},
+    {id: 'card3', index: 1, cardProps: thirdCardProps, setCardProps: setThirdCardProps},
+  ]);
+
+  const handleSwipe = () => {
+
+    cards[0].setCardProps({transform: 'translateX(100%)', config: {duration: 0}}); // Card de gauche => part tout à droite sans transition
+    cards[1].setCardProps({transform: 'translateX(-100%)', config: {duration: 300}}); // Card du milieu => part sur la gauche
+    cards[2].setCardProps({transform: 'translateX(0%)', config: {duration: 300}});  // Card de droite => part au milieu
+
+    // Repositionne la première card à la fin du tableau  
+    setCards(prevCards => {
+      const newCards = [...prevCards];
+      const firstCard = newCards.shift();
+      const lastCard = newCards.slice(-1);
+      newCards.push(firstCard);      
+      firstCard.index = lastCard[0].index + 1;
+
+      return newCards;
+    });    
+  };
+
+  useEffect(() => {
+    console.log(cards);
+    
+  }, [cards])
+
   return (
     <>
       <Header />
@@ -48,19 +85,25 @@ const SwipeComponent = ({
           <Box>
             <SwipeFilter Item={Item} />
           </Box>
-          <Box sx={{ height: 'calc(100% - 92px)' }}>
-            <SwipeMain
-              Item={Item}
-              movies={movies}
-              movieDetail={movieDetail}
-              generalRatings={generalRatings}
-              error={error}
-              loading={loading}
-              currentMovieIndex={currentMovieIndex}
-              setCurrentMovieIndex={setCurrentMovieIndex}
-              setSwipeDirection={setSwipeDirection}
-            />
-          </Box>
+          <Stack direction='row' height='calc(100% - 92px)' position='relative' overflow='hidden' borderRadius='10px' boxShadow='0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)'>
+            { cards.map((card) => (
+              <SwipeCard
+                key={card.id}
+                id={card.id}
+                Item={Item}
+                movies={movies}
+                movieDetail={movieDetail}
+                generalRatings={generalRatings}
+                error={error}
+                loading={loading}
+                index={card.index}
+                currentMovieIndex={currentMovieIndex}
+                setSwipeDirection={setSwipeDirection}
+                handleSwipe={handleSwipe}
+                cardProps={card.cardProps}
+              />
+            ))}
+          </Stack>   
         </Stack>
       </Container>
     </>

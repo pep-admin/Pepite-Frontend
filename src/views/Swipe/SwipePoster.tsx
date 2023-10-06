@@ -34,10 +34,11 @@ const StyledBadge = styled(Badge)(() => ({
 const SwipePoster = ({
   loading,
   setSwipeDirection,
-  setCurrentMovieIndex,
   movies,
+  index,
   currentMovieIndex,
   generalRatings,
+  handleSwipe
 }) => {
   // Largeur de l'affiche pour déterminer le container des notes
   const [posterWidth, setPosterWidth] = useState(null);
@@ -80,7 +81,7 @@ const SwipePoster = ({
               onClick={() => {
                 if (currentMovieIndex > 0) {
                   setSwipeDirection('left');
-                  setCurrentMovieIndex(prevIndex => prevIndex - 1);
+                  handleSwipe('left');
                 }
               }}
             />
@@ -98,12 +99,12 @@ const SwipePoster = ({
               color="primary"
               overlap="rectangular"
             >
-              {movies.length > 0 && movies[currentMovieIndex] ? (
+              {movies.length > 0 && movies[index] ? (
                 <CardMedia
                   ref={posterRef}
                   component="img"
-                  alt={movies[currentMovieIndex].title}
-                  image={`https://image.tmdb.org/t/p/w500/${movies[currentMovieIndex].poster_path}`}
+                  alt={movies[index].title}
+                  image={`https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`}
                   sx={{
                     height: '100%',
                     objectFit: 'contain',
@@ -152,7 +153,7 @@ const SwipePoster = ({
               }}
               onClick={() => {
                 setSwipeDirection('right');
-                setCurrentMovieIndex(prevIndex => prevIndex + 1);
+                handleSwipe('right');
               }}
             />
           </Box>
@@ -166,7 +167,6 @@ const SwipePosterPropTypes = {
   movies: PropTypes.array.isRequired,
   generalRatings: PropTypes.number.isRequired,
   loading: PropTypes.object.isRequired,
-  setCurrentMovieIndex: PropTypes.func.isRequired,
   currentMovieIndex: PropTypes.number.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
 };

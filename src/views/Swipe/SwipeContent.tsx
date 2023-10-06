@@ -1,7 +1,7 @@
 import { Stack, Box, Typography, Divider } from '@mui/material';
 import PropTypes from 'prop-types';
 
-const SwipeContent = ({ movieDetail, movies, currentMovieIndex }) => {
+const SwipeContent = ({ movieDetail, movies, index }) => {
   return (
     <Stack
       direction="row"
@@ -76,9 +76,9 @@ const SwipeContent = ({ movieDetail, movies, currentMovieIndex }) => {
       </Stack>
       <Stack width="calc(65% - 10px)" sx={{ overflowY: 'scroll' }}>
         <Typography variant="body2" align="left">
-          {movies[currentMovieIndex].overview === ''
+          {movies[index].overview === ''
             ? "Désolé, il n'y a pas de synopsis disponible pour ce film..."
-            : movies[currentMovieIndex].overview}
+            : movies[index].overview}
         </Typography>
       </Stack>
     </Stack>
@@ -88,7 +88,6 @@ const SwipeContent = ({ movieDetail, movies, currentMovieIndex }) => {
 const SwipeContentPropTypes = {
   movies: PropTypes.array.isRequired,
   movieDetail: PropTypes.array.isRequired,
-  currentMovieIndex: PropTypes.number.isRequired,
 };
 
 SwipeContent.propTypes = SwipeContentPropTypes;

@@ -33,12 +33,12 @@ const StyledBadge = styled(Badge)(() => ({
 
 const SwipePoster = ({
   loading,
-  setSwipeDirection,
   movies,
   index,
   currentMovieIndex,
   generalRatings,
-  handleSwipe
+  handleSwipe,
+  setSwipeDirection,
 }) => {
   // Largeur de l'affiche pour déterminer le container des notes
   const [posterWidth, setPosterWidth] = useState(null);
@@ -80,8 +80,8 @@ const SwipePoster = ({
               }}
               onClick={() => {
                 if (currentMovieIndex > 0) {
-                  setSwipeDirection('left');
                   handleSwipe('left');
+                  setSwipeDirection('left');
                 }
               }}
             />
@@ -152,8 +152,8 @@ const SwipePoster = ({
                 color: '#0E6666',
               }}
               onClick={() => {
-                setSwipeDirection('right');
                 handleSwipe('right');
+                setSwipeDirection('right');
               }}
             />
           </Box>
@@ -168,6 +168,8 @@ const SwipePosterPropTypes = {
   generalRatings: PropTypes.number.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
+  handleSwipe: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
 };
 

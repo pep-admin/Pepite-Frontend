@@ -86,6 +86,7 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
 };
 
 const SwipeContentPropTypes = {
+  index: PropTypes.number.isRequired,
   movies: PropTypes.array.isRequired,
   movieDetail: PropTypes.array.isRequired,
 };

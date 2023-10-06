@@ -9,7 +9,6 @@ import {
 } from '@utils/request/swipe/fetchData';
 
 const SwipeContainer = () => {
-
   const [initialRender, setInitialRender] = useState(false); // Permet un affichage minimum du skeletton
   const [movieId, setMovieId] = useState(null); // Movie Id pour récupérer les infos détaillées du film affiché
   const [movies, setMovies] = useState([]); // 20 films pour laisser une marge de swipe
@@ -22,7 +21,7 @@ const SwipeContainer = () => {
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
 
   // Récupère 20 films selon la page
-  const getMovies = useCallback(async (moviePage) => {
+  const getMovies = useCallback(async moviePage => {
     try {
       const moviesData = await fetchTwentyMovies(moviePage);
 
@@ -35,20 +34,24 @@ const SwipeContainer = () => {
         error: err,
       });
     } finally {
-      setLoading(prevLoading => ({ movies: false, details: prevLoading.details }));
+      setLoading(prevLoading => ({
+        movies: false,
+        details: prevLoading.details,
+      }));
     }
   }, []);
 
   // Ajoute 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
     const threshold = 3;
+    console.log('index courant => ', currentMovieIndex);
 
     if (
       swipeDirection === 'right' &&
       movies.length - currentMovieIndex <= threshold
     ) {
       console.log('20 nouveaux films');
-      
+
       const newPage = moviePage + 1;
       setMoviePage(newPage);
       getMovies(newPage);
@@ -90,8 +93,11 @@ const SwipeContainer = () => {
           error: err,
         });
       } finally {
-        if(initialRender) {
-          setLoading(prevLoading => ({ movies: prevLoading.movies, details: false }));
+        if (initialRender) {
+          setLoading(prevLoading => ({
+            movies: prevLoading.movies,
+            details: false,
+          }));
         }
       }
     };
@@ -108,27 +114,25 @@ const SwipeContainer = () => {
 
   // Récupération de la page 1 des films
   useEffect(() => {
+    console.log('premier rendu');
+
     getMovies(moviePage);
     setTimeout(() => {
       setInitialRender(true);
-    }, 2000)
+    }, 2000);
   }, []);
 
-  // useEffect(() => {
-  //   console.log('page de films', movies);
-  // }, [movies]);
-
-  // useEffect(() => {
-  //   console.log('numéro de page', moviePage);
-  // }, [moviePage]);
+  useEffect(() => {
+    console.log('page de films', movies);
+  }, [movies]);
 
   useEffect(() => {
-    console.log(`index courant ${currentMovieIndex}`);
-  }, [currentMovieIndex]);
+    console.log('numéro de page', moviePage);
+  }, [moviePage]);
 
-  // useEffect(() => {
-  //   console.log('chargement', loading);
-  // }, [loading])
+  useEffect(() => {
+    console.log('chargement', loading);
+  }, [loading]);
 
   return (
     <SwipeComponent

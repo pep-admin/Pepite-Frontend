@@ -175,10 +175,10 @@ const SwipeFilter = ({ Item }) => {
             value={value}
             precision={0.5}
             getLabelText={getLabelText}
-            onChange={(event, newValue) => {
+            onChange={(_, newValue) => {
               setValue(newValue);
             }}
-            onChangeActive={(event, newHover) => {
+            onChangeActive={(_, newHover) => {
               setHover(newHover);
             }}
             emptyIcon={

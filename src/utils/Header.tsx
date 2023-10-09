@@ -53,7 +53,7 @@ const Header = () => {
 
   const [alignment, setAlignment] = React.useState('web');
 
-  const handleChange = (event, newAlignment) => {
+  const handleChange = (_, newAlignment) => {
     setAlignment(newAlignment);
   };
 

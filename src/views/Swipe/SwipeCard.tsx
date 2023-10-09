@@ -75,8 +75,7 @@ const SwipeCard = ({
                   fontWeight: 'bold',
                 }}
               >
-                {movies.length > 0 && index > 0 ? movies[index].title : null}
-                {' ' + id}
+                {movies.length > 0 && index >= 0 ? movies[index].title : null}
               </Typography>
             )}
           </Stack>

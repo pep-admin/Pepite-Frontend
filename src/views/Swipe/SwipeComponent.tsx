@@ -36,15 +36,18 @@ const SwipeComponent = ({
 }) => {
   // Bibilothèque react-spring pour gérer les animations
   const [firstCardProps, setFirstCardProps] = useSpring(() => ({
+    opacity: 1,
     transform: 'translateX(-100%)',
     config: { duration: 300 },
   }));
   const [secondCardProps, setSecondCardProps] = useSpring(() => ({
     transform: 'translateX(0%)',
+    opacity: 1,
     config: { duration: 300 },
   }));
   const [thirdCardProps, setThirdCardProps] = useSpring(() => ({
     transform: 'translateX(100%)',
+    opacity: 1,
     config: { duration: 300 },
   }));
 
@@ -74,16 +77,18 @@ const SwipeComponent = ({
     if (direction === 'right') {
       setCurrentMovieIndex(prevIndex => prevIndex + 1);
 
-      cards[0].setCardProps({
+      cards[0].setCardProps.start({
         transform: 'translateX(100%)',
         config: { duration: 0 },
-      }); // Card de gauche => part tout à droite sans transition
-      cards[1].setCardProps({
+      }); // Card de gauche => part tout à droite sans transition et sans effet
+      cards[1].setCardProps.start({
         transform: 'translateX(-100%)',
+        opacity: 0.0,
         config: { duration: 300 },
       }); // Card du milieu => part sur la gauche
-      cards[2].setCardProps({
+      cards[2].setCardProps.start({
         transform: 'translateX(0%)',
+        opacity: 1,
         config: { duration: 300 },
       }); // Card de droite => part au milieu
 
@@ -102,15 +107,17 @@ const SwipeComponent = ({
     if (direction === 'left') {
       setCurrentMovieIndex(prevIndex => prevIndex - 1);
 
-      cards[0].setCardProps({
+      cards[0].setCardProps.start({
         transform: 'translateX(0%)',
+        opacity: 1,
         config: { duration: 300 },
       }); // Card de gauche => part au milieu
-      cards[1].setCardProps({
+      cards[1].setCardProps.start({
         transform: 'translateX(100%)',
+        opacity: 0.0,
         config: { duration: 300 },
       }); // Card du milieu => part sur la droite
-      cards[2].setCardProps({
+      cards[2].setCardProps.start({
         transform: 'translateX(-100%)',
         config: { duration: 0 },
       }); // Card de droite => part tout à gauche sans transition

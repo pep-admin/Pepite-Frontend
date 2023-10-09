@@ -25,8 +25,14 @@ const SwipeContainer = () => {
     try {
       const moviesData = await fetchTwentyMovies(moviePage);
 
+      // Ajoute la propriété "isAlreadySeen" à chaque film
+      const moviesWithAlreadySeen = moviesData.map(movie => ({
+        ...movie,
+        is_already_seen: false, // Par défaut, aucun film n'est déjà vu
+      }));
+
       if (swipeDirection === 'right' || swipeDirection === null) {
-        setMovies(prevMovies => [...prevMovies, ...moviesData]);
+        setMovies(prevMovies => [...prevMovies, ...moviesWithAlreadySeen]);
       }
     } catch (err) {
       setError({
@@ -114,7 +120,7 @@ const SwipeContainer = () => {
 
   // Récupération de la page 1 des films
   useEffect(() => {
-    console.log('premier rendu');
+    // console.log('premier rendu');
 
     getMovies(moviePage);
     setTimeout(() => {
@@ -126,17 +132,18 @@ const SwipeContainer = () => {
     console.log('page de films', movies);
   }, [movies]);
 
-  useEffect(() => {
-    console.log('numéro de page', moviePage);
-  }, [moviePage]);
+  // useEffect(() => {
+  //   console.log('numéro de page', moviePage);
+  // }, [moviePage]);
 
-  useEffect(() => {
-    console.log('chargement', loading);
-  }, [loading]);
+  // useEffect(() => {
+  //   console.log('chargement', loading);
+  // }, [loading]);
 
   return (
     <SwipeComponent
       movies={movies}
+      setMovies={setMovies}
       movieDetail={movieDetail}
       generalRatings={generalRatings}
       error={error}

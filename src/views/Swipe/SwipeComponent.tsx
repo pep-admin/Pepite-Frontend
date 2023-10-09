@@ -26,6 +26,7 @@ const Item = styled(Paper)<ItemProps>(({ theme, customheight }) => ({
 
 const SwipeComponent = ({
   movies,
+  setMovies,
   movieDetail,
   generalRatings,
   error,
@@ -73,65 +74,75 @@ const SwipeComponent = ({
     },
   ]);
 
+  // Swipe à droite
+  function swipeRight() {
+    setCurrentMovieIndex(prevIndex => prevIndex + 1);
+
+    cards[0].setCardProps.start({
+      transform: 'translateX(100%)',
+      config: { duration: 0 },
+    }); // Card de gauche => part tout à droite sans transition et sans effet
+    cards[1].setCardProps.start({
+      transform: 'translateX(-100%)',
+      opacity: 0.0,
+      config: { duration: 300 },
+    }); // Card du milieu => part sur la gauche
+    cards[2].setCardProps.start({
+      transform: 'translateX(0%)',
+      opacity: 1,
+      config: { duration: 300 },
+    }); // Card de droite => part au milieu
+
+    // Repositionne la première card à la fin du tableau
+    setCards(prevCards => {
+      const newCards = [...prevCards];
+      const firstCard = newCards.shift();
+      const lastCard = newCards.slice(-1);
+      newCards.push(firstCard);
+      firstCard.index = lastCard[0].index + 1;
+
+      return newCards;
+    });
+  }
+
+  // Swipe à gauche
+  function swipeLeft() {
+    setCurrentMovieIndex(prevIndex => prevIndex - 1);
+
+    cards[0].setCardProps.start({
+      transform: 'translateX(0%)',
+      opacity: 1,
+      config: { duration: 300 },
+    }); // Card de gauche => part au milieu
+    cards[1].setCardProps.start({
+      transform: 'translateX(100%)',
+      opacity: 0.0,
+      config: { duration: 300 },
+    }); // Card du milieu => part sur la droite
+    cards[2].setCardProps.start({
+      transform: 'translateX(-100%)',
+      config: { duration: 0 },
+    }); // Card de droite => part tout à gauche sans transition
+
+    // Repositionne la dernière card au début du tableau
+    setCards(prevCards => {
+      const newCards = [...prevCards];
+      const lastCard = newCards.slice(-1);
+      newCards.unshift(lastCard[0]);
+      newCards.pop();
+      lastCard[0].index = prevCards[0].index - 1;
+
+      return newCards;
+    });
+  }
+
   const handleSwipe = direction => {
     if (direction === 'right') {
-      setCurrentMovieIndex(prevIndex => prevIndex + 1);
-
-      cards[0].setCardProps.start({
-        transform: 'translateX(100%)',
-        config: { duration: 0 },
-      }); // Card de gauche => part tout à droite sans transition et sans effet
-      cards[1].setCardProps.start({
-        transform: 'translateX(-100%)',
-        opacity: 0.0,
-        config: { duration: 300 },
-      }); // Card du milieu => part sur la gauche
-      cards[2].setCardProps.start({
-        transform: 'translateX(0%)',
-        opacity: 1,
-        config: { duration: 300 },
-      }); // Card de droite => part au milieu
-
-      // Repositionne la première card à la fin du tableau
-      setCards(prevCards => {
-        const newCards = [...prevCards];
-        const firstCard = newCards.shift();
-        const lastCard = newCards.slice(-1);
-        newCards.push(firstCard);
-        firstCard.index = lastCard[0].index + 1;
-
-        return newCards;
-      });
+      swipeRight();
     }
 
     if (direction === 'left') {
-      setCurrentMovieIndex(prevIndex => prevIndex - 1);
-
-      cards[0].setCardProps.start({
-        transform: 'translateX(0%)',
-        opacity: 1,
-        config: { duration: 300 },
-      }); // Card de gauche => part au milieu
-      cards[1].setCardProps.start({
-        transform: 'translateX(100%)',
-        opacity: 0.0,
-        config: { duration: 300 },
-      }); // Card du milieu => part sur la droite
-      cards[2].setCardProps.start({
-        transform: 'translateX(-100%)',
-        config: { duration: 0 },
-      }); // Card de droite => part tout à gauche sans transition
-
-      // Repositionne la dernière card au début du tableau
-      setCards(prevCards => {
-        const newCards = [...prevCards];
-        const lastCard = newCards.slice(-1);
-        newCards.unshift(lastCard[0]);
-        newCards.pop();
-        lastCard[0].index = prevCards[0].index - 1;
-
-        return newCards;
-      });
+      swipeLeft();
     }
   };
 
@@ -165,6 +176,7 @@ const SwipeComponent = ({
                 id={card.id}
                 Item={Item}
                 movies={movies}
+                setMovies={setMovies}
                 movieDetail={movieDetail}
                 generalRatings={generalRatings}
                 error={error}
@@ -185,6 +197,7 @@ const SwipeComponent = ({
 
 SwipeComponent.propTypes = {
   movies: PropTypes.array.isRequired,
+  setMovies: PropTypes.func.isRequired,
   movieDetail: PropTypes.array.isRequired,
   generalRatings: PropTypes.number.isRequired,
   error: PropTypes.shape({

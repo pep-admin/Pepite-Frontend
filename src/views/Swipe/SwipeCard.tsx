@@ -21,6 +21,7 @@ const SwipeCard = ({
   id,
   Item,
   movies,
+  setMovies,
   movieDetail,
   generalRatings,
   error,
@@ -103,6 +104,8 @@ const SwipeCard = ({
                   <SwipePoster
                     loading={loading}
                     movies={movies}
+                    setMovies={setMovies}
+                    movieDetail={movieDetail}
                     index={index}
                     currentMovieIndex={currentMovieIndex}
                     generalRatings={generalRatings}
@@ -186,6 +189,7 @@ const SwipeCard = ({
                       height: 'calc(35% - 16.5px)',
                       width: '100%',
                       padding: '10px 16px',
+                      alignItems: 'flex-end',
                     }}
                   >
                     <SwipeContent
@@ -196,7 +200,12 @@ const SwipeCard = ({
                   </CardContent>
                 )}
                 <CardActions
-                  sx={{ height: '33px', justifyContent: 'center', padding: 0 }}
+                  sx={{
+                    height: '33px',
+                    justifyContent: 'center',
+                    padding: 0,
+                    overflow: 'hidden',
+                  }}
                 >
                   {loading.movies || loading.details ? (
                     <Skeleton
@@ -206,17 +215,39 @@ const SwipeCard = ({
                       width="125px"
                     />
                   ) : (
-                    <Button
-                      variant="contained"
-                      color="success"
+                    <Stack
+                      direction="column"
+                      gap="33px"
                       sx={{
-                        maxHeight: '33px',
-                        padding: '0 15px',
-                        fontSize: '0.9em',
+                        transition: 'transform 300ms ease-in-out',
+                        transform: movies[index].is_already_seen
+                          ? 'translateY(33px)'
+                          : 'translateY(-33px)',
                       }}
                     >
-                      Je veux le voir !
-                    </Button>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        sx={{
+                          maxHeight: '33px',
+                          padding: '0 15px',
+                          fontSize: '0.9em',
+                        }}
+                      >
+                        Noter ce film
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        sx={{
+                          maxHeight: '33px',
+                          padding: '0 15px',
+                          fontSize: '0.9em',
+                        }}
+                      >
+                        Je veux le voir !
+                      </Button>
+                    </Stack>
                   )}
                 </CardActions>
               </Card>
@@ -233,6 +264,7 @@ const SwipeCardPropTypes = {
   Item: PropTypes.elementType.isRequired,
   index: PropTypes.number.isRequired,
   movies: PropTypes.array.isRequired,
+  setMovies: PropTypes.func.isRequired,
   movieDetail: PropTypes.array.isRequired,
   generalRatings: PropTypes.number.isRequired,
   error: PropTypes.object.isRequired,

@@ -1,5 +1,5 @@
 // Import des libs externes
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   styled,
   Badge,
@@ -31,9 +31,13 @@ const StyledBadge = styled(Badge)(() => ({
   },
 }));
 
+let isMovieSeen = false;
+
 const SwipePoster = ({
   loading,
   movies,
+  setMovies,
+  movieDetail,
   index,
   currentMovieIndex,
   generalRatings,
@@ -49,6 +53,26 @@ const SwipePoster = ({
   const originalScore = generalRatings;
   const scoreOutOfFive = originalScore / 2;
   const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
+
+  function setMovieSeen() {
+    // Inverse la valeur à chaque appel
+    isMovieSeen = !isMovieSeen;
+
+    // Trouve l'objet du film correspondant dans le tableau movies
+    const updatedMovies = movies.map(movie => {
+      if (movie.id === movieDetail[0].id) {
+        return { ...movie, is_already_seen: isMovieSeen };
+      }
+      return movie;
+    });
+
+    // Mettre à jour le tableau movies avec la nouvelle valeur
+    setMovies(updatedMovies);
+  }
+
+  useEffect(() => {
+    console.log('film détaillé', movieDetail);
+  }, [movieDetail]);
 
   return (
     <Stack
@@ -95,9 +119,20 @@ const SwipePoster = ({
           >
             <StyledBadge
               variant="standard"
-              badgeContent={'Déjà vu ?'}
-              color="primary"
+              badgeContent={
+                !movies[index].is_already_seen ? 'Déjà vu ?' : 'Déjà vu !'
+              }
+              color={movies[index].is_already_seen ? 'secondary' : 'primary'}
               overlap="rectangular"
+              sx={{
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                setMovieSeen();
+                // setTimeout(() => {
+                //   handleSwipe('right');
+                // }, 500)
+              }}
             >
               {movies.length > 0 && movies[index] ? (
                 <CardMedia
@@ -165,6 +200,8 @@ const SwipePoster = ({
 
 const SwipePosterPropTypes = {
   movies: PropTypes.array.isRequired,
+  setMovies: PropTypes.func.isRequired,
+  movieDetail: PropTypes.array.isRequired,
   generalRatings: PropTypes.number.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number.isRequired,

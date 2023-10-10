@@ -1,35 +1,15 @@
 // Import des libs externes
-import { useState, useRef, useEffect } from 'react';
-import {
-  styled,
-  Badge,
-  Stack,
-  Box,
-  CardMedia,
-  CircularProgress,
-} from '@mui/material';
+import { useState, useRef } from 'react';
+import { Stack, Box, Button, CardMedia, CircularProgress } from '@mui/material';
 import PropTypes from 'prop-types';
+
+// Import des fonction qui permettent de manipuler la liste de déjà vus dans la DB
+import { addSeenMovie, removeSeenMovie } from '@utils/request/swipe/fetchData';
 
 // Import des icônes
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import SwipeRatings from './SwipeRatings';
-
-// Badge rectangulaire customisé "déjà vu ?"
-const StyledBadge = styled(Badge)(() => ({
-  '.MuiBadge-standard': {
-    top: '28px',
-    right: '-10px',
-    borderRadius: 0,
-    height: '27px',
-  },
-  '.MuiBadge-anchorOriginTopRightRectangle': {
-    top: '28px',
-    right: '-10px',
-    borderRadius: 0,
-    height: '27px',
-  },
-}));
 
 let isMovieSeen = false;
 
@@ -54,10 +34,15 @@ const SwipePoster = ({
   const scoreOutOfFive = originalScore / 2;
   const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
 
-  function setMovieSeen() {
+  const handleMovieSeen = () => {
     // Inverse la valeur à chaque appel
     isMovieSeen = !isMovieSeen;
 
+    if (isMovieSeen) {
+      addSeenMovie(movieDetail[0].id);
+    } else {
+      removeSeenMovie(movieDetail[0].id);
+    }
     // Trouve l'objet du film correspondant dans le tableau movies
     const updatedMovies = movies.map(movie => {
       if (movie.id === movieDetail[0].id) {
@@ -66,13 +51,9 @@ const SwipePoster = ({
       return movie;
     });
 
-    // Mettre à jour le tableau movies avec la nouvelle valeur
+    // Met à jour le tableau movies avec la nouvelle valeur
     setMovies(updatedMovies);
-  }
-
-  useEffect(() => {
-    console.log('film détaillé', movieDetail);
-  }, [movieDetail]);
+  };
 
   return (
     <Stack
@@ -101,6 +82,7 @@ const SwipePoster = ({
                 height: '1.3em',
                 width: '1.3em',
                 color: currentMovieIndex > 0 ? '#0E6666' : '#CCCCCC',
+                cursor: 'pointer',
               }}
               onClick={() => {
                 if (currentMovieIndex > 0) {
@@ -117,42 +99,47 @@ const SwipePoster = ({
             justifyContent="center"
             position="relative"
           >
-            <StyledBadge
-              variant="standard"
-              badgeContent={
-                !movies[index].is_already_seen ? 'Déjà vu ?' : 'Déjà vu !'
-              }
+            <Button
+              variant="contained"
               color={movies[index].is_already_seen ? 'secondary' : 'primary'}
-              overlap="rectangular"
               sx={{
+                height: '29px',
+                width: '72px',
+                minWidth: 'auto',
+                padding: '0',
+                position: 'absolute',
+                top: '17px',
+                right: '-37px',
+                borderRadius: '0',
+                textTransform: 'none',
+                fontWeight: 'normal',
                 cursor: 'pointer',
               }}
               onClick={() => {
-                setMovieSeen();
-                // setTimeout(() => {
-                //   handleSwipe('right');
-                // }, 500)
+                handleMovieSeen();
               }}
             >
-              {movies.length > 0 && movies[index] ? (
-                <CardMedia
-                  ref={posterRef}
-                  component="img"
-                  alt={movies[index].title}
-                  image={`https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`}
-                  sx={{
-                    height: '100%',
-                    objectFit: 'contain',
-                    boxShadow: '8px 7px 12px 0px rgba(0,0,0,0.24)',
-                  }}
-                  onLoad={() => {
-                    if (posterRef.current) {
-                      setPosterWidth(posterRef.current.clientWidth);
-                    }
-                  }}
-                />
-              ) : null}
-            </StyledBadge>
+              {!movies[index].is_already_seen ? 'Déjà vu ?' : 'Déjà vu !'}
+            </Button>
+            {movies.length > 0 && movies[index] ? (
+              <CardMedia
+                ref={posterRef}
+                component="img"
+                alt={movies[index].title}
+                image={`https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`}
+                sx={{
+                  height: '100%',
+                  objectFit: 'contain',
+                  boxShadow: '8px 7px 12px 0px rgba(0,0,0,0.24)',
+                }}
+                onLoad={() => {
+                  if (posterRef.current) {
+                    setPosterWidth(posterRef.current.clientWidth);
+                  }
+                }}
+              />
+            ) : null}
+
             {posterWidth !== null ? (
               <Stack
                 position="absolute"
@@ -185,6 +172,7 @@ const SwipePoster = ({
                 height: '1.3em',
                 width: '1.3em',
                 color: '#0E6666',
+                cursor: 'pointer',
               }}
               onClick={() => {
                 handleSwipe('right');

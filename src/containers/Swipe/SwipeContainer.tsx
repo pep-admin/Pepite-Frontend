@@ -74,8 +74,6 @@ const SwipeContainer = () => {
       movies.length !== 0 &&
       movies.length - currentMovieIndex <= threshold
     ) {
-      console.log('20 nouveaux films');
-
       const newPage = moviePage + 1;
       setMoviePage(newPage);
       getMovies(newPage);

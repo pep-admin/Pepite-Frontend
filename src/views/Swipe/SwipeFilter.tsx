@@ -1,5 +1,6 @@
 // Import des libs externes
-import * as React from 'react';
+// import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Menu, MenuItem, Button, Fade, Rating } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import PropTypes from 'prop-types';
@@ -49,8 +50,8 @@ function getLabelText(value: number) {
 }
 
 const SwipeFilter = ({ Item }) => {
-  // Filtre selon films ou séries
-  const [countryFilter, setCountryFilter] = React.useState(null);
+  // Filtre selon les pays
+  const [countryFilter, setCountryFilter] = useState(null);
   const openCountry = Boolean(countryFilter);
   const handleCountryClick = event => {
     setCountryFilter(event.currentTarget);
@@ -59,8 +60,12 @@ const SwipeFilter = ({ Item }) => {
     setCountryFilter(null);
   };
 
+  useEffect(() => {
+    console.log(countryFilter);
+  }, [countryFilter]);
+
   // Filtre selon le genre
-  const [kindFilter, setKindFilter] = React.useState(null);
+  const [kindFilter, setKindFilter] = useState(null);
   const openKind = Boolean(kindFilter);
   const handleKindClick = event => {
     setKindFilter(event.currentTarget);
@@ -70,7 +75,7 @@ const SwipeFilter = ({ Item }) => {
   };
 
   // Filtre selon la note
-  const [ratingsFilter, setRatingsFilter] = React.useState(null);
+  const [ratingsFilter, setRatingsFilter] = useState(null);
   const openRatings = Boolean(ratingsFilter);
   const handleRatingsClick = event => {
     setRatingsFilter(event.currentTarget);
@@ -79,8 +84,8 @@ const SwipeFilter = ({ Item }) => {
     setRatingsFilter(null);
   };
 
-  const [value, setValue] = React.useState(2);
-  const [hover, setHover] = React.useState(-1);
+  const [value, setValue] = useState(2);
+  const [hover, setHover] = useState(-1);
 
   return (
     <Item

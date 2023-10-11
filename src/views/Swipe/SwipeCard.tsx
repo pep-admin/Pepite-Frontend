@@ -84,7 +84,7 @@ const SwipeCard = ({
                 {movies.length > 0 && index >= 0 && displayType === 'movie'
                   ? movies[index].title
                   : movies.length > 0 && index >= 0 && displayType === 'tv'
-                  ? movies[index].name + `index n°${index}`
+                  ? movies[index].name
                   : null}
               </Typography>
             )}

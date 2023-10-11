@@ -1,5 +1,5 @@
 // Import des libs externes
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Stack, Box, Button, CardMedia, CircularProgress } from '@mui/material';
 import PropTypes from 'prop-types';
 
@@ -11,7 +11,8 @@ import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import SwipeRatings from './SwipeRatings';
 
-let isMovieSeen = false;
+// Import du contexte
+import { useData } from '@hooks/DataContext';
 
 const SwipePoster = ({
   loading,
@@ -24,36 +25,48 @@ const SwipePoster = ({
   handleSwipe,
   setSwipeDirection,
 }) => {
+  const { displayType } = useData();
+
   // Largeur de l'affiche pour déterminer le container des notes
   const [posterWidth, setPosterWidth] = useState(null);
+  const [currentMovieId, setCurrentMovieId] = useState(null);
 
   // Image du film affiché
   const posterRef = useRef<HTMLImageElement | null>(null);
+  const isMovieSeenRef = useRef(false);
 
   const originalScore = generalRatings;
   const scoreOutOfFive = originalScore / 2;
   const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
 
   const handleMovieSeen = () => {
-    // Inverse la valeur à chaque appel
-    isMovieSeen = !isMovieSeen;
-
-    if (isMovieSeen) {
-      addSeenMovie(movieDetail[0].id);
+    if (!isMovieSeenRef.current && !movies[index].is_already_seen) {
+      addSeenMovie(movieDetail[0].id, displayType);
+      isMovieSeenRef.current = true;
     } else {
-      removeSeenMovie(movieDetail[0].id);
+      removeSeenMovie(movieDetail[0].id, displayType);
+      isMovieSeenRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies
     const updatedMovies = movies.map(movie => {
       if (movie.id === movieDetail[0].id) {
-        return { ...movie, is_already_seen: isMovieSeen };
+        return { ...movie, is_already_seen: isMovieSeenRef.current };
       }
       return movie;
     });
 
+    console.log(movieDetail[0].id, isMovieSeenRef.current);
+
     // Met à jour le tableau movies avec la nouvelle valeur
     setMovies(updatedMovies);
   };
+
+  useEffect(() => {
+    if (movieDetail[0] && currentMovieId !== movieDetail[0].id) {
+      isMovieSeenRef.current = false; // Réinitialisation à false lorsque le film change
+      setCurrentMovieId(movieDetail[0].id); // Id du film actuel
+    }
+  }, [movieDetail, currentMovieId]);
 
   return (
     <Stack

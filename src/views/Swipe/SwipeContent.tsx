@@ -36,7 +36,9 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
             >
               {'Type :'}
             </Typography>
-            <Typography variant="body2">{'Film'}</Typography>
+            <Typography variant="body2">
+              {displayType === 'movie' ? 'Film' : 'Série'}
+            </Typography>
           </Box>
           <Box>
             <Typography
@@ -67,6 +69,8 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
                 ? movieDetail[0].release_date.split('-')[0]
                 : displayType === 'tv' && movieDetail[0].first_air_date
                 ? movieDetail[0].first_air_date.split('-')[0]
+                : displayType === 'tv' && movieDetail[0].first_air_date === ''
+                ? 'Non spécifié'
                 : null}
             </Typography>
           </Box>

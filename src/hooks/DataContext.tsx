@@ -6,12 +6,12 @@ interface DataContextProps {
 }
 
 const DataContext = createContext<DataContextProps>({
-  displayType: 'films',
+  displayType: 'movie',
   setDisplayType: (_value: string) => {},
 });
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [displayType, setDisplayType] = useState<string>('films');
+  const [displayType, setDisplayType] = useState<string>('movie');
 
   return (
     <DataContext.Provider value={{ displayType, setDisplayType }}>

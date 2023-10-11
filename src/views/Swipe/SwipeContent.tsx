@@ -1,7 +1,13 @@
+// Import des libs externes
 import { Stack, Box, Typography, Divider } from '@mui/material';
 import PropTypes from 'prop-types';
 
+// Import du contexte movie / tv
+import { useData } from '@hooks/DataContext';
+
 const SwipeContent = ({ movieDetail, movies, index }) => {
+  const { displayType } = useData();
+
   return (
     <Stack
       direction="row"
@@ -57,7 +63,11 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Année :'}
             </Typography>
             <Typography variant="body2">
-              {movieDetail[0].release_date.split('-')[0]}
+              {displayType === 'movie' && movieDetail[0].release_date
+                ? movieDetail[0].release_date.split('-')[0]
+                : displayType === 'tv' && movieDetail[0].first_air_date
+                ? movieDetail[0].first_air_date.split('-')[0]
+                : null}
             </Typography>
           </Box>
           <Box>

@@ -84,8 +84,8 @@ const Header = () => {
                 fontSize: '0.7em',
                 fontWeight: 'bold',
               }}
-              onClick={() => setDisplayType('films')}
-              selected={displayType === 'films'}
+              onClick={() => setDisplayType('movie')}
+              selected={displayType === 'movie'}
             >
               Films
             </ToggleButton>
@@ -96,8 +96,8 @@ const Header = () => {
                 fontSize: '0.7em',
                 fontWeight: 'bold',
               }}
-              onClick={() => setDisplayType('series')}
-              selected={displayType === 'series'}
+              onClick={() => setDisplayType('tv')}
+              selected={displayType === 'tv'}
             >
               Séries
             </ToggleButton>

@@ -17,6 +17,9 @@ import { animated as a } from 'react-spring';
 import SwipePoster from './SwipePoster';
 import SwipeContent from './SwipeContent';
 
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+
 const SwipeCard = ({
   id,
   Item,
@@ -33,6 +36,8 @@ const SwipeCard = ({
   cardProps,
 }) => {
   const AnimatedCard = a(Item);
+
+  const { displayType } = useData();
 
   return (
     <AnimatedCard
@@ -76,7 +81,11 @@ const SwipeCard = ({
                   fontWeight: 'bold',
                 }}
               >
-                {movies.length > 0 && index >= 0 ? movies[index].title : null}
+                {movies.length > 0 && index >= 0 && displayType === 'movie'
+                  ? movies[index].title
+                  : movies.length > 0 && index >= 0 && displayType === 'tv'
+                  ? movies[index].name + `index n°${index}`
+                  : null}
               </Typography>
             )}
           </Stack>

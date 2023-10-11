@@ -7,9 +7,9 @@ import {
   fetchMovieDetails,
   fetchTwentyMovies,
 } from '@utils/request/swipe/fetchData';
+import { useData } from '@hooks/DataContext';
 
 const SwipeContainer = () => {
-  const [initialRender, setInitialRender] = useState(false); // Permet un affichage minimum du skeletton
   const [movieId, setMovieId] = useState(null); // Movie Id pour récupérer les infos détaillées du film affiché
   const [movies, setMovies] = useState([]); // 20 films pour laisser une marge de swipe
   const [movieDetail, setMovieDetail] = useState([]); // Informations détaillées sur le film affiché
@@ -20,40 +20,58 @@ const SwipeContainer = () => {
   const [loading, setLoading] = useState({ movies: true, details: true }); // Premier chargement
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
 
+  const { displayType } = useData();
+
   // Récupère 20 films selon la page
-  const getMovies = useCallback(async moviePage => {
-    try {
-      const moviesData = await fetchTwentyMovies(moviePage);
+  const getMovies = useCallback(
+    async moviePage => {
+      try {
+        // Minimum d'affichage du Skeleton pendant 2 secondes
+        const loadingTimer = new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Ajoute la propriété "isAlreadySeen" à chaque film
-      const moviesWithAlreadySeen = moviesData.map(movie => ({
-        ...movie,
-        is_already_seen: false, // Par défaut, aucun film n'est déjà vu
-      }));
+        const moviesData = await fetchTwentyMovies(moviePage, displayType);
 
-      if (swipeDirection === 'right' || swipeDirection === null) {
-        setMovies(prevMovies => [...prevMovies, ...moviesWithAlreadySeen]);
+        // Ajoute la propriété "isAlreadySeen" à chaque film
+        const moviesWithAlreadySeen = moviesData.map(movie => ({
+          ...movie,
+          is_already_seen: false, // Par défaut, aucun film n'est déjà vu
+        }));
+
+        if (swipeDirection === 'right' || swipeDirection === null) {
+          setMovies(prevMovies => [...prevMovies, ...moviesWithAlreadySeen]);
+        }
+
+        await Promise.all([moviesData, loadingTimer]);
+      } catch (err) {
+        setError({
+          message: 'Erreur dans la récupération de la page de films.',
+          error: err,
+        });
+      } finally {
+        setLoading(prevLoading => ({
+          movies: false,
+          details: prevLoading.details,
+        }));
       }
-    } catch (err) {
-      setError({
-        message: 'Erreur dans la récupération de la page de films.',
-        error: err,
-      });
-    } finally {
-      setLoading(prevLoading => ({
-        movies: false,
-        details: prevLoading.details,
-      }));
-    }
-  }, []);
+    },
+    [displayType],
+  );
+
+  useEffect(() => {
+    setLoading({ movies: true, details: true });
+    setMovies([]); // Réinitialisation des données liées aux films/séries
+    setMoviePage(1); // Réinitialisation à la page à 1
+    setCurrentMovieIndex(0); // Réinitialisation l'index courant à 0
+    getMovies(1); // Recharger les films/séries
+  }, [displayType]);
 
   // Ajoute 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
     const threshold = 3;
-    console.log('index courant => ', currentMovieIndex);
 
     if (
       swipeDirection === 'right' &&
+      movies.length !== 0 &&
       movies.length - currentMovieIndex <= threshold
     ) {
       console.log('20 nouveaux films');
@@ -81,7 +99,7 @@ const SwipeContainer = () => {
         }
         // Si nouvelles données, on fait la requête
         else {
-          movieDetailsData = await fetchMovieDetails(movieId);
+          movieDetailsData = await fetchMovieDetails(movieId, displayType);
           console.log('requêtes film détaillé effectué', movieDetailsData);
 
           // Ajout des données au local storage
@@ -94,21 +112,21 @@ const SwipeContainer = () => {
         setMovieDetail(movieDetailsData);
         setGeneralRatings(movieDetailsData[0].vote_average);
       } catch (err) {
+        console.log(err);
+
         setError({
           message: 'Erreur dans la récupération des détails du film.',
           error: err,
         });
       } finally {
-        if (initialRender) {
-          setLoading(prevLoading => ({
-            movies: prevLoading.movies,
-            details: false,
-          }));
-        }
+        setLoading(prevLoading => ({
+          movies: prevLoading.movies,
+          details: false,
+        }));
       }
     };
     getMovieDetails();
-  }, [movieId, initialRender]);
+  }, [movieId]);
 
   // Récupère l'id du film affiché
   useEffect(() => {
@@ -118,27 +136,18 @@ const SwipeContainer = () => {
     }
   }, [movies, currentMovieIndex]);
 
-  // Récupération de la page 1 des films
   useEffect(() => {
-    // console.log('premier rendu');
-
-    getMovies(moviePage);
-    setTimeout(() => {
-      setInitialRender(true);
-    }, 2000);
-  }, []);
-
-  useEffect(() => {
-    console.log('page de films', movies);
+    if (movies.length > 0) console.log('page de films', movies);
   }, [movies]);
 
   // useEffect(() => {
-  //   console.log('numéro de page', moviePage);
-  // }, [moviePage]);
+  //   console.log(`page n°${moviePage}`);
 
-  // useEffect(() => {
-  //   console.log('chargement', loading);
-  // }, [loading]);
+  // }, [moviePage])
+
+  useEffect(() => {
+    console.log('chargement', loading);
+  }, [loading]);
 
   return (
     <SwipeComponent

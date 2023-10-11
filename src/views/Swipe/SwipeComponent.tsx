@@ -2,13 +2,16 @@
 import { styled, Paper, Container, Stack, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useSpring } from 'react-spring';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
 import SearchBar from '@utils/SearchBar';
 import SwipeFilter from '@views/Swipe/SwipeFilter';
 import SwipeCard from '@views/Swipe/SwipeCard';
+
+// Import du contexte
+import { useData } from '@hooks/DataContext';
 
 type ItemProps = {
   customheight?: string;
@@ -35,6 +38,9 @@ const SwipeComponent = ({
   setCurrentMovieIndex,
   setSwipeDirection,
 }) => {
+  const { displayType } = useData();
+  const prevDisplayTypeRef = useRef('movie');
+
   // Bibilothèque react-spring pour gérer les animations
   const [firstCardProps, setFirstCardProps] = useSpring(() => ({
     opacity: 1,
@@ -53,26 +59,28 @@ const SwipeComponent = ({
   }));
 
   // Définition des 3 cards
-  const [cards, setCards] = useState([
+  const initialCards = [
     {
       id: 'card1',
-      index: -1,
+      index: currentMovieIndex - 1,
       cardProps: firstCardProps,
       setCardProps: setFirstCardProps,
     },
     {
       id: 'card2',
-      index: 0,
+      index: currentMovieIndex,
       cardProps: secondCardProps,
       setCardProps: setSecondCardProps,
     },
     {
       id: 'card3',
-      index: 1,
+      index: currentMovieIndex + 1,
       cardProps: thirdCardProps,
       setCardProps: setThirdCardProps,
     },
-  ]);
+  ];
+
+  const [cards, setCards] = useState(initialCards);
 
   // Swipe à droite
   function swipeRight() {
@@ -145,6 +153,35 @@ const SwipeComponent = ({
       swipeLeft();
     }
   };
+
+  useEffect(() => {
+    if (prevDisplayTypeRef.current !== displayType) {
+      setFirstCardProps.start({
+        opacity: 1,
+        transform: 'translateX(-100%)',
+        config: { duration: 0 },
+        reset: true,
+      });
+      setSecondCardProps.start({
+        opacity: 1,
+        transform: 'translateX(0%)',
+        config: { duration: 0 },
+        reset: true,
+      });
+      setThirdCardProps.start({
+        opacity: 1,
+        transform: 'translateX(100%)',
+        config: { duration: 0 },
+        reset: true,
+      });
+    }
+
+    prevDisplayTypeRef.current = displayType;
+
+    if (currentMovieIndex === 0) {
+      setCards(initialCards);
+    }
+  }, [displayType, currentMovieIndex]);
 
   return (
     <>

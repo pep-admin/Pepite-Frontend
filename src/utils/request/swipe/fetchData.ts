@@ -1,13 +1,28 @@
-import { countries } from '@utils/data/Countries';
+import { countries } from '@utils/data/countries';
+import { findIsoCountry } from '@utils/functions/findCountry';
 import axios from 'axios';
 
 // Récupération de 20 films pour le swipe
 export const fetchTwentyMovies = async (
   moviePage: number,
   displayType: string,
+  countryChosen: string,
+  genreChosen: null | number,
 ) => {
+  let countryString;
+  let genreString;
+
+  console.log('le genre', genreChosen);
+
+  if (countryChosen !== '')
+    countryString = `&with_origin_country=${findIsoCountry(countryChosen)}`;
+  else countryString = '';
+
+  if (genreChosen !== null) genreString = `&with_genres=${genreChosen}`;
+  else genreString = '';
+
   const response = await axios.get(
-    `http://localhost:8800/api/movies/all?page=${moviePage}&type=${displayType}`,
+    `http://localhost:8800/api/movies/all?page=${moviePage}&type=${displayType}${countryString}${genreString}`,
     { withCredentials: true },
   );
 

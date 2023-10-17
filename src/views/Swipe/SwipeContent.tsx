@@ -69,7 +69,7 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
                 ? movieDetail[0].release_date.split('-')[0]
                 : displayType === 'tv' && movieDetail[0].first_air_date
                 ? movieDetail[0].first_air_date.split('-')[0]
-                : displayType === 'tv' && movieDetail[0].first_air_date === ''
+                : displayType === 'tv' && movieDetail[0].first_air_date === null
                 ? 'Non spécifié'
                 : null}
             </Typography>
@@ -90,7 +90,7 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
       </Stack>
       <Stack width="calc(65% - 10px)" sx={{ overflowY: 'scroll' }}>
         <Typography variant="body2" align="left">
-          {movies[index].overview === ''
+          {movies[index].overview === null
             ? "Désolé, il n'y a pas de synopsis disponible pour ce film..."
             : movies[index].overview}
         </Typography>

@@ -1,3 +1,274 @@
+export const africanCountryCodes = [
+  'DZ', // Algérie
+  'AO', // Angola
+  'BJ', // Bénin
+  'BW', // Botswana
+  'BF', // Burkina Faso
+  'BI', // Burundi
+  'CV', // Cap-Vert
+  'CM', // Cameroun
+  'CF', // République centrafricaine
+  'TD', // Tchad
+  'KM', // Comores
+  'CG', // Congo (Congo-Brazzaville)
+  'CD', // Congo (RDC)
+  'CI', // Côte d'Ivoire
+  'DJ', // Djibouti
+  'EG', // Égypte
+  'GQ', // Guinée équatoriale
+  'ER', // Érythrée
+  'SZ', // Eswatini (Swaziland)
+  'ET', // Éthiopie
+  'GA', // Gabon
+  'GM', // Gambie
+  'GH', // Ghana
+  'GN', // Guinée
+  'GW', // Guinée-Bissau
+  'KE', // Kenya
+  'LS', // Lesotho
+  'LR', // Liberia
+  'LY', // Libye
+  'MG', // Madagascar
+  'MW', // Malawi
+  'ML', // Mali
+  'MR', // Mauritanie
+  'MU', // Maurice
+  'MA', // Maroc
+  'MZ', // Mozambique
+  'NA', // Namibie
+  'NE', // Niger
+  'NG', // Nigeria
+  'RE', // La Réunion
+  'RW', // Rwanda
+  'ST', // Sao Tomé-et-Principe
+  'SN', // Sénégal
+  'SC', // Seychelles
+  'SL', // Sierra Leone
+  'SO', // Somalie
+  'ZA', // Afrique du Sud
+  'SS', // Soudan du Sud
+  'SD', // Soudan
+  'TZ', // Tanzanie
+  'TG', // Togo
+  'TN', // Tunisie
+  'UG', // Ouganda
+  'EH', // Sahara occidental
+  'ZM', // Zambie
+  'ZW', // Zimbabwe
+];
+
+export const americanCountryCodes = [
+  // Amérique du Nord
+  'CA', // Canada
+  'MX', // Mexique
+  'US', // États-Unis
+
+  // Amérique centrale
+  'BZ', // Belize
+  'CR', // Costa Rica
+  'SV', // El Salvador
+  'GT', // Guatemala
+  'HN', // Honduras
+  'NI', // Nicaragua
+  'PA', // Panama
+
+  // Les Caraïbes
+  'AG', // Antigua-et-Barbuda
+  'BS', // Bahamas
+  'BB', // Barbade
+  'CU', // Cuba
+  'DM', // Dominique
+  'DO', // République dominicaine
+  'GD', // Grenade
+  'HT', // Haïti
+  'JM', // Jamaïque
+  'KN', // Saint-Christophe-et-Niévès
+  'LC', // Sainte-Lucie
+  'VC', // Saint-Vincent-et-les-Grenadines
+  'TT', // Trinité-et-Tobago
+
+  // Amérique du Sud
+  'AR', // Argentine
+  'BO', // Bolivie
+  'BR', // Brésil
+  'CL', // Chili
+  'CO', // Colombie
+  'EC', // Équateur
+  'GY', // Guyana
+  'PY', // Paraguay
+  'PE', // Pérou
+  'SR', // Suriname
+  'UY', // Uruguay
+  'VE', // Venezuela
+
+  // Autres territoires en Amérique
+  'BM', // Bermudes
+  'GL', // Groenland
+  'PM', // Saint-Pierre-et-Miquelon
+  'FK', // Îles Malouines
+  'GF', // Guyane française
+  'GS', // Géorgie du Sud et les îles Sandwich du Sud
+  'AQ', // Antarctique (certaines parties sont revendiquées par des pays d'Amérique du Sud)
+];
+
+export const asianCountryCodes = [
+  'AF', // Afghanistan
+  'AM', // Arménie
+  'AZ', // Azerbaïdjan
+  'BH', // Bahreïn
+  'BD', // Bangladesh
+  'BT', // Bhoutan
+  'BN', // Brunei
+  'MM', // Birmanie (Myanmar)
+  'KH', // Cambodge
+  'CN', // Chine
+  'CY', // Chypre
+  'GE', // Géorgie
+  'IN', // Inde
+  'ID', // Indonésie
+  'IR', // Iran
+  'IQ', // Irak
+  'IL', // Israël
+  'JP', // Japon
+  'JO', // Jordanie
+  'KZ', // Kazakhstan
+  'KP', // Corée du Nord
+  'KR', // Corée du Sud
+  'KW', // Koweït
+  'KG', // Kirghizistan
+  'LA', // Laos
+  'LB', // Liban
+  'MY', // Malaisie
+  'MV', // Maldives
+  'MN', // Mongolie
+  'NP', // Népal
+  'OM', // Oman
+  'PK', // Pakistan
+  'PS', // Palestine
+  'PH', // Philippines
+  'QA', // Qatar
+  'RU', // Russie (une partie en Asie)
+  'SA', // Arabie Saoudite
+  'SG', // Singapour
+  'LK', // Sri Lanka
+  'SY', // Syrie
+  'TW', // Taïwan
+  'TJ', // Tadjikistan
+  'TH', // Thaïlande
+  'TL', // Timor oriental
+  'TR', // Turquie (une partie en Asie)
+  'TM', // Turkménistan
+  'AE', // Émirats arabes unis
+  'UZ', // Ouzbékistan
+  'VN', // Vietnam
+  'YE', // Yémen
+];
+
+export const europeanCountryCodes = [
+  'AL', // Albanie
+  'AD', // Andorre
+  'AT', // Autriche
+  'BY', // Biélorussie
+  'BE', // Belgique
+  'BA', // Bosnie-Herzégovine
+  'BG', // Bulgarie
+  'HR', // Croatie
+  'CZ', // République tchèque
+  'DK', // Danemark
+  'EE', // Estonie
+  'FO', // Îles Féroé
+  'FI', // Finlande
+  'FR', // France
+  'DE', // Allemagne
+  'GI', // Gibraltar
+  'GR', // Grèce
+  'GG', // Guernesey
+  'VA', // Saint-Siège (Cité du Vatican)
+  'HU', // Hongrie
+  'IS', // Islande
+  'IE', // Irlande
+  'IM', // Île de Man
+  'IT', // Italie
+  'JE', // Jersey
+  'XK', // Kosovo
+  'LV', // Lettonie
+  'LI', // Liechtenstein
+  'LT', // Lituanie
+  'LU', // Luxembourg
+  'MK', // Macédoine du Nord
+  'MT', // Malte
+  'MD', // Moldavie
+  'MC', // Monaco
+  'ME', // Monténégro
+  'NL', // Pays-Bas
+  'NO', // Norvège
+  'PL', // Pologne
+  'PT', // Portugal
+  'RO', // Roumanie
+  'RU', // Russie (une partie en Europe)
+  'SM', // Saint-Marin
+  'RS', // Serbie
+  'SK', // Slovaquie
+  'SI', // Slovénie
+  'ES', // Espagne
+  'SE', // Suède
+  'CH', // Suisse
+  'UA', // Ukraine
+  'GB', // Royaume-Uni
+];
+
+export const oceaniaCountryCodes = [
+  'AS', // Samoa américaines
+  'AU', // Australie
+  'CK', // Îles Cook
+  'FJ', // Fidji
+  'PF', // Polynésie française
+  'GU', // Guam
+  'KI', // Kiribati
+  'MH', // Îles Marshall
+  'FM', // Micronésie
+  'NR', // Nauru
+  'NC', // Nouvelle-Calédonie
+  'NZ', // Nouvelle-Zélande
+  'NU', // Niue
+  'NF', // Île Norfolk
+  'MP', // Îles Mariannes du Nord
+  'PW', // Palaos
+  'PG', // Papouasie-Nouvelle-Guinée
+  'PN', // Îles Pitcairn
+  'WS', // Samoa
+  'SB', // Îles Salomon
+  'TK', // Tokelau
+  'TO', // Tonga
+  'TV', // Tuvalu
+  'VU', // Vanuatu
+  'WF', // Wallis-et-Futuna
+];
+
+// Liste des continents
+export const continents = [
+  {
+    name: 'Afrique',
+    code: africanCountryCodes,
+  },
+  {
+    name: 'Amérique',
+    code: americanCountryCodes,
+  },
+  {
+    name: 'Asie',
+    code: asianCountryCodes,
+  },
+  {
+    name: 'Europe',
+    code: europeanCountryCodes,
+  },
+  {
+    name: 'Océanie',
+    code: oceaniaCountryCodes,
+  },
+];
+
 // Liste des pays
 export const countries = [
   {
@@ -501,11 +772,6 @@ export const countries = [
     native_name: 'Îles Féroé',
   },
   {
-    iso_3166_1: 'GS',
-    english_name: 'South Georgia and the South Sandwich Islands',
-    native_name: 'Îles Géorgie du Sud et Sandwich du Sud',
-  },
-  {
     iso_3166_1: 'HM',
     english_name: 'Heard and McDonald Islands',
     native_name: 'Îles Heard et McDonald',
@@ -989,11 +1255,6 @@ export const countries = [
     iso_3166_1: 'PM',
     english_name: 'St. Pierre and Miquelon',
     native_name: 'Saint-Pierre-et-Miquelon',
-  },
-  {
-    iso_3166_1: 'VC',
-    english_name: 'St. Vincent and the Grenadines',
-    native_name: 'Saint-Vincent-et-les-Grenadines',
   },
   {
     iso_3166_1: 'SH',

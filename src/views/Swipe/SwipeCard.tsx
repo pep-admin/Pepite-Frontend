@@ -31,7 +31,7 @@ const SwipeCard = ({
   loading,
   index,
   currentMovieIndex,
-  handleSwipe,
+  setCurrentMovieIndex,
   setSwipeDirection,
   cardProps,
 }) => {
@@ -90,7 +90,7 @@ const SwipeCard = ({
             )}
           </Stack>
           <Box padding="10px 0" height="calc(100% - 35px)">
-            {movies[index] && (
+            {loading.movies || loading.details ? (
               <Card
                 sx={{
                   boxShadow: 'none',
@@ -100,16 +100,103 @@ const SwipeCard = ({
                   alignItems: 'center',
                 }}
               >
-                {loading.movies || loading.details ? (
+                <Skeleton
+                  sx={{
+                    height: 'calc(65% - 16.5px)',
+                    width: 'calc(100% - 170px)',
+                  }}
+                  animation="wave"
+                  variant="rectangular"
+                />
+                <Stack
+                  direction="row"
+                  height="calc(35% - 10px)"
+                  width="100%"
+                  justifyContent="space-evenly"
+                >
+                  <Box
+                    width="30%"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-evenly"
+                  >
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                  </Box>
+                  <Box
+                    width="55%"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-evenly"
+                  >
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                    <Skeleton
+                      animation={false}
+                      variant="text"
+                      sx={{ fontSize: '0.3em' }}
+                      width={'100%'}
+                    />
+                  </Box>
+                </Stack>
+                <Stack>
                   <Skeleton
-                    sx={{
-                      height: 'calc(65% - 16.5px)',
-                      width: 'calc(100% - 170px)',
-                    }}
                     animation="wave"
                     variant="rectangular"
+                    height="33px"
+                    width="125px"
                   />
-                ) : (
+                </Stack>
+              </Card>
+            ) : (
+              movies[index] && (
+                <Card
+                  sx={{
+                    boxShadow: 'none',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
                   <SwipePoster
                     loading={loading}
                     movies={movies}
@@ -117,82 +204,10 @@ const SwipeCard = ({
                     movieDetail={movieDetail}
                     index={index}
                     currentMovieIndex={currentMovieIndex}
+                    setCurrentMovieIndex={setCurrentMovieIndex}
                     generalRatings={generalRatings}
-                    handleSwipe={handleSwipe}
                     setSwipeDirection={setSwipeDirection}
                   />
-                )}
-                {loading.movies || loading.details ? (
-                  <Stack
-                    direction="row"
-                    height="calc(35% - 10px)"
-                    width="100%"
-                    justifyContent="space-evenly"
-                  >
-                    <Box
-                      width="30%"
-                      display="flex"
-                      flexDirection="column"
-                      justifyContent="space-evenly"
-                    >
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                    </Box>
-                    <Box
-                      width="55%"
-                      display="flex"
-                      flexDirection="column"
-                      justifyContent="space-evenly"
-                    >
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                      <Skeleton
-                        animation={false}
-                        variant="text"
-                        sx={{ fontSize: '0.3em' }}
-                        width={'100%'}
-                      />
-                    </Box>
-                  </Stack>
-                ) : (
                   <CardContent
                     sx={{
                       height: 'calc(35% - 16.5px)',
@@ -207,23 +222,14 @@ const SwipeCard = ({
                       index={index}
                     />
                   </CardContent>
-                )}
-                <CardActions
-                  sx={{
-                    height: '33px',
-                    justifyContent: 'center',
-                    padding: 0,
-                    overflow: 'hidden',
-                  }}
-                >
-                  {loading.movies || loading.details ? (
-                    <Skeleton
-                      animation="wave"
-                      variant="rectangular"
-                      height="33px"
-                      width="125px"
-                    />
-                  ) : (
+                  <CardActions
+                    sx={{
+                      height: '33px',
+                      justifyContent: 'center',
+                      padding: 0,
+                      overflow: 'hidden',
+                    }}
+                  >
                     <Stack
                       direction="column"
                       gap="33px"
@@ -257,9 +263,9 @@ const SwipeCard = ({
                         Je veux le voir !
                       </Button>
                     </Stack>
-                  )}
-                </CardActions>
-              </Card>
+                  </CardActions>
+                </Card>
+              )
             )}
           </Box>
         </>
@@ -279,8 +285,8 @@ const SwipeCardPropTypes = {
   error: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number.isRequired,
+  setCurrentMovieIndex: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
-  handleSwipe: PropTypes.func.isRequired,
   cardProps: PropTypes.object.isRequired,
 };
 

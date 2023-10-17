@@ -21,8 +21,8 @@ const SwipePoster = ({
   movieDetail,
   index,
   currentMovieIndex,
+  setCurrentMovieIndex,
   generalRatings,
-  handleSwipe,
   setSwipeDirection,
 }) => {
   const { displayType } = useData();
@@ -54,9 +54,6 @@ const SwipePoster = ({
       }
       return movie;
     });
-
-    console.log(movieDetail[0].id, isMovieSeenRef.current);
-
     // Met à jour le tableau movies avec la nouvelle valeur
     setMovies(updatedMovies);
   };
@@ -99,8 +96,10 @@ const SwipePoster = ({
               }}
               onClick={() => {
                 if (currentMovieIndex > 0) {
-                  handleSwipe('left');
                   setSwipeDirection('left');
+                  if (currentMovieIndex !== -1) {
+                    setCurrentMovieIndex(prevIndex => prevIndex - 1);
+                  }
                 }
               }}
             />
@@ -139,7 +138,11 @@ const SwipePoster = ({
                 ref={posterRef}
                 component="img"
                 alt={movies[index].title}
-                image={`https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`}
+                image={
+                  movies[index].poster_path !== null
+                    ? `https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`
+                    : 'http://127.0.0.1:5173/images/no_poster.jpg'
+                }
                 sx={{
                   height: '100%',
                   objectFit: 'contain',
@@ -188,8 +191,16 @@ const SwipePoster = ({
                 cursor: 'pointer',
               }}
               onClick={() => {
-                handleSwipe('right');
                 setSwipeDirection('right');
+
+                // Si ni la dernière card, ni la card "plus aucun film" est affichée, on incrémente normalement
+                if (currentMovieIndex !== movies.length - 1) {
+                  setCurrentMovieIndex(prevIndex => prevIndex + 1);
+                }
+                // Si la dernière card de movies est affichée, on définit l'index courant sur -1
+                else {
+                  setCurrentMovieIndex(-1);
+                }
               }}
             />
           </Box>
@@ -206,8 +217,8 @@ const SwipePosterPropTypes = {
   generalRatings: PropTypes.number.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number.isRequired,
+  setCurrentMovieIndex: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
-  handleSwipe: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
 };
 

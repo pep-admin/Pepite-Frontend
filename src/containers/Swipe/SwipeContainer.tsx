@@ -1,5 +1,5 @@
 // Libs externes
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Imports internes
 import SwipeComponent from '@views/Swipe/SwipeComponent';
@@ -9,10 +9,12 @@ import {
 } from '@utils/request/swipe/fetchData';
 import { useData } from '@hooks/DataContext';
 
-import { findIsoCountry } from '@utils/functions/findCountry';
+import {
+  findCertificationFr,
+  findIsoCountry,
+} from '@utils/functions/findInfos';
 
 const SwipeContainer = () => {
-  const [movieId, setMovieId] = useState(null); // Movie Id pour récupérer les infos détaillées du film affiché
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
   const [movieDetail, setMovieDetail] = useState([]); // Informations détaillées sur le film affiché
@@ -23,10 +25,20 @@ const SwipeContainer = () => {
   const [countryChosen, setCountryChosen] = useState('États-Unis');
   const [isoCountry, setIsoCountry] = useState('US');
   const [genreChosen, setGenreChosen] = useState({ name: null, id: null });
+  const [certification, setCertification] = useState({
+    imgUrl: null,
+    alt: null,
+  });
   const [loading, setLoading] = useState({ movies: true, details: true }); // Premier chargement
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
 
   const { displayType } = useData();
+
+  const moviesRef = useRef(movies);
+
+  useEffect(() => {
+    moviesRef.current = movies;
+  }, [movies]);
 
   // Récupère 20 films selon la page
   const getMovies = useCallback(
@@ -97,32 +109,54 @@ const SwipeContainer = () => {
 
   // Récupère les informations détaillées d'un film
   useEffect(() => {
-    if (movieId === null) return;
+    if (movies.length === 0 || currentMovieIndex === -1) return;
+
+    // Ici, je reçois l'ancien tableau movies
+    console.log('les films', movies);
+
+    const currentMovieId = movies[currentMovieIndex].id;
+    if (currentMovieId === null) return;
+
     const getMovieDetails = async () => {
       try {
-        let movieDetailsData;
+        let detailsData;
+        let cachedData = null;
 
-        const cachedData = localStorage.getItem(`movieDetails-${movieId}`);
+        if (displayType === 'movie') {
+          cachedData = localStorage.getItem(`movieDetails-${currentMovieId}`);
+        } else if (displayType === 'tv') {
+          cachedData = localStorage.getItem(`serieDetails-${currentMovieId}`);
+        }
 
         // Si les données sont présentes dans le local storage
-        if (cachedData) {
-          movieDetailsData = JSON.parse(cachedData);
-          console.log('utilisation du cache local storage pour', movieId);
+        if (cachedData !== null) {
+          detailsData = JSON.parse(cachedData);
+          console.log(
+            'utilisation du cache local storage pour',
+            currentMovieId,
+          );
         }
         // Si nouvelles données, on fait la requête
         else {
-          movieDetailsData = await fetchMovieDetails(movieId, displayType);
-          console.log('requêtes film détaillé effectué', movieDetailsData);
+          detailsData = await fetchMovieDetails(currentMovieId, displayType);
+          console.log('requêtes film détaillé effectué', detailsData);
 
           // Ajout des données au local storage
-          localStorage.setItem(
-            `movieDetails-${movieId}`,
-            JSON.stringify(movieDetailsData),
-          );
+          if (displayType === 'movie') {
+            localStorage.setItem(
+              `movieDetails-${currentMovieId}`,
+              JSON.stringify(detailsData),
+            );
+          } else if (displayType === 'tv') {
+            localStorage.setItem(
+              `serieDetails-${currentMovieId}`,
+              JSON.stringify(detailsData),
+            );
+          }
         }
 
-        setMovieDetail(movieDetailsData);
-        setGeneralRatings(movieDetailsData[0].vote_average);
+        setMovieDetail(detailsData);
+        setGeneralRatings(detailsData[0].vote_average);
       } catch (err) {
         setError({
           message: 'Erreur dans la récupération des détails du film.',
@@ -136,26 +170,7 @@ const SwipeContainer = () => {
       }
     };
     getMovieDetails();
-  }, [movieId, genreChosen]);
-
-  // Récupère l'id du film affiché
-  useEffect(() => {
-    if (currentMovieIndex === -1) return;
-
-    if (
-      movies.length > 0 &&
-      movies[currentMovieIndex].id !== null &&
-      !loading.movies
-    ) {
-      const currentMovieId = movies[currentMovieIndex].id;
-      setMovieId(currentMovieId);
-    }
-
-    if (movies.length === 0 && !loading.movies) {
-      console.log('aucun film à récupérer');
-      setMovieId(null);
-    }
-  }, [movies, currentMovieIndex, loading, countryChosen, genreChosen]);
+  }, [movies, currentMovieIndex, genreChosen]);
 
   useEffect(() => {
     if (countryChosen !== '') {
@@ -164,8 +179,12 @@ const SwipeContainer = () => {
   }, [countryChosen]);
 
   useEffect(() => {
-    if (movies.length > 0) console.log('page de films', movies);
-  }, [movies]);
+    if (movieDetail.length !== 0)
+      setCertification({
+        imgUrl: findCertificationFr(displayType, movieDetail).imgUrl,
+        alt: findCertificationFr(displayType, movieDetail).alt,
+      });
+  }, [movieDetail]);
 
   // useEffect(() => {
   //   console.log(genreChosen);
@@ -198,6 +217,7 @@ const SwipeContainer = () => {
       hasMoreMovies={hasMoreMovies}
       genreChosen={genreChosen}
       setGenreChosen={setGenreChosen}
+      certification={certification}
     />
   );
 };

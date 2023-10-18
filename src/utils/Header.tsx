@@ -16,18 +16,21 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
+import { handleLogout } from './request/swipe/fetchData';
 
 const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = () => {
   const { displayType, setDisplayType } = useData();
+  const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
@@ -47,8 +50,9 @@ const Header = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = event => {
     setAnchorElUser(null);
+    console.log(event.target);
   };
 
   const [alignment, setAlignment] = React.useState('web');
@@ -56,6 +60,13 @@ const Header = () => {
   const handleChange = (_, newAlignment) => {
     setAlignment(newAlignment);
   };
+
+  async function onLogout() {
+    console.log('déconnexion');
+    await handleLogout();
+
+    navigate('/login');
+  }
 
   return (
     <AppBar position="static" sx={{ height: '60px' }}>
@@ -87,7 +98,7 @@ const Header = () => {
               onClick={() => setDisplayType('movie')}
               selected={displayType === 'movie'}
             >
-              Films
+              {'Films'}
             </ToggleButton>
             <ToggleButton
               value="series"
@@ -99,7 +110,7 @@ const Header = () => {
               onClick={() => setDisplayType('tv')}
               selected={displayType === 'tv'}
             >
-              Séries
+              {'Séries'}
             </ToggleButton>
           </ToggleButtonGroup>
           <Box
@@ -138,7 +149,9 @@ const Header = () => {
             >
               {pages.map(page => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography variant="body2" textAlign="center">
+                    {page}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -168,8 +181,18 @@ const Header = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map(setting => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem
+                  key={setting}
+                  onClick={event => {
+                    if (setting === 'Déconnexion') {
+                      onLogout();
+                    }
+                    handleCloseUserMenu(event);
+                  }}
+                >
+                  <Typography variant="body2" textAlign="center">
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>

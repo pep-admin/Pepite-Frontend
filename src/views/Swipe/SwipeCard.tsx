@@ -34,6 +34,7 @@ const SwipeCard = ({
   setCurrentMovieIndex,
   setSwipeDirection,
   cardProps,
+  certification,
 }) => {
   const AnimatedCard = a(Item);
 
@@ -68,25 +69,40 @@ const SwipeCard = ({
               alignItems: 'center',
               justifyContent: 'center',
               borderBottom: '1px solid #EBEBEB',
+              position: 'relative',
             }}
           >
             {loading.movies || loading.details ? (
               <Skeleton animation={false} height={10} width="100px" />
             ) : (
-              <Typography
-                variant="h2"
-                sx={{
-                  color: '#0E6666',
-                  fontSize: '1.2em',
-                  fontWeight: 'bold',
-                }}
-              >
-                {movies.length > 0 && index >= 0 && displayType === 'movie'
-                  ? movies[index].title
-                  : movies.length > 0 && index >= 0 && displayType === 'tv'
-                  ? movies[index].name
-                  : null}
-              </Typography>
+              <>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    color: '#0E6666',
+                    fontSize: '1.2em',
+                    fontWeight: 'bold',
+                    maxWidth: '70%',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {movies.length > 0 && index >= 0 && displayType === 'movie'
+                    ? movies[index].title
+                    : movies.length > 0 && index >= 0 && displayType === 'tv'
+                    ? movies[index].name
+                    : null}
+                </Typography>
+                <img
+                  src={certification.imgUrl}
+                  alt={certification.alt}
+                  style={{
+                    position: 'absolute',
+                    right: '15px',
+                  }}
+                />
+              </>
             )}
           </Stack>
           <Box padding="10px 0" height="calc(100% - 35px)">
@@ -288,6 +304,7 @@ const SwipeCardPropTypes = {
   setCurrentMovieIndex: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
   cardProps: PropTypes.object.isRequired,
+  certification: PropTypes.string.isRequired,
 };
 
 SwipeCard.propTypes = SwipeCardPropTypes;

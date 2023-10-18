@@ -10,6 +10,7 @@ import { addSeenMovie, removeSeenMovie } from '@utils/request/swipe/fetchData';
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import SwipeRatings from './SwipeRatings';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -113,15 +114,15 @@ const SwipePoster = ({
           >
             <Button
               variant="contained"
-              color={movies[index].is_already_seen ? 'secondary' : 'primary'}
               sx={{
+                backgroundColor: '#f25050',
                 height: '29px',
-                width: '72px',
+                width: '29px',
                 minWidth: 'auto',
                 padding: '0',
                 position: 'absolute',
                 top: '17px',
-                right: '-37px',
+                right: '167px',
                 borderRadius: '0',
                 textTransform: 'none',
                 fontWeight: 'normal',
@@ -131,7 +132,7 @@ const SwipePoster = ({
                 handleMovieSeen();
               }}
             >
-              {!movies[index].is_already_seen ? 'Déjà vu ?' : 'Déjà vu !'}
+              <DeleteForeverIcon />
             </Button>
             {movies.length > 0 && movies[index] ? (
               <CardMedia
@@ -155,7 +156,28 @@ const SwipePoster = ({
                 }}
               />
             ) : null}
-
+            <Button
+              variant="contained"
+              color={movies[index].is_already_seen ? 'secondary' : 'primary'}
+              sx={{
+                height: '29px',
+                width: '72px',
+                minWidth: 'auto',
+                padding: '0',
+                position: 'absolute',
+                top: '17px',
+                right: '-37px',
+                borderRadius: '0',
+                textTransform: 'none',
+                fontWeight: 'normal',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                handleMovieSeen();
+              }}
+            >
+              {!movies[index].is_already_seen ? 'Déjà vu ?' : 'Déjà vu !'}
+            </Button>
             {posterWidth !== null ? (
               <Stack
                 position="absolute"

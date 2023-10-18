@@ -50,6 +50,7 @@ const SwipeComponent = ({
   hasMoreMovies,
   genreChosen,
   setGenreChosen,
+  certification,
 }) => {
   const { displayType } = useData();
   const prevDisplayTypeRef = useRef('movie');
@@ -296,6 +297,7 @@ const SwipeComponent = ({
                 setCurrentMovieIndex={setCurrentMovieIndex}
                 setSwipeDirection={setSwipeDirection}
                 cardProps={card.cardProps}
+                certification={certification}
               />
             ))}
             {!hasMoreMovies && movies.length > 0 ? (
@@ -345,7 +347,10 @@ SwipeComponent.propTypes = {
   }).isRequired,
   currentMovieIndex: PropTypes.number.isRequired,
   setCurrentMovieIndex: PropTypes.func.isRequired,
-  swipeDirection: PropTypes.string.isRequired,
+  swipeDirection: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([null]),
+  ]),
   setSwipeDirection: PropTypes.func.isRequired,
   isoCountry: PropTypes.string.isRequired,
   countryChosen: PropTypes.string.isRequired,
@@ -353,6 +358,7 @@ SwipeComponent.propTypes = {
   hasMoreMovies: PropTypes.bool.isRequired,
   genreChosen: PropTypes.object.isRequired,
   setGenreChosen: PropTypes.func.isRequired,
+  certification: PropTypes.string.isRequired,
 };
 
 export default SwipeComponent;

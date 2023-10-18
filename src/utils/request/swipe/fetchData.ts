@@ -1,5 +1,6 @@
 import { countries } from '@utils/data/countries';
-import { findIsoCountry } from '@utils/functions/findCountry';
+import { findIsoCountry } from '@utils/functions/findInfos';
+import { getAllLocalStorage } from '@utils/functions/getAllLocalStorage';
 import axios from 'axios';
 
 // Récupération de 20 films pour le swipe
@@ -11,8 +12,6 @@ export const fetchTwentyMovies = async (
 ) => {
   let countryString;
   let genreString;
-
-  console.log('le genre', genreChosen);
 
   if (countryChosen !== '')
     countryString = `&with_origin_country=${findIsoCountry(countryChosen)}`;
@@ -34,10 +33,25 @@ export const fetchMovieDetails = async (
   movieId: number,
   displayType: string,
 ) => {
+  console.log('id dans le fetch', movieId);
+
+  let certification = '';
+
+  if (displayType === 'movie')
+    certification = '&append_to_response=release_dates';
+  else if (displayType === 'tv')
+    certification = '&append_to_response=content_ratings';
+
   const response = await axios.get(
-    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}`,
+    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
     { withCredentials: true },
   );
+
+  console.log(
+    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
+  );
+
+  console.log(response);
 
   // Récupération des noms de pays producteurs du film
   const countriesOfTheMovie = response.data.production_countries;
@@ -88,5 +102,34 @@ export const removeSeenMovie = async (movieId: number, type: string) => {
     console.log(response.data);
   } catch {
     console.log('Impossible de supprimer un film de la liste de déjà vus');
+  }
+};
+
+// Déconnexion de l'utilisateur
+export const handleLogout = async () => {
+  try {
+    // Étape 1: Stocker les données
+    const localStorageData = getAllLocalStorage();
+    const response = await axios.post(
+      'http://localhost:8800/api/movies/store_details',
+      localStorageData,
+      { withCredentials: true },
+    );
+
+    if (response.status !== 200) {
+      throw new Error('Impossible de stocker les données');
+    }
+
+    // Étape 2: Déconnexion de l'utilisateur
+    const logoutResponse = await axios.post(
+      'http://localhost:8800/api/auth/logout',
+      {},
+      { withCredentials: true },
+    );
+    if (logoutResponse.status !== 200) {
+      throw new Error('Failed to logout');
+    }
+  } catch (err) {
+    console.error('Error during logout:', err.message);
   }
 };

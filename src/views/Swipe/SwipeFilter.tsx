@@ -1,6 +1,6 @@
 // Import des libs externes
 // import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Menu,
@@ -17,8 +17,15 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 // Import de la liste de tous les pays
-import { continents, countries } from '@utils/data/countries';
-import { genreMovieList } from '@utils/data/genres';
+import {
+  americanCountryCodes,
+  continents,
+  countries,
+} from '@utils/data/countries';
+import { genreMovieList, genreSerieList } from '@utils/data/genres';
+
+// Import du contexte
+import { useData } from '@hooks/DataContext';
 
 // Légende des notes
 const labels: { [index: string]: string } = {
@@ -46,7 +53,9 @@ const SwipeFilter = ({
   genreChosen,
   setGenreChosen,
 }) => {
-  // Filtre selon les pays
+  const { displayType } = useData();
+
+  // ***** Filtre selon les pays ***** //
   const [countryFilter, setCountryFilter] = useState(null);
   const openCountry = Boolean(countryFilter);
   const handleCountryClick = event => {
@@ -55,19 +64,24 @@ const SwipeFilter = ({
 
   const [openContinent, setOpenContinent] = useState({
     anchor: null,
-    continent: null,
+    continent: {
+      name: 'Amérique',
+      code: americanCountryCodes,
+    },
     open: false,
   });
   const [continentChosen, setContinentChosen] = useState([]);
 
-  // Filtre selon le genre
+  // ***** Filtre selon le genre ***** //
   const [genreFilter, setGenreFilter] = useState(null);
+  const [movieOrSerie, setMovieOrSerie] = useState(genreMovieList);
+
   const openGenre = Boolean(genreFilter);
   const handleGenreClick = event => {
     setGenreFilter(event.currentTarget);
   };
 
-  // Filtre selon la note
+  // ***** Filtre selon la note ***** //
   const [ratingsFilter, setRatingsFilter] = useState(null);
   const openRatings = Boolean(ratingsFilter);
   const handleRatingsClick = event => {
@@ -79,6 +93,14 @@ const SwipeFilter = ({
 
   const [value, setValue] = useState(2);
   const [hover, setHover] = useState(-1);
+
+  useEffect(() => {
+    if (displayType === 'movie') {
+      setMovieOrSerie(genreMovieList);
+    } else if (displayType === 'tv') {
+      setMovieOrSerie(genreSerieList);
+    }
+  }, [displayType]);
 
   return (
     <Item
@@ -158,8 +180,9 @@ const SwipeFilter = ({
               }}
               sx={{
                 backgroundColor:
-                  openContinent.continent === continent && openContinent.open
-                    ? '#dcdcdc'
+                  openContinent.continent.name === continent.name &&
+                  openContinent.open
+                    ? '#dcdcdc !important'
                     : 'inherit',
                 justifyContent: 'space-between',
                 paddingRight: '5px',
@@ -167,7 +190,8 @@ const SwipeFilter = ({
               }}
             >
               {continent.name}
-              {openContinent.continent === continent && openContinent.open ? (
+              {openContinent.continent.name === continent.name &&
+              openContinent.open ? (
                 <ChevronRightIcon sx={{ color: '#0e6666' }} />
               ) : (
                 <ChevronLeftIcon sx={{ color: '#0e6666' }} />
@@ -267,7 +291,7 @@ const SwipeFilter = ({
         onClose={() => setGenreFilter(null)}
         TransitionComponent={Fade}
       >
-        {genreMovieList.map((genre, index) => {
+        {movieOrSerie.map((genre, index) => {
           return (
             <MenuItem
               key={index}

@@ -4,13 +4,19 @@ import { Stack, Box, Button, CardMedia, CircularProgress } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // Import des fonction qui permettent de manipuler la liste de déjà vus dans la DB
-import { addSeenMovie, removeSeenMovie } from '@utils/request/swipe/fetchData';
+import {
+  addSeenMovie,
+  addUnwantedMovie,
+  removeSeenMovie,
+} from '@utils/request/swipe/fetchData';
 
 // Import des icônes
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import SwipeRatings from './SwipeRatings';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ClearIcon from '@mui/icons-material/Clear';
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -35,6 +41,7 @@ const SwipePoster = ({
   // Image du film affiché
   const posterRef = useRef<HTMLImageElement | null>(null);
   const isMovieSeenRef = useRef(false);
+  const isMovieDeletedRef = useRef(false);
 
   const originalScore = generalRatings;
   const scoreOutOfFive = originalScore / 2;
@@ -52,6 +59,25 @@ const SwipePoster = ({
     const updatedMovies = movies.map(movie => {
       if (movie.id === movieDetail[0].id) {
         return { ...movie, is_already_seen: isMovieSeenRef.current };
+      }
+      return movie;
+    });
+    // Met à jour le tableau movies avec la nouvelle valeur
+    setMovies(updatedMovies);
+  };
+
+  const handleDeleteMovie = () => {
+    if (!isMovieDeletedRef.current && !movies[index].is_deleted) {
+      addUnwantedMovie(movieDetail[0].id, displayType);
+      isMovieDeletedRef.current = true;
+    } else {
+      // acceptMovie(movieDetail[0].id, displayType);
+      isMovieDeletedRef.current = false;
+    }
+    // Trouve l'objet du film correspondant dans le tableau movies
+    const updatedMovies = movies.map(movie => {
+      if (movie.id === movieDetail[0].id) {
+        return { ...movie, is_deleted: isMovieDeletedRef.current };
       }
       return movie;
     });
@@ -115,46 +141,67 @@ const SwipePoster = ({
             <Button
               variant="contained"
               sx={{
-                backgroundColor: '#f25050',
+                backgroundColor: !movies[index].is_deleted
+                  ? '#f25050 !important'
+                  : '#5AC164',
                 height: '29px',
                 width: '29px',
                 minWidth: 'auto',
                 padding: '0',
                 position: 'absolute',
                 top: '17px',
-                right: '167px',
+                right: 'calc(100% - 16px)',
                 borderRadius: '0',
                 textTransform: 'none',
                 fontWeight: 'normal',
+                zIndex: 2,
                 cursor: 'pointer',
               }}
               onClick={() => {
-                handleMovieSeen();
+                handleDeleteMovie();
               }}
             >
-              <DeleteForeverIcon />
+              {!movies[index].is_deleted ? (
+                <DeleteForeverIcon />
+              ) : (
+                <RestoreFromTrashIcon />
+              )}
             </Button>
             {movies.length > 0 && movies[index] ? (
-              <CardMedia
-                ref={posterRef}
-                component="img"
-                alt={movies[index].title}
-                image={
-                  movies[index].poster_path !== null
-                    ? `https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`
-                    : 'http://127.0.0.1:5173/images/no_poster.jpg'
-                }
-                sx={{
-                  height: '100%',
-                  objectFit: 'contain',
-                  boxShadow: '8px 7px 12px 0px rgba(0,0,0,0.24)',
-                }}
-                onLoad={() => {
-                  if (posterRef.current) {
-                    setPosterWidth(posterRef.current.clientWidth);
+              <>
+                <CardMedia
+                  ref={posterRef}
+                  component="img"
+                  alt={movies[index].title}
+                  image={
+                    movies[index].poster_path !== null
+                      ? `https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`
+                      : 'http://127.0.0.1:5173/images/no_poster.jpg'
                   }
-                }}
-              />
+                  sx={{
+                    height: '100%',
+                    objectFit: 'contain',
+                    boxShadow: '8px 7px 12px 0px rgba(0,0,0,0.24)',
+                    filter: movies[index].is_deleted ? 'grayscale(1)' : 'none',
+                  }}
+                  onLoad={() => {
+                    if (posterRef.current) {
+                      setPosterWidth(posterRef.current.clientWidth);
+                    }
+                  }}
+                />
+                {movies[index].is_deleted ? (
+                  <ClearIcon
+                    sx={{
+                      position: 'absolute',
+                      top: '30%',
+                      fontSize: '3em',
+                      color: '#f25050',
+                      backgroundColor: '#000000bf',
+                    }}
+                  />
+                ) : null}
+              </>
             ) : null}
             <Button
               variant="contained"

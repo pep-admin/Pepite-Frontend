@@ -54,14 +54,26 @@ const SwipeContainer = () => {
           genreChosen,
         );
 
-        if (!moviesData.length || moviesData.length < 20) {
+        if (!moviesData.unwatched.length || moviesData.unwatched.length < 20) {
           setHasMoreMovies(false);
         }
 
+        // Les films qui ne sont pas dans les films non voulus
+        const wantedIDs = moviesData.wanted.map(movie => movie.id);
+        // Les films qui ne sont pas dans les films déjà vus
+        const unwatchedIDs = moviesData.unwatched.map(movie => movie.id);
+
+        // Supprime les films qui ont déjà été vus et qui ne sont pas souhaités
+        const filteredMovies = moviesData.unwatched.filter(
+          movie =>
+            wantedIDs.includes(movie.id) && unwatchedIDs.includes(movie.id),
+        );
+
         // Ajoute la propriété "isAlreadySeen" à chaque film
-        const moviesWithAlreadySeen = moviesData.map(movie => ({
+        const moviesWithAlreadySeen = filteredMovies.map(movie => ({
           ...movie,
-          is_already_seen: false, // Par défaut, aucun film n'est déjà vu
+          is_already_seen: false,
+          is_deleted: false,
         }));
 
         setMovies(prevMovies => [...prevMovies, ...moviesWithAlreadySeen]);
@@ -110,9 +122,6 @@ const SwipeContainer = () => {
   // Récupère les informations détaillées d'un film
   useEffect(() => {
     if (movies.length === 0 || currentMovieIndex === -1) return;
-
-    // Ici, je reçois l'ancien tableau movies
-    console.log('les films', movies);
 
     const currentMovieId = movies[currentMovieIndex].id;
     if (currentMovieId === null) return;

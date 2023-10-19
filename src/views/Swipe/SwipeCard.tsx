@@ -251,9 +251,20 @@ const SwipeCard = ({
                       gap="33px"
                       sx={{
                         transition: 'transform 300ms ease-in-out',
-                        transform: movies[index].is_already_seen
-                          ? 'translateY(33px)'
-                          : 'translateY(-33px)',
+                        transform:
+                          // Si le film est vu mais que l'utilisateur le supprime : possibilité de le noter
+                          movies[index].is_already_seen &&
+                          movies[index].is_deleted
+                            ? 'translateY(66px)'
+                            : // Si le film n'est pas vu et que l'utilisateur le supprime : le film ne sera plus proposé
+                            !movies[index].is_already_seen &&
+                              movies[index].is_deleted
+                            ? 'translateY(-66px)'
+                            : // Si le film est vu et que l'utilisateur ne le supprime pas : possibilité de le noter
+                            movies[index].is_already_seen &&
+                              !movies[index].is_deleted
+                            ? 'translateY(66px)'
+                            : 'translateY(0px)',
                       }}
                     >
                       <Button
@@ -261,22 +272,41 @@ const SwipeCard = ({
                         color="secondary"
                         sx={{
                           maxHeight: '33px',
+                          width: '150px',
+                          margin: 'auto',
                           padding: '0 15px',
                           fontSize: '0.9em',
                         }}
                       >
-                        Noter ce film
+                        {'Noter ce film'}
                       </Button>
                       <Button
                         variant="contained"
                         color="success"
                         sx={{
                           maxHeight: '33px',
+                          width: '150px',
+                          margin: 'auto',
                           padding: '0 15px',
                           fontSize: '0.9em',
                         }}
                       >
-                        Je veux le voir !
+                        {'Je veux le voir !'}
+                      </Button>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          maxHeight: '33px',
+                          width: '150px',
+                          margin: 'auto',
+                          padding: '0 15px',
+                          fontSize: '0.9em',
+                          backgroundColor: '#4f4f4f !important',
+                        }}
+                      >
+                        {displayType === 'movie'
+                          ? 'Film supprimé'
+                          : 'Série supprimée'}
                       </Button>
                     </Stack>
                   </CardActions>
@@ -304,7 +334,7 @@ const SwipeCardPropTypes = {
   setCurrentMovieIndex: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
   cardProps: PropTypes.object.isRequired,
-  certification: PropTypes.string.isRequired,
+  certification: PropTypes.object.isRequired,
 };
 
 SwipeCard.propTypes = SwipeCardPropTypes;

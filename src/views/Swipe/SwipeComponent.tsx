@@ -118,6 +118,46 @@ const SwipeComponent = ({
     });
   }
 
+  function swipeRightAnim() {
+    cards[0].setCardProps.start({
+      // Card de gauche => part tout à droite sans transition et sans effet
+      transform: 'translateX(100%)',
+      config: { duration: 0 },
+    });
+    cards[1].setCardProps.start({
+      // Card du milieu => part sur la gauche
+      transform: 'translateX(-100%)',
+      opacity: 0.0,
+      config: { duration: 300 },
+    });
+    cards[2].setCardProps.start({
+      // Card de droite => part au milieu
+      transform: 'translateX(0%)',
+      opacity: 1,
+      config: { duration: 300 },
+    });
+  }
+
+  function swipeLeftAnim() {
+    cards[0].setCardProps.start({
+      // Card de gauche => part au milieu
+      transform: 'translateX(0%)',
+      opacity: 1,
+      config: { duration: 300 },
+    });
+    cards[1].setCardProps.start({
+      // Card du milieu => part sur la droite
+      transform: 'translateX(100%)',
+      opacity: 0.0,
+      config: { duration: 300 },
+    });
+    cards[2].setCardProps.start({
+      // Card de droite => part tout à gauche sans transition
+      transform: 'translateX(-100%)',
+      config: { duration: 0 },
+    });
+  }
+
   const [cards, setCards] = useState(initialCards);
 
   // Si l'utilisateur change de film à série et inversement, on reset les animations
@@ -144,32 +184,11 @@ const SwipeComponent = ({
     }
   }, [movies, loading.movies]);
 
-  // useEffect(() => {
-  //   console.log('les cards', cards);
-  // }, [cards]);
-
   // ********** GESTION DU TABLEAU DES 3 CARDS + GESTION DES ANIMATIONS ********** //
   useEffect(() => {
-    // console.log('index courant => ', currentMovieIndex);
 
     if (swipeDirection === 'right') {
-      cards[0].setCardProps.start({
-        // Card de gauche => part tout à droite sans transition et sans effet
-        transform: 'translateX(100%)',
-        config: { duration: 0 },
-      });
-      cards[1].setCardProps.start({
-        // Card du milieu => part sur la gauche
-        transform: 'translateX(-100%)',
-        opacity: 0.0,
-        config: { duration: 300 },
-      });
-      cards[2].setCardProps.start({
-        // Card de droite => part au milieu
-        transform: 'translateX(0%)',
-        opacity: 1,
-        config: { duration: 300 },
-      });
+      swipeRightAnim();
 
       setCards(prevCards => {
         const newCards = [...prevCards]; // On récupère les dernières cards
@@ -199,26 +218,10 @@ const SwipeComponent = ({
     }
 
     if (swipeDirection === 'left') {
-      cards[0].setCardProps.start({
-        // Card de gauche => part au milieu
-        transform: 'translateX(0%)',
-        opacity: 1,
-        config: { duration: 300 },
-      });
-      cards[1].setCardProps.start({
-        // Card du milieu => part sur la droite
-        transform: 'translateX(100%)',
-        opacity: 0.0,
-        config: { duration: 300 },
-      });
-      cards[2].setCardProps.start({
-        // Card de droite => part tout à gauche sans transition
-        transform: 'translateX(-100%)',
-        config: { duration: 0 },
-      });
+      swipeLeftAnim();
 
       if (isPepiteCardReached.current) {
-        lastCardRef.current?.animateLastCard?.('right'); //La card 'plus aucun film' se barre sur la droite
+        lastCardRef.current?.animateLastCard?.('right'); //La card 'plus aucun film' part sur la droite
 
         cards[0].setCardProps.start({
           // Card de gauche => part au milieu
@@ -358,7 +361,7 @@ SwipeComponent.propTypes = {
   hasMoreMovies: PropTypes.bool.isRequired,
   genreChosen: PropTypes.object.isRequired,
   setGenreChosen: PropTypes.func.isRequired,
-  certification: PropTypes.string.isRequired,
+  certification: PropTypes.object.isRequired,
 };
 
 export default SwipeComponent;

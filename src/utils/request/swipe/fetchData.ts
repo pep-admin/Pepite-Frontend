@@ -25,7 +25,7 @@ export const fetchTwentyMovies = async (
     { withCredentials: true },
   );
 
-  return response.data.results;
+  return response.data;
 };
 
 // Récupération des informations détaillées d'un film
@@ -33,8 +33,6 @@ export const fetchMovieDetails = async (
   movieId: number,
   displayType: string,
 ) => {
-  console.log('id dans le fetch', movieId);
-
   let certification = '';
 
   if (displayType === 'movie')
@@ -46,12 +44,6 @@ export const fetchMovieDetails = async (
     `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
     { withCredentials: true },
   );
-
-  console.log(
-    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
-  );
-
-  console.log(response);
 
   // Récupération des noms de pays producteurs du film
   const countriesOfTheMovie = response.data.production_countries;
@@ -76,14 +68,11 @@ export const fetchMovieDetails = async (
 // Insertion d'un film dans la liste des déjà vus
 export const addSeenMovie = async (movieId: number, type: string) => {
   try {
-    console.log('id du film', movieId);
-
     const response = await axios.post(
       `http://localhost:8800/api/movies/add_already_seen`,
       { movie_id: movieId, type: type },
       { withCredentials: true },
     );
-    console.log(response.data);
   } catch {
     console.log("Impossible d'ajouter un film dans la liste de déjà vus");
   }
@@ -99,7 +88,6 @@ export const removeSeenMovie = async (movieId: number, type: string) => {
         withCredentials: true,
       },
     );
-    console.log(response.data);
   } catch {
     console.log('Impossible de supprimer un film de la liste de déjà vus');
   }
@@ -131,5 +119,20 @@ export const handleLogout = async () => {
     }
   } catch (err) {
     console.error('Error during logout:', err.message);
+  }
+};
+
+// Insertion d'un film dans la liste des non souhaités
+export const addUnwantedMovie = async (movieId: number, type: string) => {
+  try {
+    await axios.post(
+      `http://localhost:8800/api/movies/unwanted`,
+      { movie_id: movieId, type: type },
+      { withCredentials: true },
+    );
+  } catch {
+    console.log(
+      "Impossible d'ajouter ce film dans la liste des films non souhaités",
+    );
   }
 };

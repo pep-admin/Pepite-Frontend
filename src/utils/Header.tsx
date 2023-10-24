@@ -50,9 +50,8 @@ const Header = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = event => {
+  const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-    console.log(event.target);
   };
 
   const [alignment, setAlignment] = React.useState('web');
@@ -62,7 +61,6 @@ const Header = () => {
   };
 
   async function onLogout() {
-    console.log('déconnexion');
     await handleLogout();
 
     navigate('/login');
@@ -183,11 +181,11 @@ const Header = () => {
               {settings.map(setting => (
                 <MenuItem
                   key={setting}
-                  onClick={event => {
+                  onClick={() => {
                     if (setting === 'Déconnexion') {
                       onLogout();
                     }
-                    handleCloseUserMenu(event);
+                    handleCloseUserMenu();
                   }}
                 >
                   <Typography variant="body2" textAlign="center">

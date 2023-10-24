@@ -363,7 +363,11 @@ const About = () => {
             </Collapse>
           </Box>
         </Box>
-        <Button variant="contained" color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          href="http://127.0.0.1:5173/swipe"
+        >
           {"C'est parti !"}
         </Button>
       </Container>

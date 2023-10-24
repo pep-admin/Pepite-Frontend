@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import RegisterFormComponent from '../../views/Auth/RegistrationFormComponent';
+import RegisterFormComponent from '@views/Auth/RegistrationFormComponent';
 import { useNavigate } from 'react-router-dom';
 
 // Schéma de vérification Yup

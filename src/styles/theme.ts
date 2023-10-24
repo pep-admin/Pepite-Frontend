@@ -1,11 +1,12 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
+  spacing: factor => `${factor * 6}px`,
+
   typography: {
     allVariants: {
       letterSpacing: '0.03em',
       fontFamily: 'Pragati Narrow',
-      fontWeight: 'normal',
     },
     h1: {
       fontFamily: 'Nixie One',
@@ -25,6 +26,7 @@ const theme = createTheme({
     primary: {
       // Bleu/vert clair
       main: '#24A5A5',
+      dark: '#0E6666',
     },
     secondary: {
       // Orange
@@ -36,6 +38,9 @@ const theme = createTheme({
       light: '#24A5A5',
       dark: '#094B4B',
       // contrastText: '#242105', TODO
+    },
+    success: {
+      main: '#5AC164',
     },
   },
   components: {
@@ -72,14 +77,17 @@ const theme = createTheme({
           top: '-5px',
           fontSize: '1.1em',
         },
+        filled: {
+          '&.MuiInputLabel-filled': {
+            fontSize: '0.95em',
+            top: '-7px',
+          },
+        },
       },
     },
     // Hauteur des inputs
     MuiInputBase: {
       styleOverrides: {
-        root: {
-          height: '45px',
-        },
         input: {
           '&:-webkit-autofill': {
             backgroundClip: 'text', // Supprime le fond blanc par défaut de l'autocomplétion
@@ -93,9 +101,42 @@ const theme = createTheme({
         },
       },
     },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          height: '30px',
+          borderRadius: '10px',
+          '&::before': {
+            width: 'calc(100% - 17px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            borderBottom: 'none !important',
+          },
+          '&::after': {
+            width: 'calc(100% - 17px)',
+            left: '50%',
+            transform: 'scaleX(0) translateX(-50%)',
+          },
+          '&.Mui-focused::after': {
+            width: 'calc(100% - 17px)',
+            left: '50%',
+            transform: 'scaleX(1) translateX(-50%)',
+          },
+        },
+
+        input: {
+          position: 'relative',
+          bottom: '2px',
+          height: '5px', // Diminue la taille pour réduire le curseur d'insertion clignotant
+        },
+      },
+    },
     // Couleur et arrondi des inputs
     MuiOutlinedInput: {
       styleOverrides: {
+        root: {
+          height: '45px',
+        },
         notchedOutline: {
           borderColor: '#8E8E8E',
           borderRadius: '10px',
@@ -130,6 +171,34 @@ const theme = createTheme({
         root: {
           display: 'list-item',
           paddingLeft: '10px',
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#0E6666',
+        },
+      },
+    },
+    MuiPaper: {
+      defaultProps: {
+        elevation: 3,
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          '&:last-child': {
+            padding: '16px',
+          },
+        },
+      },
+    },
+    MuiRating: {
+      styleOverrides: {
+        root: {
+          fontSize: '1em',
         },
       },
     },

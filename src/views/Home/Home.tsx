@@ -14,6 +14,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import MovieIcon from '@mui/icons-material/Movie';
 import StarIcon from '@mui/icons-material/Star';
+import Header from '@utils/Header';
 
 const Home = () => {
   function generateFilmData(count: number) {
@@ -29,17 +30,7 @@ const Home = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ mb: 2 }}>
-        <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component={'h1'} sx={{ flexGrow: 1 }}>
-            {'Pépite'}
-          </Typography>
-          <Button color="inherit">{'Login'}</Button>
-        </Toolbar>
-      </AppBar>
+      <Header />
       <Container>
         <Grid container spacing={2}>
           {filmData.map((film, index) => (

@@ -16,17 +16,21 @@ export function getAllLocalStorage() {
 
   // Récupération de tous les détails des films
   movieKeys.forEach(key => {
-    const details = localStorage.getItem(key);
-    if (details) {
-      movieDetailsArray.push(JSON.parse(details));
+    const JsonDetails = localStorage.getItem(key);
+    if (JsonDetails) {
+      const parsed = JSON.parse(JsonDetails);
+      const details = parsed[0];
+      movieDetailsArray.push(details);
     }
   });
 
   // Récupération de tous les détails des séries
   serieKeys.forEach(key => {
-    const details = localStorage.getItem(key);
-    if (details) {
-      serieDetailsArray.push(JSON.parse(details));
+    const JsonDetails = localStorage.getItem(key);
+    if (JsonDetails) {
+      const parsed = JSON.parse(JsonDetails);
+      const details = parsed[0];
+      serieDetailsArray.push(details);
     }
   });
 

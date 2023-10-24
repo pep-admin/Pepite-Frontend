@@ -90,7 +90,8 @@ const SwipeComponent = ({
     },
     {
       id: 'card3',
-      index: currentMovieIndex + 1,
+      index:
+        movies.length === 1 ? currentMovieIndex - 1 : currentMovieIndex + 1,
       cardProps: thirdCardProps,
       setCardProps: setThirdCardProps,
     },
@@ -160,6 +161,10 @@ const SwipeComponent = ({
 
   const [cards, setCards] = useState(initialCards);
 
+  useEffect(() => {
+    console.log('les cards', cards);
+  }, [cards]);
+
   // Si l'utilisateur change de film à série et inversement, on reset les animations
   useEffect(() => {
     if (prevDisplayTypeRef.current !== displayType) {
@@ -186,7 +191,6 @@ const SwipeComponent = ({
 
   // ********** GESTION DU TABLEAU DES 3 CARDS + GESTION DES ANIMATIONS ********** //
   useEffect(() => {
-
     if (swipeDirection === 'right') {
       swipeRightAnim();
 

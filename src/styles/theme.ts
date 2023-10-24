@@ -39,6 +39,9 @@ const theme = createTheme({
       dark: '#094B4B',
       // contrastText: '#242105', TODO
     },
+    success: {
+      main: '#5AC164',
+    },
   },
   components: {
     MuiTypography: {

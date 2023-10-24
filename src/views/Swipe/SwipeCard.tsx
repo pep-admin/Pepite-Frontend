@@ -12,10 +12,18 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { animated as a } from 'react-spring';
+import { useRef } from 'react';
+import confetti from 'canvas-confetti';
 
 // Import des composants internes
 import SwipePoster from './SwipePoster';
 import SwipeContent from './SwipeContent';
+
+// Import de la fonction pour ajouter un film / série dans les souhaits
+import {
+  addWantedMovie,
+  removeWantedMovie,
+} from '@utils/request/swipe/fetchData';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -39,6 +47,48 @@ const SwipeCard = ({
   const AnimatedCard = a(Item);
 
   const { displayType } = useData();
+
+  const isMovieWantedRef = useRef(false);
+  const buttonRef = useRef(null);
+
+  function explodeConfetti() {
+    if (buttonRef.current) {
+      // Récupère les coordonnées du bouton "je veux le voir"
+      const rect = buttonRef.current.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: {
+          x: x / window.innerWidth,
+          y: y / window.innerHeight,
+        },
+      });
+    }
+  }
+
+  const addToWantedList = () => {
+    if (!isMovieWantedRef.current && !movies[index].is_wanted) {
+      addWantedMovie(movieDetail[0].id, displayType);
+      isMovieWantedRef.current = true;
+      explodeConfetti();
+    } else {
+      removeWantedMovie(movieDetail[0].id, displayType);
+      isMovieWantedRef.current = false;
+    }
+    // Trouve l'objet du film correspondant dans le tableau movies
+    const updatedMovies = movies.map(movie => {
+      if (movie.id === movieDetail[0].id) {
+        return { ...movie, is_wanted: isMovieWantedRef.current };
+      }
+      return movie;
+    });
+    // Met à jour le tableau movies avec la nouvelle valeur
+    setMovies(updatedMovies);
+    console.log('film ajouté dans les souhaits');
+  };
 
   return (
     <AnimatedCard
@@ -281,17 +331,22 @@ const SwipeCard = ({
                         {'Noter ce film'}
                       </Button>
                       <Button
+                        ref={buttonRef}
                         variant="contained"
                         color="success"
                         sx={{
+                          color: '#fff',
                           maxHeight: '33px',
                           width: '150px',
                           margin: 'auto',
                           padding: '0 15px',
                           fontSize: '0.9em',
                         }}
+                        onClick={() => addToWantedList()}
                       >
-                        {'Je veux le voir !'}
+                        {!movies[index].is_wanted
+                          ? 'Je veux le voir !'
+                          : 'Ajouté !'}
                       </Button>
                       <Button
                         variant="contained"

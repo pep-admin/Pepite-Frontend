@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import {
   addSeenMovie,
   addUnwantedMovie,
+  cancelDeletedMovie,
   removeSeenMovie,
 } from '@utils/request/swipe/fetchData';
 
@@ -17,6 +18,7 @@ import SwipeRatings from './SwipeRatings';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -71,7 +73,7 @@ const SwipePoster = ({
       addUnwantedMovie(movieDetail[0].id, displayType);
       isMovieDeletedRef.current = true;
     } else {
-      // acceptMovie(movieDetail[0].id, displayType);
+      cancelDeletedMovie(movieDetail[0].id, displayType);
       isMovieDeletedRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies
@@ -190,17 +192,38 @@ const SwipePoster = ({
                     }
                   }}
                 />
-                {movies[index].is_deleted ? (
-                  <ClearIcon
-                    sx={{
-                      position: 'absolute',
-                      top: '30%',
-                      fontSize: '3em',
-                      color: '#f25050',
-                      backgroundColor: '#000000bf',
-                    }}
-                  />
-                ) : null}
+                <Box
+                  height="45px"
+                  width="60px"
+                  position="absolute"
+                  top="30%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{
+                    backgroundColor:
+                      movies[index].is_deleted || movies[index].is_wanted
+                        ? '#000000bf'
+                        : 'transparent',
+                    clipPath: 'polygon(20% 0, 100% 0, 80% 100%, 0 100%)',
+                  }}
+                >
+                  {movies[index].is_deleted ? (
+                    <ClearIcon
+                      sx={{
+                        fontSize: '2.5em',
+                        color: '#f25050',
+                      }}
+                    />
+                  ) : !movies[index].is_deleted && movies[index].is_wanted ? (
+                    <PlaylistAddIcon
+                      sx={{
+                        fontSize: '2.5em',
+                        color: '#5AC164',
+                      }}
+                    />
+                  ) : null}
+                </Box>
               </>
             ) : null}
             <Button

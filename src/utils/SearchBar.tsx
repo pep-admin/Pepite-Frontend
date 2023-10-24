@@ -1,7 +1,19 @@
 // Import des libs externes
-import { Box, TextField } from '@mui/material';
+import {
+  Box,
+  TextField,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Typography,
+  Divider,
+} from '@mui/material';
 import { createSvgIcon } from '@mui/material/utils';
 import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
+import { searchMulti } from './request/swipe/fetchData';
 
 // Création d'une loupe en SVG
 const MagnifyingGlassIcon = createSvgIcon(
@@ -29,6 +41,27 @@ const MagnifyingGlassIcon = createSvgIcon(
 );
 
 const SearchBar = ({ Item }) => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    // Fonction débouncing
+    const timeoutId = setTimeout(async () => {
+      if (query) {
+        const searchResults = await searchMulti(query);
+        setResults(searchResults);
+      } else {
+        setResults([]); // Si la requête est vide, on réinitialise les résultats
+      }
+    }, 500); // Attendre 500ms après la dernière saisie pour effectuer la recherche
+
+    return () => clearTimeout(timeoutId); // Clear le timeout si l'utilisateur continue à taper
+  }, [query]);
+
+  useEffect(() => {
+    console.log('les résultats', results);
+  }, [results]);
+
   return (
     <Box component="form">
       <Item
@@ -46,9 +79,81 @@ const SearchBar = ({ Item }) => {
           variant="filled"
           size="small"
           fullWidth
+          value={query}
+          onChange={e => setQuery(e.target.value)}
         />
         <MagnifyingGlassIcon />
       </Item>
+      {results.length > 0 ? (
+        <List
+          sx={{
+            width: '80%',
+            maxWidth: 360,
+            maxHeight: 185,
+            margin: '0 10%',
+            position: 'absolute',
+            zIndex: 1,
+            backgroundColor: '#f1f1f1',
+            overflowY: 'scroll',
+          }}
+        >
+          {results.map(result => {
+            return (
+              <Box key={result.id}>
+                <ListItem sx={{ display: 'flex' }}>
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={result.title || result.name}
+                      src={
+                        result.poster_path !== null
+                          ? `https://image.tmdb.org/t/p/w500/${result.poster_path}`
+                          : 'http://127.0.0.1:5173/images/no_poster.jpg'
+                      }
+                      sx={{ borderRadius: 0 }}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        sx={{ display: 'inline' }}
+                        component="h4"
+                        variant="body2"
+                        color="text.primary"
+                      >
+                        {result.title || result.name}
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography
+                        sx={{ display: 'inline' }}
+                        component="span"
+                        variant="body2"
+                        color="text.primary"
+                      >
+                        {result.release_date
+                          ? result.release_date.split('-')[0]
+                          : result.first_air_date
+                          ? result.first_air_date.split('-')[0]
+                          : null}
+                      </Typography>
+                    }
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  />
+                </ListItem>
+                <Divider
+                  variant="inset"
+                  component="li"
+                  sx={{ listStyleType: 'none' }}
+                />
+              </Box>
+            );
+          })}
+        </List>
+      ) : null}
     </Box>
   );
 };

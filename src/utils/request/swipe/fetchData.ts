@@ -68,7 +68,7 @@ export const fetchMovieDetails = async (
 // Insertion d'un film dans la liste des déjà vus
 export const addSeenMovie = async (movieId: number, type: string) => {
   try {
-    const response = await axios.post(
+    await axios.post(
       `http://localhost:8800/api/movies/add_already_seen`,
       { movie_id: movieId, type: type },
       { withCredentials: true },
@@ -81,13 +81,10 @@ export const addSeenMovie = async (movieId: number, type: string) => {
 // Suppression d'un film de la liste des déjà vus
 export const removeSeenMovie = async (movieId: number, type: string) => {
   try {
-    const response = await axios.delete(
-      `http://localhost:8800/api/movies/remove_already_seen`,
-      {
-        data: { movie_id: movieId, type: type },
-        withCredentials: true,
-      },
-    );
+    await axios.delete(`http://localhost:8800/api/movies/remove_already_seen`, {
+      data: { movie_id: movieId, type: type },
+      withCredentials: true,
+    });
   } catch {
     console.log('Impossible de supprimer un film de la liste de déjà vus');
   }
@@ -115,10 +112,10 @@ export const handleLogout = async () => {
       { withCredentials: true },
     );
     if (logoutResponse.status !== 200) {
-      throw new Error('Failed to logout');
+      throw new Error('Déconnexion impossible');
     }
   } catch (err) {
-    console.error('Error during logout:', err.message);
+    console.error('Erreur durant la déconnexion :', err.message);
   }
 };
 
@@ -134,5 +131,60 @@ export const addUnwantedMovie = async (movieId: number, type: string) => {
     console.log(
       "Impossible d'ajouter ce film dans la liste des films non souhaités",
     );
+  }
+};
+
+// Annulation d'un film non souhaité
+export const cancelDeletedMovie = async (movieId: number, type: string) => {
+  try {
+    await axios.delete(`http://localhost:8800/api/movies/cancel_deleted`, {
+      data: { movie_id: movieId, type: type },
+      withCredentials: true,
+    });
+  } catch {
+    console.log(
+      "Impossible d'annuler un film de la liste des films non souhaités",
+    );
+  }
+};
+
+// Recherche film / série / personne
+export const searchMulti = async (query: string) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8800/api/search/multi?query=${query}`,
+      { withCredentials: true },
+    );
+
+    return response.data.results;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Insertion d'un film dans la liste des non souhaités
+export const addWantedMovie = async (movieId: number, type: string) => {
+  try {
+    await axios.post(
+      `http://localhost:8800/api/movies/add_wanted`,
+      { movie_id: movieId, type: type },
+      { withCredentials: true },
+    );
+  } catch {
+    console.log(
+      "Impossible d'ajouter ce film dans la liste des films non souhaités",
+    );
+  }
+};
+
+// Annulation d'un film souhaité
+export const removeWantedMovie = async (movieId: number, type: string) => {
+  try {
+    await axios.delete(`http://localhost:8800/api/movies/cancel_wanted`, {
+      data: { movie_id: movieId, type: type },
+      withCredentials: true,
+    });
+  } catch {
+    console.log("Impossible d'annuler un film de la liste des films souhaités");
   }
 };

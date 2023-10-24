@@ -74,6 +74,7 @@ const SwipeContainer = () => {
           ...movie,
           is_already_seen: false,
           is_deleted: false,
+          is_wanted: false,
         }));
 
         setMovies(prevMovies => [...prevMovies, ...moviesWithAlreadySeen]);
@@ -195,10 +196,9 @@ const SwipeContainer = () => {
       });
   }, [movieDetail]);
 
-  // useEffect(() => {
-  //   console.log(genreChosen);
-
-  // }, [genreChosen])
+  useEffect(() => {
+    if (movies.length !== 0) console.log(movies);
+  }, [movies]);
 
   // useEffect(() => {
   //   console.log('chargement...', loading);

@@ -51,7 +51,9 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Genre :'}
             </Typography>
             <Typography variant="body2">
-              {movieDetail[0].genres.map(genre => genre.name).join(', ')}
+              {movieDetail[0].genres.length === 0
+                ? 'Non spécifié'
+                : movieDetail[0].genres.map(genre => genre.name).join(', ')}
             </Typography>
           </Box>
           <Box>
@@ -65,13 +67,15 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Année :'}
             </Typography>
             <Typography variant="body2">
-              {displayType === 'movie' && movieDetail[0].release_date
+              {displayType === 'movie' &&
+              movieDetail[0].release_date &&
+              movieDetail[0].release_date !== ''
                 ? movieDetail[0].release_date.split('-')[0]
                 : displayType === 'tv' && movieDetail[0].first_air_date
                 ? movieDetail[0].first_air_date.split('-')[0]
                 : displayType === 'tv' && movieDetail[0].first_air_date === null
                 ? 'Non spécifié'
-                : null}
+                : 'Non spécifié'}
             </Typography>
           </Box>
           <Box>

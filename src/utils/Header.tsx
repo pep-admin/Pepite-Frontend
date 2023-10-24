@@ -25,12 +25,15 @@ import { useData } from '@hooks/DataContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import { handleLogout } from './request/swipe/fetchData';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+const pages = ['Accueil', 'Swipe', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = () => {
-  const { displayType, setDisplayType } = useData();
+  const { displayType, setDisplayType, userId } = useData();
   const navigate = useNavigate();
+
+  console.log('id', userId);
+  
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
@@ -146,7 +149,15 @@ const Header = () => {
               }}
             >
               {pages.map(page => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem 
+                  key={page} 
+                  onClick={() => {
+                    if(page === 'Swipe') {
+                      navigate('/swipe')
+                    }
+                    handleCloseNavMenu();
+                  }}
+                >
                   <Typography variant="body2" textAlign="center">
                     {page}
                   </Typography>
@@ -184,6 +195,8 @@ const Header = () => {
                   onClick={() => {
                     if (setting === 'Déconnexion') {
                       onLogout();
+                    } else if(setting === 'Profil') {
+                      navigate(`/profil/${userId}`);
                     }
                     handleCloseUserMenu();
                   }}

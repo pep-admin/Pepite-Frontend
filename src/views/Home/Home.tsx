@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Button, Stack, Typography } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Stack } from '@mui/material';
 
 const Home = () => {
   const buildDate = new Date(BUILD_TIMESTAMP);
@@ -23,12 +23,7 @@ const Home = () => {
     <AppBar position="static" sx={{ mb: 2 }}>
       <Toolbar>
         <Typography variant="body1">{displayBuildDate}</Typography>
-        <Stack
-          direction="row"
-          justifyContent={'center'}
-          alignItems={'center'}
-          width={'100%'}
-        >
+        <Stack justifyContent={'center'} alignItems={'center'} width={'100%'}>
           <Button color="inherit" component={Link} to="/">
             Home
           </Button>

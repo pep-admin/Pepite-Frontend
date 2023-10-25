@@ -1,11 +1,12 @@
 // Import des libs externes
-import { styled, Paper, Container, Stack, Box } from '@mui/material';
+import { Container, Stack, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useSpring } from 'react-spring';
-import { useState, useEffect, useRef, forwardRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
+import { Item } from '@utils/styledComponent';
 import SearchBar from '@utils/SearchBar';
 import SwipeFilter from '@views/Swipe/SwipeFilter';
 import SwipeCard from '@views/Swipe/SwipeCard';
@@ -13,25 +14,6 @@ import LastCard from './LastCard';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-
-interface ItemProps {
-  customheight?: string | number;
-}
-
-const StyledPaper = styled(Paper)<ItemProps>(({ theme, customheight }) => ({
-  height: customheight || 'auto',
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  borderRadius: '10px',
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-const Item = forwardRef<HTMLDivElement, ItemProps>((props, ref) => {
-  return <StyledPaper ref={ref} {...props} />;
-});
-
-Item.displayName = 'Item';
 
 const SwipeComponent = ({
   movies,

@@ -1,0 +1,269 @@
+// Import des libs externes
+import {
+  Stack,
+  Box,
+  Typography,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  Menu,
+  Fade,
+} from '@mui/material';
+import { useState } from 'react';
+
+// Import des icônes
+import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
+import StarIcon from '@mui/icons-material/Star';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { FollowerIcon } from '@utils/styledComponent';
+import { FollowedIcon } from '@utils/styledComponent';
+import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
+
+const ProfilDetails = () => {
+  // ***** Affichage des amis, abonnements et abonnés ***** //
+  const [displayContacts, setDisplayContacts] = useState(null);
+  const openCountry = Boolean(displayContacts);
+  const handleContactMenu = event => {
+    setDisplayContacts(event.currentTarget);
+  };
+
+  return (
+    <>
+      <Stack direction="column" alignItems="center">
+        <MilitaryTechTwoToneIcon sx={{ color: '#8324A5' }} />
+        <Typography
+          component="h4"
+          variant="body2"
+          sx={{
+            color: '#8324A5',
+            fontWeight: 'bold',
+            marginBottom: '2px',
+          }}
+        >
+          {'Maître noteur'}
+        </Typography>
+        <LinearProgress
+          color="success"
+          variant="determinate"
+          value={30}
+          sx={{
+            width: '100%',
+          }}
+        />
+      </Stack>
+      <Stack flexGrow={1}>
+        <List
+          sx={{
+            listStyleType: 'none',
+            height: '100%',
+            padding: '7px 0 0 0',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
+            <ListItemButton sx={{ padding: '0' }}>
+              <ListItemIcon
+                sx={{
+                  position: 'relative',
+                  bottom: '1px',
+                  minWidth: 'auto',
+                  marginRight: '3px',
+                }}
+              >
+                <StarIcon fontSize="small" color="secondary" />
+              </ListItemIcon>
+              <Typography
+                component="p"
+                variant="body2"
+                color="secondary"
+                fontWeight="bold"
+                marginRight="2.5px"
+              >
+                {'96'}
+              </Typography>
+              <Typography component="p" variant="body2" color="secondary">
+                {'notations'}
+              </Typography>
+            </ListItemButton>
+          </ListItem>
+          <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
+            <ListItemButton sx={{ padding: '0' }}>
+              <ListItemIcon
+                sx={{
+                  position: 'relative',
+                  bottom: '1px',
+                  minWidth: 'auto',
+                  marginRight: '3px',
+                }}
+              >
+                <img
+                  src="http://127.0.0.1:5173/images/gold_nugget.png"
+                  alt="pepite d'or"
+                />
+              </ListItemIcon>
+              <Typography
+                component="p"
+                variant="body2"
+                color="#EDC800"
+                fontWeight="bold"
+                marginRight="2.5px"
+              >
+                {'4'}
+              </Typography>
+              <Typography component="p" variant="body2" color="#EDC800">
+                {'pépites'}
+              </Typography>
+            </ListItemButton>
+          </ListItem>
+          <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
+            <ListItemButton sx={{ padding: '0' }}>
+              <ListItemIcon
+                sx={{
+                  position: 'relative',
+                  bottom: '1px',
+                  minWidth: 'auto',
+                  marginRight: '3px',
+                }}
+              >
+                <LocalMoviesIcon fontSize="small" sx={{ color: '#3B3B3B' }} />
+              </ListItemIcon>
+              <Typography
+                component="p"
+                variant="body2"
+                color="#3B3B3B"
+                fontWeight="bold"
+                marginRight="2.5px"
+              >
+                {'Liste'}
+              </Typography>
+              <Typography component="p" variant="body2" color="#3B3B3B">
+                {'de Kate'}
+              </Typography>
+            </ListItemButton>
+          </ListItem>
+          <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
+            <ListItemButton
+              id="fade-button"
+              aria-controls={openCountry ? 'fade-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={openCountry ? 'true' : undefined}
+              sx={{ padding: '0' }}
+              onClick={handleContactMenu}
+            >
+              <ListItemIcon
+                sx={{
+                  position: 'relative',
+                  bottom: '1px',
+                  minWidth: 'auto',
+                  marginRight: '3px',
+                }}
+              >
+                <PeopleAltIcon
+                  fontSize="small"
+                  sx={{ color: '#3B3B3B', position: 'relative', left: '1px' }}
+                />
+              </ListItemIcon>
+              <Typography
+                component="p"
+                variant="body2"
+                color="#3B3B3B"
+                fontWeight="bold"
+                marginRight="2.5px"
+              >
+                {'Contacts'}
+              </Typography>
+            </ListItemButton>
+          </ListItem>
+          <Menu
+            id="fade-menu"
+            MenuListProps={{
+              'aria-labelledby': 'fade-button',
+            }}
+            anchorEl={displayContacts}
+            open={openCountry}
+            onClose={() => setDisplayContacts(null)}
+            TransitionComponent={Fade}
+          >
+            <Box padding="0 8px">
+              <ListItem
+                sx={{ display: 'flex', padding: '0', columnGap: '5px' }}
+              >
+                <ListItemIcon
+                  sx={{ position: 'relative', bottom: '1px', minWidth: 'auto' }}
+                >
+                  <PeopleAltIcon fontSize="small" color="secondary" />
+                </ListItemIcon>
+                <ListItemButton sx={{ padding: '0', display: 'flex' }}>
+                  <Typography
+                    component="p"
+                    variant="body2"
+                    color="secondary"
+                    fontWeight="bold"
+                    marginRight="2.5px"
+                  >
+                    {'45'}
+                  </Typography>
+                  <Typography component="p" variant="body2" color="secondary">
+                    {'amis'}
+                  </Typography>
+                </ListItemButton>
+              </ListItem>
+              <ListItem
+                sx={{ display: 'flex', padding: '0', columnGap: '5px' }}
+              >
+                <ListItemIcon
+                  sx={{ position: 'relative', bottom: '1px', minWidth: 'auto' }}
+                >
+                  <FollowerIcon sx={{ width: '20px', height: '15px' }} />
+                </ListItemIcon>
+                <ListItemButton sx={{ padding: '0', display: 'flex' }}>
+                  <Typography
+                    component="p"
+                    variant="body2"
+                    color="#24A5A5"
+                    fontWeight="bold"
+                    marginRight="2.5px"
+                  >
+                    {'32'}
+                  </Typography>
+                  <Typography component="p" variant="body2" color="#24A5A5">
+                    {'abonnés'}
+                  </Typography>
+                </ListItemButton>
+              </ListItem>
+              <ListItem
+                sx={{ display: 'flex', padding: '0', columnGap: '5px' }}
+              >
+                <ListItemIcon
+                  sx={{ position: 'relative', bottom: '1px', minWidth: 'auto' }}
+                >
+                  <FollowedIcon sx={{ width: '20px', height: '15px' }} />
+                </ListItemIcon>
+                <ListItemButton sx={{ padding: '0', display: 'flex' }}>
+                  <Typography
+                    component="p"
+                    variant="body2"
+                    color="#094B4B"
+                    fontWeight="bold"
+                    marginRight="2.5px"
+                  >
+                    {'24'}
+                  </Typography>
+                  <Typography component="p" variant="body2" color="#094B4B">
+                    {'abonnements'}
+                  </Typography>
+                </ListItemButton>
+              </ListItem>
+            </Box>
+          </Menu>
+        </List>
+      </Stack>
+    </>
+  );
+};
+
+export default ProfilDetails;

@@ -19,7 +19,9 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [userId, setUserId] = useState<string | null>(null);
 
   return (
-    <DataContext.Provider value={{ displayType, setDisplayType, userId, setUserId }}>
+    <DataContext.Provider
+      value={{ displayType, setDisplayType, userId, setUserId }}
+    >
       {children}
     </DataContext.Provider>
   );

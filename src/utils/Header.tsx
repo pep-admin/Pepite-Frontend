@@ -33,7 +33,6 @@ const Header = () => {
   const navigate = useNavigate();
 
   console.log('id', userId);
-  
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
@@ -149,11 +148,11 @@ const Header = () => {
               }}
             >
               {pages.map(page => (
-                <MenuItem 
-                  key={page} 
+                <MenuItem
+                  key={page}
                   onClick={() => {
-                    if(page === 'Swipe') {
-                      navigate('/swipe')
+                    if (page === 'Swipe') {
+                      navigate('/swipe');
                     }
                     handleCloseNavMenu();
                   }}
@@ -195,7 +194,7 @@ const Header = () => {
                   onClick={() => {
                     if (setting === 'Déconnexion') {
                       onLogout();
-                    } else if(setting === 'Profil') {
+                    } else if (setting === 'Profil') {
                       navigate(`/profil/${userId}`);
                     }
                     handleCloseUserMenu();

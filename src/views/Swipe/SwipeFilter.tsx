@@ -21,7 +21,7 @@ import {
   americanCountryCodes,
   continents,
   countries,
-} from '@utils/data/countries';
+} from '@utils/data/Countries';
 import { genreMovieList, genreSerieList } from '@utils/data/genres';
 
 // Import du contexte

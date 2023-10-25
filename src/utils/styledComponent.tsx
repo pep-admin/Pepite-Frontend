@@ -1,4 +1,4 @@
-import { styled, Paper } from '@mui/material';
+import { styled, Paper, Rating } from '@mui/material';
 import { forwardRef, CSSProperties } from 'react';
 import { createSvgIcon } from '@mui/material/utils';
 
@@ -35,7 +35,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
     ...theme.typography.body2,
     borderRadius: '10px',
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
   }),
 );
 
@@ -99,9 +99,9 @@ export const FollowedIcon = createSvgIcon(
   'FollowedIcon',
 );
 
-// // Etoiles customisées orange
-// export const OrangeRating = styled(Rating)({
-//   '.MuiRating-iconFilled': {
-//     color: '#F29E50',
-//   },
-// });
+// Etoiles customisées orange
+export const OrangeRating = styled(Rating)({
+  '.MuiRating-iconFilled': {
+    color: '#F29E50',
+  },
+});

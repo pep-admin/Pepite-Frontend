@@ -13,6 +13,7 @@ import Header from '@utils/Header';
 // Import des composants internes
 import { Item } from '@utils/styledComponent';
 import ProfilDetails from './ProfilDetails';
+import ProfilSuggestedNotes from './ProfilSuggestedNotes';
 
 const ProfilComponent = () => {
   return (
@@ -75,7 +76,7 @@ const ProfilComponent = () => {
               </Typography>
             </Item>
           </Stack>
-          <Stack direction="row" height="35%" columnGap="8px">
+          <Stack direction="row" height="40%" columnGap="8px">
             <Item
               customheight="100%"
               customwidth="calc(30% - 4px)"
@@ -85,7 +86,9 @@ const ProfilComponent = () => {
             >
               <ProfilDetails />
             </Item>
-            <Item customheight="100%" customwidth="calc(70% - 4px)"></Item>
+            <Item customheight="100%" customwidth="calc(70% - 4px)">
+              <ProfilSuggestedNotes />
+            </Item>
           </Stack>
         </Stack>
       </Container>

@@ -42,6 +42,9 @@ const theme = createTheme({
     success: {
       main: '#5AC164',
     },
+    text: {
+      primary: '#3B3B3B',
+    },
   },
   components: {
     MuiTypography: {

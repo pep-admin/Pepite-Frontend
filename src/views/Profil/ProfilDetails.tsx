@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   Menu,
   Fade,
+  Divider,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -24,7 +25,7 @@ import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 const ProfilDetails = () => {
   // ***** Affichage des amis, abonnements et abonnés ***** //
   const [displayContacts, setDisplayContacts] = useState(null);
-  const openCountry = Boolean(displayContacts);
+  const openMenu = Boolean(displayContacts);
   const handleContactMenu = event => {
     setDisplayContacts(event.currentTarget);
   };
@@ -71,7 +72,7 @@ const ProfilDetails = () => {
                   position: 'relative',
                   bottom: '1px',
                   minWidth: 'auto',
-                  marginRight: '3px',
+                  marginRight: '5px',
                 }}
               >
                 <StarIcon fontSize="small" color="secondary" />
@@ -90,6 +91,7 @@ const ProfilDetails = () => {
               </Typography>
             </ListItemButton>
           </ListItem>
+          <Divider sx={{ width: '60px', alignSelf: 'center' }} />
           <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
             <ListItemButton sx={{ padding: '0' }}>
               <ListItemIcon
@@ -97,7 +99,7 @@ const ProfilDetails = () => {
                   position: 'relative',
                   bottom: '1px',
                   minWidth: 'auto',
-                  marginRight: '3px',
+                  marginRight: '5px',
                 }}
               >
                 <img
@@ -119,6 +121,7 @@ const ProfilDetails = () => {
               </Typography>
             </ListItemButton>
           </ListItem>
+          <Divider sx={{ width: '60px', alignSelf: 'center' }} />
           <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
             <ListItemButton sx={{ padding: '0' }}>
               <ListItemIcon
@@ -126,7 +129,7 @@ const ProfilDetails = () => {
                   position: 'relative',
                   bottom: '1px',
                   minWidth: 'auto',
-                  marginRight: '3px',
+                  marginRight: '5px',
                 }}
               >
                 <LocalMoviesIcon fontSize="small" sx={{ color: '#3B3B3B' }} />
@@ -135,22 +138,20 @@ const ProfilDetails = () => {
                 component="p"
                 variant="body2"
                 color="#3B3B3B"
-                fontWeight="bold"
                 marginRight="2.5px"
+                fontWeight="bold"
               >
-                {'Liste'}
-              </Typography>
-              <Typography component="p" variant="body2" color="#3B3B3B">
-                {'de Kate'}
+                {'Ma liste'}
               </Typography>
             </ListItemButton>
           </ListItem>
+          <Divider sx={{ width: '60px', alignSelf: 'center' }} />
           <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
             <ListItemButton
               id="fade-button"
-              aria-controls={openCountry ? 'fade-menu' : undefined}
+              aria-controls={openMenu ? 'fade-menu' : undefined}
               aria-haspopup="true"
-              aria-expanded={openCountry ? 'true' : undefined}
+              aria-expanded={openMenu ? 'true' : undefined}
               sx={{ padding: '0' }}
               onClick={handleContactMenu}
             >
@@ -159,7 +160,7 @@ const ProfilDetails = () => {
                   position: 'relative',
                   bottom: '1px',
                   minWidth: 'auto',
-                  marginRight: '3px',
+                  marginRight: '5px',
                 }}
               >
                 <PeopleAltIcon
@@ -184,7 +185,7 @@ const ProfilDetails = () => {
               'aria-labelledby': 'fade-button',
             }}
             anchorEl={displayContacts}
-            open={openCountry}
+            open={openMenu}
             onClose={() => setDisplayContacts(null)}
             TransitionComponent={Fade}
           >

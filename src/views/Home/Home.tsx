@@ -1,7 +1,4 @@
 import {
-  AppBar,
-  Toolbar,
-  IconButton,
   Typography,
   Button,
   Container,
@@ -11,7 +8,6 @@ import {
   CardContent,
   Stack,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import MovieIcon from '@mui/icons-material/Movie';
 import StarIcon from '@mui/icons-material/Star';
 import Header from '@utils/Header';

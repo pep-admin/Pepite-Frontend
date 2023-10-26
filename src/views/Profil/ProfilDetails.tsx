@@ -15,7 +15,6 @@ import {
 import { useState } from 'react';
 
 // Import des icônes
-import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 import StarIcon from '@mui/icons-material/Star';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { FollowerIcon } from '@utils/styledComponent';
@@ -33,18 +32,6 @@ const ProfilDetails = () => {
   return (
     <>
       <Stack direction="column" alignItems="center">
-        <MilitaryTechTwoToneIcon sx={{ color: '#8324A5' }} />
-        <Typography
-          component="h4"
-          variant="body2"
-          sx={{
-            color: '#8324A5',
-            fontWeight: 'bold',
-            marginBottom: '2px',
-          }}
-        >
-          {'Maître noteur'}
-        </Typography>
         <LinearProgress
           color="success"
           variant="determinate"

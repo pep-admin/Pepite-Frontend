@@ -1,30 +1,12 @@
 // Import des libs externes
-import { styled, Rating, Typography, Box } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 
-// Import de l'icône étoile vide
+// Import des icônes
 import StarIcon from '@mui/icons-material/Star';
-
-// Etoiles customisées jaune
-const YellowRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#FFDA1B',
-  },
-});
-
-// Etoiles customisées jaune
-const OrangeRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#F29E50',
-  },
-});
-
-// Etoiles customisées turquoise
-const TurquoiseRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#24A5A5',
-  },
-});
+import { OrangeRating } from '@utils/styledComponent';
+import { YellowRating } from '@utils/styledComponent';
+import { TurquoiseRating } from '@utils/styledComponent';
 
 const SwipeRatings = ({ roundedScore }) => {
   return (

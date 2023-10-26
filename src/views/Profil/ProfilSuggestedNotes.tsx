@@ -19,13 +19,13 @@ const ProfilSuggestedNotes = () => {
     <Stack direction="column" height="100%">
       <Stack
         direction="row"
-        height="24.2px"
+        height="25px"
         justifyContent="space-between"
         alignItems="center"
         padding="0 10px"
       >
         <Typography variant="body2" component="p">
-          {'Dernières notations de Kate'}
+          {'Dernières notations'}
         </Typography>
         <Typography variant="body2" component="p">
           {'Voir +'}
@@ -34,25 +34,25 @@ const ProfilSuggestedNotes = () => {
       <Divider />
       <Stack
         direction="row"
-        height="calc(100% - 25px)"
+        height="calc(100% - 25.8px)"
         justifyContent="flex-start"
-        padding="7px 10px"
+        padding="6px 6px 0 6px"
         gap="10px"
         overflow="hidden"
       >
         <Card
           sx={{
+            height: '100%',
             width: 95,
-            height: '145px',
             flexShrink: 0,
             boxShadow: 'none',
             position: 'relative',
           }}
         >
-          <CardActionArea>
+          <CardActionArea sx={{ height: 'calc(100% - 23px)' }}>
             <CardMedia
               component="img"
-              height="120"
+              height="100%"
               image="http://127.0.0.1:5173/images/platoon.jpg"
               alt="green iguana"
               sx={{
@@ -62,7 +62,15 @@ const ProfilSuggestedNotes = () => {
               }}
             />
           </CardActionArea>
-          <CardContent sx={{ padding: 0 }}>
+          <CardContent
+            sx={{
+              height: '23px',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <Typography
               gutterBottom
               component="h4"
@@ -75,8 +83,8 @@ const ProfilSuggestedNotes = () => {
           <Box
             width="100%"
             position="absolute"
-            bottom="25px"
-            height="25px"
+            bottom="23px"
+            height="23px"
             borderRadius="0 0 10px 10px"
             display="flex"
             alignItems="center"
@@ -97,17 +105,17 @@ const ProfilSuggestedNotes = () => {
         </Card>
         <Card
           sx={{
+            height: '100%',
             width: 95,
-            height: '145px',
             flexShrink: 0,
             boxShadow: 'none',
             position: 'relative',
           }}
         >
-          <CardActionArea>
+          <CardActionArea sx={{ height: 'calc(100% - 23px)' }}>
             <CardMedia
               component="img"
-              height="120"
+              height="100%"
               image="http://127.0.0.1:5173/images/317e.jpg"
               alt="green iguana"
               sx={{
@@ -117,7 +125,15 @@ const ProfilSuggestedNotes = () => {
               }}
             />
           </CardActionArea>
-          <CardContent sx={{ padding: 0 }}>
+          <CardContent
+            sx={{
+              height: '23px',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <Typography
               gutterBottom
               component="h4"
@@ -130,8 +146,8 @@ const ProfilSuggestedNotes = () => {
           <Box
             width="100%"
             position="absolute"
-            bottom="25px"
-            height="25px"
+            bottom="23px"
+            height="23px"
             borderRadius="0 0 10px 10px"
             display="flex"
             alignItems="center"
@@ -139,26 +155,30 @@ const ProfilSuggestedNotes = () => {
             sx={{ backgroundColor: '#0000009e' }}
           >
             <OrangeRating
+              name="half-rating-read"
+              value={2.5}
+              precision={0.1}
               readOnly
               emptyIcon={
                 <StarIcon sx={{ color: '#E1E1E1' }} fontSize="inherit" />
               }
+              sx={{ marginRight: '5px' }}
             />
           </Box>
         </Card>
         <Card
           sx={{
+            height: '100%',
             width: 95,
-            height: '145px',
             flexShrink: 0,
             boxShadow: 'none',
             position: 'relative',
           }}
         >
-          <CardActionArea>
+          <CardActionArea sx={{ height: 'calc(100% - 23px)' }}>
             <CardMedia
               component="img"
-              height="120"
+              height="100%"
               image="http://127.0.0.1:5173/images/mars.jpg"
               alt="green iguana"
               sx={{
@@ -168,7 +188,15 @@ const ProfilSuggestedNotes = () => {
               }}
             />
           </CardActionArea>
-          <CardContent sx={{ padding: 0 }}>
+          <CardContent
+            sx={{
+              height: '23px',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <Typography
               gutterBottom
               component="h4"
@@ -181,8 +209,8 @@ const ProfilSuggestedNotes = () => {
           <Box
             width="100%"
             position="absolute"
-            bottom="25px"
-            height="25px"
+            bottom="23px"
+            height="23px"
             borderRadius="0 0 10px 10px"
             display="flex"
             alignItems="center"
@@ -190,10 +218,14 @@ const ProfilSuggestedNotes = () => {
             sx={{ backgroundColor: '#0000009e' }}
           >
             <OrangeRating
+              name="half-rating-read"
+              value={2.5}
+              precision={0.1}
               readOnly
               emptyIcon={
                 <StarIcon sx={{ color: '#E1E1E1' }} fontSize="inherit" />
               }
+              sx={{ marginRight: '5px' }}
             />
           </Box>
         </Card>

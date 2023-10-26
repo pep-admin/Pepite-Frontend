@@ -5,7 +5,11 @@ import { createSvgIcon } from '@mui/material/utils';
 interface ItemProps {
   customheight?: string | number;
   customwidth?: string | number;
+  minheight?: string | number;
   padding?: string | number;
+  margintop?: string | number;
+  borderradius?: string;
+  overflow?: string;
   display?: 'block' | 'flex';
   flexdirection?: CSSProperties['flexDirection'];
   alignitems?: CSSProperties['alignItems'];
@@ -18,7 +22,11 @@ const StyledPaper = styled(Paper)<ItemProps>(
     theme,
     customheight,
     customwidth,
+    minheight,
     padding,
+    margintop,
+    borderradius,
+    overflow,
     display,
     flexdirection,
     alignitems,
@@ -26,14 +34,17 @@ const StyledPaper = styled(Paper)<ItemProps>(
   }) => ({
     height: customheight || 'auto',
     width: customwidth || 'auto',
+    minHeight: minheight || 'auto',
     padding: padding || 'auto',
+    marginTop: margintop || 'auto',
+    overflow: overflow || 'visible',
     display: display || 'block',
     flexDirection: flexdirection || 'initial', // sera ignoré si display n'est pas "flex"
     alignItems: alignitems || 'initial', // sera ignoré si display n'est pas "flex"
     justifyContent: justifycontent || 'initial', // sera ignoré si display n'est pas "flex"
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
-    borderRadius: '10px',
+    borderRadius: borderradius || '10px',
     textAlign: 'center',
     color: theme.palette.text.primary,
   }),
@@ -48,6 +59,31 @@ export const Item = forwardRef<HTMLDivElement, ItemProps>((props, ref) => {
 });
 
 Item.displayName = 'Item';
+
+// Création d'une loupe en SVG
+export const MagnifyingGlassIcon = createSvgIcon(
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9.02737 12.421C9.12973 12.5462 9.49542 12.7358 9.73112 12.5104L9.80318 12.4415C10.0389 12.2161 10.0029 11.8898 9.72318 11.7163C9.72318 11.7163 9.11653 11.3399 8.62882 10.8735C8.14636 10.4122 7.74661 9.82875 7.74661 9.82875C7.56397 9.56207 7.22158 9.52833 6.98588 9.75372L6.91698 9.8196C6.68128 10.045 6.87503 10.3936 7.00756 10.4919C7.1401 10.5901 7.44133 10.8549 7.67711 11.0803L8.41265 11.7838C8.64849 12.0091 8.92507 12.296 9.02737 12.421Z"
+      fill="white"
+    />
+    <path
+      d="M18.1856 10.1121C19.3951 8.95553 20 7.43934 20 5.92353C20 4.4074 19.3954 2.89172 18.1856 1.73494C15.7665 -0.578313 11.8443 -0.578313 9.4253 1.73494C8.21572 2.8916 7.61096 4.40753 7.61096 5.92353C7.61096 7.43947 8.21572 8.9554 9.4253 10.1121C11.8445 12.4253 15.7666 12.4253 18.1856 10.1121ZM11.0366 8.56437C10.272 7.83519 9.88978 6.87914 9.88978 5.92347C9.88978 4.96754 10.2719 4.01187 11.0366 3.28256C12.5659 1.82407 15.045 1.824 16.5745 3.28256C17.339 4.01174 17.7212 4.9676 17.7212 5.9234C17.7212 6.87927 17.3389 7.83506 16.5745 8.56437C15.0452 10.0229 12.5658 10.0229 11.0366 8.56437Z"
+      fill="white"
+    />
+    <path
+      d="M3.00102 18.8953L8.09808 14.0212C8.25291 13.8731 8.33823 13.6748 8.33823 13.4628C8.33823 13.2508 8.25284 13.0525 8.09808 12.9044L6.50524 11.3814C6.35041 11.2332 6.14299 11.1516 5.92123 11.1516C5.69959 11.1516 5.49217 11.2332 5.33735 11.3814L0.240152 16.2553C0.0853259 16.4035 0 16.6018 0 16.8137V16.8139C0 17.0257 0.0853932 17.224 0.240152 17.3722L1.83299 18.8953C2.15503 19.2032 2.67904 19.2032 3.00102 18.8953Z"
+      fill="white"
+    />
+  </svg>,
+  'MagnifyingGlassIcon',
+);
 
 // SVG abonnés
 export const FollowerIcon = createSvgIcon(
@@ -103,5 +139,19 @@ export const FollowedIcon = createSvgIcon(
 export const OrangeRating = styled(Rating)({
   '.MuiRating-iconFilled': {
     color: '#F29E50',
+  },
+});
+
+// Etoiles customisées jaune
+export const YellowRating = styled(Rating)({
+  '.MuiRating-iconFilled': {
+    color: '#FFDA1B',
+  },
+});
+
+// Etoiles customisées turquoise
+export const TurquoiseRating = styled(Rating)({
+  '.MuiRating-iconFilled': {
+    color: '#24A5A5',
   },
 });

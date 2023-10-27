@@ -9,17 +9,37 @@ import {
   CardActionArea,
   CardMedia,
   CardContent,
+  Menu,
+  MenuItem,
+  Fade,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
+import { useState } from 'react';
 
 // Import des composants customisés
 import { Item, OrangeRating, YellowRating } from '@utils/styledComponent';
 
 // Import des icônes
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import ChatIcon from '@mui/icons-material/Chat';
+import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
+import AddToPhotosTwoToneIcon from '@mui/icons-material/AddToPhotosTwoTone';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const CriticAdvices = () => {
+  // Affichage du synopsis
+  const [displayOverwiew, setDisplayOverview] = useState(false);
+
+  // Menu des outils pour modifier / supprimer
+  const [displayTools, setDisplayTools] = useState(null);
+  const openMenu = Boolean(displayTools);
+  const handleToolsMenu = event => {
+    setDisplayTools(event.currentTarget);
+  };
+
   return (
     <Item margintop="6px">
       <Stack height="100%">
@@ -66,7 +86,68 @@ const CriticAdvices = () => {
             justifyContent="flex-end"
             alignItems="center"
           >
-            <EditNoteIcon />
+            <EditNoteIcon
+              sx={{ position: 'relative', left: '4px', cursor: 'pointer' }}
+              onClick={handleToolsMenu}
+            />
+            <Menu
+              id="basic-menu"
+              anchorEl={displayTools}
+              open={openMenu}
+              onClose={() => setDisplayTools(null)}
+              TransitionComponent={Fade}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+                sx: {
+                  padding: '0',
+                },
+              }}
+            >
+              <Stack
+                sx={{
+                  backgroundColor: '#ededed',
+                  padding: '5px 8px',
+                  border: '1px solid rgba(0, 0, 0, 0.12)',
+                }}
+              >
+                <MenuItem
+                  onClick={() => setDisplayTools(null)}
+                  sx={{ padding: '0', minHeight: 'auto' }}
+                >
+                  <ListItemIcon sx={{ minWidth: 'auto' }}>
+                    <ModeEditIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      sx: {
+                        fontSize: '0.8em',
+                      },
+                    }}
+                  >
+                    {'Modifier'}
+                  </ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                  onClick={() => setDisplayTools(null)}
+                  sx={{ padding: '0', minHeight: 'auto' }}
+                >
+                  <ListItemIcon sx={{ minWidth: 'auto' }}>
+                    <ClearIcon fontSize="small" sx={{ color: '#d32f2f' }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      sx: {
+                        fontSize: '0.8em',
+                        color: '#d32f2f',
+                      },
+                    }}
+                  >
+                    {'Supprimer'}
+                  </ListItemText>
+                </MenuItem>
+              </Stack>
+            </Menu>
           </Box>
         </Stack>
         <Divider />
@@ -80,7 +161,7 @@ const CriticAdvices = () => {
               flexWrap: 'wrap',
             }}
           >
-            <Box marginBottom="7px" display="flex">
+            <Box marginBottom="7px" display="flex" flexGrow="1">
               <CardActionArea sx={{ height: '100px', width: 'auto' }}>
                 <CardMedia
                   component="img"
@@ -93,7 +174,9 @@ const CriticAdvices = () => {
                   }}
                 />
               </CardActionArea>
-              <CardContent sx={{ padding: '0 12px !important', flexGrow: '1' }}>
+              <CardContent
+                sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}
+              >
                 <Stack>
                   <Stack>
                     <Stack direction="row" alignItems="center" columnGap="10px">
@@ -106,14 +189,21 @@ const CriticAdvices = () => {
                       >
                         {'Seul sur mars'}
                       </Typography>
-                      <YellowRating value={4.5} precision={0.5} readOnly />
-                      <Typography
-                        variant="body2"
-                        fontWeight="bold"
-                        component="p"
-                      >
-                        {'4.5 / 5'}
-                      </Typography>
+                      <Stack direction="row" columnGap="5px">
+                        <YellowRating
+                          value={4.5}
+                          precision={0.5}
+                          readOnly
+                          sx={{ position: 'relative', top: '1.4px' }}
+                        />
+                        <Typography
+                          variant="body2"
+                          fontWeight="bold"
+                          component="p"
+                        >
+                          {'4.5 / 5'}
+                        </Typography>
+                      </Stack>
                     </Stack>
                     <Stack direction="row">
                       <Typography
@@ -166,10 +256,58 @@ const CriticAdvices = () => {
                         {'2014'}
                       </Typography>
                     </Stack>
+                    <Stack direction="row">
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        component="p"
+                        color="primary.dark"
+                      >
+                        {'Synopsis :'}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        component="p"
+                        marginLeft="5px"
+                        onClick={() => setDisplayOverview(!displayOverwiew)}
+                      >
+                        {!displayOverwiew ? 'Afficher' : 'Masquer'}
+                      </Typography>
+                    </Stack>
                   </Stack>
                 </Stack>
               </CardContent>
             </Box>
+            <Stack
+              direction="row"
+              flexGrow="1"
+              marginBottom="7px"
+              sx={{
+                maxHeight: displayOverwiew ? '60px' : '0px',
+                overflow: 'hidden',
+                transition: 'max-height 0.5s ease-in-out',
+              }}
+            >
+              <Divider
+                orientation="horizontal"
+                sx={{ borderColor: 'primary.dark' }}
+              />
+              <Divider
+                orientation="vertical"
+                sx={{ borderColor: 'primary.dark' }}
+              />
+              <Typography
+                variant="body2"
+                component="p"
+                align="left"
+                paddingLeft="10px"
+              >
+                {
+                  "L'astronaute Roy McBride s'aventure jusqu'aux confins du système solaire à la recherche de son père disparu et pour résoudre un mystère qui menace la survie de notre planète."
+                }
+              </Typography>
+            </Stack>
             <Stack
               direction="row-reverse"
               position="relative"
@@ -217,12 +355,16 @@ const CriticAdvices = () => {
               </Box>
               <Box
                 position="absolute"
-                top="-12.5px"
-                right="50%"
+                top="17.5px"
+                right="47.5px"
                 height="25px"
                 width="25px"
                 borderRadius="50%"
-                sx={{ backgroundColor: '#24A5A5' }}
+                sx={{
+                  backgroundColor: '#24A5A5',
+                  boxShadow:
+                    '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
+                }}
               >
                 <FormatQuoteIcon sx={{ color: '#fff' }} />
               </Box>
@@ -230,11 +372,35 @@ const CriticAdvices = () => {
           </Card>
         </Stack>
         <Divider />
-        <Stack height="30px" padding="0 10px" flexGrow="1">
+        <Stack
+          direction="row"
+          spacing={5}
+          height="30px"
+          padding="0 17px"
+          flexGrow="1"
+        >
           <Box height="100%" display="flex" alignItems="center" columnGap="5px">
-            <ChatIcon fontSize="small" />
+            <ChatTwoToneIcon
+              fontSize="small"
+              sx={{ position: 'relative', top: '1px' }}
+            />
             <Typography component="p" fontSize="1em" fontWeight="bold">
               {5}
+            </Typography>
+          </Box>
+          <Box height="100%" display="flex" alignItems="center" columnGap="5px">
+            <ThumbUpTwoToneIcon
+              fontSize="small"
+              sx={{ position: 'relative', bottom: '1px' }}
+            />
+            <Typography component="p" fontSize="1em" fontWeight="bold">
+              {3}
+            </Typography>
+          </Box>
+          <Box height="100%" display="flex" alignItems="center" columnGap="5px">
+            <AddToPhotosTwoToneIcon fontSize="small" />
+            <Typography component="p" fontSize="1em" fontWeight="bold">
+              {'À voir'}
             </Typography>
           </Box>
         </Stack>

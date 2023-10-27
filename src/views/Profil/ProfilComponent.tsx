@@ -100,7 +100,6 @@ const ProfilComponent = () => {
             direction="column"
             height="189px"
             columnGap="6px"
-            position="relative"
             flexWrap="wrap"
           >
             <Box height="189px" width="100px">
@@ -144,7 +143,7 @@ const ProfilComponent = () => {
               customheight="calc(100% - 6px)"
               customwidth="calc(100% - 108px)"
               margintop="6px"
-              overflow='hidden'
+              overflow="hidden"
             >
               <ProfilSuggestedNotes />
             </Item>

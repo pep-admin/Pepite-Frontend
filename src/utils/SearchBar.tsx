@@ -23,18 +23,16 @@ import { MagnifyingGlassIcon } from './styledComponent';
 
 // Import de la fonction pour récupérer le détail d'un film / série
 import { getMovieDetails } from './request/getMovieDetails';
-import { storeDetailsData } from './request/swipe/storeDetailsData';
 
 const SearchBar = ({ Item, page }) => {
-  const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
-    useData();
+  const { displayType, setChosenMovie } = useData();
 
   const [error, setError] = useState({ message: null, error: null });
 
   const [query, setQuery] = useState(''); // Texte saisi par l'utilisateur
   const [results, setResults] = useState([]); // Les résultats de la recherche
 
-  // const [idChoice, setIdChoice] = useState(null); // L'id du film / série recherché
+  const [idChoice, setIdChoice] = useState(null); // L'id du film / série recherché
   // const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [displayResults, setDisplayResults] = useState(null); // Affiche ou non les résultats
   const containerRef = useRef(null);
@@ -45,18 +43,16 @@ const SearchBar = ({ Item, page }) => {
   };
 
   const handleChoice = id => {
-    setChosenMovieId(id);
+    setIdChoice(id);
   };
 
+  // TODO : changer la requête de recherche movie / tv
   const getChosenMovie = async id => {
     try {
       const movieData = await getMovieDetails(displayType, id);
       setChosenMovie(movieData);
-      console.log('le film choisi', movieData);
-      // Stockage des détails du film dans la DB
-      storeDetailsData(movieData);
       // if (page !== 'profil') {
-      //   setGeneralRatings(movieData.vote_average);
+      //   setGeneralRatings(movieData[0].vote_average);
       // }
     } catch (err) {
       setError({
@@ -89,6 +85,12 @@ const SearchBar = ({ Item, page }) => {
   useEffect(() => {
     console.log('les résultats', results);
   }, [results]);
+
+  useEffect(() => {
+    if (idChoice) {
+      getChosenMovie(idChoice);
+    }
+  }, [idChoice]);
 
   return (
     <Box

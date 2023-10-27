@@ -1,5 +1,3 @@
-import { countries } from '@utils/data/countries';
-import { findIsoCountry } from '@utils/functions/findInfos';
 import { getAllLocalStorage } from '@utils/functions/getAllLocalStorage';
 import axios from 'axios';
 import apiBaseUrl from '../config';
@@ -78,7 +76,7 @@ export const cancelDeletedMovie = async (movieId: number, type: string) => {
 export const searchMulti = async (query: string, displayType: string) => {
   try {
     const response = await axios.get(
-      `${apiBaseUrl}/search/movie-serie?query=${query}&displayType=${displayType}`,
+      `http://localhost:8800/api/search/movie-serie?query=${query}&displayType=${displayType}`,
       { withCredentials: true },
     );
     return response.data.results;

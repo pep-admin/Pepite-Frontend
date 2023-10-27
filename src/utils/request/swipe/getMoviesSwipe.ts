@@ -20,7 +20,7 @@ export const fetchTwentyMovies = async (
   else genreString = '';
 
   const response = await axios.get(
-    `${apiBaseUrl}/movies/all?page=${moviePage}&type=${displayType}${countryString}${genreString}`,
+    `http://localhost:8800/api/movies/all?page=${moviePage}&type=${displayType}${countryString}${genreString}`,
     { withCredentials: true },
   );
 

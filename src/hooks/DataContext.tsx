@@ -23,6 +23,8 @@ interface DataContextProps {
   setDisplayType: (value: string) => void;
   userId: string | null;
   setUserId: (id: string | null) => void;
+  chosenMovie: Array<Movie>;
+  setChosenMovie: (value: object) => void;
 }
 
 const DataContext = createContext<DataContextProps>({
@@ -30,15 +32,25 @@ const DataContext = createContext<DataContextProps>({
   setDisplayType: (_value: string) => {},
   userId: null,
   setUserId: (_id: string | null) => {},
+  chosenMovie: null,
+  setChosenMovie: (_value: object) => {},
 });
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [displayType, setDisplayType] = useState<string>('movie');
   const [userId, setUserId] = useState<string | null>(null);
+  const [chosenMovie, setChosenMovie] = useState<Array<Movie> | null>(null);
 
   return (
     <DataContext.Provider
-      value={{ displayType, setDisplayType, userId, setUserId }}
+      value={{
+        displayType,
+        setDisplayType,
+        userId,
+        setUserId,
+        chosenMovie,
+        setChosenMovie,
+      }}
     >
       {children}
     </DataContext.Provider>

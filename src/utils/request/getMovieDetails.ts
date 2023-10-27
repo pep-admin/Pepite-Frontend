@@ -1,13 +1,8 @@
+import { countriesList } from '@utils/data/Countries';
 import axios from 'axios';
-import { parseDatabaseData } from './parseDetails';
-import apiBaseUrl from './config';
-
-const isDataFromDatabase = data => {
-  return Object.prototype.hasOwnProperty.call(data, 'are_details_completed');
-};
 
 // Récupération des informations détaillées d'un film
-export const getMovieDetails = async (displayType: string, movieId: number) => {
+const fetchMovieDetails = async (movieId: number, displayType: string) => {
   let certification = '';
 
   if (displayType === 'movie')
@@ -16,20 +11,63 @@ export const getMovieDetails = async (displayType: string, movieId: number) => {
     certification = '&append_to_response=content_ratings';
 
   const response = await axios.get(
-    `${apiBaseUrl}/movies/details/${movieId}?type=${displayType}${certification}`,
+    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
     { withCredentials: true },
   );
 
-  // Vérifiez d'où proviennent les données et parsez-les en conséquence
-  let parsedData;
+  // Récupération des noms de pays producteurs du film
+  const countriesOfTheMovie = response.data.production_countries;
 
-  if (isDataFromDatabase(response.data)) {
-    console.log('requête DB pour', movieId);
-    parsedData = parseDatabaseData(response.data, null);
+  let frenchCountryNames;
+
+  if (countriesOfTheMovie.length === 0) {
+    frenchCountryNames = ['Non spécifié'];
   } else {
-    console.log('requête TMDB pour', movieId);
-    parsedData = response.data;
+    // Tableau des noms français des pays
+    frenchCountryNames = countriesOfTheMovie.map(({ iso_3166_1 }) => {
+      const findCountry = countriesList.find(
+        country => country.iso_3166_1 === iso_3166_1,
+      );
+      return findCountry ? findCountry.native_name : iso_3166_1;
+    });
   }
 
-  return parsedData;
+  return [response.data, frenchCountryNames];
+};
+
+export const getMovieDetails = async (displayType, currentMovieId) => {
+  let detailsData;
+  let cachedData = null;
+
+  if (displayType === 'movie') {
+    cachedData = localStorage.getItem(`movieDetails-${currentMovieId}`);
+  } else if (displayType === 'tv') {
+    cachedData = localStorage.getItem(`serieDetails-${currentMovieId}`);
+  }
+
+  // Si les données sont présentes dans le local storage
+  if (cachedData !== null) {
+    detailsData = JSON.parse(cachedData);
+    console.log('utilisation du cache local storage pour', currentMovieId);
+    return detailsData;
+  }
+  // Si nouvelles données, on fait la requête
+  else {
+    detailsData = await fetchMovieDetails(currentMovieId, displayType);
+    console.log('requêtes film détaillé effectué', detailsData);
+
+    // Ajout des données au local storage
+    if (displayType === 'movie') {
+      localStorage.setItem(
+        `movieDetails-${currentMovieId}`,
+        JSON.stringify(detailsData),
+      );
+    } else if (displayType === 'tv') {
+      localStorage.setItem(
+        `serieDetails-${currentMovieId}`,
+        JSON.stringify(detailsData),
+      );
+    }
+    return detailsData;
+  }
 };

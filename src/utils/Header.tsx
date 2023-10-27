@@ -32,8 +32,6 @@ const Header = () => {
   const { displayType, setDisplayType, userId } = useData();
   const navigate = useNavigate();
 
-  console.log('id', userId);
-
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );

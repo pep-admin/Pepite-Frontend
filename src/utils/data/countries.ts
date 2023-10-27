@@ -270,7 +270,7 @@ export const continents = [
 ];
 
 // Liste des pays
-export const countries = [
+export const countriesList = [
   {
     iso_3166_1: 'AF',
     english_name: 'Afghanistan',

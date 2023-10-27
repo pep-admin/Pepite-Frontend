@@ -2,29 +2,71 @@
 import {
   Box,
   TextField,
-  List,
   ListItem,
   ListItemAvatar,
   Avatar,
   ListItemText,
   Typography,
   Divider,
+  Menu,
+  Fade,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { searchMulti } from './request/swipe/fetchData';
 
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+
+// Import des icônes
 import { MagnifyingGlassIcon } from './styledComponent';
 
+// Import de la fonction pour récupérer le détail d'un film / série
+import { getMovieDetails } from './request/getMovieDetails';
+
 const SearchBar = ({ Item, page }) => {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const { displayType, setChosenMovie } = useData();
+
+  const [error, setError] = useState({ message: null, error: null });
+
+  const [query, setQuery] = useState(''); // Texte saisi par l'utilisateur
+  const [results, setResults] = useState([]); // Les résultats de la recherche
+
+  const [idChoice, setIdChoice] = useState(null); // L'id du film / série recherché
+  // const [generalRatings, setGeneralRatings] = useState(0); // Note générale
+  const [displayResults, setDisplayResults] = useState(null); // Affiche ou non les résultats
+  const containerRef = useRef(null);
+  const openResults = Boolean(displayResults);
+
+  const handleDisplayResults = () => {
+    setDisplayResults(containerRef.current);
+  };
+
+  const handleChoice = id => {
+    setIdChoice(id);
+  };
+
+  // TODO : changer la requête de recherche movie / tv
+  const getChosenMovie = async id => {
+    try {
+      const movieData = await getMovieDetails(displayType, id);
+      setChosenMovie(movieData);
+      // if (page !== 'profil') {
+      //   setGeneralRatings(movieData[0].vote_average);
+      // }
+    } catch (err) {
+      setError({
+        message: "Une erreur s'est produite lors de la recherche",
+        error: err,
+      });
+    }
+  };
 
   useEffect(() => {
     // Fonction débouncing
     const timeoutId = setTimeout(async () => {
       if (query) {
-        const searchResults = await searchMulti(query);
+        const searchResults = await searchMulti(query, displayType);
         setResults(searchResults);
       } else {
         setResults([]); // Si la requête est vide, on réinitialise les résultats
@@ -38,8 +80,18 @@ const SearchBar = ({ Item, page }) => {
     console.log('les résultats', results);
   }, [results]);
 
+  useEffect(() => {
+    if (idChoice) {
+      getChosenMovie(idChoice);
+    }
+  }, [idChoice]);
+
   return (
-    <Box component="form" marginTop={page === 'profil' ? '6px' : '0'}>
+    <Box
+      component="form"
+      ref={containerRef}
+      marginTop={page === 'profil' ? '6px' : '0'}
+    >
       <Item
         sx={{
           position: 'relative',
@@ -75,7 +127,9 @@ const SearchBar = ({ Item, page }) => {
         <TextField
           id="filled-basic"
           label={
-            page === 'profil'
+            error.message
+              ? `${error.message}`
+              : page === 'profil'
               ? 'Notez un film ou une série !'
               : 'Rechercher un film, une série, une personne'
           }
@@ -85,7 +139,10 @@ const SearchBar = ({ Item, page }) => {
             width: page === 'profil' ? 'calc(100% - 152px)' : '250px',
           }}
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={e => {
+            handleDisplayResults();
+            setQuery(e.target.value);
+          }}
         />
         <Box
           position="absolute"
@@ -106,22 +163,35 @@ const SearchBar = ({ Item, page }) => {
         </Box>
       </Item>
       {results.length > 0 ? (
-        <List
-          sx={{
-            width: '80%',
-            maxWidth: 360,
-            maxHeight: 185,
-            margin: '0 10%',
-            position: 'absolute',
-            zIndex: 1,
-            backgroundColor: '#f1f1f1',
-            overflowY: 'scroll',
+        <Menu
+          id="basic-menu"
+          anchorEl={displayResults}
+          open={openResults}
+          onClose={() => setDisplayResults(null)}
+          TransitionComponent={Fade}
+          disableAutoFocus={true}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+            sx: {
+              padding: '0',
+              width: '100%',
+              maxHeight: 185,
+              zIndex: 1,
+              backgroundColor: '#f1f1f1',
+              overflowY: 'scroll',
+            },
           }}
         >
           {results.map(result => {
             return (
               <Box key={result.id}>
-                <ListItem sx={{ display: 'flex' }}>
+                <ListItem
+                  onClick={() => {
+                    handleChoice(result.id);
+                    setDisplayResults(null);
+                  }}
+                  sx={{ display: 'flex' }}
+                >
                   <ListItemAvatar>
                     <Avatar
                       alt={result.title || result.name}
@@ -173,7 +243,7 @@ const SearchBar = ({ Item, page }) => {
               </Box>
             );
           })}
-        </List>
+        </Menu>
       ) : null}
     </Box>
   );

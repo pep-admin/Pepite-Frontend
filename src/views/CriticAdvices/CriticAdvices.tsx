@@ -161,7 +161,12 @@ const CriticAdvices = () => {
               flexWrap: 'wrap',
             }}
           >
-            <Box marginBottom="7px" display="flex" flexGrow="1">
+            <Box
+              marginBottom={displayOverwiew ? '7px' : '0'}
+              display="flex"
+              flexGrow="1"
+              sx={{ transition: 'margin-bottom 0.5s ease-in-out' }}
+            >
               <CardActionArea sx={{ height: '100px', width: 'auto' }}>
                 <CardMedia
                   component="img"

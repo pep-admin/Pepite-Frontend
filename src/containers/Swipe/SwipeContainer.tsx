@@ -3,16 +3,14 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Imports internes
 import SwipeComponent from '@views/Swipe/SwipeComponent';
-import {
-  fetchMovieDetails,
-  fetchTwentyMovies,
-} from '@utils/request/swipe/fetchData';
+import { fetchTwentyMovies } from '@utils/request/swipe/getMoviesSwipe';
 import { useData } from '@hooks/DataContext';
 
 import {
   findCertificationFr,
   findIsoCountry,
 } from '@utils/functions/findInfos';
+import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
@@ -125,61 +123,31 @@ const SwipeContainer = () => {
     if (movies.length === 0 || currentMovieIndex === -1) return;
 
     const currentMovieId = movies[currentMovieIndex].id;
-    if (currentMovieId === null) return;
-
-    const getMovieDetails = async () => {
-      try {
-        let detailsData;
-        let cachedData = null;
-
-        if (displayType === 'movie') {
-          cachedData = localStorage.getItem(`movieDetails-${currentMovieId}`);
-        } else if (displayType === 'tv') {
-          cachedData = localStorage.getItem(`serieDetails-${currentMovieId}`);
-        }
-
-        // Si les données sont présentes dans le local storage
-        if (cachedData !== null) {
-          detailsData = JSON.parse(cachedData);
-          console.log(
-            'utilisation du cache local storage pour',
+    if (currentMovieId) {
+      const fetchMovieDetails = async () => {
+        setLoading({ ...loading, details: true });
+        try {
+          const detailsData = await getMovieDetails(
+            displayType,
             currentMovieId,
           );
+          setMovieDetail(detailsData);
+          setGeneralRatings(detailsData[0].vote_average);
+        } catch (err) {
+          setError({
+            message: 'Erreur dans la récupération des détails du film.',
+            error: err,
+          });
+        } finally {
+          setLoading(prevLoading => ({
+            ...prevLoading,
+            details: false,
+          }));
         }
-        // Si nouvelles données, on fait la requête
-        else {
-          detailsData = await fetchMovieDetails(currentMovieId, displayType);
-          console.log('requêtes film détaillé effectué', detailsData);
+      };
 
-          // Ajout des données au local storage
-          if (displayType === 'movie') {
-            localStorage.setItem(
-              `movieDetails-${currentMovieId}`,
-              JSON.stringify(detailsData),
-            );
-          } else if (displayType === 'tv') {
-            localStorage.setItem(
-              `serieDetails-${currentMovieId}`,
-              JSON.stringify(detailsData),
-            );
-          }
-        }
-
-        setMovieDetail(detailsData);
-        setGeneralRatings(detailsData[0].vote_average);
-      } catch (err) {
-        setError({
-          message: 'Erreur dans la récupération des détails du film.',
-          error: err,
-        });
-      } finally {
-        setLoading(prevLoading => ({
-          movies: prevLoading.movies,
-          details: false,
-        }));
-      }
-    };
-    getMovieDetails();
+      fetchMovieDetails();
+    }
   }, [movies, currentMovieIndex, genreChosen]);
 
   useEffect(() => {

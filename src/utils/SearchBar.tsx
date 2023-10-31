@@ -25,14 +25,15 @@ import { MagnifyingGlassIcon } from './styledComponent';
 import { getMovieDetails } from './request/getMovieDetails';
 
 const SearchBar = ({ Item, page }) => {
-  const { displayType, setChosenMovie } = useData();
+  const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
+    useData();
 
   const [error, setError] = useState({ message: null, error: null });
 
   const [query, setQuery] = useState(''); // Texte saisi par l'utilisateur
   const [results, setResults] = useState([]); // Les résultats de la recherche
 
-  const [idChoice, setIdChoice] = useState(null); // L'id du film / série recherché
+  // const [idChoice, setIdChoice] = useState(null); // L'id du film / série recherché
   // const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [displayResults, setDisplayResults] = useState(null); // Affiche ou non les résultats
   const containerRef = useRef(null);
@@ -43,10 +44,9 @@ const SearchBar = ({ Item, page }) => {
   };
 
   const handleChoice = id => {
-    setIdChoice(id);
+    setChosenMovieId(id);
   };
 
-  // TODO : changer la requête de recherche movie / tv
   const getChosenMovie = async id => {
     try {
       const movieData = await getMovieDetails(displayType, id);
@@ -81,10 +81,10 @@ const SearchBar = ({ Item, page }) => {
   }, [results]);
 
   useEffect(() => {
-    if (idChoice) {
-      getChosenMovie(idChoice);
+    if (chosenMovieId) {
+      getChosenMovie(chosenMovieId);
     }
-  }, [idChoice]);
+  }, [chosenMovieId]);
 
   return (
     <Box

@@ -14,12 +14,18 @@ import Header from '@utils/Header';
 import { Item } from '@utils/styledComponent';
 import ProfilDetails from './ProfilDetails';
 import ProfilSuggestedNotes from './ProfilSuggestedNotes';
-
-import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 import SearchBar from '@utils/SearchBar';
-import CriticAdvices from '@views/CriticAdvices/CriticAdvices';
+import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+
+// Import des icônes
+import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
+
+// Import du contexte
+import { useData } from '@hooks/DataContext';
 
 const ProfilComponent = () => {
+  const { chosenMovie } = useData();
+
   return (
     <>
       <Header />
@@ -150,7 +156,13 @@ const ProfilComponent = () => {
           </Stack>
           <SearchBar Item={Item} page={'profil'} />
           <Stack>
-            <CriticAdvices />
+            {chosenMovie !== null ? (
+              <CriticAdvicesComponent
+                type={'new-critic'}
+                chosenMovie={chosenMovie}
+              />
+            ) : null}
+            <CriticAdvicesComponent type={'old-critic'} chosenMovie={null} />
           </Stack>
         </Stack>
       </Container>

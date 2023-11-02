@@ -1,32 +1,65 @@
 // Import des libs externes
-import { Stack, Typography, CardContent } from '@mui/material';
+import { Stack, Typography, CardContent, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { YellowRating } from '@utils/styledComponent';
+import { GoldNuggetIcon, YellowRating } from '@utils/styledComponent';
 
 const CriticAdvicesContent = ({
   type,
   chosenMovie,
   displayOverview,
   setDisplayOverview,
+  isGoldNugget,
+  setIsGoldNugget,
+  criticInfos,
 }) => {
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
       <Stack>
         <Stack>
-          <Stack direction="row" alignItems="center" columnGap="10px">
-            <Typography
-              variant="body1"
-              fontWeight="bold"
-              component="h5"
-              textAlign="left"
-              color="primary.dark"
+          <Stack direction="column" columnGap="10px">
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
             >
-              {chosenMovie !== null && type === 'new-critic'
-                ? chosenMovie[0].title
-                : 'Seul sur mars'}
-            </Typography>
+              <Typography
+                variant="body1"
+                fontWeight="bold"
+                component="h5"
+                textAlign="left"
+                color="primary.dark"
+              >
+                {chosenMovie !== null && type === 'new-critic'
+                  ? chosenMovie[0].title
+                  : criticInfos.title}
+              </Typography>
+              {type === 'new-critic' ? (
+                <Button
+                  variant="contained"
+                  sx={{
+                    height: '100%',
+                    padding: '2px 6px',
+                    textTransform: 'initial',
+                    borderRadius: '2px',
+                    color: !isGoldNugget ? 'inherit' : '#fff',
+                    backgroundColor: !isGoldNugget
+                      ? '#e5e4e4 !important'
+                      : '#F29E50 !important',
+                  }}
+                  onClick={() => setIsGoldNugget(!isGoldNugget)}
+                >
+                  <GoldNuggetIcon
+                    sx={{ fontSize: '15px', marginRight: '5px' }}
+                  />
+                  <Typography variant="body2" component="p">
+                    {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
+                  </Typography>
+                </Button>
+              ) : null}
+            </Stack>
+
             <Stack direction="row" columnGap="5px">
               <YellowRating
                 value={4.5}
@@ -126,6 +159,9 @@ CriticAdvicesContent.propTypes = {
   chosenMovie: PropTypes.oneOfType([PropTypes.array, PropTypes.oneOf([null])]),
   displayOverview: PropTypes.bool.isRequired,
   setDisplayOverview: PropTypes.func.isRequired,
+  criticInfos: PropTypes.array.isRequired,
+  isGoldNugget: PropTypes.bool.isRequired,
+  setIsGoldNugget: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesContent;

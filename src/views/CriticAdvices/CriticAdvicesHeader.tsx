@@ -32,6 +32,7 @@ const CriticAdvicesHeader = ({
   setDisplayRatings,
   newRating,
   setNewRating,
+  criticInfos,
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
@@ -78,7 +79,9 @@ const CriticAdvicesHeader = ({
       </Typography>
       <Box display="flex" alignItems="center" columnGap="5px">
         <OrangeRating
-          value={type === 'new-critic' ? newRating : 4}
+          value={
+            type === 'new-critic' ? newRating : parseFloat(criticInfos.rating)
+          }
           precision={0.5}
           readOnly
           sx={{ position: 'relative', bottom: '0.5px' }}
@@ -173,7 +176,9 @@ const CriticAdvicesHeader = ({
           </>
         ) : null}
         <Typography variant="body2" component="p" fontWeight="bold">
-          {type === 'new-critic' ? ' / 5' : '4 / 5'}
+          {type === 'new-critic' && !criticInfos
+            ? ' / 5'
+            : `${criticInfos.rating} / 5`}
         </Typography>
       </Box>
       <Box
@@ -279,6 +284,7 @@ CriticAdvicesHeader.propTypes = {
   setDisplayRatings: PropTypes.func.isRequired,
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   setNewRating: PropTypes.func.isRequired,
+  criticInfos: PropTypes.array.isRequired,
 };
 
 export default CriticAdvicesHeader;

@@ -7,8 +7,13 @@ import {
   Box,
   Avatar,
   Typography,
+  Alert,
+  AlertTitle,
+  Button,
 } from '@mui/material';
 import Header from '@utils/Header';
+import { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Import des composants internes
 import { Item } from '@utils/styledComponent';
@@ -22,9 +27,40 @@ import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const ProfilComponent = () => {
+  const { id } = useParams();
   const { chosenMovie } = useData();
+
+  const [userCritics, setUserCritics] = useState([]);
+
+  const [newCriticError, setNewCriticError] = useState({
+    error: null,
+    message: null,
+  });
+  const [newCriticInfo, setNewCriticInfo] = useState({
+    info: null,
+    message: null,
+  });
+  const [newCriticSuccess, setNewCriticSuccess] = useState({
+    success: null,
+    message: null,
+  });
+
+  const fetchCritics = useCallback(async () => {
+    try {
+      const criticData = await getAllCriticsOfUser(id);
+      console.log(criticData);
+      setUserCritics(criticData);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCritics();
+  }, [fetchCritics]);
 
   return (
     <>
@@ -160,9 +196,84 @@ const ProfilComponent = () => {
               <CriticAdvicesComponent
                 type={'new-critic'}
                 chosenMovie={chosenMovie}
+                setNewCriticError={setNewCriticError}
+                setNewCriticInfo={setNewCriticInfo}
+                setNewCriticSuccess={setNewCriticSuccess}
+                criticInfos={null}
               />
             ) : null}
-            <CriticAdvicesComponent type={'old-critic'} chosenMovie={null} />
+            {newCriticError.error &&
+            !newCriticSuccess.success &&
+            !newCriticInfo.info ? (
+              <Item margintop="6px">
+                <Alert
+                  severity="error"
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                  {newCriticError.message}
+                </Alert>
+              </Item>
+            ) : !newCriticError.error &&
+              newCriticSuccess.success &&
+              !newCriticInfo.info ? (
+              <Item margintop="6px">
+                <Alert
+                  severity="success"
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                  {newCriticSuccess.message}
+                </Alert>
+              </Item>
+            ) : !newCriticError.error &&
+              !newCriticSuccess.success &&
+              newCriticInfo.info ? (
+              <Item margintop="6px">
+                <Alert
+                  severity="info"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    textAlign: 'left',
+                  }}
+                >
+                  <AlertTitle
+                    sx={{
+                      display: 'flex',
+                      marginBottom: '0',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {'Critique déjà existante'}
+                  </AlertTitle>
+                  {'Souhaitez vous la remplacer par cette nouvelle critique ?'}
+                  <Stack direction="row" justifyContent="center">
+                    <Button>{'Remplacer'}</Button>
+                    <Button
+                      onClick={() =>
+                        setNewCriticInfo({ info: false, message: null })
+                      }
+                    >
+                      {'Annuler'}
+                    </Button>
+                  </Stack>
+                </Alert>
+              </Item>
+            ) : null}
+            {userCritics.length > 0
+              ? userCritics.map(critic => {
+                  return (
+                    <CriticAdvicesComponent
+                      key={critic.id}
+                      type={'old-critic'}
+                      chosenMovie={null}
+                      setNewCriticError={null}
+                      setNewCriticInfo={null}
+                      setNewCriticSuccess={null}
+                      criticInfos={critic}
+                    />
+                  );
+                })
+              : null}
           </Stack>
         </Stack>
       </Container>

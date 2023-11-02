@@ -12,6 +12,9 @@ import {
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+
 // Import des composants customisés
 import { Item } from '@utils/styledComponent';
 
@@ -20,26 +23,60 @@ import CriticAdvicesHeader from './CriticAdvicesHeader';
 import CriticAdvicesContent from './CriticAdvicesContent';
 import CriticAdvicesReview from './CriticAdvicesReview';
 import CriticAdvicesFooter from './CriticAdvicesFooter';
+import { addNewCritic } from '@utils/request/critics/postCritic';
 
-const CriticAdvicesComponent = ({ type, chosenMovie }) => {
+const CriticAdvicesComponent = ({
+  type,
+  chosenMovie,
+  setNewCriticError,
+  setNewCriticInfo,
+  setNewCriticSuccess,
+  criticInfos,
+}) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
   const [newCriticText, setNewCriticText] = useState(''); // Nouveau texte de critique
+  const [isGoldNugget, setIsGoldNugget] = useState(false); // Pépite ou non
 
   const [displayRatings, setDisplayRatings] = useState(null);
   const ratingsHeaderRef = useRef(null);
 
-  const submitNewReview = () => {
-    const newReview = {
-      rating: newRating,
-      text: newCriticText,
-    };
+  const { displayType, setChosenMovieId, setChosenMovie } = useData();
 
-    console.log(newReview);
+  const submitNewReview = async () => {
+    try {
+      await addNewCritic(
+        chosenMovie[0].id,
+        displayType,
+        newRating,
+        newCriticText,
+        isGoldNugget,
+      );
+
+      setNewCriticError({ error: false, message: null });
+      setNewCriticInfo({ info: false, message: null });
+      setNewCriticSuccess({
+        success: true,
+        message: 'Critique ajoutée avec succès !',
+      });
+    } catch (error) {
+      console.log('erreur', error);
+      if (error.response.status === 409) {
+        setNewCriticInfo({ info: true, message: error.response.data });
+        setNewCriticError({ error: false, message: null });
+        setNewCriticSuccess({ success: false, message: null });
+      } else {
+        setNewCriticError({ error: true, message: error.response.data });
+        setNewCriticInfo({ info: false, message: null });
+        setNewCriticSuccess({ success: false, message: null });
+      }
+    }
+    setChosenMovieId(null);
+    setChosenMovie(null);
   };
 
   useEffect(() => {
-    console.log('la ref', ratingsHeaderRef.current);
+    console.log('les infos', criticInfos);
   }, []);
 
   return (
@@ -52,6 +89,7 @@ const CriticAdvicesComponent = ({ type, chosenMovie }) => {
           setDisplayRatings={setDisplayRatings}
           newRating={newRating}
           setNewRating={setNewRating}
+          criticInfos={criticInfos}
         />
         <Divider />
         <Stack padding="7px 10px">
@@ -74,11 +112,11 @@ const CriticAdvicesComponent = ({ type, chosenMovie }) => {
               <CardActionArea sx={{ height: '100px', width: 'auto' }}>
                 <CardMedia
                   component="img"
-                  height="100%"
+                  height="120px"
                   image={
                     chosenMovie !== null
                       ? `https://image.tmdb.org/t/p/w500/${chosenMovie[0].poster_path}`
-                      : 'http://127.0.0.1:5173/images/mars.jpg'
+                      : `https://image.tmdb.org/t/p/w500/${criticInfos.poster_path}`
                   }
                   alt="green iguana"
                   sx={{
@@ -92,6 +130,9 @@ const CriticAdvicesComponent = ({ type, chosenMovie }) => {
                 chosenMovie={chosenMovie}
                 displayOverview={displayOverwiew}
                 setDisplayOverview={setDisplayOverview}
+                isGoldNugget={isGoldNugget}
+                setIsGoldNugget={setIsGoldNugget}
+                criticInfos={criticInfos}
               />
             </Box>
             <Stack
@@ -116,12 +157,13 @@ const CriticAdvicesComponent = ({ type, chosenMovie }) => {
               >
                 {chosenMovie && type === 'new-critic'
                   ? chosenMovie[0].overview
-                  : "L'astronaute Roy McBride s'aventure jusqu'aux confins du système solaire à la recherche de son père disparu et pour résoudre un mystère qui menace la survie de notre planète."}
+                  : criticInfos.overview}
               </Typography>
             </Stack>
             <CriticAdvicesReview
               type={type}
               setNewCriticText={setNewCriticText}
+              criticInfos={criticInfos}
             />
             {type === 'new-critic' ? (
               <Stack direction="row" flexBasis="100%" justifyContent="center">
@@ -158,6 +200,10 @@ const CriticAdvicesComponent = ({ type, chosenMovie }) => {
 CriticAdvicesComponent.propTypes = {
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.array, PropTypes.oneOf([null])]),
+  setNewCriticError: PropTypes.func.isRequired,
+  setNewCriticInfo: PropTypes.func.isRequired,
+  setNewCriticSuccess: PropTypes.func.isRequired,
+  criticInfos: PropTypes.array.isRequired,
 };
 
 export default CriticAdvicesComponent;

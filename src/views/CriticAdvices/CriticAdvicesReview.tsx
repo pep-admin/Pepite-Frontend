@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 
-const CriticAdvicesReview = ({ type, setNewCriticText }) => {
+const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
   function customTextArea() {
     return (
       <FormControl variant="outlined" fullWidth sx={{ height: '100%' }}>
@@ -70,7 +70,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText }) => {
       />
       <Box
         height={type === 'new-critic' ? '100%' : '50px'}
-        padding={type === 'new-critic' ? '0' : '15px 10px 0 20px'}
+        padding={type === 'new-critic' ? '0' : '7px 10px 0 20px'}
         display="flex"
         alignItems="center"
         flexGrow="1"
@@ -86,7 +86,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText }) => {
             fontStyle="italic"
           >
             <Typography variant="body2" component="p">
-              {'Une belle aventure martienne'}
+              {`${criticInfos.text}`}
             </Typography>
             <Typography variant="body2" component="cite" fontWeight="bold">
               {'- Kate Austen -'}
@@ -116,6 +116,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText }) => {
 CriticAdvicesReview.propTypes = {
   type: PropTypes.string.isRequired,
   setNewCriticText: PropTypes.func.isRequired,
+  criticInfos: PropTypes.array.isRequired,
 };
 
 export default CriticAdvicesReview;

@@ -17,8 +17,11 @@ import { useState } from 'react';
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { FollowerIcon } from '@utils/styledComponent';
-import { FollowedIcon } from '@utils/styledComponent';
+import {
+  FollowerIcon,
+  FollowedIcon,
+  GoldNuggetIcon,
+} from '@utils/styledComponent';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 
 const ProfilDetails = () => {
@@ -89,10 +92,7 @@ const ProfilDetails = () => {
                   marginRight: '5px',
                 }}
               >
-                <img
-                  src="http://127.0.0.1:5173/images/gold_nugget.png"
-                  alt="pepite d'or"
-                />
+                <GoldNuggetIcon sx={{ fontSize: '18px' }} />
               </ListItemIcon>
               <Typography
                 component="p"

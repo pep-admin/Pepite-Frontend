@@ -159,7 +159,7 @@ CriticAdvicesContent.propTypes = {
   chosenMovie: PropTypes.oneOfType([PropTypes.array, PropTypes.oneOf([null])]),
   displayOverview: PropTypes.bool.isRequired,
   setDisplayOverview: PropTypes.func.isRequired,
-  criticInfos: PropTypes.array.isRequired,
+  criticInfos: PropTypes.object.isRequired,
   isGoldNugget: PropTypes.bool.isRequired,
   setIsGoldNugget: PropTypes.func.isRequired,
 };

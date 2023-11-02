@@ -116,7 +116,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
 CriticAdvicesReview.propTypes = {
   type: PropTypes.string.isRequired,
   setNewCriticText: PropTypes.func.isRequired,
-  criticInfos: PropTypes.array.isRequired,
+  criticInfos: PropTypes.object.isRequired,
 };
 
 export default CriticAdvicesReview;

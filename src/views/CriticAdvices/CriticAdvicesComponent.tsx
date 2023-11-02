@@ -200,10 +200,10 @@ const CriticAdvicesComponent = ({
 CriticAdvicesComponent.propTypes = {
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.array, PropTypes.oneOf([null])]),
-  setNewCriticError: PropTypes.func.isRequired,
-  setNewCriticInfo: PropTypes.func.isRequired,
-  setNewCriticSuccess: PropTypes.func.isRequired,
-  criticInfos: PropTypes.array.isRequired,
+  setNewCriticError: PropTypes.func,
+  setNewCriticInfo: PropTypes.func,
+  setNewCriticSuccess: PropTypes.func,
+  criticInfos: PropTypes.object.isRequired,
 };
 
 export default CriticAdvicesComponent;

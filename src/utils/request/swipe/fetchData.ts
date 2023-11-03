@@ -1,4 +1,3 @@
-import { getAllLocalStorage } from '@utils/functions/getAllLocalStorage';
 import axios from 'axios';
 
 // Insertion d'un film dans la liste des déjà vus
@@ -29,19 +28,6 @@ export const removeSeenMovie = async (movieId: number, type: string) => {
 // Déconnexion de l'utilisateur
 export const handleLogout = async () => {
   try {
-    // Étape 1: Stocker les données
-    const localStorageData = getAllLocalStorage();
-    const response = await axios.post(
-      'http://localhost:8800/api/movies/store_details',
-      localStorageData,
-      { withCredentials: true },
-    );
-
-    if (response.status !== 200) {
-      throw new Error('Impossible de stocker les données');
-    }
-
-    // Étape 2: Déconnexion de l'utilisateur
     const logoutResponse = await axios.post(
       'http://localhost:8800/api/auth/logout',
       {},

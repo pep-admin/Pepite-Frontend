@@ -19,6 +19,7 @@ const SwipeComponent = ({
   movies,
   setMovies,
   movieDetail,
+  nextMovieDetail,
   generalRatings,
   error,
   loading,
@@ -143,10 +144,6 @@ const SwipeComponent = ({
 
   const [cards, setCards] = useState(initialCards);
 
-  useEffect(() => {
-    console.log('les cards', cards);
-  }, [cards]);
-
   // Si l'utilisateur change de film à série et inversement, on reset les animations
   useEffect(() => {
     if (prevDisplayTypeRef.current !== displayType) {
@@ -270,14 +267,16 @@ const SwipeComponent = ({
             borderRadius="10px"
             boxShadow="0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)"
           >
-            {cards.map(card => (
+            {cards.map((card, index) => (
               <SwipeCard
                 key={card.id}
                 id={card.id}
                 Item={Item}
                 movies={movies}
                 setMovies={setMovies}
-                movieDetail={movieDetail}
+                movieDetail={
+                  index === cards.length - 1 ? nextMovieDetail : movieDetail
+                }
                 generalRatings={generalRatings}
                 error={error}
                 loading={loading}
@@ -324,7 +323,8 @@ const SwipeComponent = ({
 SwipeComponent.propTypes = {
   movies: PropTypes.array.isRequired,
   setMovies: PropTypes.func.isRequired,
-  movieDetail: PropTypes.array.isRequired,
+  movieDetail: PropTypes.object.isRequired,
+  nextMovieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
   error: PropTypes.shape({
     message: PropTypes.string,

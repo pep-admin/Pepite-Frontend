@@ -82,15 +82,17 @@ const CriticAdvicesContent = ({
               {'Type :'}
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
-              {chosenMovie !== null &&
-              'release_date' in chosenMovie[0] &&
-              type === 'new-critic'
+              {(chosenMovie !== null &&
+                'release_date' in chosenMovie[0] &&
+                type === 'new-critic') ||
+              ('release_date' in criticInfos && type === 'old-critic')
                 ? 'film'
-                : chosenMovie !== null &&
-                  'first_air_date' in chosenMovie[0] &&
-                  type === 'new-critic'
+                : (chosenMovie !== null &&
+                    'first_air_date' in chosenMovie[0] &&
+                    type === 'new-critic') ||
+                  ('first_air_date' in criticInfos && type === 'old-critic')
                 ? 'série'
-                : 'Seul sur mars'}
+                : null}
             </Typography>
           </Stack>
           <Stack direction="row">

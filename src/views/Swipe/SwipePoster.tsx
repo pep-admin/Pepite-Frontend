@@ -305,7 +305,7 @@ const SwipePoster = ({
 const SwipePosterPropTypes = {
   movies: PropTypes.array.isRequired,
   setMovies: PropTypes.func.isRequired,
-  movieDetail: PropTypes.array.isRequired,
+  movieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number.isRequired,

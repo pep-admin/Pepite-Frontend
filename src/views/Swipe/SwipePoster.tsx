@@ -51,15 +51,15 @@ const SwipePoster = ({
 
   const handleMovieSeen = () => {
     if (!isMovieSeenRef.current && !movies[index].is_already_seen) {
-      addSeenMovie(movieDetail[0].id, displayType);
+      addSeenMovie(movieDetail.id, displayType);
       isMovieSeenRef.current = true;
     } else {
-      removeSeenMovie(movieDetail[0].id, displayType);
+      removeSeenMovie(movieDetail.id, displayType);
       isMovieSeenRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies
     const updatedMovies = movies.map(movie => {
-      if (movie.id === movieDetail[0].id) {
+      if (movie.id === movieDetail.id) {
         return { ...movie, is_already_seen: isMovieSeenRef.current };
       }
       return movie;
@@ -70,15 +70,15 @@ const SwipePoster = ({
 
   const handleDeleteMovie = () => {
     if (!isMovieDeletedRef.current && !movies[index].is_deleted) {
-      addUnwantedMovie(movieDetail[0].id, displayType);
+      addUnwantedMovie(movieDetail.id, displayType);
       isMovieDeletedRef.current = true;
     } else {
-      cancelDeletedMovie(movieDetail[0].id, displayType);
+      cancelDeletedMovie(movieDetail.id, displayType);
       isMovieDeletedRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies
     const updatedMovies = movies.map(movie => {
-      if (movie.id === movieDetail[0].id) {
+      if (movie.id === movieDetail.id) {
         return { ...movie, is_deleted: isMovieDeletedRef.current };
       }
       return movie;
@@ -88,9 +88,9 @@ const SwipePoster = ({
   };
 
   useEffect(() => {
-    if (movieDetail[0] && currentMovieId !== movieDetail[0].id) {
+    if (movieDetail && currentMovieId !== movieDetail.id) {
       isMovieSeenRef.current = false; // Réinitialisation à false lorsque le film change
-      setCurrentMovieId(movieDetail[0].id); // Id du film actuel
+      setCurrentMovieId(movieDetail.id); // Id du film actuel
     }
   }, [movieDetail, currentMovieId]);
 

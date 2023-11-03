@@ -203,7 +203,7 @@ CriticAdvicesComponent.propTypes = {
   setNewCriticError: PropTypes.func,
   setNewCriticInfo: PropTypes.func,
   setNewCriticSuccess: PropTypes.func,
-  criticInfos: PropTypes.object.isRequired,
+  criticInfos: PropTypes.object,
 };
 
 export default CriticAdvicesComponent;

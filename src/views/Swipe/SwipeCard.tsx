@@ -375,13 +375,13 @@ const SwipeCard = ({
   );
 };
 
-const SwipeCardPropTypes = {
+SwipeCard.propTypes = {
   id: PropTypes.string.isRequired,
   Item: PropTypes.elementType.isRequired,
   index: PropTypes.number.isRequired,
   movies: PropTypes.array.isRequired,
   setMovies: PropTypes.func.isRequired,
-  movieDetail: PropTypes.array.isRequired,
+  movieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
   error: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
@@ -391,7 +391,5 @@ const SwipeCardPropTypes = {
   cardProps: PropTypes.object.isRequired,
   certification: PropTypes.object.isRequired,
 };
-
-SwipeCard.propTypes = SwipeCardPropTypes;
 
 export default SwipeCard;

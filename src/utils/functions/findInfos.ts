@@ -17,15 +17,12 @@ export function findCertificationFr(type, movieDetail) {
   let certification;
 
   if (type === 'movie') {
-    frenchRelease = movieDetail[0].release_dates.results.find(
+    frenchRelease = movieDetail.release_dates.results.find(
       entry => entry.iso_3166_1 === 'FR',
     );
-    usRelease = movieDetail[0].release_dates.results.find(
+    usRelease = movieDetail.release_dates.results.find(
       entry => entry.iso_3166_1 === 'US',
     );
-
-    // console.log('fr', frenchRelease);
-    // console.log('us', usRelease);
 
     // Si frenchRelease existe et a des dates de sortie
     if (frenchRelease && frenchRelease.release_dates.length) {
@@ -60,9 +57,6 @@ export function findCertificationFr(type, movieDetail) {
       entry => entry.iso_3166_1 === 'US',
     );
 
-    // console.log('fr', frenchRelease);
-    // console.log('us', usRelease);
-
     // Si frenchRelease existe et a des dates de sortie
     if (
       frenchRelease &&
@@ -81,7 +75,6 @@ export function findCertificationFr(type, movieDetail) {
   let imgUrl = '';
   let alt = '';
 
-  // Maintenant, utilisez la variable "certification" dans votre logique de traitement, par exemple pour définir "imgUrl" et "alt"
   if (certification) {
     // Votre logique de traitement, par exemple:
     switch (certification) {

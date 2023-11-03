@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 // Import du contexte movie / tv
 import { useData } from '@hooks/DataContext';
+import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
 
 const SwipeContent = ({ movieDetail, movies, index }) => {
   const { displayType } = useData();
@@ -51,9 +52,9 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Genre :'}
             </Typography>
             <Typography variant="body2">
-              {movieDetail[0].genres.length === 0
+              {movieDetail.genres.length === 0
                 ? 'Non spécifié'
-                : movieDetail[0].genres.map(genre => genre.name).join(', ')}
+                : movieDetail.genres.map(genre => genre.name).join(', ')}
             </Typography>
           </Box>
           <Box>
@@ -68,12 +69,12 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
             </Typography>
             <Typography variant="body2">
               {displayType === 'movie' &&
-              movieDetail[0].release_date &&
-              movieDetail[0].release_date !== ''
-                ? movieDetail[0].release_date.split('-')[0]
-                : displayType === 'tv' && movieDetail[0].first_air_date
-                ? movieDetail[0].first_air_date.split('-')[0]
-                : displayType === 'tv' && movieDetail[0].first_air_date === null
+              movieDetail.release_date &&
+              movieDetail.release_date !== ''
+                ? movieDetail.release_date.split('-')[0]
+                : displayType === 'tv' && movieDetail.first_air_date
+                ? movieDetail.first_air_date.split('-')[0]
+                : displayType === 'tv' && movieDetail.first_air_date === null
                 ? 'Non spécifié'
                 : 'Non spécifié'}
             </Typography>
@@ -88,7 +89,11 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
             >
               {'Pays :'}
             </Typography>
-            <Typography variant="body2">{movieDetail[1].join(', ')}</Typography>
+            <Typography variant="body2">
+              {findFrenchNameCountry(movieDetail.production_countries).join(
+                ', ',
+              )}
+            </Typography>
           </Box>
         </Stack>
       </Stack>
@@ -103,12 +108,10 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
   );
 };
 
-const SwipeContentPropTypes = {
+SwipeContent.propTypes = {
   index: PropTypes.number.isRequired,
   movies: PropTypes.array.isRequired,
-  movieDetail: PropTypes.array.isRequired,
+  movieDetail: PropTypes.object.isRequired,
 };
-
-SwipeContent.propTypes = SwipeContentPropTypes;
 
 export default SwipeContent;

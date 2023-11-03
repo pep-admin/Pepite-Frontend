@@ -77,10 +77,6 @@ const SearchBar = ({ Item, page }) => {
   }, [query]);
 
   useEffect(() => {
-    console.log('les résultats', results);
-  }, [results]);
-
-  useEffect(() => {
     if (chosenMovieId) {
       getChosenMovie(chosenMovieId);
     }

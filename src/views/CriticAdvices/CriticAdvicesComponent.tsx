@@ -9,7 +9,7 @@ import {
   CardMedia,
   Button,
 } from '@mui/material';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 // Import du contexte
@@ -24,10 +24,12 @@ import CriticAdvicesContent from './CriticAdvicesContent';
 import CriticAdvicesReview from './CriticAdvicesReview';
 import CriticAdvicesFooter from './CriticAdvicesFooter';
 import { addNewCritic } from '@utils/request/critics/postCritic';
+import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const CriticAdvicesComponent = ({
   type,
   chosenMovie,
+  setUserCritics,
   setNewCriticError,
   setNewCriticInfo,
   setNewCriticSuccess,
@@ -41,12 +43,12 @@ const CriticAdvicesComponent = ({
   const [displayRatings, setDisplayRatings] = useState(null);
   const ratingsHeaderRef = useRef(null);
 
-  const { displayType, setChosenMovieId, setChosenMovie } = useData();
+  const { displayType, userId, setChosenMovieId, setChosenMovie } = useData();
 
   const submitNewReview = async () => {
     try {
       await addNewCritic(
-        chosenMovie[0].id,
+        chosenMovie.id,
         displayType,
         newRating,
         newCriticText,
@@ -59,8 +61,11 @@ const CriticAdvicesComponent = ({
         success: true,
         message: 'Critique ajoutée avec succès !',
       });
+
+      const newCriticsData = await getAllCriticsOfUser(userId);
+
+      setUserCritics(newCriticsData);
     } catch (error) {
-      console.log('erreur', error);
       if (error.response.status === 409) {
         setNewCriticInfo({ info: true, message: error.response.data });
         setNewCriticError({ error: false, message: null });
@@ -74,10 +79,6 @@ const CriticAdvicesComponent = ({
     setChosenMovieId(null);
     setChosenMovie(null);
   };
-
-  useEffect(() => {
-    console.log('les infos', criticInfos);
-  }, []);
 
   return (
     <Item margintop="6px">
@@ -105,17 +106,25 @@ const CriticAdvicesComponent = ({
           >
             <Box
               marginBottom={displayOverwiew ? '7px' : '0'}
+              minHeight="120px"
               display="flex"
               flexGrow="1"
               sx={{ transition: 'margin-bottom 0.5s ease-in-out' }}
             >
-              <CardActionArea sx={{ height: '100px', width: 'auto' }}>
+              <CardActionArea
+                sx={{
+                  height: '100%',
+                  width: 'auto',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                }}
+              >
                 <CardMedia
                   component="img"
                   height="120px"
                   image={
                     chosenMovie !== null
-                      ? `https://image.tmdb.org/t/p/w500/${chosenMovie[0].poster_path}`
+                      ? `https://image.tmdb.org/t/p/w500/${chosenMovie.poster_path}`
                       : `https://image.tmdb.org/t/p/w500/${criticInfos.poster_path}`
                   }
                   alt="green iguana"
@@ -156,7 +165,7 @@ const CriticAdvicesComponent = ({
                 paddingLeft="10px"
               >
                 {chosenMovie && type === 'new-critic'
-                  ? chosenMovie[0].overview
+                  ? chosenMovie.overview
                   : criticInfos.overview}
               </Typography>
             </Stack>
@@ -199,7 +208,8 @@ const CriticAdvicesComponent = ({
 
 CriticAdvicesComponent.propTypes = {
   type: PropTypes.string.isRequired,
-  chosenMovie: PropTypes.oneOfType([PropTypes.array, PropTypes.oneOf([null])]),
+  chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),
+  setUserCritics: PropTypes.func,
   setNewCriticError: PropTypes.func,
   setNewCriticInfo: PropTypes.func,
   setNewCriticSuccess: PropTypes.func,

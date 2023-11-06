@@ -23,6 +23,7 @@ import { MagnifyingGlassIcon } from './styledComponent';
 
 // Import de la fonction pour récupérer le détail d'un film / série
 import { getMovieDetails } from './request/getMovieDetails';
+import { storeDetailsData } from './request/swipe/storeDetailsData';
 
 const SearchBar = ({ Item, page }) => {
   const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
@@ -51,8 +52,11 @@ const SearchBar = ({ Item, page }) => {
     try {
       const movieData = await getMovieDetails(displayType, id);
       setChosenMovie(movieData);
+      console.log('le film choisi', movieData);
+      // Stockage des détails du film dans la DB
+      storeDetailsData(movieData);
       // if (page !== 'profil') {
-      //   setGeneralRatings(movieData[0].vote_average);
+      //   setGeneralRatings(movieData.vote_average);
       // }
     } catch (err) {
       setError({
@@ -81,6 +85,10 @@ const SearchBar = ({ Item, page }) => {
       getChosenMovie(chosenMovieId);
     }
   }, [chosenMovieId]);
+
+  useEffect(() => {
+    console.log('les résultats', results);
+  }, [results]);
 
   return (
     <Box

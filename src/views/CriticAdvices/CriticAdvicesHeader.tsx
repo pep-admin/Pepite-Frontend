@@ -284,7 +284,7 @@ CriticAdvicesHeader.propTypes = {
   setDisplayRatings: PropTypes.func.isRequired,
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   setNewRating: PropTypes.func.isRequired,
-  criticInfos: PropTypes.object.isRequired,
+  criticInfos: PropTypes.object,
 };
 
 export default CriticAdvicesHeader;

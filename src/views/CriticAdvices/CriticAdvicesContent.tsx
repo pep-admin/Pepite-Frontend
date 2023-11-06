@@ -14,6 +14,16 @@ const CriticAdvicesContent = ({
   setIsGoldNugget,
   criticInfos,
 }) => {
+  let originalScore;
+
+  if (type === 'new-critic') originalScore = chosenMovie.vote_average;
+  else {
+    originalScore = criticInfos.vote_average;
+  }
+
+  const scoreOutOfFive = originalScore / 2;
+  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
+
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
       <Stack>
@@ -30,9 +40,12 @@ const CriticAdvicesContent = ({
                 component="h5"
                 textAlign="left"
                 color="primary.dark"
+                sx={{
+                  maxWidth: '160px',
+                }}
               >
                 {chosenMovie !== null && type === 'new-critic'
-                  ? chosenMovie[0].title
+                  ? chosenMovie.title
                   : criticInfos.title}
               </Typography>
               {type === 'new-critic' ? (
@@ -62,13 +75,13 @@ const CriticAdvicesContent = ({
 
             <Stack direction="row" columnGap="5px">
               <YellowRating
-                value={4.5}
-                precision={0.5}
+                value={roundedScore}
+                precision={0.1}
                 readOnly
                 sx={{ position: 'relative', top: '1.4px' }}
               />
               <Typography variant="body2" fontWeight="bold" component="p">
-                {'4.5 / 5'}
+                {`${roundedScore}` + ' / 5'}
               </Typography>
             </Stack>
           </Stack>
@@ -83,12 +96,12 @@ const CriticAdvicesContent = ({
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
               {(chosenMovie !== null &&
-                'release_date' in chosenMovie[0] &&
+                'release_date' in chosenMovie &&
                 type === 'new-critic') ||
               ('release_date' in criticInfos && type === 'old-critic')
                 ? 'film'
                 : (chosenMovie !== null &&
-                    'first_air_date' in chosenMovie[0] &&
+                    'first_air_date' in chosenMovie &&
                     type === 'new-critic') ||
                   ('first_air_date' in criticInfos && type === 'old-critic')
                 ? 'série'
@@ -106,8 +119,8 @@ const CriticAdvicesContent = ({
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
               {chosenMovie !== null && type === 'new-critic'
-                ? chosenMovie[0].genres.map(genre => genre.name).join(', ')
-                : 'Science-fiction'}
+                ? chosenMovie.genres.map(genre => genre.name).join(', ')
+                : criticInfos.genres.map(genre => genre.name).join(', ')}
             </Typography>
           </Stack>
           <Stack direction="row">
@@ -121,14 +134,14 @@ const CriticAdvicesContent = ({
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
               {chosenMovie !== null &&
-              'release_date' in chosenMovie[0] &&
+              'release_date' in chosenMovie &&
               type === 'new-critic'
-                ? chosenMovie[0].release_date.split('-')[0]
+                ? chosenMovie.release_date.split('-')[0]
                 : chosenMovie !== null &&
-                  'first_air_date' in chosenMovie[0] &&
+                  'first_air_date' in chosenMovie &&
                   type === 'new-critic'
-                ? chosenMovie[0].first_air_date.split('-')[0]
-                : '2014'}
+                ? chosenMovie.first_air_date.split('-')[0]
+                : criticInfos.release_date.split('-')[0]}
             </Typography>
           </Stack>
           <Stack direction="row">
@@ -158,10 +171,10 @@ const CriticAdvicesContent = ({
 
 CriticAdvicesContent.propTypes = {
   type: PropTypes.string.isRequired,
-  chosenMovie: PropTypes.oneOfType([PropTypes.array, PropTypes.oneOf([null])]),
+  chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),
   displayOverview: PropTypes.bool.isRequired,
   setDisplayOverview: PropTypes.func.isRequired,
-  criticInfos: PropTypes.object.isRequired,
+  criticInfos: PropTypes.object,
   isGoldNugget: PropTypes.bool.isRequired,
   setIsGoldNugget: PropTypes.func.isRequired,
 };

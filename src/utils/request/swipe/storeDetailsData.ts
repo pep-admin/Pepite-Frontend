@@ -2,6 +2,8 @@ import axios from 'axios';
 
 export const storeDetailsData = async movieDetail => {
   try {
+    console.log('détails à update', movieDetail);
+
     const id = movieDetail.id;
     const genres = movieDetail.genres;
     const production_countries = movieDetail.production_countries;

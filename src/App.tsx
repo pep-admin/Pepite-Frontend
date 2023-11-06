@@ -15,6 +15,7 @@ import RegisterFormContainer from './containers/Auth/RegisterFormContainer';
 import LoginFormContainer from './containers/Auth/LoginFormContainer';
 import SwipeContainer from './containers/Swipe/SwipeContainer';
 import ProfilContainer from './containers/Profil/ProfilContainer';
+import GetUserId from '@utils/request/GetUserId';
 
 export function App() {
   // Permet d'afficher la page dès que les polices sont chargées
@@ -26,6 +27,7 @@ export function App() {
       <ThemeProvider theme={theme}>
         <DataProvider>
           <BrowserRouter>
+            <GetUserId />
             <Routes>
               <Route path="/login" element={<LoginFormContainer />} />
               <Route path="/register" element={<RegisterFormContainer />} />

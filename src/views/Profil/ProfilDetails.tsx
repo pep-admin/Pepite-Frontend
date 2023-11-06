@@ -90,6 +90,7 @@ const ProfilDetails = () => {
                   bottom: '1px',
                   minWidth: 'auto',
                   marginRight: '5px',
+                  width: '20px',
                 }}
               >
                 <GoldNuggetIcon sx={{ fontSize: '18px' }} />

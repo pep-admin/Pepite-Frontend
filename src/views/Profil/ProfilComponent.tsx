@@ -51,7 +51,6 @@ const ProfilComponent = () => {
   const fetchCritics = useCallback(async () => {
     try {
       const criticData = await getAllCriticsOfUser(id);
-      console.log(criticData);
       setUserCritics(criticData);
     } catch (error) {
       console.error('Erreur lors de la récupération des données:', error);
@@ -62,12 +61,17 @@ const ProfilComponent = () => {
     fetchCritics();
   }, [fetchCritics]);
 
+  // useEffect(() => {
+  //   console.log('les critiques', userCritics);
+
+  // }, [userCritics])
+
   return (
     <>
       <Header />
       <Card
         sx={{
-          height: '25vh',
+          height: '30vh',
           width: '100%',
           position: 'relative',
           borderRadius: '0',
@@ -115,7 +119,7 @@ const ProfilComponent = () => {
         sx={{
           padding: '0 6px',
           backgroundColor: '#F4F4F4',
-          minHeight: 'calc(100vh - (60px + 25vh))',
+          minHeight: 'calc(100vh - (60px + 30vh))',
           marginBottom: '7px',
         }}
       >
@@ -196,6 +200,7 @@ const ProfilComponent = () => {
               <CriticAdvicesComponent
                 type={'new-critic'}
                 chosenMovie={chosenMovie}
+                setUserCritics={setUserCritics}
                 setNewCriticError={setNewCriticError}
                 setNewCriticInfo={setNewCriticInfo}
                 setNewCriticSuccess={setNewCriticSuccess}
@@ -265,6 +270,7 @@ const ProfilComponent = () => {
                     <CriticAdvicesComponent
                       key={critic.id}
                       type={'old-critic'}
+                      setUserCritics={setUserCritics}
                       chosenMovie={null}
                       setNewCriticError={null}
                       setNewCriticInfo={null}

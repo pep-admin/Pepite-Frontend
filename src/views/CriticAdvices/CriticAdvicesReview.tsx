@@ -47,6 +47,8 @@ const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
     );
   }
 
+  if (type === 'old-critic' && criticInfos.text === '') return null;
+
   return (
     <Stack
       direction="row-reverse"
@@ -116,7 +118,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
 CriticAdvicesReview.propTypes = {
   type: PropTypes.string.isRequired,
   setNewCriticText: PropTypes.func.isRequired,
-  criticInfos: PropTypes.object.isRequired,
+  criticInfos: PropTypes.object,
 };
 
 export default CriticAdvicesReview;

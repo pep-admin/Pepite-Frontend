@@ -11,10 +11,12 @@ export const parseDatabaseData = (data, requestType) => {
   const vote_average = parseFloat(data.vote_average); // Convertir en nombre à virgule flottante
   let rating = null;
   let text = null;
+  let critic_id = null;
 
   if (requestType === 'critic') {
     rating = data.rating;
     text = data.text;
+    critic_id = Number(data.id);
   }
 
   return {
@@ -29,5 +31,6 @@ export const parseDatabaseData = (data, requestType) => {
     vote_average,
     rating,
     text,
+    critic_id,
   };
 };

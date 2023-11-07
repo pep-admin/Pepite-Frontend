@@ -200,7 +200,9 @@ const CriticAdvicesComponent = ({
             ) : null}
           </Card>
         </Stack>
-        {type === 'old-critic' ? <CriticAdvicesFooter /> : null}
+        {type === 'old-critic' ? (
+          <CriticAdvicesFooter criticId={criticInfos.critic_id} />
+        ) : null}
       </Stack>
     </Item>
   );

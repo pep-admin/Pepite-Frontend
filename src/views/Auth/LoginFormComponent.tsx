@@ -1,4 +1,5 @@
 // Import de libs externes
+import { Link } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -120,11 +121,11 @@ const LoginFormComponent = ({ formik }) => {
             {"Vous n'avez pas de compte ?"}
           </Typography>
           <Button
-            type="submit"
+            component={Link}
+            to="/register"
             variant="contained"
             color="secondary"
             sx={{ color: '#ffffff' }}
-            href="http://127.0.0.1:5173/register"
           >
             {"S'inscrire"}
           </Button>

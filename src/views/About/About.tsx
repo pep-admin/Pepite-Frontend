@@ -1,5 +1,6 @@
 // Import de libs externes
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -364,9 +365,10 @@ const About = () => {
           </Box>
         </Box>
         <Button
+          component={Link}
+          to="/swipe"
           variant="contained"
           color="primary"
-          href="http://127.0.0.1:5173/swipe"
         >
           {"C'est parti !"}
         </Button>

@@ -99,19 +99,14 @@ const CriticAdvicesContent = ({
                       component="p"
                       fontWeight={isGoldNugget ? 'bold' : 'normal'}
                     >
-                      {isGoldNugget ||
-                      (criticInfos && criticInfos.is_gold_nugget === 1)
-                        ? 'Pépite !'
-                        : 'Pépite ?'}
+                      {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
                     </Typography>
                   </Box>
                   {isGoldNugget && !isNuggetAnimEnded ? (
                     <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
                   ) : null}
                 </>
-              ) : type === 'old-critic' &&
-                criticInfos.is_gold_nugget === 1 &&
-                !isModify ? (
+              ) : type === 'old-critic' && criticInfos.is_gold_nugget === 1 ? (
                 <Box
                   height="20px"
                   width="60px"

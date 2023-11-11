@@ -25,47 +25,33 @@ const Home = () => {
   const filmData = generateFilmData(6);
 
   return (
-    <>
-      <Header />
-      <Container>
-        <Grid container spacing={2}>
-          {filmData.map((film, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={film.imageUrl}
-                  alt={film.title}
-                />
-                <CardContent>
-                  <Stack
-                    direction="row"
-                    justifyContent={'space-between'}
-                    spacing={1}
-                  >
-                    <Stack>
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <MovieIcon />
-                        <Typography variant="h6" component="h2">
-                          {film.title}
-                        </Typography>
-                      </Stack>
-                      <Typography variant="body2" color="text.secondary">
-                        {film.description}
-                      </Typography>
-                    </Stack>
-                    <Button variant="outlined" endIcon={<StarIcon />}>
-                      {"J'aime"}
-                    </Button>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    </>
+    <AppBar position="static" sx={{ mb: 2 }}>
+      <Toolbar>
+        <Typography variant="body1">{displayBuildDate}</Typography>
+        <Stack
+          direction={'row'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          width={'100%'}
+        >
+          <Button color="inherit" component={Link} to="/">
+            Home
+          </Button>
+          <Button color="inherit" component={Link} to="/login">
+            Login
+          </Button>
+          <Button color="inherit" component={Link} to="/register">
+            Register
+          </Button>
+          <Button color="inherit" component={Link} to="/about">
+            About
+          </Button>
+          <Button color="inherit" component={Link} to="/swipe">
+            Swipe
+          </Button>
+        </Stack>
+      </Toolbar>
+    </AppBar>
   );
 };
 

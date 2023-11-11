@@ -1,11 +1,12 @@
 // Import des libs externes
-import { styled, Paper, Container, Stack, Box } from '@mui/material';
+import { Container, Stack, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useSpring } from 'react-spring';
-import { useState, useEffect, useRef, forwardRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
+import { Item } from '@utils/styledComponent';
 import SearchBar from '@utils/SearchBar';
 import SwipeFilter from '@views/Swipe/SwipeFilter';
 import SwipeCard from '@views/Swipe/SwipeCard';
@@ -14,29 +15,11 @@ import LastCard from './LastCard';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-interface ItemProps {
-  customheight?: string | number;
-}
-
-const StyledPaper = styled(Paper)<ItemProps>(({ theme, customheight }) => ({
-  height: customheight || 'auto',
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  borderRadius: '10px',
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-const Item = forwardRef<HTMLDivElement, ItemProps>((props, ref) => {
-  return <StyledPaper ref={ref} {...props} />;
-});
-
-Item.displayName = 'Item';
-
 const SwipeComponent = ({
   movies,
   setMovies,
   movieDetail,
+  nextMovieDetail,
   generalRatings,
   error,
   loading,
@@ -161,10 +144,6 @@ const SwipeComponent = ({
 
   const [cards, setCards] = useState(initialCards);
 
-  useEffect(() => {
-    console.log('les cards', cards);
-  }, [cards]);
-
   // Si l'utilisateur change de film à série et inversement, on reset les animations
   useEffect(() => {
     if (prevDisplayTypeRef.current !== displayType) {
@@ -269,7 +248,7 @@ const SwipeComponent = ({
         }}
       >
         <Stack spacing={1} sx={{ height: '100%', padding: '6px 0' }}>
-          <SearchBar Item={Item} />
+          <SearchBar Item={Item} page={'swipe'} />
           <Box>
             <SwipeFilter
               Item={Item}
@@ -288,14 +267,16 @@ const SwipeComponent = ({
             borderRadius="10px"
             boxShadow="0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)"
           >
-            {cards.map(card => (
+            {cards.map((card, index) => (
               <SwipeCard
                 key={card.id}
                 id={card.id}
                 Item={Item}
                 movies={movies}
                 setMovies={setMovies}
-                movieDetail={movieDetail}
+                movieDetail={
+                  index === cards.length - 1 ? nextMovieDetail : movieDetail
+                }
                 generalRatings={generalRatings}
                 error={error}
                 loading={loading}
@@ -342,7 +323,8 @@ const SwipeComponent = ({
 SwipeComponent.propTypes = {
   movies: PropTypes.array.isRequired,
   setMovies: PropTypes.func.isRequired,
-  movieDetail: PropTypes.array.isRequired,
+  movieDetail: PropTypes.object.isRequired,
+  nextMovieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
   error: PropTypes.shape({
     message: PropTypes.string,

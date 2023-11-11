@@ -3,21 +3,22 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Imports internes
 import SwipeComponent from '@views/Swipe/SwipeComponent';
-import {
-  fetchMovieDetails,
-  fetchTwentyMovies,
-} from '@utils/request/swipe/fetchData';
+import { fetchTwentyMovies } from '@utils/request/swipe/getMoviesSwipe';
 import { useData } from '@hooks/DataContext';
 
 import {
   findCertificationFr,
   findIsoCountry,
 } from '@utils/functions/findInfos';
+// import { getMovieDetails } from '@utils/request/getMovieDetails';
+import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
+import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
-  const [movieDetail, setMovieDetail] = useState([]); // Informations détaillées sur le film affiché
+  const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
+  const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
@@ -106,12 +107,13 @@ const SwipeContainer = () => {
 
   // Ajoute 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
-    const threshold = 3;
+    const thresholdReload = 3;
+    console.log('index courant', currentMovieIndex);
 
     if (
       swipeDirection === 'right' &&
       movies.length !== 0 &&
-      movies.length - currentMovieIndex <= threshold &&
+      movies.length - currentMovieIndex <= thresholdReload &&
       hasMoreMovies
     ) {
       const newPage = moviePage + 1;
@@ -124,63 +126,60 @@ const SwipeContainer = () => {
   useEffect(() => {
     if (movies.length === 0 || currentMovieIndex === -1) return;
 
-    const currentMovieId = movies[currentMovieIndex].id;
-    if (currentMovieId === null) return;
-
-    const getMovieDetails = async () => {
+    const fetchMovieDetails = async movieId => {
       try {
-        let detailsData;
-        let cachedData = null;
-
-        if (displayType === 'movie') {
-          cachedData = localStorage.getItem(`movieDetails-${currentMovieId}`);
-        } else if (displayType === 'tv') {
-          cachedData = localStorage.getItem(`serieDetails-${currentMovieId}`);
-        }
-
-        // Si les données sont présentes dans le local storage
-        if (cachedData !== null) {
-          detailsData = JSON.parse(cachedData);
-          console.log(
-            'utilisation du cache local storage pour',
-            currentMovieId,
-          );
-        }
-        // Si nouvelles données, on fait la requête
-        else {
-          detailsData = await fetchMovieDetails(currentMovieId, displayType);
-          console.log('requêtes film détaillé effectué', detailsData);
-
-          // Ajout des données au local storage
-          if (displayType === 'movie') {
-            localStorage.setItem(
-              `movieDetails-${currentMovieId}`,
-              JSON.stringify(detailsData),
-            );
-          } else if (displayType === 'tv') {
-            localStorage.setItem(
-              `serieDetails-${currentMovieId}`,
-              JSON.stringify(detailsData),
-            );
-          }
-        }
-
-        setMovieDetail(detailsData);
-        setGeneralRatings(detailsData[0].vote_average);
+        const details = await getMovieDetails(displayType, movieId);
+        return details;
       } catch (err) {
+        console.log(err);
         setError({
           message: 'Erreur dans la récupération des détails du film.',
           error: err,
         });
-      } finally {
-        setLoading(prevLoading => ({
-          movies: prevLoading.movies,
-          details: false,
-        }));
       }
     };
-    getMovieDetails();
-  }, [movies, currentMovieIndex, genreChosen]);
+
+    const loadMoviesDetails = async () => {
+      try {
+        const nextIndex =
+          currentMovieIndex + 1 < movies.length ? currentMovieIndex + 1 : null;
+        const movieIdsToFetch = [movies[currentMovieIndex].id];
+        if (nextIndex !== null) {
+          movieIdsToFetch.push(movies[nextIndex].id);
+        }
+
+        // Récupérer les détails pour les deux films simultanément
+        const detailsDataArray = await Promise.all(
+          movieIdsToFetch.map(id => fetchMovieDetails(id)),
+        );
+
+        // Mettre à jour l'état avec les détails du film actuel
+        setMovieDetail(detailsDataArray[0]);
+        setGeneralRatings(detailsDataArray[0].vote_average);
+
+        // Préchargement du prochain film
+        if (detailsDataArray.length > 1 && detailsDataArray[1]) {
+          setNextMovieDetail(detailsDataArray[1]);
+        }
+      } catch (err) {
+        console.error(
+          'Erreur lors de la récupération des détails des films',
+          err,
+        );
+        setError(err);
+      } finally {
+        setLoading(prevLoading => ({ ...prevLoading, details: false }));
+      }
+    };
+
+    loadMoviesDetails();
+  }, [movies, currentMovieIndex, displayType]);
+
+  useEffect(() => {
+    if (Object.keys(movieDetail).length !== 0) {
+      storeDetailsData(movieDetail);
+    }
+  }, [movieDetail]);
 
   useEffect(() => {
     if (countryChosen !== '') {
@@ -189,7 +188,7 @@ const SwipeContainer = () => {
   }, [countryChosen]);
 
   useEffect(() => {
-    if (movieDetail.length !== 0)
+    if (Object.keys(movieDetail).length)
       setCertification({
         imgUrl: findCertificationFr(displayType, movieDetail).imgUrl,
         alt: findCertificationFr(displayType, movieDetail).alt,
@@ -213,6 +212,7 @@ const SwipeContainer = () => {
       movies={movies}
       setMovies={setMovies}
       movieDetail={movieDetail}
+      nextMovieDetail={nextMovieDetail}
       generalRatings={generalRatings}
       error={error}
       loading={loading}

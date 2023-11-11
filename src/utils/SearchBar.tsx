@@ -2,53 +2,75 @@
 import {
   Box,
   TextField,
-  List,
   ListItem,
   ListItemAvatar,
   Avatar,
   ListItemText,
   Typography,
   Divider,
+  Menu,
+  Fade,
 } from '@mui/material';
-import { createSvgIcon } from '@mui/material/utils';
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { searchMulti } from './request/swipe/fetchData';
 
-// Création d'une loupe en SVG
-const MagnifyingGlassIcon = createSvgIcon(
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M9.02725 12.7873C9.12961 12.9124 9.49529 13.102 9.731 12.8766L9.80306 12.8078C10.0388 12.5824 10.0028 12.256 9.72305 12.0825C9.72305 12.0825 9.11641 11.7062 8.6287 11.2398C8.14624 10.7785 7.74648 10.195 7.74648 10.195C7.56384 9.92835 7.22146 9.8946 6.98576 10.12L6.91686 10.1859C6.68116 10.4113 6.87491 10.7599 7.00744 10.8581C7.13998 10.9563 7.44121 11.2212 7.67698 11.4466L8.41252 12.15C8.64837 12.3754 8.92495 12.6622 9.02725 12.7873Z"
-      fill="#0E6666"
-    />
-    <path
-      d="M18.1855 10.4783C19.395 9.3218 19.9999 7.80561 19.9999 6.2898C19.9999 4.77367 19.3952 3.258 18.1855 2.10121C15.7664 -0.212041 11.8442 -0.212041 9.42518 2.10121C8.2156 3.25787 7.61084 4.7738 7.61084 6.2898C7.61084 7.80574 8.2156 9.32167 9.42518 10.4783C11.8443 12.7916 15.7664 12.7916 18.1855 10.4783ZM11.0365 8.93065C10.2718 8.20147 9.88965 7.24541 9.88965 6.28974C9.88965 5.33381 10.2718 4.37814 11.0365 3.64883C12.5658 2.19034 15.0449 2.19027 16.5744 3.64883C17.3389 4.37801 17.721 5.33387 17.721 6.28967C17.721 7.24554 17.3388 8.20134 16.5744 8.93065C15.0451 10.3892 12.5657 10.3892 11.0365 8.93065Z"
-      fill="#0E6666"
-    />
-    <path
-      d="M3.0009 19.2616L8.09796 14.3875C8.25278 14.2394 8.33811 14.041 8.33811 13.8291C8.33811 13.6171 8.25272 13.4188 8.09796 13.2706L6.50512 11.7476C6.35029 11.5994 6.14287 11.5179 5.9211 11.5179C5.69947 11.5179 5.49205 11.5995 5.33722 11.7476L0.24003 16.6216C0.0852038 16.7697 -0.00012207 16.9681 -0.00012207 17.18V17.1801C-0.00012207 17.392 0.0852712 17.5903 0.24003 17.7385L1.83287 19.2616C2.15491 19.5695 2.67892 19.5695 3.0009 19.2616Z"
-      fill="#0E6666"
-    />
-  </svg>,
-  'MagnifyingGlassIcon',
-);
+// Import du contexte
+import { useData } from '@hooks/DataContext';
 
-const SearchBar = ({ Item }) => {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+// Import des icônes
+import { MagnifyingGlassIcon } from './styledComponent';
+
+// Import de la fonction pour récupérer le détail d'un film / série
+import { getMovieDetails } from './request/getMovieDetails';
+import { storeDetailsData } from './request/swipe/storeDetailsData';
+
+const SearchBar = ({ Item, page }) => {
+  const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
+    useData();
+
+  const [error, setError] = useState({ message: null, error: null });
+
+  const [query, setQuery] = useState(''); // Texte saisi par l'utilisateur
+  const [results, setResults] = useState([]); // Les résultats de la recherche
+
+  // const [idChoice, setIdChoice] = useState(null); // L'id du film / série recherché
+  // const [generalRatings, setGeneralRatings] = useState(0); // Note générale
+  const [displayResults, setDisplayResults] = useState(null); // Affiche ou non les résultats
+  const containerRef = useRef(null);
+  const openResults = Boolean(displayResults);
+
+  const handleDisplayResults = () => {
+    setDisplayResults(containerRef.current);
+  };
+
+  const handleChoice = id => {
+    setChosenMovieId(id);
+  };
+
+  const getChosenMovie = async id => {
+    try {
+      const movieData = await getMovieDetails(displayType, id);
+      setChosenMovie(movieData);
+      console.log('le film choisi', movieData);
+      // Stockage des détails du film dans la DB
+      storeDetailsData(movieData);
+      // if (page !== 'profil') {
+      //   setGeneralRatings(movieData.vote_average);
+      // }
+    } catch (err) {
+      setError({
+        message: "Une erreur s'est produite lors de la recherche",
+        error: err,
+      });
+    }
+  };
 
   useEffect(() => {
     // Fonction débouncing
     const timeoutId = setTimeout(async () => {
       if (query) {
-        const searchResults = await searchMulti(query);
+        const searchResults = await searchMulti(query, displayType);
         setResults(searchResults);
       } else {
         setResults([]); // Si la requête est vide, on réinitialise les résultats
@@ -59,48 +81,121 @@ const SearchBar = ({ Item }) => {
   }, [query]);
 
   useEffect(() => {
+    if (chosenMovieId) {
+      getChosenMovie(chosenMovieId);
+    }
+  }, [chosenMovieId]);
+
+  useEffect(() => {
     console.log('les résultats', results);
   }, [results]);
 
   return (
-    <Box component="form">
+    <Box
+      component="form"
+      ref={containerRef}
+      marginTop={page === 'profil' ? '6px' : '0'}
+    >
       <Item
         sx={{
+          position: 'relative',
           height: '40px',
-          padding: '0 10%',
+          padding: page === 'profil' ? '0' : '0 10%',
           display: 'flex',
           alignItems: 'center',
-          gap: '20px',
+          justifyContent: page === 'profil' ? 'initial' : 'center',
+          gap: page === 'profil' ? '6px' : '20px',
         }}
       >
+        {page === 'profil' ? (
+          <Box
+            height="100%"
+            width="100px"
+            paddingLeft="7px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography
+              variant="body2"
+              component="h4"
+              fontWeight="bold"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              Kate Austen
+            </Typography>
+          </Box>
+        ) : null}
         <TextField
           id="filled-basic"
-          label="Rechercher un film, une série, une personne"
+          label={
+            error.message
+              ? `${error.message}`
+              : page === 'profil'
+              ? 'Notez un film ou une série !'
+              : 'Rechercher un film, une série, une personne'
+          }
           variant="filled"
           size="small"
-          fullWidth
+          sx={{
+            width: page === 'profil' ? 'calc(100% - 152px)' : '250px',
+          }}
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={e => {
+            handleDisplayResults();
+            setQuery(e.target.value);
+          }}
         />
-        <MagnifyingGlassIcon />
+        <Box
+          position="absolute"
+          top="0"
+          right="0"
+          height="100%"
+          width="40px"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          sx={{
+            backgroundColor: '#24A5A5',
+            borderRadius: '0 10px 10px 0',
+            cursor: 'pointer',
+          }}
+        >
+          <MagnifyingGlassIcon sx={{ height: '20px', width: '20px' }} />
+        </Box>
       </Item>
       {results.length > 0 ? (
-        <List
-          sx={{
-            width: '80%',
-            maxWidth: 360,
-            maxHeight: 185,
-            margin: '0 10%',
-            position: 'absolute',
-            zIndex: 1,
-            backgroundColor: '#f1f1f1',
-            overflowY: 'scroll',
+        <Menu
+          id="basic-menu"
+          anchorEl={displayResults}
+          open={openResults}
+          onClose={() => setDisplayResults(null)}
+          TransitionComponent={Fade}
+          disableAutoFocus={true}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+            sx: {
+              padding: '0',
+              width: '100%',
+              maxHeight: 185,
+              zIndex: 1,
+              backgroundColor: '#f1f1f1',
+              overflowY: 'scroll',
+            },
           }}
         >
           {results.map(result => {
             return (
               <Box key={result.id}>
-                <ListItem sx={{ display: 'flex' }}>
+                <ListItem
+                  onClick={() => {
+                    handleChoice(result.id);
+                    setDisplayResults(null);
+                  }}
+                  sx={{ display: 'flex' }}
+                >
                   <ListItemAvatar>
                     <Avatar
                       alt={result.title || result.name}
@@ -152,7 +247,7 @@ const SearchBar = ({ Item }) => {
               </Box>
             );
           })}
-        </List>
+        </Menu>
       ) : null}
     </Box>
   );
@@ -160,6 +255,7 @@ const SearchBar = ({ Item }) => {
 
 SearchBar.propTypes = {
   Item: PropTypes.elementType.isRequired,
+  page: PropTypes.string.isRequired,
 };
 
 export default SearchBar;

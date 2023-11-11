@@ -20,8 +20,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   americanCountryCodes,
   continents,
-  countries,
-} from '@utils/data/countries';
+  countriesList,
+} from '@utils/data/Countries';
 import { genreMovieList, genreSerieList } from '@utils/data/genres';
 
 // Import du contexte
@@ -143,7 +143,7 @@ const SwipeFilter = ({
         TransitionComponent={Fade}
       >
         {/* Pays choisi */}
-        {countries
+        {countriesList
           .filter(country => country.iso_3166_1 === isoCountry)
           .map(country => {
             return (
@@ -218,7 +218,7 @@ const SwipeFilter = ({
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
       >
-        {countries
+        {countriesList
           .filter(country => continentChosen.includes(country.iso_3166_1))
           .map(country => {
             return (

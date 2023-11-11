@@ -71,16 +71,16 @@ const SwipeCard = ({
 
   const addToWantedList = () => {
     if (!isMovieWantedRef.current && !movies[index].is_wanted) {
-      addWantedMovie(movieDetail[0].id, displayType);
+      addWantedMovie(movieDetail.id, displayType);
       isMovieWantedRef.current = true;
       explodeConfetti();
     } else {
-      removeWantedMovie(movieDetail[0].id, displayType);
+      removeWantedMovie(movieDetail.id, displayType);
       isMovieWantedRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies
     const updatedMovies = movies.map(movie => {
-      if (movie.id === movieDetail[0].id) {
+      if (movie.id === movieDetail.id) {
         return { ...movie, is_wanted: isMovieWantedRef.current };
       }
       return movie;
@@ -375,13 +375,13 @@ const SwipeCard = ({
   );
 };
 
-const SwipeCardPropTypes = {
+SwipeCard.propTypes = {
   id: PropTypes.string.isRequired,
   Item: PropTypes.elementType.isRequired,
   index: PropTypes.number.isRequired,
   movies: PropTypes.array.isRequired,
   setMovies: PropTypes.func.isRequired,
-  movieDetail: PropTypes.array.isRequired,
+  movieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
   error: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
@@ -391,7 +391,5 @@ const SwipeCardPropTypes = {
   cardProps: PropTypes.object.isRequired,
   certification: PropTypes.object.isRequired,
 };
-
-SwipeCard.propTypes = SwipeCardPropTypes;
 
 export default SwipeCard;

@@ -50,10 +50,10 @@ export function findCertificationFr(type, movieDetail) {
   } else if (type === 'tv') {
     console.log(movieDetail);
 
-    frenchRelease = movieDetail[0].content_ratings.results.find(
+    frenchRelease = movieDetail.content_ratings.results.find(
       entry => entry.iso_3166_1 === 'FR',
     );
-    usRelease = movieDetail[0].content_ratings.results.find(
+    usRelease = movieDetail.content_ratings.results.find(
       entry => entry.iso_3166_1 === 'US',
     );
 

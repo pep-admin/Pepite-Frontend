@@ -9,7 +9,7 @@ const theme = createTheme({
       fontFamily: 'Pragati Narrow',
     },
     h1: {
-      fontFamily: 'Nixie One',
+      fontFamily: 'Allison',
     },
     body1: {
       fontFamily: 'Pragati Narrow',

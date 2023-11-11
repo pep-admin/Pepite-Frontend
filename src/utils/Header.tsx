@@ -73,8 +73,8 @@ const Header = () => {
           <Typography
             variant="h1"
             color={'#24A5A5'}
-            fontSize={'1.8em'}
-            sx={{ position: 'relative', bottom: '1px' }}
+            fontSize={'3em'}
+            sx={{ position: 'relative', bottom: '4px' }}
           >
             {'Pépite.'}
           </Typography>

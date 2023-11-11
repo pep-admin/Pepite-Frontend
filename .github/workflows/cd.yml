@@ -1,0 +1,34 @@
+name: Deploy to S3
+on:
+  push:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: 18.18.0
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks # --acl public-read --follow-symlinks --delete --exclude '.git/*' --exclude '.github/*'
+        env:
+          AWS_S3_BUCKET: 'pepite-v1-bucket'
+          AWS_ACCESS_KEY_ID: AKIAQG4WXMDCX26TVQHM
+          AWS_SECRET_ACCESS_KEY: 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
+          AWS_REGION: 'eu-west-3' # optional: defaults to us-east-1
+          SOURCE_DIR: './dist' # optional: defaults to entire repository

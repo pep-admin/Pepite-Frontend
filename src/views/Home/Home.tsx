@@ -23,7 +23,12 @@ const Home = () => {
     <AppBar position="static" sx={{ mb: 2 }}>
       <Toolbar>
         <Typography variant="body1">{displayBuildDate}</Typography>
-        <Stack justifyContent={'center'} alignItems={'center'} width={'100%'}>
+        <Stack
+          direction={'row'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          width={'100%'}
+        >
           <Button color="inherit" component={Link} to="/">
             Home
           </Button>

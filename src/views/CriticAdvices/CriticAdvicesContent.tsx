@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Typography, CardContent, Button, Box } from '@mui/material';
+import { Stack, Typography, CardContent, Box } from '@mui/material';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -25,7 +25,7 @@ const CriticAdvicesContent = ({
   }
 
   const scoreOutOfFive = originalScore / 2;
-  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));  
+  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
 
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
@@ -74,48 +74,53 @@ const CriticAdvicesContent = ({
                 //   </Typography>
                 // </Button>
                 <>
-                  <Box 
-                    height='20px' 
-                    width='60px' 
-                    display='flex' 
-                    justifyContent='space-between' 
-                    alignItems='center' 
-                    borderRadius='50%'
+                  <Box
+                    height="20px"
+                    width="60px"
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderRadius="50%"
                     onClick={() => {
-                      if(isGoldNugget) {
+                      if (isGoldNugget) {
                         setIsNuggetAnimEnded(false);
                       }
-                      setIsGoldNugget(!isGoldNugget)
+                      setIsGoldNugget(!isGoldNugget);
                     }}
                   >
                     <GoldNuggetIcon
-                      sx={{ fontSize: '16px', filter: !isGoldNugget ? 'grayscale(1)' : 'grayscale(0)' }}
+                      sx={{
+                        fontSize: '16px',
+                        filter: !isGoldNugget ? 'grayscale(1)' : 'grayscale(0)',
+                      }}
                     />
-                    <Typography variant='body2' component='p' fontWeight= {isGoldNugget ? 'bold' : 'normal'}>
-                      { isGoldNugget ? 'Pépite !' : 'Pépite ?'}
+                    <Typography
+                      variant="body2"
+                      component="p"
+                      fontWeight={isGoldNugget ? 'bold' : 'normal'}
+                    >
+                      {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
                     </Typography>
                   </Box>
-                  {isGoldNugget && !isNuggetAnimEnded ? <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} /> : null}
+                  {isGoldNugget && !isNuggetAnimEnded ? (
+                    <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
+                  ) : null}
                 </>
-                
-              ) : (type === 'old-critic' && criticInfos.is_gold_nugget === 1) ?
-                  <Box 
-                    height='20px' 
-                    width='60px' 
-                    display='flex' 
-                    justifyContent='space-between' 
-                    alignItems='center' 
-                    borderRadius='50%'
-                  >
-                    <GoldNuggetIcon
-                      sx={{ fontSize: '16px' }}
-                    />
-                    <Typography variant='body2' component='p' fontWeight='bold'>
-                      {'Pépite !'}
-                    </Typography>
-                  </Box>
-                : null
-              }
+              ) : type === 'old-critic' && criticInfos.is_gold_nugget === 1 ? (
+                <Box
+                  height="20px"
+                  width="60px"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  borderRadius="50%"
+                >
+                  <GoldNuggetIcon sx={{ fontSize: '16px' }} />
+                  <Typography variant="body2" component="p" fontWeight="bold">
+                    {'Pépite !'}
+                  </Typography>
+                </Box>
+              ) : null}
             </Stack>
 
             <Stack direction="row" columnGap="5px">

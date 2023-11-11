@@ -1,4 +1,4 @@
-import { countriesList } from '@utils/data/Countries';
+import { countriesList } from '@utils/data/countries';
 
 // Recherche du pays choisi par l'utilisateur
 export function findIsoCountry(country) {

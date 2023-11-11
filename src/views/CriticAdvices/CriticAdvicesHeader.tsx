@@ -24,6 +24,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 import { ratings } from '@utils/data/ratings';
+import { deleteCritic } from '@utils/request/critics/deleteCritic';
+import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const CriticAdvicesHeader = ({
   type,
@@ -33,6 +35,8 @@ const CriticAdvicesHeader = ({
   newRating,
   setNewRating,
   criticInfos,
+  setUserCritics,
+  userId
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
@@ -48,6 +52,15 @@ const CriticAdvicesHeader = ({
   const handleRatingsMenu = event => {
     setDisplayRatings(event.currentTarget);
   };
+
+  const handleCriticTools = async(tool) => {
+    if(tool === 'delete') {
+      // TO DO: faire apparaitre une modale
+      await deleteCritic(criticInfos.critic_id); 
+      const newCriticsData = await getAllCriticsOfUser(userId);      
+      setUserCritics(newCriticsData);
+    }
+  }
 
   return (
     <Stack
@@ -227,7 +240,10 @@ const CriticAdvicesHeader = ({
                 }}
               >
                 <MenuItem
-                  onClick={() => setDisplayTools(null)}
+                  onClick={() => {
+                    // TODO : modifier la critique
+                    setDisplayTools(null);
+                  }}
                   sx={{ padding: '0', minHeight: 'auto' }}
                 >
                   <ListItemIcon sx={{ minWidth: 'auto' }}>
@@ -245,7 +261,10 @@ const CriticAdvicesHeader = ({
                 </MenuItem>
                 <Divider />
                 <MenuItem
-                  onClick={() => setDisplayTools(null)}
+                  onClick={() => {
+                    handleCriticTools('delete');
+                    setDisplayTools(null);
+                  }}
                   sx={{ padding: '0', minHeight: 'auto' }}
                 >
                   <ListItemIcon sx={{ minWidth: 'auto' }}>

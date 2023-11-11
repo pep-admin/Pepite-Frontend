@@ -1,9 +1,11 @@
 // Import des libs externes
-import { Stack, Typography, CardContent, Button } from '@mui/material';
+import { Stack, Typography, CardContent, Button, Box } from '@mui/material';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
 import { GoldNuggetIcon, YellowRating } from '@utils/styledComponent';
+import GoldNugget from '@utils/GoldNugget';
 
 const CriticAdvicesContent = ({
   type,
@@ -14,6 +16,7 @@ const CriticAdvicesContent = ({
   setIsGoldNugget,
   criticInfos,
 }) => {
+  const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
   let originalScore;
 
   if (type === 'new-critic') originalScore = chosenMovie.vote_average;
@@ -22,7 +25,7 @@ const CriticAdvicesContent = ({
   }
 
   const scoreOutOfFive = originalScore / 2;
-  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
+  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));  
 
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
@@ -49,28 +52,70 @@ const CriticAdvicesContent = ({
                   : criticInfos.title}
               </Typography>
               {type === 'new-critic' ? (
-                <Button
-                  variant="contained"
-                  sx={{
-                    height: '100%',
-                    padding: '2px 6px',
-                    textTransform: 'initial',
-                    borderRadius: '2px',
-                    color: !isGoldNugget ? 'inherit' : '#fff',
-                    backgroundColor: !isGoldNugget
-                      ? '#e5e4e4 !important'
-                      : '#F29E50 !important',
-                  }}
-                  onClick={() => setIsGoldNugget(!isGoldNugget)}
-                >
-                  <GoldNuggetIcon
-                    sx={{ fontSize: '15px', marginRight: '5px' }}
-                  />
-                  <Typography variant="body2" component="p">
-                    {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
-                  </Typography>
-                </Button>
-              ) : null}
+                // <Button
+                //   variant="contained"
+                //   sx={{
+                //     height: '100%',
+                //     padding: '2px 6px',
+                //     textTransform: 'initial',
+                //     borderRadius: '2px',
+                //     color: !isGoldNugget ? 'inherit' : '#fff',
+                //     backgroundColor: !isGoldNugget
+                //       ? '#e5e4e4 !important'
+                //       : '#F29E50 !important',
+                //   }}
+                //   onClick={() => setIsGoldNugget(!isGoldNugget)}
+                // >
+                //   <GoldNuggetIcon
+                //     sx={{ fontSize: '15px', marginRight: '5px' }}
+                //   />
+                //   <Typography variant="body2" component="p">
+                //     {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
+                //   </Typography>
+                // </Button>
+                <>
+                  <Box 
+                    height='20px' 
+                    width='60px' 
+                    display='flex' 
+                    justifyContent='space-between' 
+                    alignItems='center' 
+                    borderRadius='50%'
+                    onClick={() => {
+                      if(isGoldNugget) {
+                        setIsNuggetAnimEnded(false);
+                      }
+                      setIsGoldNugget(!isGoldNugget)
+                    }}
+                  >
+                    <GoldNuggetIcon
+                      sx={{ fontSize: '16px', filter: !isGoldNugget ? 'grayscale(1)' : 'grayscale(0)' }}
+                    />
+                    <Typography variant='body2' component='p' fontWeight= {isGoldNugget ? 'bold' : 'normal'}>
+                      { isGoldNugget ? 'Pépite !' : 'Pépite ?'}
+                    </Typography>
+                  </Box>
+                  {isGoldNugget && !isNuggetAnimEnded ? <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} /> : null}
+                </>
+                
+              ) : (type === 'old-critic' && criticInfos.is_gold_nugget === 1) ?
+                  <Box 
+                    height='20px' 
+                    width='60px' 
+                    display='flex' 
+                    justifyContent='space-between' 
+                    alignItems='center' 
+                    borderRadius='50%'
+                  >
+                    <GoldNuggetIcon
+                      sx={{ fontSize: '16px' }}
+                    />
+                    <Typography variant='body2' component='p' fontWeight='bold'>
+                      {'Pépite !'}
+                    </Typography>
+                  </Box>
+                : null
+              }
             </Stack>
 
             <Stack direction="row" columnGap="5px">

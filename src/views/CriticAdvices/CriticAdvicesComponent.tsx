@@ -91,6 +91,8 @@ const CriticAdvicesComponent = ({
           newRating={newRating}
           setNewRating={setNewRating}
           criticInfos={criticInfos}
+          setUserCritics={setUserCritics}
+          userId={userId}
         />
         <Divider />
         <Stack padding="7px 10px">

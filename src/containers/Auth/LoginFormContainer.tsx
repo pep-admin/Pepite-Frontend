@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Import des composants internes
 import LoginFormComponent from '@views/Auth/LoginFormComponent';
+import apiBaseUrl from '@utils/request/config';
 
 // Schéma de vérification Yup
 const validationSchema = Yup.object({
@@ -27,7 +28,7 @@ const LoginFormContainer = () => {
     try {
       const response = await axios({
         method: 'post',
-        url: `http://localhost:8800/api/auth/login`,
+        url: `${apiBaseUrl}/auth/login`,
         withCredentials: true,
         data: {
           email: values.email,

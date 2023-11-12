@@ -1,9 +1,10 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 export const checkLikeStatus = async criticId => {
   try {
     const response = await axios.get(
-      `http://localhost:8800/api/critics_likes/${criticId}/check_like`,
+      `${apiBaseUrl}/critics_likes/${criticId}/check_like`,
       { withCredentials: true },
     );
 

@@ -5,6 +5,7 @@ import axios from 'axios';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+import apiBaseUrl from './config';
 
 const GetUserId = () => {
   const { setUserId } = useData();
@@ -15,7 +16,7 @@ const GetUserId = () => {
       try {
         const response = await axios({
           method: 'get',
-          url: `http://localhost:8800/api/auth/validate_token`,
+          url: `${apiBaseUrl}/auth/validate_token`,
           withCredentials: true,
         });
 

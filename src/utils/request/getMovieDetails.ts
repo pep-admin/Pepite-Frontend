@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { parseDatabaseData } from './parseDetails';
+import apiBaseUrl from './config';
 
 const isDataFromDatabase = data => {
   return Object.prototype.hasOwnProperty.call(data, 'are_details_completed');
@@ -15,7 +16,7 @@ export const getMovieDetails = async (displayType: string, movieId: number) => {
     certification = '&append_to_response=content_ratings';
 
   const response = await axios.get(
-    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
+    `${apiBaseUrl}/movies/details/${movieId}?type=${displayType}${certification}`,
     { withCredentials: true },
   );
 

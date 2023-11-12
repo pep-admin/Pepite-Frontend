@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 // Ajout d'une nouvelle critique
 export const addNewCritic = async (
@@ -9,7 +10,7 @@ export const addNewCritic = async (
   isGoldNugget,
 ) => {
   await axios.post(
-    `http://localhost:8800/api/critics/add`,
+    `${apiBaseUrl}/critics/add`,
     { movie_id: movieId, type: type, rating, text, isGoldNugget },
     { withCredentials: true },
   );

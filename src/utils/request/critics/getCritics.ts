@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { parseDatabaseData } from '../parseDetails';
+import apiBaseUrl from '../config';
 
 // Récupération de toutes les critiques d'un utilisateur
 export const getAllCriticsOfUser = async userId => {
-  const response = await axios.get(
-    `http://localhost:8800/api/critics/all/${userId}`,
-    { withCredentials: true },
-  );
+  const response = await axios.get(`${apiBaseUrl}/critics/all/${userId}`, {
+    withCredentials: true,
+  });
 
   if (!Array.isArray(response.data)) {
     return [];

@@ -1,11 +1,10 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
 
 // Insertion d'un film dans la liste des déjà vus
 export const addSeenMovie = async (movieId: number, type: string) => {
   try {
     await axios.post(
-      `${apiBaseUrl}/movies/add_already_seen`,
+      `http://localhost:8800/api/movies/add_already_seen`,
       { movie_id: movieId, type: type },
       { withCredentials: true },
     );
@@ -17,7 +16,7 @@ export const addSeenMovie = async (movieId: number, type: string) => {
 // Suppression d'un film de la liste des déjà vus
 export const removeSeenMovie = async (movieId: number, type: string) => {
   try {
-    await axios.delete(`${apiBaseUrl}/movies/remove_already_seen`, {
+    await axios.delete(`http://localhost:8800/api/movies/remove_already_seen`, {
       data: { movie_id: movieId, type: type },
       withCredentials: true,
     });
@@ -30,7 +29,7 @@ export const removeSeenMovie = async (movieId: number, type: string) => {
 export const handleLogout = async () => {
   try {
     const logoutResponse = await axios.post(
-      `${apiBaseUrl}/auth/logout`,
+      'http://localhost:8800/api/auth/logout',
       {},
       { withCredentials: true },
     );
@@ -46,7 +45,7 @@ export const handleLogout = async () => {
 export const addUnwantedMovie = async (movieId: number, type: string) => {
   try {
     await axios.post(
-      `${apiBaseUrl}/movies/unwanted`,
+      `http://localhost:8800/api/movies/unwanted`,
       { movie_id: movieId, type: type },
       { withCredentials: true },
     );
@@ -60,7 +59,7 @@ export const addUnwantedMovie = async (movieId: number, type: string) => {
 // Annulation d'un film non souhaité
 export const cancelDeletedMovie = async (movieId: number, type: string) => {
   try {
-    await axios.delete(`${apiBaseUrl}/movies/cancel_deleted`, {
+    await axios.delete(`http://localhost:8800/api/movies/cancel_deleted`, {
       data: { movie_id: movieId, type: type },
       withCredentials: true,
     });
@@ -75,7 +74,7 @@ export const cancelDeletedMovie = async (movieId: number, type: string) => {
 export const searchMulti = async (query: string, displayType: string) => {
   try {
     const response = await axios.get(
-      `${apiBaseUrl}/search/movie-serie?query=${query}&displayType=${displayType}`,
+      `http://localhost:8800/api/search/movie-serie?query=${query}&displayType=${displayType}`,
       { withCredentials: true },
     );
     return response.data.results;
@@ -88,7 +87,7 @@ export const searchMulti = async (query: string, displayType: string) => {
 export const addWantedMovie = async (movieId: number, type: string) => {
   try {
     await axios.post(
-      `${apiBaseUrl}/movies/add_wanted`,
+      `http://localhost:8800/api/movies/add_wanted`,
       { movie_id: movieId, type: type },
       { withCredentials: true },
     );
@@ -102,7 +101,7 @@ export const addWantedMovie = async (movieId: number, type: string) => {
 // Annulation d'un film souhaité
 export const removeWantedMovie = async (movieId: number, type: string) => {
   try {
-    await axios.delete(`${apiBaseUrl}/movies/cancel_wanted`, {
+    await axios.delete(`http://localhost:8800/api/movies/cancel_wanted`, {
       data: { movie_id: movieId, type: type },
       withCredentials: true,
     });

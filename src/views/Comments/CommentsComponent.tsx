@@ -17,7 +17,7 @@ const CommentsComponent = () => {
         </Typography>
       </Stack>
       <Divider />
-      <Stack>
+      <Stack height="67px">
         <CommentsInput />
       </Stack>
     </Item>

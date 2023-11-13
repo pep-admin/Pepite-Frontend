@@ -1,5 +1,4 @@
 // Import de libs externes
-import { Link } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -195,10 +194,9 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
               {'Vous possédez déjà un compte ?'}
             </Typography>
             <Button
-              component={Link}
-              to="/login"
               variant="contained"
               color="primary"
+              href="http://127.0.0.1:5173/login"
               onClick={() => setIsBtnClicked(true)}
             >
               {'Se connecter'}

@@ -10,13 +10,15 @@ import {
   findCertificationFr,
   findIsoCountry,
 } from '@utils/functions/findInfos';
+// import { getMovieDetails } from '@utils/request/getMovieDetails';
+import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
   const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
-  const [nextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
+  const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
@@ -124,33 +126,60 @@ const SwipeContainer = () => {
   useEffect(() => {
     if (movies.length === 0 || currentMovieIndex === -1) return;
 
-    const currentMovieId = movies[currentMovieIndex].id;
-    if (currentMovieId) {
-      const fetchMovieDetails = async () => {
-        setLoading({ ...loading, details: true });
-        try {
-          const detailsData = await getMovieDetails(
-            displayType,
-            currentMovieId,
-          );
-          setMovieDetail(detailsData);
-          setGeneralRatings(detailsData[0].vote_average);
-        } catch (err) {
-          setError({
-            message: 'Erreur dans la récupération des détails du film.',
-            error: err,
-          });
-        } finally {
-          setLoading(prevLoading => ({
-            ...prevLoading,
-            details: false,
-          }));
-        }
-      };
+    const fetchMovieDetails = async movieId => {
+      try {
+        const details = await getMovieDetails(displayType, movieId);
+        return details;
+      } catch (err) {
+        console.log(err);
+        setError({
+          message: 'Erreur dans la récupération des détails du film.',
+          error: err,
+        });
+      }
+    };
 
-      fetchMovieDetails();
+    const loadMoviesDetails = async () => {
+      try {
+        const nextIndex =
+          currentMovieIndex + 1 < movies.length ? currentMovieIndex + 1 : null;
+        const movieIdsToFetch = [movies[currentMovieIndex].id];
+        if (nextIndex !== null) {
+          movieIdsToFetch.push(movies[nextIndex].id);
+        }
+
+        // Récupérer les détails pour les deux films simultanément
+        const detailsDataArray = await Promise.all(
+          movieIdsToFetch.map(id => fetchMovieDetails(id)),
+        );
+
+        // Mettre à jour l'état avec les détails du film actuel
+        setMovieDetail(detailsDataArray[0]);
+        setGeneralRatings(detailsDataArray[0].vote_average);
+
+        // Préchargement du prochain film
+        if (detailsDataArray.length > 1 && detailsDataArray[1]) {
+          setNextMovieDetail(detailsDataArray[1]);
+        }
+      } catch (err) {
+        console.error(
+          'Erreur lors de la récupération des détails des films',
+          err,
+        );
+        setError(err);
+      } finally {
+        setLoading(prevLoading => ({ ...prevLoading, details: false }));
+      }
+    };
+
+    loadMoviesDetails();
+  }, [movies, currentMovieIndex, displayType]);
+
+  useEffect(() => {
+    if (Object.keys(movieDetail).length !== 0) {
+      storeDetailsData(movieDetail);
     }
-  }, [movies, currentMovieIndex, genreChosen]);
+  }, [movieDetail]);
 
   useEffect(() => {
     if (countryChosen !== '') {

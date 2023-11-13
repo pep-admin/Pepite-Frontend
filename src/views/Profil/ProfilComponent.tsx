@@ -7,22 +7,26 @@ import {
   Box,
   Avatar,
   Typography,
-  Button,
   Alert,
   AlertTitle,
+  Button,
 } from '@mui/material';
-import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 import Header from '@utils/Header';
+import { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Import des composants internes
 import { Item } from '@utils/styledComponent';
 import ProfilDetails from './ProfilDetails';
-import { useParams } from 'react-router-dom';
-import { useData } from '@hooks/DataContext';
-import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 import ProfilSuggestedNotes from './ProfilSuggestedNotes';
 import SearchBar from '@utils/SearchBar';
-import { useCallback, useEffect, useState } from 'react';
+import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+
+// Import des icônes
+import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
+
+// Import du contexte
+import { useData } from '@hooks/DataContext';
 import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const ProfilComponent = () => {

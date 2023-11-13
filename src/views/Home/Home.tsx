@@ -1,52 +1,71 @@
-import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Stack } from '@mui/material';
+import {
+  Typography,
+  Button,
+  Container,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Stack,
+} from '@mui/material';
+import MovieIcon from '@mui/icons-material/Movie';
+import StarIcon from '@mui/icons-material/Star';
+import Header from '@utils/Header';
 
 const Home = () => {
-  const buildDate = new Date(BUILD_TIMESTAMP);
+  function generateFilmData(count: number) {
+    return Array.from({ length: count }, (_, k) => ({
+      id: k + 1,
+      title: `Film ${k + 1}`,
+      description: `Description du film ${k + 1}`,
+      imageUrl: `https://picsum.photos/200/300?random=${k + 1}`,
+    }));
+  }
 
-  // Formatage de la date en français
-  const formattedBuildDate = buildDate
-    .toLocaleString('fr-FR', {
-      weekday: 'long', // 'long' pour le format complet du jour de la semaine
-      year: 'numeric', // 'numeric' pour l'année
-      month: 'short', // 'short' pour le format abrégé du mois
-      day: 'numeric', // 'numeric' pour le jour du mois
-      hour: '2-digit', // '2-digit' pour l'heure
-      minute: '2-digit', // '2-digit' pour les minutes
-      second: '2-digit', // '2-digit' pour les secondes
-      hour12: false, // Utiliser le format 24h
-    })
-    .replace(/,/g, ''); // Supprimer les virgules du résultat
-  const displayBuildDate = formattedBuildDate.replace(' ', ' à ');
+  const filmData = generateFilmData(6);
 
   return (
-    <AppBar position="static" sx={{ mb: 2 }}>
-      <Toolbar>
-        <Typography variant="body1">{displayBuildDate}</Typography>
-        <Stack
-          direction={'row'}
-          justifyContent={'center'}
-          alignItems={'center'}
-          width={'100%'}
-        >
-          <Button color="inherit" component={Link} to="/">
-            Home
-          </Button>
-          <Button color="inherit" component={Link} to="/login">
-            Login
-          </Button>
-          <Button color="inherit" component={Link} to="/register">
-            Register
-          </Button>
-          <Button color="inherit" component={Link} to="/about">
-            About
-          </Button>
-          <Button color="inherit" component={Link} to="/swipe">
-            Swipe
-          </Button>
-        </Stack>
-      </Toolbar>
-    </AppBar>
+    <>
+      <Header />
+      <Container>
+        <Grid container spacing={2}>
+          {filmData.map((film, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={film.imageUrl}
+                  alt={film.title}
+                />
+                <CardContent>
+                  <Stack
+                    direction="row"
+                    justifyContent={'space-between'}
+                    spacing={1}
+                  >
+                    <Stack>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <MovieIcon />
+                        <Typography variant="h6" component="h2">
+                          {film.title}
+                        </Typography>
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary">
+                        {film.description}
+                      </Typography>
+                    </Stack>
+                    <Button variant="outlined" endIcon={<StarIcon />}>
+                      {"J'aime"}
+                    </Button>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </>
   );
 };
 

@@ -7,7 +7,7 @@
     "preinstall": "npx check-node-version --node 18.18.0",
     "audit": "npm audit",
     "check-updates": "ncu -u",
-    "build": "rm -rf dist/* && tsc && vite build",
+    "build": "tsc && vite build",
     "changelog": "standard-version",
     "dev": "vite",
     "lint": "eslint \"src/**/*.{js,ts,jsx,tsx}\"",

@@ -10,11 +10,11 @@ const CommentsInput = () => {
       position="relative"
       borderRadius="10px"
       flexGrow="1"
-      padding="0 10px"
-      margin="12px 0"
+      paddingLeft="10px"
+      alignItems="center"
       justifyContent="space-between"
     >
-      <Stack direction="row">
+      <Stack direction="row" margin="6px 0">
         <Avatar
           variant="square"
           alt="Photo de Kate"
@@ -30,7 +30,7 @@ const CommentsInput = () => {
             height: '17px',
             width: '20px',
             position: 'relative',
-            bottom: '4px',
+            bottom: '5px',
             right: '8px',
           }}
         />
@@ -51,8 +51,14 @@ const CommentsInput = () => {
           variant="filled"
         />
       </Stack>
-      <Stack height="30px" justifyContent="center" alignSelf="center">
-        <SendIcon />
+      <Stack
+        height="100%"
+        width="40px"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ backgroundColor: '#24A5A5', borderRadius: '0 0 10px 0' }}
+      >
+        <SendIcon sx={{ color: '#fff' }} />
       </Stack>
     </Stack>
   );

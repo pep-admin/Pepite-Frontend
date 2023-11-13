@@ -195,7 +195,7 @@ const Header = () => {
                   onClick={() => {
                     if (setting === 'Déconnexion') {
                       onLogout();
-                    } else if (setting === 'Profil') {
+                    } else if (setting === 'Profil' && userId) {
                       navigate(`/profil/${userId}`);
                     }
                     handleCloseUserMenu();

@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import RegisterFormComponent from '@views/Auth/RegistrationFormComponent';
 import { useNavigate } from 'react-router-dom';
-import apiBaseUrl from '@utils/request/config';
 
 // Schéma de vérification Yup
 const validationSchema = Yup.object({
@@ -57,7 +56,7 @@ const RegisterFormContainer = () => {
       // Envoie les données utilisateurs pour inscription
       const response = await axios({
         method: 'post',
-        url: `${apiBaseUrl}/auth/register`,
+        url: `http://localhost:8800/api/auth/register`,
         withCredentials: true,
         data: {
           last_name: values.lastName,

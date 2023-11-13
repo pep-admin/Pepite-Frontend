@@ -34,7 +34,6 @@ const CriticAdvicesReview = ({
         <InputLabel
           htmlFor="custom-outlined-input"
           sx={{ fontStyle: 'italic', overflow: 'visible' }}
-          // focused={ isModify ? true : false }
         >
           {'Votre critique'}
         </InputLabel>
@@ -74,7 +73,7 @@ const CriticAdvicesReview = ({
       flexGrow="1"
       marginBottom={type === 'new-critic' || isModify ? '7px' : '0'}
       sx={{
-        backgroundColor: '#ededed',
+        backgroundColor: '#F1F1F1',
       }}
     >
       <Avatar

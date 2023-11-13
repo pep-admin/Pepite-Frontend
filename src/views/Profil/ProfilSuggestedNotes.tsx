@@ -24,10 +24,10 @@ const ProfilSuggestedNotes = () => {
         alignItems="center"
         padding="0 10px"
       >
-        <Typography variant="body2" component="p">
+        <Typography variant="body2" component="p" fontWeight="bold">
           {'Dernières notations'}
         </Typography>
-        <Typography variant="body2" component="p">
+        <Typography variant="body2" component="p" fontWeight="bold">
           {'Voir +'}
         </Typography>
       </Stack>

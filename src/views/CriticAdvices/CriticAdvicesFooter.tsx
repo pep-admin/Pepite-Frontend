@@ -12,7 +12,11 @@ import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
 import { addLike } from '@utils/request/critics/addLike';
 import { removeLike } from '@utils/request/critics/removeLike';
 
-const CriticAdvicesFooter = ({ criticId }) => {
+const CriticAdvicesFooter = ({
+  criticId,
+  displayComments,
+  setDisplayComments,
+}) => {
   const [likesNumber, setLikesNumber] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
 
@@ -59,7 +63,13 @@ const CriticAdvicesFooter = ({ criticId }) => {
         padding="0 17px"
         flexGrow="1"
       >
-        <Box height="100%" display="flex" alignItems="center" columnGap="5px">
+        <Box
+          height="100%"
+          display="flex"
+          alignItems="center"
+          columnGap="5px"
+          onClick={() => setDisplayComments(!displayComments)}
+        >
           <ChatTwoToneIcon
             fontSize="small"
             sx={{ position: 'relative', top: '1px' }}
@@ -92,6 +102,8 @@ const CriticAdvicesFooter = ({ criticId }) => {
 
 CriticAdvicesFooter.propTypes = {
   criticId: PropTypes.number.isRequired,
+  displayComments: PropTypes.bool.isRequired,
+  setDisplayComments: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesFooter;

@@ -1,4 +1,3 @@
-import { getAllLocalStorage } from '@utils/functions/getAllLocalStorage';
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
@@ -31,7 +30,7 @@ export const removeSeenMovie = async (movieId: number, type: string) => {
 export const handleLogout = async () => {
   try {
     const logoutResponse = await axios.post(
-      'http://localhost:8800/api/auth/logout',
+      `${apiBaseUrl}/auth/logout`,
       {},
       { withCredentials: true },
     );
@@ -76,7 +75,7 @@ export const cancelDeletedMovie = async (movieId: number, type: string) => {
 export const searchMulti = async (query: string, displayType: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:8800/api/search/movie-serie?query=${query}&displayType=${displayType}`,
+      `${apiBaseUrl}/search/movie-serie?query=${query}&displayType=${displayType}`,
       { withCredentials: true },
     );
     return response.data.results;

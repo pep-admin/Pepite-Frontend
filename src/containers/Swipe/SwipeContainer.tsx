@@ -16,7 +16,7 @@ const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
   const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
-  const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
+  const [nextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API

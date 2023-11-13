@@ -76,11 +76,16 @@ const SearchBar = ({ Item, page }) => {
     return () => clearTimeout(timeoutId); // Clear le timeout si l'utilisateur continue à taper
   }, [query]);
 
+  //
+  /**
+   * ERREUR TS 2552 : Cannot find name 'chosenMovieId'. Did you mean 'setChosenMovie'?
+   *
   useEffect(() => {
     if (chosenMovieId) {
       getChosenMovie(chosenMovieId);
     }
   }, [chosenMovieId]);
+  */
 
   useEffect(() => {
     console.log('les résultats', results);

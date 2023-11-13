@@ -1,5 +1,6 @@
-import { countriesList } from '@utils/data/Countries';
+import { countriesList } from '@utils/data/countries';
 import axios from 'axios';
+import apiBaseUrl from './config';
 
 // Récupération des informations détaillées d'un film
 const fetchMovieDetails = async (movieId: number, displayType: string) => {
@@ -11,7 +12,7 @@ const fetchMovieDetails = async (movieId: number, displayType: string) => {
     certification = '&append_to_response=content_ratings';
 
   const response = await axios.get(
-    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
+    `${apiBaseUrl}/movies/details/${movieId}?type=${displayType}${certification}`,
     { withCredentials: true },
   );
 

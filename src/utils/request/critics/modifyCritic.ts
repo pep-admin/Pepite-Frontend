@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 export const modifyCritic = async (
   criticId,
@@ -8,7 +9,7 @@ export const modifyCritic = async (
   isGoldNugget,
 ) => {
   await axios.put(
-    `http://localhost:8800/api/critics/modify/${criticId}`,
+    `${apiBaseUrl}/critics/modify/${criticId}`,
     { rating: rating, type: type, text: text, is_gold_nugget: isGoldNugget },
     { withCredentials: true },
   );

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 export const storeDetailsData = async movieDetail => {
   try {
@@ -20,11 +21,9 @@ export const storeDetailsData = async movieDetail => {
       vote_average: vote_average,
     };
 
-    await axios.post(
-      'http://localhost:8800/api/movies/store_details',
-      additionalInfos,
-      { withCredentials: true },
-    );
+    await axios.post(`${apiBaseUrl}/movies/store_details`, additionalInfos, {
+      withCredentials: true,
+    });
   } catch (error) {
     console.log('erreur dans le stockage des détails :', error);
   }

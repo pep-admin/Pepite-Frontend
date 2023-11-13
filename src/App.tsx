@@ -26,7 +26,6 @@ export function App() {
       <ThemeProvider theme={theme}>
         <DataProvider>
           <BrowserRouter>
-            <GetUserId />
             <Routes>
               <Route path="/login" element={<LoginFormContainer />} />
               <Route path="/register" element={<RegisterFormContainer />} />

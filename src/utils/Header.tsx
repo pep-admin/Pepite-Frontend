@@ -29,7 +29,9 @@ const pages = ['Accueil', 'Swipe', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = () => {
-  const { displayType, setDisplayType, userId } = useData();
+  const { displayType, setDisplayType } = useData();
+  const userId = localStorage.getItem('user_id');
+
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -62,6 +64,7 @@ const Header = () => {
 
   async function onLogout() {
     await handleLogout();
+    localStorage.clear();
 
     navigate('/login');
   }

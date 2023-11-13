@@ -15,6 +15,7 @@ const CriticAdvicesContent = ({
   isGoldNugget,
   setIsGoldNugget,
   criticInfos,
+  isModify,
 }) => {
   const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
   let originalScore;
@@ -51,28 +52,7 @@ const CriticAdvicesContent = ({
                   ? chosenMovie.title
                   : criticInfos.title}
               </Typography>
-              {type === 'new-critic' ? (
-                // <Button
-                //   variant="contained"
-                //   sx={{
-                //     height: '100%',
-                //     padding: '2px 6px',
-                //     textTransform: 'initial',
-                //     borderRadius: '2px',
-                //     color: !isGoldNugget ? 'inherit' : '#fff',
-                //     backgroundColor: !isGoldNugget
-                //       ? '#e5e4e4 !important'
-                //       : '#F29E50 !important',
-                //   }}
-                //   onClick={() => setIsGoldNugget(!isGoldNugget)}
-                // >
-                //   <GoldNuggetIcon
-                //     sx={{ fontSize: '15px', marginRight: '5px' }}
-                //   />
-                //   <Typography variant="body2" component="p">
-                //     {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
-                //   </Typography>
-                // </Button>
+              {type === 'new-critic' || isModify ? (
                 <>
                   <Box
                     height="20px"
@@ -227,6 +207,7 @@ CriticAdvicesContent.propTypes = {
   criticInfos: PropTypes.object,
   isGoldNugget: PropTypes.bool.isRequired,
   setIsGoldNugget: PropTypes.func.isRequired,
+  isModify: PropTypes.bool.isRequired,
 };
 
 export default CriticAdvicesContent;

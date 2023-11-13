@@ -12,13 +12,13 @@ export const parseDatabaseData = (data, requestType) => {
   let rating = null;
   let text = null;
   let critic_id = null;
-  let is_gold_nugget = 0;  
+  let is_gold_nugget = 0;
 
   if (requestType === 'critic') {
     rating = data.rating;
     text = data.text;
     critic_id = Number(data.id);
-    is_gold_nugget = Number(data.is_gold_nugget)
+    is_gold_nugget = Number(data.is_gold_nugget);
   }
 
   return {
@@ -34,6 +34,6 @@ export const parseDatabaseData = (data, requestType) => {
     rating,
     text,
     critic_id,
-    is_gold_nugget
+    is_gold_nugget,
   };
 };

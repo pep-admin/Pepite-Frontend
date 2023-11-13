@@ -8,17 +8,33 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@mui/material';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 
-const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
+const CriticAdvicesReview = ({
+  type,
+  newCriticText,
+  setNewCriticText,
+  criticInfos,
+  isModify,
+}) => {
+  useEffect(() => {
+    if (isModify) {
+      setNewCriticText(criticInfos.text);
+    } else {
+      setNewCriticText('');
+    }
+  }, [isModify]);
+
   function customTextArea() {
     return (
       <FormControl variant="outlined" fullWidth sx={{ height: '100%' }}>
         <InputLabel
           htmlFor="custom-outlined-input"
           sx={{ fontStyle: 'italic', overflow: 'visible' }}
+          // focused={ isModify ? true : false }
         >
           {'Votre critique'}
         </InputLabel>
@@ -26,6 +42,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
           id="custom-outlined-input"
           label={'Votre critique'}
           placeholder={'Vous pouvez rédiger une nouvelle critique'}
+          value={newCriticText}
           multiline
           minRows={'4'}
           sx={{
@@ -47,7 +64,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
     );
   }
 
-  if (type === 'old-critic' && criticInfos.text === '') return null;
+  if (type === 'old-critic' && criticInfos.text === '' && !isModify) return;
 
   return (
     <Stack
@@ -55,7 +72,7 @@ const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
       position="relative"
       borderRadius="10px"
       flexGrow="1"
-      marginBottom={type === 'new-critic' ? '7px' : '0'}
+      marginBottom={type === 'new-critic' || isModify ? '7px' : '0'}
       sx={{
         backgroundColor: '#ededed',
       }}
@@ -71,14 +88,14 @@ const CriticAdvicesReview = ({ type, setNewCriticText, criticInfos }) => {
         }}
       />
       <Box
-        height={type === 'new-critic' ? '100%' : '50px'}
-        padding={type === 'new-critic' ? '0' : '7px 10px 0 20px'}
+        height={type === 'new-critic' || isModify ? '100%' : '50px'}
+        padding={type === 'new-critic' || isModify ? '0' : '7px 10px 0 20px'}
         display="flex"
         alignItems="center"
         flexGrow="1"
-        overflow={type === 'new-critic' ? 'visible' : 'scroll'}
+        overflow={type === 'new-critic' || isModify ? 'visible' : 'scroll'}
       >
-        {type === 'new-critic' ? (
+        {type === 'new-critic' || isModify ? (
           customTextArea()
         ) : (
           <Typography
@@ -119,6 +136,8 @@ CriticAdvicesReview.propTypes = {
   type: PropTypes.string.isRequired,
   setNewCriticText: PropTypes.func.isRequired,
   criticInfos: PropTypes.object,
+  newCriticText: PropTypes.string.isRequired,
+  isModify: PropTypes.bool.isRequired,
 };
 
 export default CriticAdvicesReview;

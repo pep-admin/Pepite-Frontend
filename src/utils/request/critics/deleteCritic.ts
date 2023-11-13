@@ -8,7 +8,6 @@ export const deleteCritic = async (critic_id: number) => {
       { withCredentials: true },
     );
     console.log(`suppression de la critique ${critic_id}`);
-    
   } catch {
     console.log('Impossible de supprimer la critique');
   }

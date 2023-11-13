@@ -272,9 +272,9 @@ const ProfilComponent = () => {
                       type={'old-critic'}
                       setUserCritics={setUserCritics}
                       chosenMovie={null}
-                      setNewCriticError={null}
-                      setNewCriticInfo={null}
-                      setNewCriticSuccess={null}
+                      setNewCriticError={setNewCriticError}
+                      setNewCriticInfo={setNewCriticInfo}
+                      setNewCriticSuccess={setNewCriticSuccess}
                       criticInfos={critic}
                     />
                   );

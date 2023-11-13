@@ -7,9 +7,6 @@ import { useNavigate } from 'react-router-dom';
 // Import des composants internes
 import LoginFormComponent from '@views/Auth/LoginFormComponent';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
-
 // Schéma de vérification Yup
 const validationSchema = Yup.object({
   email: Yup.string().email('Email invalide').required('Email requis'),
@@ -23,7 +20,6 @@ const initialValues = {
 };
 
 const LoginFormContainer = () => {
-  const { setUserId } = useData();
   const navigate = useNavigate();
 
   // Envoie les données utilisateurs pour connexion
@@ -39,7 +35,7 @@ const LoginFormContainer = () => {
         },
       });
 
-      await setUserId(response.data.id.toString());
+      localStorage.setItem('user_id', response.data.id.toString());
 
       if (response.data.last_login_date === null) {
         navigate('/about');

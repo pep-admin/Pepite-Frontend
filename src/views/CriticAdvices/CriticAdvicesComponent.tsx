@@ -66,9 +66,8 @@ const CriticAdvicesComponent = ({
         message: 'Critique ajoutée avec succès !',
       });
       const userId = localStorage.getItem('user_id');
-      console.log('user id', userId);
 
-      const newCriticsData = await getAllCriticsOfUser(userId);
+      const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
     } catch (error) {
       if (error.response.status === 409) {
@@ -104,7 +103,7 @@ const CriticAdvicesComponent = ({
         message: 'Critique modifiée avec succès !',
       });
 
-      const newCriticsData = await getAllCriticsOfUser(userId);
+      const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
       setIsModify(false);
     } catch (error) {
@@ -119,7 +118,6 @@ const CriticAdvicesComponent = ({
     if (isModify) {
       setNewRating(parseFloat(criticInfos.rating));
     }
-    console.log('modifié', isModify);
   }, [isModify]);
 
   return (

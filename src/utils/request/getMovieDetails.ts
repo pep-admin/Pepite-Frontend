@@ -24,7 +24,7 @@ export const getMovieDetails = async (displayType: string, movieId: number) => {
 
   if (isDataFromDatabase(response.data)) {
     console.log('requête DB pour', movieId);
-    parsedData = parseDatabaseData(response.data, null);
+    parsedData = parseDatabaseData(response.data, displayType, null);
   } else {
     console.log('requête TMDB pour', movieId);
     parsedData = response.data;

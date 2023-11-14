@@ -39,7 +39,7 @@ const CriticAdvicesHeader = ({
   isModify,
   setIsModify,
 }) => {
-  const { setChosenMovieId, setChosenMovie } = useData();
+  const { displayType, setChosenMovieId, setChosenMovie } = useData();
 
   // Menu des outils pour modifier / supprimer
   const [displayTools, setDisplayTools] = useState(null);
@@ -60,7 +60,7 @@ const CriticAdvicesHeader = ({
     if (tool === 'delete') {
       // TO DO: faire apparaitre une modale
       await deleteCritic(criticInfos.critic_id);
-      const newCriticsData = await getAllCriticsOfUser(userId);
+      const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
     }
   };

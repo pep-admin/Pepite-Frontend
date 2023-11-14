@@ -31,7 +31,7 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const ProfilComponent = () => {
   const { id } = useParams();
-  const { chosenMovie } = useData();
+  const { displayType, chosenMovie } = useData();
 
   const [userCritics, setUserCritics] = useState([]);
 
@@ -48,9 +48,9 @@ const ProfilComponent = () => {
     message: null,
   });
 
-  const fetchCritics = useCallback(async () => {
+  const fetchCritics = useCallback(async (type: string) => {
     try {
-      const criticData = await getAllCriticsOfUser(id);
+      const criticData = await getAllCriticsOfUser(id, type);
       setUserCritics(criticData);
     } catch (error) {
       console.error('Erreur lors de la récupération des données:', error);
@@ -58,13 +58,12 @@ const ProfilComponent = () => {
   }, []);
 
   useEffect(() => {
-    fetchCritics();
-  }, [fetchCritics]);
+    fetchCritics(displayType);
+  }, [fetchCritics, displayType]);
 
-  // useEffect(() => {
-  //   console.log('les critiques', userCritics);
-
-  // }, [userCritics])
+  useEffect(() => {
+    console.log('les critiques', userCritics);
+  }, [userCritics]);
 
   return (
     <>

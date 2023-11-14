@@ -1,5 +1,10 @@
 // Import des libs externes
-import { Stack, Typography, Avatar, TextField } from '@mui/material';
+import {
+  Stack,
+  Typography,
+  // Avatar,
+  TextField,
+} from '@mui/material';
 import { MessageIcon } from '@utils/styledComponent';
 import SendIcon from '@mui/icons-material/Send';
 
@@ -12,34 +17,22 @@ const CommentsInput = () => {
       flexGrow="1"
       paddingLeft="10px"
       alignItems="center"
-      justifyContent="space-between"
     >
-      <Stack direction="row" margin="6px 0">
-        <Avatar
-          variant="square"
-          alt="Photo de Kate"
-          src="http://127.0.0.1:5173/images/kate.jpg"
-          sx={{
-            width: 50,
-            height: 50,
-            borderRadius: '10px',
-          }}
-        />
-        <MessageIcon
-          sx={{
-            height: '17px',
-            width: '20px',
-            position: 'relative',
-            bottom: '5px',
-            right: '8px',
-          }}
-        />
+      <Stack
+        direction="row"
+        width="65px"
+        height="100%"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <MessageIcon sx={{ fontSize: '2.5em' }} />
       </Stack>
-      <Stack direction="column" justifyContent="space-between">
+      <Stack direction="column" justifyContent="space-between" flexGrow="1">
         <Typography
           component="h5"
           fontWeight="bold"
           align="left"
+          width="80%"
           fontSize="1em"
           paddingLeft="12px"
         >
@@ -49,6 +42,9 @@ const CommentsInput = () => {
           id="filled-basic"
           label="Votre commentaire"
           variant="filled"
+          sx={{
+            width: '80%',
+          }}
         />
       </Stack>
       <Stack

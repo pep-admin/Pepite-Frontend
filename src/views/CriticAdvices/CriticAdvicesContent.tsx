@@ -48,9 +48,29 @@ const CriticAdvicesContent = ({
                   maxWidth: '160px',
                 }}
               >
-                {chosenMovie !== null && type === 'new-critic'
-                  ? chosenMovie.title
-                  : criticInfos.title}
+                {
+                  // Si l'utilisateur compte noter un film
+                  chosenMovie !== null &&
+                  'release_date' in chosenMovie &&
+                  type === 'new-critic'
+                    ? `${chosenMovie.title}`
+                    : // Si l'utilisateur a déjà noté un film
+                    criticInfos !== null &&
+                      'release_date' in criticInfos &&
+                      type === 'old-critic'
+                    ? `${criticInfos.title}`
+                    : // Si l'utilisateur compte noter une série
+                    chosenMovie !== null &&
+                      'first_air_date' in chosenMovie &&
+                      type === 'new-critic'
+                    ? `${chosenMovie.name}`
+                    : // Si l'utilisateur a déjà noté une série
+                    criticInfos !== null &&
+                      'first_air_date' in criticInfos &&
+                      type === 'old-critic'
+                    ? `${criticInfos.name}`
+                    : null
+                }
               </Typography>
               {type === 'new-critic' || isModify ? (
                 <>
@@ -133,12 +153,16 @@ const CriticAdvicesContent = ({
               {(chosenMovie !== null &&
                 'release_date' in chosenMovie &&
                 type === 'new-critic') ||
-              ('release_date' in criticInfos && type === 'old-critic')
+              (criticInfos !== null &&
+                'release_date' in criticInfos &&
+                type === 'old-critic')
                 ? 'film'
                 : (chosenMovie !== null &&
                     'first_air_date' in chosenMovie &&
                     type === 'new-critic') ||
-                  ('first_air_date' in criticInfos && type === 'old-critic')
+                  (criticInfos !== null &&
+                    'first_air_date' in criticInfos &&
+                    type === 'old-critic')
                 ? 'série'
                 : null}
             </Typography>

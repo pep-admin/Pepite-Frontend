@@ -177,7 +177,7 @@ const SwipeContainer = () => {
 
   useEffect(() => {
     if (Object.keys(movieDetail).length !== 0) {
-      storeDetailsData(movieDetail);
+      storeDetailsData(movieDetail, displayType);
     }
   }, [movieDetail]);
 

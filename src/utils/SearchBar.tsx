@@ -54,7 +54,7 @@ const SearchBar = ({ Item, page }) => {
       setChosenMovie(movieData);
       console.log('le film choisi', movieData);
       // Stockage des détails du film dans la DB
-      storeDetailsData(movieData);
+      storeDetailsData(movieData, displayType);
       // if (page !== 'profil') {
       //   setGeneralRatings(movieData.vote_average);
       // }
@@ -174,6 +174,13 @@ const SearchBar = ({ Item, page }) => {
           onClose={() => setDisplayResults(null)}
           TransitionComponent={Fade}
           disableAutoFocus={true}
+          slotProps={{
+            paper: {
+              sx: {
+                width: '100%',
+              },
+            },
+          }}
           MenuListProps={{
             'aria-labelledby': 'basic-button',
             sx: {

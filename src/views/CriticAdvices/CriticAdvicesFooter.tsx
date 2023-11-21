@@ -11,28 +11,42 @@ import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
 import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
 import { addLike } from '@utils/request/critics/addLike';
 import { removeLike } from '@utils/request/critics/removeLike';
+import { getCommentsNumber } from '@utils/request/critics/getCommentsNumber';
+
+// Import du contexte
+import { useData } from '@hooks/DataContext';
 
 const CriticAdvicesFooter = ({
   criticId,
   displayComments,
   setDisplayComments,
 }) => {
+  const { displayType } = useData();
+
+  const [commentsNumber, setCommentsNumber] = useState(0);
   const [likesNumber, setLikesNumber] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
 
   // Compte le nombre de likes par critique au montage du composant
+  const fetchCommentsNumber = async () => {
+    const response = await getCommentsNumber(criticId, displayType);
+    setCommentsNumber(response);
+  };
+
+  // Compte le nombre de likes par critique au montage du composant
   const fetchLikesNumber = async () => {
-    const response = await getLikesNumber(criticId);
+    const response = await getLikesNumber(criticId, displayType);
     setLikesNumber(response);
   };
 
   // Vérifie si l'utilisateur a déjà liké des critiques
   const checkUserLikeStatus = async () => {
-    const response = await checkLikeStatus(criticId);
+    const response = await checkLikeStatus(criticId, displayType);
     setHasLiked(response);
   };
 
   useEffect(() => {
+    fetchCommentsNumber();
     fetchLikesNumber();
     checkUserLikeStatus();
   }, [hasLiked]);
@@ -44,7 +58,7 @@ const CriticAdvicesFooter = ({
       if (hasLiked) {
         removeLike(criticId);
       } else {
-        addLike(criticId);
+        addLike(criticId, displayType);
       }
       fetchLikesNumber();
     } catch (error) {
@@ -75,7 +89,7 @@ const CriticAdvicesFooter = ({
             sx={{ position: 'relative', top: '1px' }}
           />
           <Typography component="p" fontSize="1em" fontWeight="bold">
-            {5}
+            {commentsNumber}
           </Typography>
         </Box>
         <Box height="100%" display="flex" alignItems="center" columnGap="5px">

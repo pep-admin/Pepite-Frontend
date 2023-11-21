@@ -10,6 +10,7 @@ import {
   Alert,
   AlertTitle,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import Header from '@utils/Header';
 import { useEffect, useState, useCallback } from 'react';
@@ -34,6 +35,7 @@ const ProfilComponent = () => {
   const { displayType, chosenMovie } = useData();
 
   const [userCritics, setUserCritics] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   const [newCriticError, setNewCriticError] = useState({
     error: null,
@@ -60,6 +62,26 @@ const ProfilComponent = () => {
   useEffect(() => {
     fetchCritics(displayType);
   }, [fetchCritics, displayType]);
+
+  useEffect(() => {
+    let timer;
+    if (newCriticSuccess.success) {
+      timer = setInterval(() => {
+        setProgress(prevProgress =>
+          prevProgress >= 100 ? 0 : prevProgress + 10,
+        );
+      }, 800);
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [newCriticSuccess]);
+
+  useEffect(() => {
+    if (progress >= 100) {
+      setNewCriticSuccess({ success: null, message: null });
+    }
+  }, [progress]);
 
   useEffect(() => {
     console.log('les critiques', userCritics);
@@ -220,12 +242,30 @@ const ProfilComponent = () => {
             ) : !newCriticError.error &&
               newCriticSuccess.success &&
               !newCriticInfo.info ? (
-              <Item margintop="6px">
+              <Item
+                margintop="6px"
+                display="flex"
+                justifycontent="space-between"
+                alignitems="center"
+              >
                 <Alert
                   severity="success"
-                  sx={{ display: 'flex', alignItems: 'center' }}
+                  sx={{
+                    flexGrow: '1',
+                    '& .MuiAlert-message': {
+                      flexGrow: '1',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    },
+                  }}
                 >
                   {newCriticSuccess.message}
+                  <CircularProgress
+                    variant="determinate"
+                    size={18.33}
+                    value={progress}
+                  />
                 </Alert>
               </Item>
             ) : !newCriticError.error &&

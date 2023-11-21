@@ -1,10 +1,13 @@
 import axios from 'axios';
 
-export const getLikesNumber = async criticId => {
+export const getLikesNumber = async (criticId, type) => {
   try {
     const response = await axios.get(
       `http://localhost:8800/api/critics_likes/${criticId}/likes`,
-      { withCredentials: true },
+      {
+        params: { type: type },
+        withCredentials: true,
+      },
     );
 
     return response.data.likesCount;

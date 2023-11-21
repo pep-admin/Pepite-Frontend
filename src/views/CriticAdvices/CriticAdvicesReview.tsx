@@ -97,16 +97,16 @@ const CriticAdvicesReview = ({
         {type === 'new-critic' || isModify ? (
           customTextArea()
         ) : (
-          <Typography
-            variant="body2"
-            component="blockquote"
-            textAlign="left"
-            fontStyle="italic"
-          >
+          <Typography variant="body2" component="blockquote" textAlign="left">
             <Typography variant="body2" component="p">
               {`${criticInfos.text}`}
             </Typography>
-            <Typography variant="body2" component="cite" fontWeight="bold">
+            <Typography
+              variant="body2"
+              component="cite"
+              fontWeight="bold"
+              fontStyle="italic"
+            >
               {'- Kate Austen -'}
             </Typography>
           </Typography>

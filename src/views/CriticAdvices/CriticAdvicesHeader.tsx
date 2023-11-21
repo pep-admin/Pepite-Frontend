@@ -59,7 +59,7 @@ const CriticAdvicesHeader = ({
 
     if (tool === 'delete') {
       // TO DO: faire apparaitre une modale
-      await deleteCritic(criticInfos.critic_id);
+      await deleteCritic(criticInfos.critic_id, displayType);
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
     }

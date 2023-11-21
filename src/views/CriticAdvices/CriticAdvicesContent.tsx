@@ -150,21 +150,27 @@ const CriticAdvicesContent = ({
               {'Type :'}
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
-              {(chosenMovie !== null &&
-                'release_date' in chosenMovie &&
-                type === 'new-critic') ||
-              (criticInfos !== null &&
-                'release_date' in criticInfos &&
-                type === 'old-critic')
-                ? 'film'
-                : (chosenMovie !== null &&
-                    'first_air_date' in chosenMovie &&
-                    type === 'new-critic') ||
-                  (criticInfos !== null &&
-                    'first_air_date' in criticInfos &&
-                    type === 'old-critic')
-                ? 'série'
-                : null}
+              {
+                // Si l'utilisateur choisit un film
+                (chosenMovie !== null &&
+                  'release_date' in chosenMovie &&
+                  type === 'new-critic') ||
+                // Si la critique est une critique de film
+                (criticInfos !== null &&
+                  'release_date' in criticInfos &&
+                  type === 'old-critic')
+                  ? 'Film'
+                  : // Si l'utilisateur choisit une série
+                  (chosenMovie !== null &&
+                      'first_air_date' in chosenMovie &&
+                      type === 'new-critic') ||
+                    // Si la critique est une critique de série
+                    (criticInfos !== null &&
+                      'first_air_date' in criticInfos &&
+                      type === 'old-critic')
+                  ? 'Série'
+                  : null
+              }
             </Typography>
           </Stack>
           <Stack direction="row">
@@ -173,10 +179,16 @@ const CriticAdvicesContent = ({
               fontWeight="bold"
               component="p"
               color="primary.dark"
+              whiteSpace="nowrap"
             >
               {'Genre :'}
             </Typography>
-            <Typography variant="body2" component="p" marginLeft="5px">
+            <Typography
+              variant="body2"
+              component="p"
+              marginLeft="5px"
+              align="left"
+            >
               {chosenMovie !== null && type === 'new-critic'
                 ? chosenMovie.genres.map(genre => genre.name).join(', ')
                 : criticInfos.genres.map(genre => genre.name).join(', ')}
@@ -192,15 +204,29 @@ const CriticAdvicesContent = ({
               {'Année :'}
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
-              {chosenMovie !== null &&
-              'release_date' in chosenMovie &&
-              type === 'new-critic'
-                ? chosenMovie.release_date.split('-')[0]
-                : chosenMovie !== null &&
-                  'first_air_date' in chosenMovie &&
-                  type === 'new-critic'
-                ? chosenMovie.first_air_date.split('-')[0]
-                : criticInfos.release_date.split('-')[0]}
+              {
+                // Si l'utilisateur choisit un film
+                chosenMovie !== null &&
+                'release_date' in chosenMovie &&
+                type === 'new-critic'
+                  ? chosenMovie.release_date.split('-')[0]
+                  : // Si l'utilisateur choisit une série
+                  chosenMovie !== null &&
+                    'first_air_date' in chosenMovie &&
+                    type === 'new-critic'
+                  ? chosenMovie.first_air_date.split('-')[0]
+                  : // Si la critique est une critique de film
+                  criticInfos !== null &&
+                    'release_date' in criticInfos &&
+                    type === 'old-critic'
+                  ? criticInfos.release_date.split('-')[0]
+                  : // Si la critique est une critique de série
+                  criticInfos !== null &&
+                    'first_air_date' in criticInfos &&
+                    type === 'old-critic'
+                  ? criticInfos.first_air_date.split('-')[0]
+                  : null
+              }
             </Typography>
           </Stack>
           <Stack direction="row">

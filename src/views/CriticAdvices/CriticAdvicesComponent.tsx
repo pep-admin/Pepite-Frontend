@@ -27,6 +27,7 @@ import { addNewCritic } from '@utils/request/critics/postCritic';
 import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import CommentsComponent from '@views/Comments/CommentsComponent';
+import CriticAdvicesModal from './CriticAdvicesModal';
 
 const CriticAdvicesComponent = ({
   type,
@@ -43,6 +44,7 @@ const CriticAdvicesComponent = ({
   const [isGoldNugget, setIsGoldNugget] = useState(false); // Pépite ou non
   const [isModify, setIsModify] = useState(false);
   const [displayComments, setDisplayComments] = useState(false);
+  const [showPoster, setShowPoster] = useState(false);
 
   const [displayRatings, setDisplayRatings] = useState(null);
   const ratingsHeaderRef = useRef(null);
@@ -122,6 +124,13 @@ const CriticAdvicesComponent = ({
 
   return (
     <>
+      {showPoster ? (
+        <CriticAdvicesModal
+          showPoster={showPoster}
+          setShowPoster={setShowPoster}
+          criticInfos={criticInfos}
+        />
+      ) : null}
       <Item margintop="6px">
         <Stack height="100%">
           <CriticAdvicesHeader
@@ -176,6 +185,9 @@ const CriticAdvicesComponent = ({
                       objectFit: 'contain',
                       borderRadius: '10px',
                     }}
+                    onClick={
+                      type === 'old-critic' ? () => setShowPoster(true) : null
+                    }
                   />
                 </CardActionArea>
                 <CriticAdvicesContent
@@ -270,7 +282,9 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
-      {displayComments ? <CommentsComponent /> : null}
+      {displayComments ? (
+        <CommentsComponent criticId={criticInfos.critic_id} />
+      ) : null}
     </>
   );
 };

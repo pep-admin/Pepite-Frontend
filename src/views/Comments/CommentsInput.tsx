@@ -5,10 +5,30 @@ import {
   // Avatar,
   TextField,
 } from '@mui/material';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+
+// Import des fonctions internes
+import { addComment } from '@utils/request/critics/addComment';
+
+// Import des icônes
 import { MessageIcon } from '@utils/styledComponent';
 import SendIcon from '@mui/icons-material/Send';
 
-const CommentsInput = () => {
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+
+const CommentsInput = ({ criticId, comments, getComments }) => {
+  const { displayType } = useData();
+
+  const [newComment, setNewComment] = useState('');
+
+  const addNewComment = async () => {
+    if (newComment === '') return;
+    await addComment(criticId, displayType, newComment);
+    getComments();
+  };
+
   return (
     <Stack
       direction="row"
@@ -45,6 +65,7 @@ const CommentsInput = () => {
           sx={{
             width: '80%',
           }}
+          onChange={e => setNewComment(e.target.value)}
         />
       </Stack>
       <Stack
@@ -52,12 +73,22 @@ const CommentsInput = () => {
         width="40px"
         alignItems="center"
         justifyContent="center"
-        sx={{ backgroundColor: '#24A5A5', borderRadius: '0 0 10px 0' }}
+        sx={{
+          backgroundColor: '#24A5A5',
+          borderRadius: comments.length > 0 ? '0' : '0 0 10px 0',
+        }}
+        onClick={() => addNewComment()}
       >
         <SendIcon sx={{ color: '#fff' }} />
       </Stack>
     </Stack>
   );
+};
+
+CommentsInput.propTypes = {
+  criticId: PropTypes.number.isRequired,
+  comments: PropTypes.array.isRequired,
+  getComments: PropTypes.func.isRequired,
 };
 
 export default CommentsInput;

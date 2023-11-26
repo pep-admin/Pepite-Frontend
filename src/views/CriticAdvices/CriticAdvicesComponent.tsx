@@ -120,6 +120,7 @@ const CriticAdvicesComponent = ({
     if (isModify) {
       setNewRating(parseFloat(criticInfos.rating));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModify]);
 
   return (

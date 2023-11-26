@@ -1,9 +1,10 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 export const addComment = async (critic_id, type, text) => {
   try {
     await axios.post(
-      `http://localhost:8800/api/critics_comments/add`,
+      `${apiBaseUrl}/critics_comments/add`,
       { critic_id: critic_id, type: type, text: text },
       { withCredentials: true },
     );

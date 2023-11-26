@@ -1,9 +1,10 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 export const getCommentsNumber = async (criticId, type) => {
   try {
     const response = await axios.get(
-      `http://localhost:8800/api/critics_comments/${criticId}/comments`,
+      `${apiBaseUrl}/critics_comments/${criticId}/comments`,
       {
         params: { type: type },
         withCredentials: true,

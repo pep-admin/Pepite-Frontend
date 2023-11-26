@@ -58,7 +58,7 @@ const CriticAdvicesHeader = ({
     const userId = localStorage.getItem('user_id');
 
     if (tool === 'delete') {
-      // TO DO: faire apparaitre une modale
+      // TO DO: faire apparaître une modale
       await deleteCritic(criticInfos.critic_id, displayType);
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);

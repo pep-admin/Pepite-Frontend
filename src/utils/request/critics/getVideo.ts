@@ -1,15 +1,13 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 // Récupération de toutes les critiques d'un utilisateur
 export const getVideo = async (type, movieId) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8800/api/movies/video/${movieId}`,
-      {
-        params: { type: type },
-        withCredentials: true,
-      },
-    );
+    const response = await axios.get(`${apiBaseUrl}/movies/video/${movieId}`, {
+      params: { type: type },
+      withCredentials: true,
+    });
 
     return response;
   } catch (error) {

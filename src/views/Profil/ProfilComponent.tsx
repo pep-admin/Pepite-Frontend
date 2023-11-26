@@ -57,6 +57,7 @@ const ProfilComponent = () => {
     } catch (error) {
       console.error('Erreur lors de la récupération des données:', error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

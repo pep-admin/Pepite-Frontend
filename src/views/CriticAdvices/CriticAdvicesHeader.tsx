@@ -36,9 +36,10 @@ const CriticAdvicesHeader = ({
   setNewRating,
   criticInfos,
   setUserCritics,
-  userId
+  isModify,
+  setIsModify,
 }) => {
-  const { setChosenMovieId, setChosenMovie } = useData();
+  const { displayType, setChosenMovieId, setChosenMovie } = useData();
 
   // Menu des outils pour modifier / supprimer
   const [displayTools, setDisplayTools] = useState(null);
@@ -53,14 +54,25 @@ const CriticAdvicesHeader = ({
     setDisplayRatings(event.currentTarget);
   };
 
-  const handleCriticTools = async(tool) => {
-    if(tool === 'delete') {
+  const handleCriticTools = async tool => {
+    const userId = localStorage.getItem('user_id');
+
+    if (tool === 'delete') {
       // TO DO: faire apparaitre une modale
-      await deleteCritic(criticInfos.critic_id); 
-      const newCriticsData = await getAllCriticsOfUser(userId);      
+      await deleteCritic(criticInfos.critic_id, displayType);
+      const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
     }
-  }
+  };
+
+  const formatRating = rating => {
+    // Si la note a une partie décimale autre que .0, retourner la note telle quelle
+    if (rating % 1 !== 0) {
+      return rating.toString();
+    }
+    // Sinon, retourner la note sans la partie décimale
+    return Math.floor(rating).toString();
+  };
 
   return (
     <Stack
@@ -99,7 +111,7 @@ const CriticAdvicesHeader = ({
           readOnly
           sx={{ position: 'relative', bottom: '0.5px' }}
         />
-        {type === 'new-critic' ? (
+        {type === 'new-critic' || isModify ? (
           <>
             <Box
               ref={ratingsHeaderRef}
@@ -108,13 +120,18 @@ const CriticAdvicesHeader = ({
               alignItems="center"
               justifyContent="center"
               sx={{
-                backgroundColor: newRating === null ? '#a09f9f' : '#F29E50',
+                backgroundColor:
+                  newRating === null && !isModify ? '#a09f9f' : '#F29E50',
                 color: newRating === null ? '#fff' : 'inherit',
                 fontWeight: newRating === null ? 'normal' : 'bold',
               }}
               onClick={e => handleRatingsMenu(e)}
             >
-              {newRating === null ? '?' : newRating}
+              {newRating === null && !isModify
+                ? '?'
+                : newRating === null && isModify
+                ? `${formatRating(criticInfos.rating)}`
+                : newRating}
             </Box>
             <Menu
               id="basic-menu"
@@ -189,9 +206,9 @@ const CriticAdvicesHeader = ({
           </>
         ) : null}
         <Typography variant="body2" component="p" fontWeight="bold">
-          {type === 'new-critic' && !criticInfos
+          {(type === 'new-critic' && !criticInfos) || isModify
             ? ' / 5'
-            : `${criticInfos.rating} / 5`}
+            : `${formatRating(criticInfos.rating)} / 5`}
         </Typography>
       </Box>
       <Box
@@ -241,7 +258,7 @@ const CriticAdvicesHeader = ({
               >
                 <MenuItem
                   onClick={() => {
-                    // TODO : modifier la critique
+                    setIsModify(!isModify);
                     setDisplayTools(null);
                   }}
                   sx={{ padding: '0', minHeight: 'auto' }}
@@ -256,7 +273,7 @@ const CriticAdvicesHeader = ({
                       },
                     }}
                   >
-                    {'Modifier'}
+                    {!isModify ? 'Modifier' : 'Annuler'}
                   </ListItemText>
                 </MenuItem>
                 <Divider />
@@ -304,6 +321,9 @@ CriticAdvicesHeader.propTypes = {
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   setNewRating: PropTypes.func.isRequired,
   criticInfos: PropTypes.object,
+  setUserCritics: PropTypes.func.isRequired,
+  isModify: PropTypes.bool.isRequired,
+  setIsModify: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesHeader;

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { parseDatabaseData } from './parseDetails';
-import apiBaseUrl from './config';
 
 const isDataFromDatabase = data => {
   return Object.prototype.hasOwnProperty.call(data, 'are_details_completed');
@@ -16,7 +15,7 @@ export const getMovieDetails = async (displayType: string, movieId: number) => {
     certification = '&append_to_response=content_ratings';
 
   const response = await axios.get(
-    `${apiBaseUrl}/movies/details/${movieId}?type=${displayType}${certification}`,
+    `http://localhost:8800/api/movies/details/${movieId}?type=${displayType}${certification}`,
     { withCredentials: true },
   );
 
@@ -25,7 +24,7 @@ export const getMovieDetails = async (displayType: string, movieId: number) => {
 
   if (isDataFromDatabase(response.data)) {
     console.log('requête DB pour', movieId);
-    parsedData = parseDatabaseData(response.data, null);
+    parsedData = parseDatabaseData(response.data, displayType, null);
   } else {
     console.log('requête TMDB pour', movieId);
     parsedData = response.data;

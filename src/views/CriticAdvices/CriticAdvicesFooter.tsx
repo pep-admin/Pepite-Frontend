@@ -11,24 +11,42 @@ import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
 import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
 import { addLike } from '@utils/request/critics/addLike';
 import { removeLike } from '@utils/request/critics/removeLike';
+import { getCommentsNumber } from '@utils/request/critics/getCommentsNumber';
 
-const CriticAdvicesFooter = ({ criticId }) => {
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+
+const CriticAdvicesFooter = ({
+  criticId,
+  displayComments,
+  setDisplayComments,
+}) => {
+  const { displayType } = useData();
+
+  const [commentsNumber, setCommentsNumber] = useState(0);
   const [likesNumber, setLikesNumber] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
 
   // Compte le nombre de likes par critique au montage du composant
+  const fetchCommentsNumber = async () => {
+    const response = await getCommentsNumber(criticId, displayType);
+    setCommentsNumber(response);
+  };
+
+  // Compte le nombre de likes par critique au montage du composant
   const fetchLikesNumber = async () => {
-    const response = await getLikesNumber(criticId);
+    const response = await getLikesNumber(criticId, displayType);
     setLikesNumber(response);
   };
 
   // Vérifie si l'utilisateur a déjà liké des critiques
   const checkUserLikeStatus = async () => {
-    const response = await checkLikeStatus(criticId);
+    const response = await checkLikeStatus(criticId, displayType);
     setHasLiked(response);
   };
 
   useEffect(() => {
+    fetchCommentsNumber();
     fetchLikesNumber();
     checkUserLikeStatus();
   }, [hasLiked]);
@@ -40,7 +58,7 @@ const CriticAdvicesFooter = ({ criticId }) => {
       if (hasLiked) {
         removeLike(criticId);
       } else {
-        addLike(criticId);
+        addLike(criticId, displayType);
       }
       fetchLikesNumber();
     } catch (error) {
@@ -59,13 +77,19 @@ const CriticAdvicesFooter = ({ criticId }) => {
         padding="0 17px"
         flexGrow="1"
       >
-        <Box height="100%" display="flex" alignItems="center" columnGap="5px">
+        <Box
+          height="100%"
+          display="flex"
+          alignItems="center"
+          columnGap="5px"
+          onClick={() => setDisplayComments(!displayComments)}
+        >
           <ChatTwoToneIcon
             fontSize="small"
             sx={{ position: 'relative', top: '1px' }}
           />
           <Typography component="p" fontSize="1em" fontWeight="bold">
-            {5}
+            {commentsNumber}
           </Typography>
         </Box>
         <Box height="100%" display="flex" alignItems="center" columnGap="5px">
@@ -92,6 +116,8 @@ const CriticAdvicesFooter = ({ criticId }) => {
 
 CriticAdvicesFooter.propTypes = {
   criticId: PropTypes.number.isRequired,
+  displayComments: PropTypes.bool.isRequired,
+  setDisplayComments: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesFooter;

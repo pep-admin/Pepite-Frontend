@@ -10,6 +10,7 @@ import {
   Alert,
   AlertTitle,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import Header from '@utils/Header';
 import { useEffect, useState, useCallback } from 'react';
@@ -31,9 +32,10 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const ProfilComponent = () => {
   const { id } = useParams();
-  const { chosenMovie } = useData();
+  const { displayType, chosenMovie } = useData();
 
   const [userCritics, setUserCritics] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   const [newCriticError, setNewCriticError] = useState({
     error: null,
@@ -48,9 +50,9 @@ const ProfilComponent = () => {
     message: null,
   });
 
-  const fetchCritics = useCallback(async () => {
+  const fetchCritics = useCallback(async (type: string) => {
     try {
-      const criticData = await getAllCriticsOfUser(id);
+      const criticData = await getAllCriticsOfUser(id, type);
       setUserCritics(criticData);
     } catch (error) {
       console.error('Erreur lors de la récupération des données:', error);
@@ -58,13 +60,32 @@ const ProfilComponent = () => {
   }, []);
 
   useEffect(() => {
-    fetchCritics();
-  }, [fetchCritics]);
+    fetchCritics(displayType);
+  }, [fetchCritics, displayType]);
 
-  // useEffect(() => {
-  //   console.log('les critiques', userCritics);
+  useEffect(() => {
+    let timer;
+    if (newCriticSuccess.success) {
+      timer = setInterval(() => {
+        setProgress(prevProgress =>
+          prevProgress >= 100 ? 0 : prevProgress + 10,
+        );
+      }, 800);
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [newCriticSuccess]);
 
-  // }, [userCritics])
+  useEffect(() => {
+    if (progress >= 100) {
+      setNewCriticSuccess({ success: null, message: null });
+    }
+  }, [progress]);
+
+  useEffect(() => {
+    console.log('les critiques', userCritics);
+  }, [userCritics]);
 
   return (
     <>
@@ -221,12 +242,30 @@ const ProfilComponent = () => {
             ) : !newCriticError.error &&
               newCriticSuccess.success &&
               !newCriticInfo.info ? (
-              <Item margintop="6px">
+              <Item
+                margintop="6px"
+                display="flex"
+                justifycontent="space-between"
+                alignitems="center"
+              >
                 <Alert
                   severity="success"
-                  sx={{ display: 'flex', alignItems: 'center' }}
+                  sx={{
+                    flexGrow: '1',
+                    '& .MuiAlert-message': {
+                      flexGrow: '1',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    },
+                  }}
                 >
                   {newCriticSuccess.message}
+                  <CircularProgress
+                    variant="determinate"
+                    size={18.33}
+                    value={progress}
+                  />
                 </Alert>
               </Item>
             ) : !newCriticError.error &&
@@ -272,9 +311,9 @@ const ProfilComponent = () => {
                       type={'old-critic'}
                       setUserCritics={setUserCritics}
                       chosenMovie={null}
-                      setNewCriticError={null}
-                      setNewCriticInfo={null}
-                      setNewCriticSuccess={null}
+                      setNewCriticError={setNewCriticError}
+                      setNewCriticInfo={setNewCriticInfo}
+                      setNewCriticSuccess={setNewCriticSuccess}
                       criticInfos={critic}
                     />
                   );

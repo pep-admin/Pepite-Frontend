@@ -7,7 +7,7 @@
     "preinstall": "npx check-node-version --node 18.18.0",
     "audit": "npm audit",
     "check-updates": "ncu -u",
-    "build": "rm -rf dist/* && tsc && vite build",
+    "build": "tsc && vite build",
     "changelog": "standard-version",
     "dev": "vite",
     "lint": "eslint \"src/**/*.{js,ts,jsx,tsx}\"",
@@ -33,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
     "react-spring": "^9.7.3",
+    "react-youtube": "^10.1.0",
     "yup": "^1.2.0"
   },
   "devDependencies": {

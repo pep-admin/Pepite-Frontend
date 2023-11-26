@@ -1,4 +1,4 @@
-import { countriesList } from '@utils/data/countries';
+import { countriesList } from '@utils/data/Countries';
 
 // Récupération des noms en Français de pays producteurs du film
 export const findFrenchNameCountry = countries => {

@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import { GoldNuggetIcon } from './styledComponent';
 import { useSpring, animated } from 'react-spring';
+import PropTypes from 'prop-types';
 
 const useTranslateAnimation = setIsNuggetAnimEnded =>
   useSpring({
@@ -82,6 +83,10 @@ const GoldNugget = ({ setIsNuggetAnimEnded }) => {
       </AnimatedBox>
     </Box>
   );
+};
+
+GoldNugget.propTypes = {
+  setIsNuggetAnimEnded: PropTypes.func.isRequired,
 };
 
 export default GoldNugget;

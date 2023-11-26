@@ -15,6 +15,7 @@ const CriticAdvicesContent = ({
   isGoldNugget,
   setIsGoldNugget,
   criticInfos,
+  isModify,
 }) => {
   const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
   let originalScore;
@@ -47,32 +48,31 @@ const CriticAdvicesContent = ({
                   maxWidth: '160px',
                 }}
               >
-                {chosenMovie !== null && type === 'new-critic'
-                  ? chosenMovie.title
-                  : criticInfos.title}
+                {
+                  // Si l'utilisateur compte noter un film
+                  chosenMovie !== null &&
+                  'release_date' in chosenMovie &&
+                  type === 'new-critic'
+                    ? `${chosenMovie.title}`
+                    : // Si l'utilisateur a déjà noté un film
+                    criticInfos !== null &&
+                      'release_date' in criticInfos &&
+                      type === 'old-critic'
+                    ? `${criticInfos.title}`
+                    : // Si l'utilisateur compte noter une série
+                    chosenMovie !== null &&
+                      'first_air_date' in chosenMovie &&
+                      type === 'new-critic'
+                    ? `${chosenMovie.name}`
+                    : // Si l'utilisateur a déjà noté une série
+                    criticInfos !== null &&
+                      'first_air_date' in criticInfos &&
+                      type === 'old-critic'
+                    ? `${criticInfos.name}`
+                    : null
+                }
               </Typography>
-              {type === 'new-critic' ? (
-                // <Button
-                //   variant="contained"
-                //   sx={{
-                //     height: '100%',
-                //     padding: '2px 6px',
-                //     textTransform: 'initial',
-                //     borderRadius: '2px',
-                //     color: !isGoldNugget ? 'inherit' : '#fff',
-                //     backgroundColor: !isGoldNugget
-                //       ? '#e5e4e4 !important'
-                //       : '#F29E50 !important',
-                //   }}
-                //   onClick={() => setIsGoldNugget(!isGoldNugget)}
-                // >
-                //   <GoldNuggetIcon
-                //     sx={{ fontSize: '15px', marginRight: '5px' }}
-                //   />
-                //   <Typography variant="body2" component="p">
-                //     {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
-                //   </Typography>
-                // </Button>
+              {type === 'new-critic' || isModify ? (
                 <>
                   <Box
                     height="20px"
@@ -99,14 +99,19 @@ const CriticAdvicesContent = ({
                       component="p"
                       fontWeight={isGoldNugget ? 'bold' : 'normal'}
                     >
-                      {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
+                      {isGoldNugget ||
+                      (criticInfos && criticInfos.is_gold_nugget === 1)
+                        ? 'Pépite !'
+                        : 'Pépite ?'}
                     </Typography>
                   </Box>
                   {isGoldNugget && !isNuggetAnimEnded ? (
                     <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
                   ) : null}
                 </>
-              ) : type === 'old-critic' && criticInfos.is_gold_nugget === 1 ? (
+              ) : type === 'old-critic' &&
+                criticInfos.is_gold_nugget === 1 &&
+                !isModify ? (
                 <Box
                   height="20px"
                   width="60px"
@@ -145,17 +150,27 @@ const CriticAdvicesContent = ({
               {'Type :'}
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
-              {(chosenMovie !== null &&
-                'release_date' in chosenMovie &&
-                type === 'new-critic') ||
-              ('release_date' in criticInfos && type === 'old-critic')
-                ? 'film'
-                : (chosenMovie !== null &&
-                    'first_air_date' in chosenMovie &&
-                    type === 'new-critic') ||
-                  ('first_air_date' in criticInfos && type === 'old-critic')
-                ? 'série'
-                : null}
+              {
+                // Si l'utilisateur choisit un film
+                (chosenMovie !== null &&
+                  'release_date' in chosenMovie &&
+                  type === 'new-critic') ||
+                // Si la critique est une critique de film
+                (criticInfos !== null &&
+                  'release_date' in criticInfos &&
+                  type === 'old-critic')
+                  ? 'Film'
+                  : // Si l'utilisateur choisit une série
+                  (chosenMovie !== null &&
+                      'first_air_date' in chosenMovie &&
+                      type === 'new-critic') ||
+                    // Si la critique est une critique de série
+                    (criticInfos !== null &&
+                      'first_air_date' in criticInfos &&
+                      type === 'old-critic')
+                  ? 'Série'
+                  : null
+              }
             </Typography>
           </Stack>
           <Stack direction="row">
@@ -164,10 +179,16 @@ const CriticAdvicesContent = ({
               fontWeight="bold"
               component="p"
               color="primary.dark"
+              whiteSpace="nowrap"
             >
               {'Genre :'}
             </Typography>
-            <Typography variant="body2" component="p" marginLeft="5px">
+            <Typography
+              variant="body2"
+              component="p"
+              marginLeft="5px"
+              align="left"
+            >
               {chosenMovie !== null && type === 'new-critic'
                 ? chosenMovie.genres.map(genre => genre.name).join(', ')
                 : criticInfos.genres.map(genre => genre.name).join(', ')}
@@ -183,15 +204,29 @@ const CriticAdvicesContent = ({
               {'Année :'}
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
-              {chosenMovie !== null &&
-              'release_date' in chosenMovie &&
-              type === 'new-critic'
-                ? chosenMovie.release_date.split('-')[0]
-                : chosenMovie !== null &&
-                  'first_air_date' in chosenMovie &&
-                  type === 'new-critic'
-                ? chosenMovie.first_air_date.split('-')[0]
-                : criticInfos.release_date.split('-')[0]}
+              {
+                // Si l'utilisateur choisit un film
+                chosenMovie !== null &&
+                'release_date' in chosenMovie &&
+                type === 'new-critic'
+                  ? chosenMovie.release_date.split('-')[0]
+                  : // Si l'utilisateur choisit une série
+                  chosenMovie !== null &&
+                    'first_air_date' in chosenMovie &&
+                    type === 'new-critic'
+                  ? chosenMovie.first_air_date.split('-')[0]
+                  : // Si la critique est une critique de film
+                  criticInfos !== null &&
+                    'release_date' in criticInfos &&
+                    type === 'old-critic'
+                  ? criticInfos.release_date.split('-')[0]
+                  : // Si la critique est une critique de série
+                  criticInfos !== null &&
+                    'first_air_date' in criticInfos &&
+                    type === 'old-critic'
+                  ? criticInfos.first_air_date.split('-')[0]
+                  : null
+              }
             </Typography>
           </Stack>
           <Stack direction="row">
@@ -227,6 +262,7 @@ CriticAdvicesContent.propTypes = {
   criticInfos: PropTypes.object,
   isGoldNugget: PropTypes.bool.isRequired,
   setIsGoldNugget: PropTypes.func.isRequired,
+  isModify: PropTypes.bool.isRequired,
 };
 
 export default CriticAdvicesContent;

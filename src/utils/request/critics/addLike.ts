@@ -1,11 +1,10 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
 
-export const addLike = async criticId => {
+export const addLike = async (criticId, type) => {
   try {
     await axios.post(
-      `${apiBaseUrl}/critics_likes/${criticId}/add`,
-      {},
+      `http://localhost:8800/api/critics_likes/${criticId}/add`,
+      { type: type },
       { withCredentials: true },
     );
   } catch (error) {

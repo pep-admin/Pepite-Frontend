@@ -1,10 +1,11 @@
-import apiBaseUrl from '@utils/request/config';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import apiBaseUrl from '@utils/request/config';
 
-export const checkAuth = () => {
+const useCheckAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,26 +13,25 @@ export const checkAuth = () => {
     if (!userId) {
       navigate('/login');
       return;
-    }    
+    }
 
-    axios.get(
-      `${apiBaseUrl}/users/user/${userId}`,
-      { withCredentials: true }
-    )
+    axios.get(`${apiBaseUrl}/users/user/${userId}`, { withCredentials: true })
       .then(response => {
-        console.log('réponse', response);        
         setIsAuthenticated(true);
       })
       .catch(error => {
         if (error.response && error.response.status === 401) {
-          console.log('error', error.response.status);
-          
           navigate('/login');
         } else {
-          // Gérer d'autres types d'erreurs ici
+          console.error('Erreur lors de la vérification de l\'authentification:', error);
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [navigate]);
 
-  return isAuthenticated;
+  return { isAuthenticated, isLoading };
 };
+
+export default useCheckAuth;

@@ -17,18 +17,23 @@ import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import SwipeDownIcon from '@mui/icons-material/SwipeDown';
 import SwipeUpIcon from '@mui/icons-material/SwipeUp';
-import { checkAuth } from '@utils/functions/checkAuth';
+import useCheckAuth from '@hooks/useCheckAuth';
 
 const About = () => {
+  const { isAuthenticated, isLoading } = useCheckAuth();
+
+  // Si le statut d'authentification est en cours de chargement, affichez un indicateur de chargement
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
+
+  // Si l'utilisateur n'est pas authentifié, ne rien rendre (ou rendre un composant spécifique)
+  if (!isAuthenticated) {
+    return null;
+  }
+
   const [openHelpMain, setOpenHelpMain] = useState(false);
   const [openHelpSwipe, setOpenHelpSwipe] = useState(false);
-
-  // Redirection vers la page /login si utilisateur non authentifié
-  const isAuthenticated = checkAuth();
-
-  if (!isAuthenticated) {    
-    return;
-  } 
 
   return (
     <Box

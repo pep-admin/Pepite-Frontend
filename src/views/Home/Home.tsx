@@ -1,6 +1,14 @@
 import Header from '@utils/Header';
+import { checkAuth } from '@utils/functions/checkAuth';
 
 const Home = () => {
+  // Redirection vers la page /login si utilisateur non authentifié
+  const isAuthenticated = checkAuth();
+
+  if (!isAuthenticated) {    
+    return;
+  } 
+
   return (
     // <AppBar position="static" sx={{ mb: 2 }}>
     //   <Toolbar>

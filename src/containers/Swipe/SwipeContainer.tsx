@@ -13,6 +13,7 @@ import {
 // import { getMovieDetails } from '@utils/request/getMovieDetails';
 import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 import { getMovieDetails } from '@utils/request/getMovieDetails';
+import { checkAuth } from '@utils/functions/checkAuth';
 
 const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
@@ -199,13 +200,12 @@ const SwipeContainer = () => {
     if (movies.length !== 0) console.log(movies);
   }, [movies]);
 
-  // useEffect(() => {
-  //   console.log('chargement...', loading);
-  // }, [loading]);
+  // Redirection vers la page /login si utilisateur non authentifié
+  const isAuthenticated = checkAuth();
 
-  // useEffect(() => {
-  //   console.log('Au moins 20 films à récupérer ?', hasMoreMovies);
-  // }, [hasMoreMovies]);
+  if (!isAuthenticated) {    
+    return;
+  } 
 
   return (
     <SwipeComponent

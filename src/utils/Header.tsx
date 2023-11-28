@@ -75,8 +75,8 @@ const Header = () => {
         <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
           <Typography
             variant="h1"
-            color={'#24A5A5'}
-            fontSize={'3em'}
+            color={'#fff'}
+            fontSize={'2em'}
             sx={{ position: 'relative', bottom: '4px' }}
           >
             {'Pépite.'}
@@ -87,7 +87,11 @@ const Header = () => {
             exclusive
             onChange={handleChange}
             aria-label="Platform"
-            sx={{ margin: 'auto' }}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexGrow: '1'
+            }}
           >
             <ToggleButton
               value="films"

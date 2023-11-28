@@ -9,7 +9,7 @@ const theme = createTheme({
       fontFamily: 'Pragati Narrow',
     },
     h1: {
-      fontFamily: 'Allison',
+      fontFamily: 'Sirin Stencil',
     },
     body1: {
       fontFamily: 'Pragati Narrow',

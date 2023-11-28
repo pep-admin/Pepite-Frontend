@@ -7,10 +7,11 @@ import FontFaceObserver from 'fontfaceobserver';
  * Charge les polices de caractères spécifiées et affiche le contenu de l'élément root une fois le chargement terminé.
  */
 function loadFontAndShowContent() {
-  const font1 = new FontFaceObserver('Allison');
+  const font1 = new FontFaceObserver('Sirin Stencil');
   const font2 = new FontFaceObserver('Pragati Narrow');
+  const font3 = new FontFaceObserver('Square Peg');
 
-  const promises = [font1.load(), font2.load()];
+  const promises = [font1.load(), font2.load(), font3.load()];
 
   Promise.all(promises)
     .then(() => {

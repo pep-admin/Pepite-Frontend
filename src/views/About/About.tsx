@@ -17,10 +17,21 @@ import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 import SwipeDownIcon from '@mui/icons-material/SwipeDown';
 import SwipeUpIcon from '@mui/icons-material/SwipeUp';
+import useCheckAuth from '@hooks/useCheckAuth';
 
 const About = () => {
+  const { isAuthenticated, isLoading } = useCheckAuth();
+
   const [openHelpMain, setOpenHelpMain] = useState(false);
   const [openHelpSwipe, setOpenHelpSwipe] = useState(false);
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <Box

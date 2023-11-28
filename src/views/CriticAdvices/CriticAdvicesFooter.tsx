@@ -1,17 +1,19 @@
 // Import des libs externes
 import { Stack, Box, Typography, Divider } from '@mui/material';
 import PropTypes from 'prop-types';
-
-// Import des icônes
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
-import AddToPhotosTwoToneIcon from '@mui/icons-material/AddToPhotosTwoTone';
 import { useEffect, useState } from 'react';
+
+// Import des requêtes internes
 import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
 import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
 import { addLike } from '@utils/request/critics/addLike';
 import { removeLike } from '@utils/request/critics/removeLike';
 import { getCommentsNumber } from '@utils/request/critics/getCommentsNumber';
+
+// Import des icônes
+import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
+import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
+import AddToPhotosTwoToneIcon from '@mui/icons-material/AddToPhotosTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -56,7 +58,7 @@ const CriticAdvicesFooter = ({
     setHasLiked(!hasLiked);
     try {
       if (hasLiked) {
-        removeLike(criticId);
+        removeLike(criticId, displayType);
       } else {
         addLike(criticId, displayType);
       }

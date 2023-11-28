@@ -47,7 +47,12 @@ const CommentsInput = ({ criticId, comments, getComments }) => {
       >
         <MessageIcon sx={{ fontSize: '2.5em' }} />
       </Stack>
-      <Stack direction="column" justifyContent="space-between" flexGrow="1">
+      <Stack
+        direction="column"
+        justifyContent="space-between"
+        paddingLeft="8px"
+        flexGrow="1"
+      >
         <Typography
           component="h5"
           fontWeight="bold"

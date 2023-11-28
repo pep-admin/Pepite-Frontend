@@ -15,15 +15,19 @@ const useCheckAuth = () => {
       return;
     }
 
-    axios.get(`${apiBaseUrl}/users/user/${userId}`, { withCredentials: true })
-      .then(response => {
+    axios
+      .get(`${apiBaseUrl}/users/user/${userId}`, { withCredentials: true })
+      .then(_ => {
         setIsAuthenticated(true);
       })
       .catch(error => {
         if (error.response && error.response.status === 401) {
           navigate('/login');
         } else {
-          console.error('Erreur lors de la vérification de l\'authentification:', error);
+          console.error(
+            "Erreur lors de la vérification de l'authentification:",
+            error,
+          );
         }
       })
       .finally(() => {

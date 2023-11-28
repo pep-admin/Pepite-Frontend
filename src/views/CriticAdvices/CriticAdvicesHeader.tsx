@@ -10,22 +10,23 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { OrangeRating } from '@utils/styledComponent';
+import {
+  GoldNuggetIcon,
+  OrangeRating,
+  TurnipIcon,
+} from '@utils/styledComponent';
 
 // Import des icônes
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 import { ratings } from '@utils/data/ratings';
-import { deleteCritic } from '@utils/request/critics/deleteCritic';
-import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
+import ModifyOrDelete from '@utils/ModifyOrDelete';
 
 const CriticAdvicesHeader = ({
   type,
@@ -39,30 +40,12 @@ const CriticAdvicesHeader = ({
   isModify,
   setIsModify,
 }) => {
-  const { displayType, setChosenMovieId, setChosenMovie } = useData();
-
-  // Menu des outils pour modifier / supprimer
-  const [displayTools, setDisplayTools] = useState(null);
-  const openMenu = Boolean(displayTools);
-  const handleToolsMenu = event => {
-    setDisplayTools(event.currentTarget);
-  };
+  const { setChosenMovieId, setChosenMovie } = useData();
 
   // Menu des étoiles pour noter une nouvelle critique
   const openRatings = Boolean(displayRatings);
   const handleRatingsMenu = event => {
     setDisplayRatings(event.currentTarget);
-  };
-
-  const handleCriticTools = async tool => {
-    const userId = localStorage.getItem('user_id');
-
-    if (tool === 'delete') {
-      // TO DO: faire apparaître une modale
-      await deleteCritic(criticInfos.critic_id, displayType);
-      const newCriticsData = await getAllCriticsOfUser(userId, displayType);
-      setUserCritics(newCriticsData);
-    }
   };
 
   const formatRating = rating => {
@@ -142,6 +125,13 @@ const CriticAdvicesHeader = ({
               sx={{
                 marginTop: '5px',
               }}
+              slotProps={{
+                paper: {
+                  sx: {
+                    maxHeight: '150px',
+                  },
+                },
+              }}
               MenuListProps={{
                 'aria-labelledby': 'basic-button',
                 sx: {
@@ -157,14 +147,27 @@ const CriticAdvicesHeader = ({
                 horizontal: 'center',
               }}
             >
-              <Stack
-                sx={{
-                  backgroundColor: '#ededed',
-                  padding: '5px 8px',
-                  border: '1px solid rgba(0, 0, 0, 0.12)',
-                  maxHeight: '150px',
-                }}
-              >
+              <Stack>
+                <Stack
+                  direction="row"
+                  height="33.04px"
+                  alignItems="center"
+                  gap="20px"
+                  padding="5px 11px"
+                  sx={{
+                    backgroundColor: '#c5739d',
+                  }}
+                >
+                  <TurnipIcon sx={{ height: '25px' }} />
+                  <Typography
+                    fontSize="1em"
+                    component="p"
+                    fontFamily="Sirin Stencil"
+                    sx={{ color: '#fff' }}
+                  >
+                    {'Navet !'}
+                  </Typography>
+                </Stack>
                 {ratings.map(rating => {
                   return (
                     <React.Fragment key={rating.number}>
@@ -175,9 +178,9 @@ const CriticAdvicesHeader = ({
                           setDisplayRatings(null);
                         }}
                         sx={{
-                          padding: '0',
                           minHeight: 'auto',
                           columnGap: '7px',
+                          padding: '5px 11px',
                         }}
                       >
                         <ListItemIcon sx={{ minWidth: 'auto' }}>
@@ -197,10 +200,30 @@ const CriticAdvicesHeader = ({
                           {rating.value}
                         </ListItemText>
                       </MenuItem>
-                      <Divider />
+                      <Divider sx={{ margin: '0 !important' }} />
                     </React.Fragment>
                   );
                 })}
+                <Stack
+                  direction="row"
+                  height="33.04px"
+                  alignItems="center"
+                  gap="20px"
+                  padding="5px 8px"
+                  sx={{
+                    backgroundColor: '#f29e50',
+                  }}
+                >
+                  <GoldNuggetIcon sx={{ height: '20px' }} />
+                  <Typography
+                    fontSize="1em"
+                    component="p"
+                    fontFamily="Sirin Stencil"
+                    sx={{ color: '#fff', lineHeight: '15px' }}
+                  >
+                    {'Pépite !'}
+                  </Typography>
+                </Stack>
               </Stack>
             </Menu>
           </>
@@ -231,76 +254,12 @@ const CriticAdvicesHeader = ({
             }}
           />
         ) : (
-          <>
-            <EditNoteIcon
-              sx={{ position: 'relative', left: '4px', cursor: 'pointer' }}
-              onClick={handleToolsMenu}
-            />
-            <Menu
-              id="basic-menu"
-              anchorEl={displayTools}
-              open={openMenu}
-              onClose={() => setDisplayTools(null)}
-              TransitionComponent={Fade}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-                sx: {
-                  padding: '0',
-                },
-              }}
-            >
-              <Stack
-                sx={{
-                  backgroundColor: '#ededed',
-                  padding: '5px 8px',
-                  border: '1px solid rgba(0, 0, 0, 0.12)',
-                }}
-              >
-                <MenuItem
-                  onClick={() => {
-                    setIsModify(!isModify);
-                    setDisplayTools(null);
-                  }}
-                  sx={{ padding: '0', minHeight: 'auto' }}
-                >
-                  <ListItemIcon sx={{ minWidth: 'auto' }}>
-                    <ModeEditIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: {
-                        fontSize: '0.8em',
-                      },
-                    }}
-                  >
-                    {!isModify ? 'Modifier' : 'Annuler'}
-                  </ListItemText>
-                </MenuItem>
-                <Divider />
-                <MenuItem
-                  onClick={() => {
-                    handleCriticTools('delete');
-                    setDisplayTools(null);
-                  }}
-                  sx={{ padding: '0', minHeight: 'auto' }}
-                >
-                  <ListItemIcon sx={{ minWidth: 'auto' }}>
-                    <ClearIcon fontSize="small" sx={{ color: '#d32f2f' }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: {
-                        fontSize: '0.8em',
-                        color: '#d32f2f',
-                      },
-                    }}
-                  >
-                    {'Supprimer'}
-                  </ListItemText>
-                </MenuItem>
-              </Stack>
-            </Menu>
-          </>
+          <ModifyOrDelete
+            criticInfos={criticInfos}
+            setUserCritics={setUserCritics}
+            isModify={isModify}
+            setIsModify={setIsModify}
+          />
         )}
       </Box>
     </Stack>

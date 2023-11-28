@@ -22,18 +22,16 @@ import useCheckAuth from '@hooks/useCheckAuth';
 const About = () => {
   const { isAuthenticated, isLoading } = useCheckAuth();
 
-  // Si le statut d'authentification est en cours de chargement, affichez un indicateur de chargement
+  const [openHelpMain, setOpenHelpMain] = useState(false);
+  const [openHelpSwipe, setOpenHelpSwipe] = useState(false);
+
   if (isLoading) {
     return <div>Chargement...</div>;
   }
 
-  // Si l'utilisateur n'est pas authentifié, ne rien rendre (ou rendre un composant spécifique)
   if (!isAuthenticated) {
     return null;
   }
-
-  const [openHelpMain, setOpenHelpMain] = useState(false);
-  const [openHelpSwipe, setOpenHelpSwipe] = useState(false);
 
   return (
     <Box

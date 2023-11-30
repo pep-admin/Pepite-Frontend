@@ -255,8 +255,8 @@ const CriticAdvicesHeader = ({
           />
         ) : (
           <ModifyOrDelete
-            criticInfos={criticInfos}
-            setUserCritics={setUserCritics}
+            infos={criticInfos}
+            setInfos={setUserCritics}
             isModify={isModify}
             setIsModify={setIsModify}
           />

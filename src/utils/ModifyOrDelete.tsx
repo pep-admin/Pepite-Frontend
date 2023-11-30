@@ -23,12 +23,7 @@ import { getAllCriticsOfUser } from './request/critics/getCritics';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-const ModifyOrDelete = ({
-  criticInfos,
-  setUserCritics,
-  isModify,
-  setIsModify,
-}) => {
+const ModifyOrDelete = ({ infos, setInfos, isModify, setIsModify }) => {
   const { displayType } = useData();
 
   // Menu des outils pour modifier / supprimer
@@ -43,9 +38,9 @@ const ModifyOrDelete = ({
 
     if (tool === 'delete') {
       // TO DO: faire apparaître une modale
-      await deleteCritic(criticInfos.critic_id, displayType);
+      await deleteCritic(infos.critic_id, displayType);
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
-      setUserCritics(newCriticsData);
+      setInfos(newCriticsData);
     }
   };
 
@@ -124,8 +119,8 @@ const ModifyOrDelete = ({
 };
 
 ModifyOrDelete.propTypes = {
-  criticInfos: PropTypes.object.isRequired,
-  setUserCritics: PropTypes.func.isRequired,
+  infos: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  setInfos: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
 };

@@ -9,7 +9,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des fonctions internes
-import { addComment } from '@utils/request/critics/addComment';
+import { addComment } from '@utils/request/comments/addComment';
 
 // Import des icônes
 import { MessageIcon } from '@utils/styledComponent';

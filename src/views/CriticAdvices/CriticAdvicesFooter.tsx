@@ -8,7 +8,7 @@ import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
 import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
 import { addLike } from '@utils/request/critics/addLike';
 import { removeLike } from '@utils/request/critics/removeLike';
-import { getCommentsNumber } from '@utils/request/critics/getCommentsNumber';
+import { getCommentsNumber } from '@utils/request/comments/getCommentsNumber';
 
 // Import des icônes
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
@@ -29,13 +29,13 @@ const CriticAdvicesFooter = ({
   const [likesNumber, setLikesNumber] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
 
-  // Compte le nombre de likes par critique au montage du composant
+  // Compte le nombre de commentaires par critique
   const fetchCommentsNumber = async () => {
     const response = await getCommentsNumber(criticId, displayType);
     setCommentsNumber(response);
   };
 
-  // Compte le nombre de likes par critique au montage du composant
+  // Compte le nombre de likes par critique
   const fetchLikesNumber = async () => {
     const response = await getLikesNumber(criticId, displayType);
     setLikesNumber(response);

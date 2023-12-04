@@ -22,6 +22,7 @@ const CriticAdvicesFooter = ({
   criticId,
   displayComments,
   setDisplayComments,
+  comments
 }) => {
   const { displayType } = useData();
 
@@ -51,7 +52,7 @@ const CriticAdvicesFooter = ({
     fetchCommentsNumber();
     fetchLikesNumber();
     checkUserLikeStatus();
-  }, [hasLiked]);
+  }, [hasLiked, comments]);
 
   // Gérer le clic sur l'icône de like
   const toggleLike = async () => {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { GoldNuggetIcon, YellowRating } from '@utils/styledComponent';
+import { GoldNuggetIcon, TurnipIcon, YellowRating } from '@utils/styledComponent';
 import GoldNugget from '@utils/GoldNugget';
 
 const CriticAdvicesContent = ({
@@ -14,10 +14,11 @@ const CriticAdvicesContent = ({
   setDisplayOverview,
   isGoldNugget,
   setIsGoldNugget,
+  isTurnip,
   criticInfos,
   isModify,
 }) => {
-  const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
+  // const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
   let originalScore;
 
   if (type === 'new-critic') originalScore = chosenMovie.vote_average;
@@ -80,33 +81,45 @@ const CriticAdvicesContent = ({
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    borderRadius="50%"
-                    onClick={() => {
-                      if (isGoldNugget) {
-                        setIsNuggetAnimEnded(false);
-                      }
-                      setIsGoldNugget(!isGoldNugget);
-                    }}
                   >
-                    <GoldNuggetIcon
-                      sx={{
-                        fontSize: '16px',
-                        filter: !isGoldNugget ? 'grayscale(1)' : 'grayscale(0)',
-                      }}
-                    />
-                    <Typography
-                      variant="body2"
-                      component="p"
-                      fontWeight={isGoldNugget ? 'bold' : 'normal'}
-                    >
-                      {isGoldNugget ? 'Pépite !' : 'Pépite ?'}
-                    </Typography>
+                    { 
+                      isGoldNugget ?
+                      <>
+                        <GoldNuggetIcon
+                          sx={{
+                            fontSize: '16px',
+                          }}
+                        />
+                        <Typography
+                          variant="body2"
+                          component="p"
+                          fontWeight='bold'
+                        >
+                          {'Pépite !'}
+                        </Typography>
+                      </>
+                      :
+                      isTurnip ?
+                      <>
+                        <TurnipIcon
+                          sx={{
+                            fontSize: '16px',
+                          }}
+                        />
+                        <Typography
+                          variant="body2"
+                          component="p"
+                          fontWeight='bold'
+                        >
+                          {'Navet !'}
+                        </Typography>
+                      </>
+                      : 
+                      null
+                    }
                   </Box>
-                  {isGoldNugget && !isNuggetAnimEnded ? (
-                    <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
-                  ) : null}
                 </>
-              ) : type === 'old-critic' && criticInfos.is_gold_nugget === 1 ? (
+              ) : type === 'old-critic' ? (
                 <Box
                   height="20px"
                   width="60px"
@@ -115,10 +128,22 @@ const CriticAdvicesContent = ({
                   alignItems="center"
                   borderRadius="50%"
                 >
-                  <GoldNuggetIcon sx={{ fontSize: '16px' }} />
-                  <Typography variant="body2" component="p" fontWeight="bold">
-                    {'Pépite !'}
-                  </Typography>
+                  {criticInfos.is_gold_nugget === 1 ?
+                    <>
+                      <GoldNuggetIcon sx={{ fontSize: '16px' }} />
+                      <Typography variant="body2" component="p" fontWeight="bold">
+                        {'Pépite !'}
+                      </Typography>
+                    </>
+                    : criticInfos.is_turnip === 1 ?
+                    <>
+                      <TurnipIcon sx={{ fontSize: '16px' }} />
+                      <Typography variant="body2" component="p" fontWeight="bold">
+                        {'Navet !'}
+                      </Typography>
+                    </>
+                    : null
+                  }
                 </Box>
               ) : null}
             </Stack>

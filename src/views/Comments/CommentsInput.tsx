@@ -5,7 +5,7 @@ import {
   // Avatar,
   TextField,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des fonctions internes
@@ -22,10 +22,13 @@ const CommentsInput = ({ criticId, comments, getComments }) => {
   const { displayType } = useData();
 
   const [newComment, setNewComment] = useState('');
+  const inputRef = useRef(null);
 
   const addNewComment = async () => {
     if (newComment === '') return;
     await addComment(criticId, displayType, newComment);
+    setNewComment(''); // Réinitialise le champ de saisie
+    inputRef.current?.blur(); // Retire le focus de l'input
     getComments();
   };
 
@@ -65,8 +68,10 @@ const CommentsInput = ({ criticId, comments, getComments }) => {
         </Typography>
         <TextField
           id="filled-basic"
+          ref={inputRef}
           label="Votre commentaire"
           variant="filled"
+          value={newComment}
           sx={{
             width: '80%',
           }}

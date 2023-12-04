@@ -28,6 +28,7 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
+import GoldNugget from '@utils/GoldNugget';
 
 const CriticAdvicesComponent = ({
   type,
@@ -42,9 +43,12 @@ const CriticAdvicesComponent = ({
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
   const [newCriticText, setNewCriticText] = useState(''); // Nouveau texte de critique
   const [isGoldNugget, setIsGoldNugget] = useState(false); // Pépite ou non
+  const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
+  const [isTurnip, setIsTurnip] = useState(false); // Navet ou non
   const [isModify, setIsModify] = useState(false);
   const [displayComments, setDisplayComments] = useState(false);
   const [showPoster, setShowPoster] = useState(false);
+  const [comments, setComments] = useState([]);
 
   const [displayRatings, setDisplayRatings] = useState(null);
   const ratingsHeaderRef = useRef(null);
@@ -145,6 +149,11 @@ const CriticAdvicesComponent = ({
             setUserCritics={setUserCritics}
             isModify={isModify}
             setIsModify={setIsModify}
+            isGoldNugget={isGoldNugget}
+            setIsGoldNugget={setIsGoldNugget}
+            setIsNuggetAnimEnded={setIsNuggetAnimEnded}
+            isTurnip={isTurnip}
+            setIsTurnip={setIsTurnip}
           />
           <Divider />
           <Stack padding="7px 10px">
@@ -198,6 +207,7 @@ const CriticAdvicesComponent = ({
                   setDisplayOverview={setDisplayOverview}
                   isGoldNugget={isGoldNugget}
                   setIsGoldNugget={setIsGoldNugget}
+                  isTurnip={isTurnip}
                   criticInfos={criticInfos}
                   isModify={isModify}
                 />
@@ -279,12 +289,18 @@ const CriticAdvicesComponent = ({
               criticId={criticInfos.critic_id}
               displayComments={displayComments}
               setDisplayComments={setDisplayComments}
+              comments={comments}
             />
           ) : null}
         </Stack>
       </Item>
+      {isGoldNugget && !isNuggetAnimEnded ?
+        <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
+        :
+        null
+      }
       {displayComments ? (
-        <CommentsComponent criticId={criticInfos.critic_id} />
+        <CommentsComponent criticId={criticInfos.critic_id} comments={comments} setComments={setComments} />
       ) : null}
     </>
   );

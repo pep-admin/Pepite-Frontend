@@ -14,10 +14,8 @@ import { getAllCriticComments } from '@utils/request/comments/getComments';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-const CommentsComponent = ({ criticId }) => {
+const CommentsComponent = ({ criticId, comments, setComments }) => {
   const { displayType } = useData();
-
-  const [comments, setComments] = useState([]);
 
   const getComments = async () => {
     const response = await getAllCriticComments(displayType, criticId);
@@ -27,6 +25,7 @@ const CommentsComponent = ({ criticId }) => {
   useEffect(() => {
     getComments();
   }, []);
+
 
   return (
     <Item margintop="6px">
@@ -53,9 +52,9 @@ const CommentsComponent = ({ criticId }) => {
             return (
               <CommentsContent
                 key={comment.id}
-                comments={comments}
                 comment={comment}
                 setInfos={setComments}
+                getComments={getComments}
               />
             );
           })

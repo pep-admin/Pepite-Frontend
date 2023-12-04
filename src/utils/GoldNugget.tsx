@@ -42,7 +42,7 @@ const GoldNugget = ({ setIsNuggetAnimEnded }) => {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      zIndex="10"
+      zIndex="1301"
       sx={{
         pointerEvents: 'none',
       }}

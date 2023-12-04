@@ -84,10 +84,6 @@ const ProfilComponent = () => {
     }
   }, [progress]);
 
-  useEffect(() => {
-    console.log('les critiques', userCritics);
-  }, [userCritics]);
-
   return (
     <>
       <Header />

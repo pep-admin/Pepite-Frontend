@@ -39,6 +39,11 @@ const CriticAdvicesHeader = ({
   setUserCritics,
   isModify,
   setIsModify,
+  isGoldNugget,
+  setIsGoldNugget,
+  setIsNuggetAnimEnded,
+  isTurnip,
+  setIsTurnip
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
@@ -155,7 +160,7 @@ const CriticAdvicesHeader = ({
                   gap="20px"
                   padding="5px 11px"
                   sx={{
-                    backgroundColor: '#c5739d',
+                    backgroundColor: isTurnip ? '#c5739d' : '#8c8c8c',
                   }}
                 >
                   <TurnipIcon sx={{ height: '25px' }} />
@@ -164,6 +169,7 @@ const CriticAdvicesHeader = ({
                     component="p"
                     fontFamily="Sirin Stencil"
                     sx={{ color: '#fff' }}
+                    onClick={() => setIsTurnip(!isTurnip)}
                   >
                     {'Navet !'}
                   </Typography>
@@ -211,7 +217,7 @@ const CriticAdvicesHeader = ({
                   gap="20px"
                   padding="5px 8px"
                   sx={{
-                    backgroundColor: '#f29e50',
+                    backgroundColor: isGoldNugget ? '#dda979' : '#8c8c8c',
                   }}
                 >
                   <GoldNuggetIcon sx={{ height: '20px' }} />
@@ -220,6 +226,12 @@ const CriticAdvicesHeader = ({
                     component="p"
                     fontFamily="Sirin Stencil"
                     sx={{ color: '#fff', lineHeight: '15px' }}
+                    onClick={() => {
+                      setIsGoldNugget(!isGoldNugget);
+                      if(isGoldNugget) {
+                        setIsNuggetAnimEnded(false);
+                      }
+                    }}
                   >
                     {'Pépite !'}
                   </Typography>
@@ -255,8 +267,9 @@ const CriticAdvicesHeader = ({
           />
         ) : (
           <ModifyOrDelete
-            criticInfos={criticInfos}
-            setUserCritics={setUserCritics}
+            parent={'critic'}
+            infos={criticInfos}
+            setInfos={setUserCritics}
             isModify={isModify}
             setIsModify={setIsModify}
           />

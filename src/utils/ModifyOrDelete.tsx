@@ -22,13 +22,10 @@ import { getAllCriticsOfUser } from './request/critics/getCritics';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+import { deleteComment } from './request/comments/deleteComment';
+import { getAllCriticComments } from './request/comments/getComments';
 
-const ModifyOrDelete = ({
-  criticInfos,
-  setUserCritics,
-  isModify,
-  setIsModify,
-}) => {
+const ModifyOrDelete = ({ parent, infos, setInfos, isModify, setIsModify }) => {
   const { displayType } = useData();
 
   // Menu des outils pour modifier / supprimer
@@ -41,11 +38,16 @@ const ModifyOrDelete = ({
   const handleCriticTools = async tool => {
     const userId = localStorage.getItem('user_id');
 
-    if (tool === 'delete') {
+    if (tool === 'delete' && parent === 'critic') {
       // TO DO: faire apparaître une modale
-      await deleteCritic(criticInfos.critic_id, displayType);
+      await deleteCritic(infos.critic_id, displayType);
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
-      setUserCritics(newCriticsData);
+      setInfos(newCriticsData);
+    }
+    else if (tool === 'delete' && parent === 'comment') {      
+      await deleteComment(infos.id, displayType);
+      const newCommentsData = await getAllCriticComments(displayType, infos.critic_id);      
+      setInfos(newCommentsData.data);
     }
   };
 
@@ -124,8 +126,8 @@ const ModifyOrDelete = ({
 };
 
 ModifyOrDelete.propTypes = {
-  criticInfos: PropTypes.object.isRequired,
-  setUserCritics: PropTypes.func.isRequired,
+  infos: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  setInfos: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
 };

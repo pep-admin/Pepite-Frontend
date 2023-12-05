@@ -22,6 +22,7 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+import { convertRating } from '@utils/functions/convertRating';
 
 const SwipePoster = ({
   loading,
@@ -44,10 +45,6 @@ const SwipePoster = ({
   const posterRef = useRef<HTMLImageElement | null>(null);
   const isMovieSeenRef = useRef(false);
   const isMovieDeletedRef = useRef(false);
-
-  const originalScore = generalRatings;
-  const scoreOutOfFive = originalScore / 2;
-  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
 
   const handleMovieSeen = () => {
     if (!isMovieSeenRef.current && !movies[index].is_already_seen) {
@@ -263,7 +260,7 @@ const SwipePoster = ({
                   alignItems: 'center',
                 }}
               >
-                <SwipeRatings roundedScore={roundedScore} />
+                <SwipeRatings roundedScore={convertRating(generalRatings)} />
               </Stack>
             ) : null}
           </Box>

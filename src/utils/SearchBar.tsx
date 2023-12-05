@@ -33,11 +33,11 @@ const SearchBar = ({ Item, page }) => {
 
   const [query, setQuery] = useState(''); // Texte saisi par l'utilisateur
   const [results, setResults] = useState([]); // Les résultats de la recherche
-
-  // const [idChoice, setIdChoice] = useState(null); // L'id du film / série recherché
-  // const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [displayResults, setDisplayResults] = useState(null); // Affiche ou non les résultats
+
   const containerRef = useRef(null);
+  const searchBarRef = useRef(null);
+
   const openResults = Boolean(displayResults);
 
   const handleDisplayResults = () => {
@@ -45,7 +45,11 @@ const SearchBar = ({ Item, page }) => {
   };
 
   const handleChoice = id => {
-    setChosenMovieId(id);
+    setChosenMovieId(id); 
+    setTimeout(() => {
+      searchBarRef.current?.blur();
+    }, 0);
+    setQuery('');
   };
 
   const getChosenMovie = async id => {
@@ -130,6 +134,7 @@ const SearchBar = ({ Item, page }) => {
         ) : null}
         <TextField
           id="filled-basic"
+          inputRef={searchBarRef} 
           label={
             error.message
               ? `${error.message}`

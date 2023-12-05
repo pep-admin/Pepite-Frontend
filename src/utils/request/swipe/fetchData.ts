@@ -30,7 +30,7 @@ export const removeSeenMovie = async (movieId: number, type: string) => {
 export const handleLogout = async () => {
   try {
     const logoutResponse = await axios.post(
-      'http://localhost:8800/api/auth/logout',
+      `${apiBaseUrl}/auth/logout`,
       {},
       { withCredentials: true },
     );

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiBaseUrl from '../config';
 
 export const storeDetailsData = async (movieDetail, type) => {
   try {
@@ -37,7 +38,7 @@ export const storeDetailsData = async (movieDetail, type) => {
     }
 
     await axios.post(
-      'http://localhost:8800/api/movies/store_details',
+      `${apiBaseUrl}/movies/store_details`,
       { type: type, additionalInfos: additionalInfos },
       { withCredentials: true },
     );

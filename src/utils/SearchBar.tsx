@@ -45,7 +45,7 @@ const SearchBar = ({ Item, page }) => {
   };
 
   const handleChoice = id => {
-    setChosenMovieId(id); 
+    setChosenMovieId(id);
     setTimeout(() => {
       searchBarRef.current?.blur();
     }, 0);
@@ -134,7 +134,7 @@ const SearchBar = ({ Item, page }) => {
         ) : null}
         <TextField
           id="filled-basic"
-          inputRef={searchBarRef} 
+          inputRef={searchBarRef}
           label={
             error.message
               ? `${error.message}`

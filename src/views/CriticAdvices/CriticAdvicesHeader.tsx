@@ -44,7 +44,7 @@ const CriticAdvicesHeader = ({
   setIsGoldNugget,
   setIsNuggetAnimEnded,
   isTurnip,
-  setIsTurnip
+  setIsTurnip,
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
@@ -220,7 +220,7 @@ const CriticAdvicesHeader = ({
                     sx={{ color: '#fff', lineHeight: '15px' }}
                     onClick={() => {
                       setIsGoldNugget(!isGoldNugget);
-                      if(isGoldNugget) {
+                      if (isGoldNugget) {
                         setIsNuggetAnimEnded(false);
                       }
                     }}
@@ -288,6 +288,11 @@ CriticAdvicesHeader.propTypes = {
   setUserCritics: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
+  isGoldNugget: PropTypes.bool.isRequired,
+  setIsGoldNugget: PropTypes.func.isRequired,
+  setIsNuggetAnimEnded: PropTypes.func.isRequired,
+  isTurnip: PropTypes.bool.isRequired,
+  setIsTurnip: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesHeader;

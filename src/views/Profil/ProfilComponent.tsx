@@ -210,7 +210,10 @@ const ProfilComponent = () => {
               margintop="6px"
               overflow="hidden"
             >
-              <ProfilSuggestedNotes goldenMovies={goldenMovies} setGoldenMovies={setGoldenMovies} />
+              <ProfilSuggestedNotes
+                goldenMovies={goldenMovies}
+                setGoldenMovies={setGoldenMovies}
+              />
             </Item>
           </Stack>
           <SearchBar Item={Item} page={'profil'} />

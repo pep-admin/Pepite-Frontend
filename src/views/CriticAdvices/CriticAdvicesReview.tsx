@@ -7,7 +7,7 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
-  Button
+  Button,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
@@ -25,7 +25,7 @@ const CriticAdvicesReview = ({
   setNewCriticText,
   criticInfos,
   isModify,
-  newRating
+  newRating,
 }) => {
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
 
@@ -39,55 +39,61 @@ const CriticAdvicesReview = ({
 
   function customTextArea(size) {
     return (
-        <FormControl variant="outlined" fullWidth sx={{ height: '100%', flexGrow: '1' }}>
-          <InputLabel
-            htmlFor="custom-outlined-input"
-            sx={{ fontStyle: 'italic', overflow: 'visible' }}
-          >
-            {'Votre critique'}
-          </InputLabel>
-          <OutlinedInput
-            id="custom-outlined-input"
-            label={'Votre critique'}
-            placeholder={'Vous pouvez rédiger une nouvelle critique'}
-            value={newCriticText}
-            multiline
-            minRows={'4'}
+      <FormControl
+        variant="outlined"
+        fullWidth
+        sx={{ height: '100%', flexGrow: '1' }}
+      >
+        <InputLabel
+          htmlFor="custom-outlined-input"
+          sx={{ fontStyle: 'italic', overflow: 'visible' }}
+        >
+          {'Votre critique'}
+        </InputLabel>
+        <OutlinedInput
+          id="custom-outlined-input"
+          label={'Votre critique'}
+          placeholder={'Vous pouvez rédiger une nouvelle critique'}
+          value={newCriticText}
+          multiline
+          minRows={'4'}
+          sx={{
+            height: size === 'small' ? '70px' : 'auto',
+            borderRadius: '0',
+            fontSize: '1em',
+            fontStyle: 'italic',
+            flexGrow: '1',
+            padding: '7.5px 14px',
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderRadius: size === 'small' ? '10px 0 0 10px' : '0',
+              borderColor: '#8e8e8e6e',
+            },
+          }}
+          inputProps={{
+            sx: {
+              height: '100% !important',
+              padding: '0',
+              borderRadius: '10px 0 0 10px',
+            },
+          }}
+          onChange={e => setNewCriticText(e.target.value)}
+        />
+        {size === 'big' ? (
+          <Button
+            variant="contained"
             sx={{
-              height: size === 'small' ? '70px' : 'auto',
-              borderRadius: '0',
-              fontSize: '1em',
-              fontStyle: 'italic',
-              flexGrow: '1',
-              padding: '7.5px 14px',
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderRadius: size === 'small' ? '10px 0 0 10px' : '0',
-                borderColor: '#8e8e8e6e',
-              },
+              width: '140px',
+              height: '35px',
+              padding: '0',
+              alignSelf: 'center',
+              marginTop: '14px',
             }}
-            inputProps={{
-              sx: { height: '100% !important', padding: '0', borderRadius: '10px 0 0 10px' },
-            }}
-            onChange={e => setNewCriticText(e.target.value)}
-          />
-          {size === 'big' ?
-            <Button 
-              variant='contained' 
-              sx={{ 
-                width: '140px', 
-                height: '35px', 
-                padding: '0', 
-                alignSelf: 'center', 
-                marginTop: '14px' 
-              }}
-              onClick={() => setShowReviewModal(false)}
-            >
-              {'Valider le texte'}
-            </Button>
-            :
-            null
-          }
-        </FormControl>      
+            onClick={() => setShowReviewModal(false)}
+          >
+            {'Valider le texte'}
+          </Button>
+        ) : null}
+      </FormControl>
     );
   }
 
@@ -95,19 +101,17 @@ const CriticAdvicesReview = ({
 
   return (
     <>
-      {showReviewModal ?
-        <CriticAdvicesReviewModal 
-          showReviewModal={showReviewModal} 
-          setShowReviewModal={setShowReviewModal} 
+      {showReviewModal ? (
+        <CriticAdvicesReviewModal
+          showReviewModal={showReviewModal}
+          setShowReviewModal={setShowReviewModal}
           criticInfos={criticInfos}
           type={type}
           isModify={isModify}
           customTextarea={customTextArea}
           newRating={newRating}
-          />
-        :
-        null
-      }
+        />
+      ) : null}
       <Stack
         direction="row-reverse"
         position="relative"
@@ -119,16 +123,16 @@ const CriticAdvicesReview = ({
         }}
         onClick={type === 'old-critic' ? () => setShowReviewModal(true) : null}
       >
-        <Box 
-          position='absolute' 
-          right='47.5px' 
-          top='-11.5px' 
-          display='flex' 
-          justifyContent='center' 
-          alignItems='center' 
-          zIndex='10' 
+        <Box
+          position="absolute"
+          right="47.5px"
+          top="-11.5px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          zIndex="10"
           sx={{
-            backgroundColor: '#e3e3e3'
+            backgroundColor: '#e3e3e3',
           }}
           onClick={() => setShowReviewModal(true)}
         >
@@ -186,7 +190,6 @@ const CriticAdvicesReview = ({
         </Box>
       </Stack>
     </>
-    
   );
 };
 
@@ -196,6 +199,7 @@ CriticAdvicesReview.propTypes = {
   criticInfos: PropTypes.object,
   newCriticText: PropTypes.string.isRequired,
   isModify: PropTypes.bool.isRequired,
+  newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
 };
 
 export default CriticAdvicesReview;

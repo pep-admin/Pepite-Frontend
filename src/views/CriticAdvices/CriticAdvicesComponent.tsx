@@ -80,7 +80,6 @@ const CriticAdvicesComponent = ({
 
       const response = await getAllGoldNuggetsOfUser(displayType, userId);
       setGoldenMovies(response);
-
     } catch (error) {
       if (error.response.status === 409) {
         setNewCriticInfo({ info: true, message: error.response.data });
@@ -121,7 +120,6 @@ const CriticAdvicesComponent = ({
 
       const response = await getAllGoldNuggetsOfUser(displayType, userId);
       setGoldenMovies(response);
-
     } catch (error) {
       console.log('erreur dans la modification', error);
       setNewCriticError({ error: true, message: error });
@@ -306,13 +304,15 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
-      {isGoldNugget && !isNuggetAnimEnded ?
+      {isGoldNugget && !isNuggetAnimEnded ? (
         <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
-        :
-        null
-      }
+      ) : null}
       {displayComments ? (
-        <CommentsComponent criticId={criticInfos.critic_id} comments={comments} setComments={setComments} />
+        <CommentsComponent
+          criticId={criticInfos.critic_id}
+          comments={comments}
+          setComments={setComments}
+        />
       ) : null}
     </>
   );
@@ -326,6 +326,7 @@ CriticAdvicesComponent.propTypes = {
   setNewCriticInfo: PropTypes.func,
   setNewCriticSuccess: PropTypes.func,
   criticInfos: PropTypes.object,
+  setGoldenMovies: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesComponent;

@@ -43,10 +43,12 @@ const ModifyOrDelete = ({ parent, infos, setInfos, isModify, setIsModify }) => {
       await deleteCritic(infos.critic_id, displayType);
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setInfos(newCriticsData);
-    }
-    else if (tool === 'delete' && parent === 'comment') {      
+    } else if (tool === 'delete' && parent === 'comment') {
       await deleteComment(infos.id, displayType);
-      const newCommentsData = await getAllCriticComments(displayType, infos.critic_id);      
+      const newCommentsData = await getAllCriticComments(
+        displayType,
+        infos.critic_id,
+      );
       setInfos(newCommentsData.data);
     }
   };
@@ -130,6 +132,7 @@ ModifyOrDelete.propTypes = {
   setInfos: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
+  parent: PropTypes.string.isRequired,
 };
 
 export default ModifyOrDelete;

@@ -56,15 +56,11 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
     }
   };
 
-  const updateComment = async (commentId) => {
+  const updateComment = async commentId => {
     try {
-      await modifyComment(
-        commentId,
-        displayType,
-        commentUpdated,
-      );
+      await modifyComment(commentId, displayType, commentUpdated);
       console.log('commentaire modifié');
-      
+
       getComments();
       // setNewCriticError({ error: false, message: null });
 
@@ -139,8 +135,8 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
                 setIsModify={setIsModify}
               />
             </Stack>
-            {isModify ?
-              <Stack direction='row' margin='6px 0'>
+            {isModify ? (
+              <Stack direction="row" margin="6px 0">
                 <TextField
                   id="filled-basic"
                   variant="filled"
@@ -152,7 +148,7 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
                   InputProps={{
                     sx: {
                       borderRadius: '2px 0 0 2px',
-                    }
+                    },
                   }}
                 />
                 <Stack
@@ -165,14 +161,17 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
                     borderRadius: '0 2px 2px 0',
                   }}
                 >
-                  <EditIcon sx={{ color: '#fff' }} onClick={() => updateComment(comment.id)} />
+                  <EditIcon
+                    sx={{ color: '#fff' }}
+                    onClick={() => updateComment(comment.id)}
+                  />
                 </Stack>
               </Stack>
-              :
+            ) : (
               <Typography component="p" variant="body2" align="left">
                 {`${comment.text}`}
               </Typography>
-            }
+            )}
           </Stack>
           <Stack
             direction="row"
@@ -208,6 +207,7 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
 CommentsContent.propTypes = {
   comment: PropTypes.object.isRequired,
   setInfos: PropTypes.func.isRequired,
+  getComments: PropTypes.func.isRequired,
 };
 
 export default CommentsContent;

@@ -33,15 +33,14 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
   const fetchTrailerUrl = async () => {
     let movieId;
 
-    if(from === 'critic') {
+    if (from === 'critic') {
       movieId = infos.id;
-    }
-    else if(from === 'suggested') {
-      movieId = infos.movie_id;      
+    } else if (from === 'suggested') {
+      movieId = infos.movie_id;
       console.log('movie id', movieId);
     }
 
-    try {      
+    try {
       const response = await getVideo(displayType, movieId);
       const data = response.data;
       console.log('les données', data);
@@ -176,7 +175,7 @@ CriticAdvicesModal.propTypes = {
   showPoster: PropTypes.bool.isRequired,
   setShowPoster: PropTypes.func.isRequired,
   infos: PropTypes.object.isRequired,
-  from: PropTypes.string.isRequired
+  from: PropTypes.string.isRequired,
 };
 
 export default CriticAdvicesModal;

@@ -1,11 +1,13 @@
 // Import des libs externes
 import { Stack, Typography, CardContent, Box } from '@mui/material';
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { GoldNuggetIcon, TurnipIcon, YellowRating } from '@utils/styledComponent';
-import GoldNugget from '@utils/GoldNugget';
+import {
+  GoldNuggetIcon,
+  TurnipIcon,
+  YellowRating,
+} from '@utils/styledComponent';
 
 const CriticAdvicesContent = ({
   type,
@@ -13,7 +15,6 @@ const CriticAdvicesContent = ({
   displayOverview,
   setDisplayOverview,
   isGoldNugget,
-  setIsGoldNugget,
   isTurnip,
   criticInfos,
   isModify,
@@ -82,8 +83,7 @@ const CriticAdvicesContent = ({
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    { 
-                      isGoldNugget ?
+                    {isGoldNugget ? (
                       <>
                         <GoldNuggetIcon
                           sx={{
@@ -93,13 +93,12 @@ const CriticAdvicesContent = ({
                         <Typography
                           variant="body2"
                           component="p"
-                          fontWeight='bold'
+                          fontWeight="bold"
                         >
                           {'Pépite !'}
                         </Typography>
                       </>
-                      :
-                      isTurnip ?
+                    ) : isTurnip ? (
                       <>
                         <TurnipIcon
                           sx={{
@@ -109,14 +108,12 @@ const CriticAdvicesContent = ({
                         <Typography
                           variant="body2"
                           component="p"
-                          fontWeight='bold'
+                          fontWeight="bold"
                         >
                           {'Navet !'}
                         </Typography>
                       </>
-                      : 
-                      null
-                    }
+                    ) : null}
                   </Box>
                 </>
               ) : type === 'old-critic' ? (
@@ -128,22 +125,29 @@ const CriticAdvicesContent = ({
                   alignItems="center"
                   borderRadius="50%"
                 >
-                  {criticInfos.is_gold_nugget === 1 ?
+                  {criticInfos.is_gold_nugget === 1 ? (
                     <>
                       <GoldNuggetIcon sx={{ fontSize: '16px' }} />
-                      <Typography variant="body2" component="p" fontWeight="bold">
+                      <Typography
+                        variant="body2"
+                        component="p"
+                        fontWeight="bold"
+                      >
                         {'Pépite !'}
                       </Typography>
                     </>
-                    : criticInfos.is_turnip === 1 ?
+                  ) : criticInfos.is_turnip === 1 ? (
                     <>
                       <TurnipIcon sx={{ fontSize: '16px' }} />
-                      <Typography variant="body2" component="p" fontWeight="bold">
+                      <Typography
+                        variant="body2"
+                        component="p"
+                        fontWeight="bold"
+                      >
                         {'Navet !'}
                       </Typography>
                     </>
-                    : null
-                  }
+                  ) : null}
                 </Box>
               ) : null}
             </Stack>
@@ -282,6 +286,7 @@ CriticAdvicesContent.propTypes = {
   criticInfos: PropTypes.object,
   isGoldNugget: PropTypes.bool.isRequired,
   setIsGoldNugget: PropTypes.func.isRequired,
+  isTurnip: PropTypes.bool.isRequired,
   isModify: PropTypes.bool.isRequired,
 };
 

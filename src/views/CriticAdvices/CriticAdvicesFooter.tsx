@@ -22,7 +22,7 @@ const CriticAdvicesFooter = ({
   criticId,
   displayComments,
   setDisplayComments,
-  comments
+  comments,
 }) => {
   const { displayType } = useData();
 
@@ -121,6 +121,7 @@ CriticAdvicesFooter.propTypes = {
   criticId: PropTypes.number.isRequired,
   displayComments: PropTypes.bool.isRequired,
   setDisplayComments: PropTypes.func.isRequired,
+  comments: PropTypes.array.isRequired,
 };
 
 export default CriticAdvicesFooter;

@@ -11,6 +11,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import des icônes étoile vide
 import { GoldNuggetIcon, YellowRating } from '@utils/styledComponent';
@@ -23,29 +24,32 @@ import { useData } from '@hooks/DataContext';
 import { convertRating } from '@utils/functions/convertRating';
 import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
 
-const ProfilSuggestedNotes = ({goldenMovies, setGoldenMovies}) => {
+const ProfilSuggestedNotes = ({ goldenMovies, setGoldenMovies }) => {
   const [showGoldenMovie, setShowGoldenMovie] = useState(false);
   const [goldenMovieInfos, setGoldenMovieInfos] = useState(null);
 
   const { displayType } = useData();
-  const { id } = useParams();  
+  const { id } = useParams();
 
-  const fetchAllGoldNuggetsOfUser = async() => {    
+  const fetchAllGoldNuggetsOfUser = async () => {
     const response = await getAllGoldNuggetsOfUser(displayType, id);
-    setGoldenMovies(response);        
-  }
+    setGoldenMovies(response);
+  };
 
   useEffect(() => {
     fetchAllGoldNuggetsOfUser();
-  }, [displayType])
+  }, [displayType]);
 
   return (
     <>
-    { showGoldenMovie ? 
-      <CriticAdvicesModal showPoster={showGoldenMovie} setShowPoster={setShowGoldenMovie} infos={goldenMovieInfos} from={'suggested'} />
-      :
-      null
-    }
+      {showGoldenMovie ? (
+        <CriticAdvicesModal
+          showPoster={showGoldenMovie}
+          setShowPoster={setShowGoldenMovie}
+          infos={goldenMovieInfos}
+          from={'suggested'}
+        />
+      ) : null}
       <Stack direction="column" height="100%">
         <Stack
           direction="row"
@@ -69,11 +73,11 @@ const ProfilSuggestedNotes = ({goldenMovies, setGoldenMovies}) => {
           padding="6px 6px 0 6px"
           gap="10px"
           sx={{
-            overflowX: 'scroll'
+            overflowX: 'scroll',
           }}
         >
-          {goldenMovies.map((movie) => {
-            return(
+          {goldenMovies.map(movie => {
+            return (
               <React.Fragment key={movie.id}>
                 <Card
                   sx={{
@@ -84,8 +88,8 @@ const ProfilSuggestedNotes = ({goldenMovies, setGoldenMovies}) => {
                     position: 'relative',
                   }}
                 >
-                  <CardActionArea 
-                    sx={{ height: 'calc(100% - 23px)' }} 
+                  <CardActionArea
+                    sx={{ height: 'calc(100% - 23px)' }}
                     onClick={() => {
                       setGoldenMovieInfos(movie);
                       setShowGoldenMovie(true);
@@ -95,7 +99,11 @@ const ProfilSuggestedNotes = ({goldenMovies, setGoldenMovies}) => {
                       component="img"
                       height="100%"
                       image={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                      alt={ displayType === 'movie' ? `${movie.title}` : `${movie.name}`}
+                      alt={
+                        displayType === 'movie'
+                          ? `${movie.title}`
+                          : `${movie.name}`
+                      }
                       sx={{
                         borderRadius: '10px',
                         boxShadow:
@@ -117,18 +125,14 @@ const ProfilSuggestedNotes = ({goldenMovies, setGoldenMovies}) => {
                       gutterBottom
                       component="h4"
                       margin="0"
-                      paddingLeft='8px'
-                      maxWidth='100%'
-                      overflow='hidden'
-                      whiteSpace='nowrap'
-                      textOverflow='ellipsis'
+                      paddingLeft="8px"
+                      maxWidth="100%"
+                      overflow="hidden"
+                      whiteSpace="nowrap"
+                      textOverflow="ellipsis"
                       sx={{ fontSize: '1em' }}
                     >
-                      { displayType === 'movie' ?
-                        movie.title
-                        :
-                        movie.name
-                      }
+                      {displayType === 'movie' ? movie.title : movie.name}
                     </Typography>
                   </CardContent>
                   <Box
@@ -148,11 +152,18 @@ const ProfilSuggestedNotes = ({goldenMovies, setGoldenMovies}) => {
                       precision={0.1}
                       readOnly
                       emptyIcon={
-                        <StarIcon sx={{ color: '#E1E1E1', fontSize: '1.05em' }} />
+                        <StarIcon
+                          sx={{ color: '#E1E1E1', fontSize: '1.05em' }}
+                        />
                       }
                       sx={{ marginRight: '5px', fontSize: '0.9em' }}
                     />
-                    <Typography variant='body2' component='span' fontWeight='bold' sx={{ color: '#faaf00'}}>
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      fontWeight="bold"
+                      sx={{ color: '#faaf00' }}
+                    >
                       {convertRating(movie.vote_average)}
                     </Typography>
                   </Box>
@@ -166,20 +177,32 @@ const ProfilSuggestedNotes = ({goldenMovies, setGoldenMovies}) => {
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    border='1px solid #f29e50'
+                    border="1px solid #f29e50"
                     sx={{ backgroundColor: '#fff' }}
                   >
-                    <GoldNuggetIcon sx={{ fontSize: '1em', position: 'relative', top: '0.2px', right: '0.1px' }}/>
+                    <GoldNuggetIcon
+                      sx={{
+                        fontSize: '1em',
+                        position: 'relative',
+                        top: '0.2px',
+                        right: '0.1px',
+                      }}
+                    />
                   </Box>
                 </Card>
-                <Divider variant='middle' flexItem orientation='vertical' />
+                <Divider variant="middle" flexItem orientation="vertical" />
               </React.Fragment>
-            )
+            );
           })}
         </Stack>
       </Stack>
     </>
   );
+};
+
+ProfilSuggestedNotes.propTypes = {
+  goldenMovies: PropTypes.array.isRequired,
+  setGoldenMovies: PropTypes.func.isRequired,
 };
 
 export default ProfilSuggestedNotes;

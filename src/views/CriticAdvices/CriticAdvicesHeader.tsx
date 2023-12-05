@@ -27,6 +27,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useData } from '@hooks/DataContext';
 import { ratings } from '@utils/data/ratings';
 import ModifyOrDelete from '@utils/ModifyOrDelete';
+import { formatRating } from '@utils/functions/formatRating';
 
 const CriticAdvicesHeader = ({
   type,
@@ -43,7 +44,7 @@ const CriticAdvicesHeader = ({
   setIsGoldNugget,
   setIsNuggetAnimEnded,
   isTurnip,
-  setIsTurnip
+  setIsTurnip,
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
@@ -51,15 +52,6 @@ const CriticAdvicesHeader = ({
   const openRatings = Boolean(displayRatings);
   const handleRatingsMenu = event => {
     setDisplayRatings(event.currentTarget);
-  };
-
-  const formatRating = rating => {
-    // Si la note a une partie décimale autre que .0, retourner la note telle quelle
-    if (rating % 1 !== 0) {
-      return rating.toString();
-    }
-    // Sinon, retourner la note sans la partie décimale
-    return Math.floor(rating).toString();
   };
 
   return (
@@ -228,7 +220,7 @@ const CriticAdvicesHeader = ({
                     sx={{ color: '#fff', lineHeight: '15px' }}
                     onClick={() => {
                       setIsGoldNugget(!isGoldNugget);
-                      if(isGoldNugget) {
+                      if (isGoldNugget) {
                         setIsNuggetAnimEnded(false);
                       }
                     }}
@@ -296,6 +288,11 @@ CriticAdvicesHeader.propTypes = {
   setUserCritics: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
+  isGoldNugget: PropTypes.bool.isRequired,
+  setIsGoldNugget: PropTypes.func.isRequired,
+  setIsNuggetAnimEnded: PropTypes.func.isRequired,
+  isTurnip: PropTypes.bool.isRequired,
+  setIsTurnip: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesHeader;

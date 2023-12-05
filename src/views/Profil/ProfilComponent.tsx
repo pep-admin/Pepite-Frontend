@@ -35,6 +35,7 @@ const ProfilComponent = () => {
   const { displayType, chosenMovie } = useData();
 
   const [userCritics, setUserCritics] = useState([]);
+  const [goldenMovies, setGoldenMovies] = useState([]);
   const [progress, setProgress] = useState(0);
 
   const [newCriticError, setNewCriticError] = useState({
@@ -209,7 +210,10 @@ const ProfilComponent = () => {
               margintop="6px"
               overflow="hidden"
             >
-              <ProfilSuggestedNotes />
+              <ProfilSuggestedNotes
+                goldenMovies={goldenMovies}
+                setGoldenMovies={setGoldenMovies}
+              />
             </Item>
           </Stack>
           <SearchBar Item={Item} page={'profil'} />
@@ -219,6 +223,7 @@ const ProfilComponent = () => {
                 type={'new-critic'}
                 chosenMovie={chosenMovie}
                 setUserCritics={setUserCritics}
+                setGoldenMovies={setGoldenMovies}
                 setNewCriticError={setNewCriticError}
                 setNewCriticInfo={setNewCriticInfo}
                 setNewCriticSuccess={setNewCriticSuccess}
@@ -307,6 +312,7 @@ const ProfilComponent = () => {
                       key={critic.id}
                       type={'old-critic'}
                       setUserCritics={setUserCritics}
+                      setGoldenMovies={setGoldenMovies}
                       chosenMovie={null}
                       setNewCriticError={setNewCriticError}
                       setNewCriticInfo={setNewCriticInfo}

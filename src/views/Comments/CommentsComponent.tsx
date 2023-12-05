@@ -1,7 +1,7 @@
 // Import des libs externes
 import { Stack, Typography, Divider } from '@mui/material';
 import { Item } from '@utils/styledComponent';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants enfants
@@ -25,7 +25,6 @@ const CommentsComponent = ({ criticId, comments, setComments }) => {
   useEffect(() => {
     getComments();
   }, []);
-
 
   return (
     <Item margintop="6px">
@@ -65,6 +64,8 @@ const CommentsComponent = ({ criticId, comments, setComments }) => {
 
 CommentsComponent.propTypes = {
   criticId: PropTypes.number.isRequired,
+  comments: PropTypes.array.isRequired,
+  setComments: PropTypes.func.isRequired,
 };
 
 export default CommentsComponent;

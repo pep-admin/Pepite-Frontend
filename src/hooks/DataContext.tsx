@@ -13,6 +13,7 @@ interface Movie {
   poster_path: string;
   release_date: string;
   title: string;
+  name: string;
   video: boolean;
   vote_average: number;
   vote_count: number;
@@ -23,8 +24,8 @@ interface DataContextProps {
   setDisplayType: (value: string) => void;
   chosenMovieId: number | null;
   setChosenMovieId: (id: number | null) => void;
-  chosenMovie: Array<Movie>;
-  setChosenMovie: (value: object) => void;
+  chosenMovie: Movie | null;
+  setChosenMovie: (value: Movie | null) => void;
 }
 
 const DataContext = createContext<DataContextProps>({
@@ -33,13 +34,13 @@ const DataContext = createContext<DataContextProps>({
   chosenMovieId: null,
   setChosenMovieId: (_id: number | null) => {},
   chosenMovie: null,
-  setChosenMovie: (_value: object) => {},
+  setChosenMovie: (_value: Movie | null) => {},
 });
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [displayType, setDisplayType] = useState<string>('movie');
   const [chosenMovieId, setChosenMovieId] = useState<number | null>(null);
-  const [chosenMovie, setChosenMovie] = useState<Array<Movie> | null>(null);
+  const [chosenMovie, setChosenMovie] = useState<Movie | null>(null);
 
   return (
     <DataContext.Provider

@@ -29,11 +29,13 @@ import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
 import GoldNugget from '@utils/GoldNugget';
+import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 
 const CriticAdvicesComponent = ({
   type,
   chosenMovie,
   setUserCritics,
+  setGoldenMovies,
   setNewCriticError,
   setNewCriticInfo,
   setNewCriticSuccess,
@@ -49,8 +51,8 @@ const CriticAdvicesComponent = ({
   const [displayComments, setDisplayComments] = useState(false);
   const [showPoster, setShowPoster] = useState(false);
   const [comments, setComments] = useState([]);
-
   const [displayRatings, setDisplayRatings] = useState(null);
+
   const ratingsHeaderRef = useRef(null);
 
   const { displayType, setChosenMovieId, setChosenMovie } = useData();
@@ -75,6 +77,9 @@ const CriticAdvicesComponent = ({
 
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
+
+      const response = await getAllGoldNuggetsOfUser(displayType, userId);
+      setGoldenMovies(response);
     } catch (error) {
       if (error.response.status === 409) {
         setNewCriticInfo({ info: true, message: error.response.data });
@@ -112,6 +117,9 @@ const CriticAdvicesComponent = ({
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
       setIsModify(false);
+
+      const response = await getAllGoldNuggetsOfUser(displayType, userId);
+      setGoldenMovies(response);
     } catch (error) {
       console.log('erreur dans la modification', error);
       setNewCriticError({ error: true, message: error });
@@ -133,7 +141,8 @@ const CriticAdvicesComponent = ({
         <CriticAdvicesModal
           showPoster={showPoster}
           setShowPoster={setShowPoster}
-          criticInfos={criticInfos}
+          infos={criticInfos}
+          from={'critic'}
         />
       ) : null}
       <Item margintop="6px">
@@ -245,6 +254,7 @@ const CriticAdvicesComponent = ({
                 setNewCriticText={setNewCriticText}
                 criticInfos={criticInfos}
                 isModify={isModify}
+                newRating={newRating}
               />
               {type === 'new-critic' || isModify ? (
                 <Stack direction="row" flexBasis="100%" justifyContent="center">
@@ -294,13 +304,15 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
-      {isGoldNugget && !isNuggetAnimEnded ?
+      {isGoldNugget && !isNuggetAnimEnded ? (
         <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
-        :
-        null
-      }
+      ) : null}
       {displayComments ? (
-        <CommentsComponent criticId={criticInfos.critic_id} comments={comments} setComments={setComments} />
+        <CommentsComponent
+          criticId={criticInfos.critic_id}
+          comments={comments}
+          setComments={setComments}
+        />
       ) : null}
     </>
   );
@@ -314,6 +326,7 @@ CriticAdvicesComponent.propTypes = {
   setNewCriticInfo: PropTypes.func,
   setNewCriticSuccess: PropTypes.func,
   criticInfos: PropTypes.object,
+  setGoldenMovies: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesComponent;

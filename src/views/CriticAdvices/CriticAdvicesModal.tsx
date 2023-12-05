@@ -18,7 +18,7 @@ import { useData } from '@hooks/DataContext';
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
 
-const CriticAdvicesModal = ({ showPoster, setShowPoster, criticInfos }) => {
+const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
   const { displayType } = useData();
 
   const [showVideo, setShowVideo] = useState(false);
@@ -31,7 +31,14 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, criticInfos }) => {
 
   // Récupère la bande annonce
   const fetchTrailerUrl = async () => {
-    const movieId = criticInfos.id; // Assurez-vous que l'ID est correctement passé dans criticInfos
+    let movieId;
+
+    if (from === 'critic') {
+      movieId = infos.id;
+    } else if (from === 'suggested') {
+      movieId = infos.movie_id;
+      console.log('movie id', movieId);
+    }
 
     try {
       const response = await getVideo(displayType, movieId);
@@ -96,7 +103,7 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, criticInfos }) => {
         {!showVideo ? (
           <CardMedia
             component="img"
-            image={`https://image.tmdb.org/t/p/w500/${criticInfos.poster_path}`}
+            image={`https://image.tmdb.org/t/p/w500/${infos.poster_path}`}
             alt="green iguana"
             sx={{
               height: 'auto',
@@ -167,7 +174,8 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, criticInfos }) => {
 CriticAdvicesModal.propTypes = {
   showPoster: PropTypes.bool.isRequired,
   setShowPoster: PropTypes.func.isRequired,
-  criticInfos: PropTypes.object.isRequired,
+  infos: PropTypes.object.isRequired,
+  from: PropTypes.string.isRequired,
 };
 
 export default CriticAdvicesModal;

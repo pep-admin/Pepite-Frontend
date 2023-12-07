@@ -1,5 +1,6 @@
 // Import des libs externes
 import { Stack, Typography, CardContent, Box } from '@mui/material';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
@@ -20,6 +21,8 @@ const CriticAdvicesContent = ({
   isModify,
 }) => {
   // const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
+  const [isNew, setIsNew] = useState(false);
+
   let originalScore;
 
   if (type === 'new-critic') originalScore = chosenMovie.vote_average;
@@ -30,6 +33,20 @@ const CriticAdvicesContent = ({
   const scoreOutOfFive = originalScore / 2;
   const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
 
+  useEffect(() => {
+    const criticDate = new Date(criticInfos.critic_date).getTime(); // Convertir en timestamp
+
+    if (!isNaN(criticDate)) {
+      const currentDate = new Date().getTime(); // Convertir en timestamp
+      const diffTime = Math.abs(currentDate - criticDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 3) {
+        setIsNew(true);
+      }
+    }
+  }, [criticInfos.critic_date]);
+
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
       <Stack>
@@ -37,8 +54,9 @@ const CriticAdvicesContent = ({
           <Stack direction="column" columnGap="10px">
             <Stack
               direction="row"
-              alignItems="center"
-              justifyContent="space-between"
+              alignItems="flex-start"
+              justifyContent="flex-start"
+              columnGap="10px"
             >
               <Typography
                 variant="body1"
@@ -74,56 +92,83 @@ const CriticAdvicesContent = ({
                     : null
                 }
               </Typography>
+              {type === 'old-critic' && isNew ? (
+                <Typography
+                  component="span"
+                  fontStyle="italic"
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    fontSize: '0.8em',
+                    padding: '0 5px',
+                    backgroundColor: '#5ac164',
+                    color: '#fff',
+                    lineHeight: '1.43',
+                    position: 'relative',
+                    top: '4px',
+                  }}
+                >
+                  {'New !'}
+                </Typography>
+              ) : null}
+            </Stack>
+
+            <Stack direction="row" columnGap="5px">
+              <YellowRating
+                value={roundedScore}
+                precision={0.1}
+                readOnly
+                sx={{ position: 'relative', top: '1.4px' }}
+              />
+              <Typography variant="body2" fontWeight="bold" component="p">
+                {`${roundedScore}` + ' / 5'}
+              </Typography>
               {type === 'new-critic' || isModify ? (
-                <>
-                  <Box
-                    height="20px"
-                    width="60px"
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    {isGoldNugget ? (
-                      <>
-                        <GoldNuggetIcon
-                          sx={{
-                            fontSize: '16px',
-                          }}
-                        />
-                        <Typography
-                          variant="body2"
-                          component="p"
-                          fontWeight="bold"
-                        >
-                          {'Pépite !'}
-                        </Typography>
-                      </>
-                    ) : isTurnip ? (
-                      <>
-                        <TurnipIcon
-                          sx={{
-                            fontSize: '16px',
-                          }}
-                        />
-                        <Typography
-                          variant="body2"
-                          component="p"
-                          fontWeight="bold"
-                        >
-                          {'Navet !'}
-                        </Typography>
-                      </>
-                    ) : null}
-                  </Box>
-                </>
+                <Box
+                  height="20px"
+                  width="60px"
+                  display="flex"
+                  justifyContent="space-between"
+                  marginLeft="10px"
+                >
+                  {isGoldNugget ? (
+                    <>
+                      <GoldNuggetIcon
+                        sx={{
+                          fontSize: '16px',
+                        }}
+                      />
+                      <Typography
+                        variant="body2"
+                        component="p"
+                        fontWeight="bold"
+                      >
+                        {'Pépite !'}
+                      </Typography>
+                    </>
+                  ) : isTurnip ? (
+                    <>
+                      <TurnipIcon
+                        sx={{
+                          fontSize: '16px',
+                        }}
+                      />
+                      <Typography
+                        variant="body2"
+                        component="p"
+                        fontWeight="bold"
+                      >
+                        {'Navet !'}
+                      </Typography>
+                    </>
+                  ) : null}
+                </Box>
               ) : type === 'old-critic' ? (
                 <Box
                   height="20px"
                   width="60px"
                   display="flex"
                   justifyContent="space-between"
-                  alignItems="center"
-                  borderRadius="50%"
+                  marginLeft="10px"
                 >
                   {criticInfos.is_gold_nugget === 1 ? (
                     <>
@@ -150,18 +195,6 @@ const CriticAdvicesContent = ({
                   ) : null}
                 </Box>
               ) : null}
-            </Stack>
-
-            <Stack direction="row" columnGap="5px">
-              <YellowRating
-                value={roundedScore}
-                precision={0.1}
-                readOnly
-                sx={{ position: 'relative', top: '1.4px' }}
-              />
-              <Typography variant="body2" fontWeight="bold" component="p">
-                {`${roundedScore}` + ' / 5'}
-              </Typography>
             </Stack>
           </Stack>
           <Stack direction="row">

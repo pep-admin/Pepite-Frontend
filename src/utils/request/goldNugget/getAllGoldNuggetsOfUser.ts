@@ -5,7 +5,7 @@ import apiBaseUrl from '../config';
 export const getAllGoldNuggetsOfUser = async (type, userId) => {
   try {
     const response = await axios.get(
-      `${apiBaseUrl}/gold_nugget/all/${userId}`,
+      `${apiBaseUrl}/critics_gold/all/${userId}`,
       {
         params: { type: type },
         withCredentials: true,

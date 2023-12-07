@@ -10,6 +10,6 @@ export const checkLikeStatus = async (criticId, type) => {
 
     return response.data.hasLiked;
   } catch (error) {
-    console.log('erreur dans le comptage des likes :', error);
+    console.log('erreur dans la vérification du statut du like :', error);
   }
 };

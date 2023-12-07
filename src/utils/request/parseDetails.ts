@@ -67,6 +67,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let text = null;
   let critic_id = null;
   let is_gold_nugget = 0;
+  let critic_date = null;
 
   // Dans le cas où on veut parser des infos pour une critique de FILM
   if (displayType === 'movie' && requestType === 'critic') {
@@ -77,6 +78,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text; // le texte de la critique
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
+    critic_date = data.critic_date;
 
     return {
       genres,
@@ -92,6 +94,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       text,
       critic_id,
       is_gold_nugget,
+      critic_date,
     };
   }
 
@@ -104,6 +107,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text;
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
+    critic_date = data.critic_date;
 
     return {
       genres,
@@ -119,6 +123,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       text,
       critic_id,
       is_gold_nugget,
+      critic_date,
     };
   }
 };

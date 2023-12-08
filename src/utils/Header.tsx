@@ -55,7 +55,7 @@ const Header = () => {
     setAnchorElUser(null);
   };
 
-  const [alignment, setAlignment] = React.useState('web');
+  const [alignment, setAlignment] = React.useState('films');
 
   const handleChange = (_, newAlignment) => {
     setAlignment(newAlignment);
@@ -209,6 +209,8 @@ const Header = () => {
                     onLogout();
                   } else if (setting === 'Profil' && userId) {
                     navigate(`/profil/${userId}`);
+                  } else if(setting === 'Compte' && userId) {
+                    navigate(`/account/${userId}`);
                   }
                   handleCloseUserMenu();
                 }}

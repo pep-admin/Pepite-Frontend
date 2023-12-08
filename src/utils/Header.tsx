@@ -209,7 +209,7 @@ const Header = () => {
                     onLogout();
                   } else if (setting === 'Profil' && userId) {
                     navigate(`/profil/${userId}`);
-                  } else if(setting === 'Compte' && userId) {
+                  } else if (setting === 'Compte' && userId) {
                     navigate(`/account/${userId}`);
                   }
                   handleCloseUserMenu();

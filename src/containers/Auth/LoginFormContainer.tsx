@@ -36,7 +36,8 @@ const LoginFormContainer = () => {
         },
       });
 
-      localStorage.setItem('user_id', response.data.id.toString());
+      localStorage.setItem('user_id', JSON.stringify(response.data.id));
+      localStorage.setItem('user_infos', JSON.stringify(response.data));
 
       if (response.data.last_login_date === null) {
         navigate('/about');

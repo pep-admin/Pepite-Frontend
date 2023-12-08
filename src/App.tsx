@@ -15,7 +15,7 @@ import RegisterFormContainer from './containers/Auth/RegisterFormContainer';
 import LoginFormContainer from './containers/Auth/LoginFormContainer';
 import SwipeContainer from './containers/Swipe/SwipeContainer';
 import ProfilContainer from './containers/Profil/ProfilContainer';
-import AccountComponent from '@views/Account/AccountComponent';
+import AccountContainer from './containers/Account/AccountContainer';
 
 export function App() {
   // Permet d'afficher la page dès que les polices sont chargées
@@ -33,7 +33,7 @@ export function App() {
               <Route path="/about" element={<About />} />
               <Route path="/swipe" element={<SwipeContainer />} />
               <Route path="/profil/:id" element={<ProfilContainer />} />
-              <Route path="/account/:id" element={<AccountComponent />} />
+              <Route path="/account/:id" element={<AccountContainer />} />
               <Route path="/" element={<Home />} />
               <Route path="/film/:id" element={<Film />} />
             </Routes>

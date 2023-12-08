@@ -5,32 +5,45 @@ import {
   FormControlLabel,
   Switch,
   ToggleButtonGroup,
-  ToggleButton
+  ToggleButton,
 } from '@mui/material';
 
 const AccountDisplaySettings = () => {
   return (
-    <Stack direction='column' spacing={1} padding='6px 0'>
-      <Stack direction='row' height='30px' padding='0 13px' alignItems='center' columnGap='10px' >
-        <Typography fontSize='1em' component='p' fontWeight='bold' color='#094B4B' >
+    <Stack direction="column" spacing={1} padding="6px 0">
+      <Stack
+        direction="row"
+        height="30px"
+        padding="0 13px"
+        alignItems="center"
+        columnGap="10px"
+      >
+        <Typography fontSize="1em" component="p" color="#094B4B">
           {'Notifications : '}
         </Typography>
-        <FormControlLabel 
-          control={<Switch defaultChecked />} 
+        <FormControlLabel
+          control={<Switch defaultChecked />}
           label={
-            <span 
-              style={{ 
-              fontSize: '0.9em', 
-              fontWeight: 'bold', 
-              color: '#5AC164'}}
+            <span
+              style={{
+                fontSize: '0.9em',
+                fontWeight: 'bold',
+                color: '#5AC164',
+              }}
             >
               {'Activées'}
             </span>
           }
         />
-      </Stack>  
-      <Stack direction='row' height='30px' padding='0 13px' alignItems='center' columnGap='10px' >
-        <Typography fontSize='1em' component='p' fontWeight='bold' color='#094B4B' >
+      </Stack>
+      <Stack
+        direction="row"
+        height="30px"
+        padding="0 13px"
+        alignItems="center"
+        columnGap="10px"
+      >
+        <Typography fontSize="1em" component="p" color="#094B4B">
           {'Thème : '}
         </Typography>
         <ToggleButtonGroup
@@ -40,54 +53,68 @@ const AccountDisplaySettings = () => {
           aria-label="Theme selection"
           sx={{
             height: '25px',
-            columnGap: '10px'
+            columnGap: '10px',
           }}
         >
-          <ToggleButton 
-            value="light" 
-            aria-label="Light theme" 
-            sx={{ 
-              bgcolor: '#5AC164', 
-              borderRadius: '5px !important', 
+          <ToggleButton
+            value="light"
+            aria-label="Light theme"
+            sx={{
+              bgcolor: '#5AC164',
+              borderRadius: '5px !important',
               color: '#fff',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
             }}
           >
             {'Clair'}
           </ToggleButton>
-          <ToggleButton 
-            value="dark" 
-            aria-label="Dark theme" 
-            sx={{ 
-              bgcolor: 'gray', 
-              borderRadius: '5px !important', 
+          <ToggleButton
+            value="dark"
+            aria-label="Dark theme"
+            sx={{
+              bgcolor: 'gray',
+              borderRadius: '5px !important',
               color: '#fff',
-              fontWeight: 'bold'
-            }}>
+              fontWeight: 'bold',
+            }}
+          >
             {'Sombre'}
           </ToggleButton>
         </ToggleButtonGroup>
       </Stack>
-      <Stack direction='row' height='30px' padding='0 13px' alignItems='center' columnGap='10px' >
-        <Typography fontSize='1em' component='p' fontWeight='bold' color='#094B4B'>
+      <Stack
+        direction="row"
+        height="30px"
+        padding="0 13px"
+        alignItems="center"
+        columnGap="10px"
+      >
+        <Typography fontSize="1em" component="p" color="#094B4B">
           {'Langue : '}
-          <Typography fontSize='1em' component='span'>
+          <Typography fontSize="1em" component="span">
             {'Français'}
           </Typography>
         </Typography>
       </Stack>
-      <Stack direction='row' height='30px' padding='0 13px' alignItems='center' columnGap='10px' >
-        <Typography fontSize='1em' component='p' fontWeight='bold' color='#094B4B'>
+      <Stack
+        direction="row"
+        height="30px"
+        padding="0 13px"
+        alignItems="center"
+        columnGap="10px"
+      >
+        <Typography fontSize="1em" component="p" color="#094B4B">
           {'Animations : '}
         </Typography>
-        <FormControlLabel 
-          control={<Switch defaultChecked />} 
+        <FormControlLabel
+          control={<Switch defaultChecked />}
           label={
-            <span 
-              style={{ 
-              fontSize: '0.9em', 
-              fontWeight: 'bold', 
-              color: '#5AC164'}}
+            <span
+              style={{
+                fontSize: '0.9em',
+                fontWeight: 'bold',
+                color: '#5AC164',
+              }}
             >
               {'Activées'}
             </span>

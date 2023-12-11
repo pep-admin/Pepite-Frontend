@@ -16,6 +16,7 @@ import {
   ToggleButtonGroup,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -24,10 +25,13 @@ import { useData } from '@hooks/DataContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import { handleLogout } from './request/swipe/fetchData';
 
+// Import des variables d'environnements
+import apiBaseUrl from '@utils/request/config';
+
 const pages = ['Accueil', 'Swipe', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = () => {
+const Header = ({ userInfos }) => {
   const { displayType, setDisplayType } = useData();
   const userId = localStorage.getItem('user_id');
 
@@ -181,7 +185,14 @@ const Header = () => {
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Badge badgeContent={4} color="primary">
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt={`Photo de profil de ${userInfos.first_name}`}
+                  src={`${apiBaseUrl}/uploads/${userInfos.profil_pic}`}
+                  sx={{
+                    height: '45px',
+                    width: '45px',
+                  }}
+                />
               </Badge>
             </IconButton>
           </Tooltip>
@@ -225,6 +236,11 @@ const Header = () => {
       </Toolbar>
     </AppBar>
   );
+};
+
+Header.propTypes = {
+  userInfos: PropTypes.object.isRequired,
+  setUserInfos: PropTypes.func,
 };
 
 export default Header;

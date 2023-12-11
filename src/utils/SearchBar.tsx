@@ -2,17 +2,14 @@
 import {
   Box,
   TextField,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
   Typography,
-  Divider,
   Menu,
   Fade,
+  ImageList,
+  ImageListItem,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { searchMulti } from './request/swipe/fetchData';
 
 // Import du contexte
@@ -21,9 +18,10 @@ import { useData } from '@hooks/DataContext';
 // Import des icônes
 import { MagnifyingGlassIcon } from './styledComponent';
 
-// Import de la fonction pour récupérer le détail d'un film / série
+// Import des libs internes
 import { getMovieDetails } from './request/getMovieDetails';
 import { storeDetailsData } from './request/swipe/storeDetailsData';
+import SearchResults from './SearchResults';
 
 const SearchBar = ({ Item, page }) => {
   const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
@@ -103,8 +101,8 @@ const SearchBar = ({ Item, page }) => {
       <Item
         sx={{
           position: 'relative',
-          height: '40px',
-          padding: page === 'profil' ? '0' : '0 10%',
+          height: page === 'params' ? '30px' : '40px',
+          padding: page === 'profil' || page === 'params' ? '0' : '0 10%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: page === 'profil' ? 'initial' : 'center',
@@ -140,6 +138,8 @@ const SearchBar = ({ Item, page }) => {
               ? `${error.message}`
               : page === 'profil'
               ? 'Notez un film ou une série !'
+              : page === 'params'
+              ? 'Une affiche de film, de série'
               : 'Rechercher un film, une série, une personne'
           }
           variant="filled"
@@ -171,7 +171,43 @@ const SearchBar = ({ Item, page }) => {
           <MagnifyingGlassIcon sx={{ height: '20px', width: '20px' }} />
         </Box>
       </Item>
-      {results.length > 0 ? (
+      {results.length > 0 && page === 'params' ? (
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <ImageList
+            sx={{ width: '90%', height: 250 }}
+            cols={3}
+            rowHeight={100}
+          >
+            {results
+              .filter(
+                result =>
+                  result.poster_path !== null || result.backdrop_path !== null,
+              )
+              .map(result => (
+                <React.Fragment key={result.id}>
+                  {result.poster_path && (
+                    <ImageListItem>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500/${result.poster_path}`}
+                        alt={result.title || result.name}
+                        loading="lazy"
+                      />
+                    </ImageListItem>
+                  )}
+                  {result.backdrop_path && (
+                    <ImageListItem>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500/${result.backdrop_path}`}
+                        alt={result.title || result.name}
+                        loading="lazy"
+                      />
+                    </ImageListItem>
+                  )}
+                </React.Fragment>
+              ))}
+          </ImageList>
+        </Box>
+      ) : results.length > 0 && page !== 'params' ? (
         <Menu
           id="basic-menu"
           anchorEl={displayResults}
@@ -200,63 +236,12 @@ const SearchBar = ({ Item, page }) => {
         >
           {results.map(result => {
             return (
-              <Box key={result.id}>
-                <ListItem
-                  onClick={() => {
-                    handleChoice(result.id);
-                    setDisplayResults(null);
-                  }}
-                  sx={{ display: 'flex' }}
-                >
-                  <ListItemAvatar>
-                    <Avatar
-                      alt={result.title || result.name}
-                      src={
-                        result.poster_path !== null
-                          ? `https://image.tmdb.org/t/p/w500/${result.poster_path}`
-                          : 'http://127.0.0.1:5173/images/no_poster.jpg'
-                      }
-                      sx={{ borderRadius: 0 }}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component="h4"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {result.title || result.name}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography
-                        sx={{ display: 'inline' }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {result.release_date
-                          ? result.release_date.split('-')[0]
-                          : result.first_air_date
-                          ? result.first_air_date.split('-')[0]
-                          : null}
-                      </Typography>
-                    }
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  />
-                </ListItem>
-                <Divider
-                  variant="inset"
-                  component="li"
-                  sx={{ listStyleType: 'none' }}
-                />
-              </Box>
+              <SearchResults
+                key={result.id}
+                result={result}
+                handleChoice={handleChoice}
+                setDisplayResults={setDisplayResults}
+              />
             );
           })}
         </Menu>

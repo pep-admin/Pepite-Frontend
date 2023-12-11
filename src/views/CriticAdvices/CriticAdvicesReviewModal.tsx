@@ -11,6 +11,9 @@ import { useData } from '@hooks/DataContext';
 import { OrangeRating } from '@utils/styledComponent';
 import { formatRating } from '@utils/functions/formatRating';
 
+// Import des variables d'environnements
+import apiBaseUrl from '@utils/request/config';
+
 const CriticAdvicesReviewModal = ({
   showReviewModal,
   setShowReviewModal,
@@ -21,6 +24,8 @@ const CriticAdvicesReviewModal = ({
   newRating,
 }) => {
   const { displayType, chosenMovie } = useData();
+
+  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   return (
     <Modal
@@ -47,8 +52,8 @@ const CriticAdvicesReviewModal = ({
         <Stack direction="row">
           <Avatar
             variant="square"
-            alt="Photo de Kate"
-            src="http://127.0.0.1:5173/images/kate.jpg"
+            alt={`Photo de profil de ${userInfos.first_name}`}
+            src={`${apiBaseUrl}/uploads/${userInfos.profil_pic}`}
             sx={{
               width: 100,
               height: 100,
@@ -147,7 +152,7 @@ const CriticAdvicesReviewModal = ({
                   fontWeight="bold"
                   fontStyle="italic"
                 >
-                  {'- Kate Austen -'}
+                  {`- ${userInfos.first_name} ${userInfos.last_name} -`}
                 </Typography>
               </Typography>
             )}

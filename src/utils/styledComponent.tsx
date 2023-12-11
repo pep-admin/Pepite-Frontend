@@ -14,6 +14,7 @@ interface ItemProps {
   flexdirection?: CSSProperties['flexDirection'];
   alignitems?: CSSProperties['alignItems'];
   justifycontent?: CSSProperties['justifyContent'];
+  outline?: string;
   children?: React.ReactNode;
 }
 
@@ -47,6 +48,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
     borderRadius: borderradius || '10px',
     textAlign: 'center',
     color: theme.palette.text.primary,
+    outline: 'none',
   }),
 );
 

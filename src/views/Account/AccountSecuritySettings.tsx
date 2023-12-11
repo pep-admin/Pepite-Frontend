@@ -34,31 +34,6 @@ const AccountSecuritySettings = () => {
         columnGap="10px"
       >
         <Typography fontSize="1em" component="p" color="#094B4B">
-          {'Authentification 2FA : '}
-        </Typography>
-        <FormControlLabel
-          control={<Switch />}
-          label={
-            <span
-              style={{
-                fontSize: '0.9em',
-                fontWeight: 'bold',
-                color: 'red',
-              }}
-            >
-              {'Désactivée'}
-            </span>
-          }
-        />
-      </Stack>
-      <Stack
-        direction="row"
-        height="30px"
-        padding="0 13px"
-        alignItems="center"
-        columnGap="10px"
-      >
-        <Typography fontSize="1em" component="p" color="#094B4B">
           {"Autoriser les demandes d'amitié : "}
         </Typography>
         <FormControlLabel

@@ -15,6 +15,7 @@ interface ItemProps {
   alignitems?: CSSProperties['alignItems'];
   justifycontent?: CSSProperties['justifyContent'];
   outline?: string;
+  position?: 'static' | 'relative';
   children?: React.ReactNode;
 }
 
@@ -32,6 +33,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
     flexdirection,
     alignitems,
     justifycontent,
+    position,
   }) => ({
     height: customheight || 'auto',
     width: customwidth || 'auto',
@@ -49,6 +51,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
     textAlign: 'center',
     color: theme.palette.text.primary,
     outline: 'none',
+    position: position || 'static',
   }),
 );
 

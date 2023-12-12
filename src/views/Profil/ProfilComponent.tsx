@@ -159,7 +159,14 @@ const ProfilComponent = () => {
           >
             <Avatar
               alt={`Photo de profil de ${userInfos.first_name}`}
-              src={`${apiBaseUrl}/uploads/${userInfos.profil_pic}`}
+              src={
+                !userInfos.profil_pics.length
+                  ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+                  : `${apiBaseUrl}/uploads/${
+                      userInfos.profil_pics.find(pic => pic.isActive === 1)
+                        .filePath
+                    }`
+              }
               sx={{
                 width: 90,
                 height: 90,
@@ -222,7 +229,7 @@ const ProfilComponent = () => {
               />
             </Item>
           </Stack>
-          <SearchBar Item={Item} page={'profil'} />
+          <SearchBar Item={Item} page={'profil'} handlePoster={null} />
           <Stack>
             {chosenMovie !== null ? (
               <CriticAdvicesComponent

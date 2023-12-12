@@ -8,6 +8,8 @@ import {
   ToggleButton,
   Button,
   Input,
+  ImageList,
+  ImageListItem,
 } from '@mui/material';
 import { Item } from '@utils/styledComponent';
 import { useState } from 'react';
@@ -23,6 +25,9 @@ import CloseIcon from '@mui/icons-material/Close';
 // Import de la requête pour envoyer le fichier image
 import { uploadProfilPic } from '@utils/request/uploads/uploadProfilPic';
 import { getUser } from '@utils/request/users/getUser';
+import CustomAlert from '@utils/CustomAlert';
+import { recoverOldPic } from '@utils/request/uploads/recoverOldPic';
+import { uploadPoster } from '@utils/request/uploads/uploadPoster';
 
 const AccountUpdateProfilPic = ({
   showProfilPicModal,
@@ -31,26 +36,57 @@ const AccountUpdateProfilPic = ({
   setUserInfos,
 }) => {
   const [alignment, setAlignment] = useState('picture');
-  // const [onSuccess, setOnSuccess] = useState(null);
-  // const [onError, setOnError] = useState(null);
+  const [onSuccess, setOnSuccess] = useState({ state: null, message: null });
 
   const handleFileChange = async event => {
     try {
       const newFile = event.target.files[0];
 
       await uploadProfilPic(newFile);
-
       const newData = await getUser(userInfos.id);
-      console.log('nouvelles données', newData);
+      setUserInfos(newData);
+      setOnSuccess({
+        state: true,
+        message: 'Photo de profil ajoutée avec succès !',
+      });
+    } catch (error) {
+      setOnSuccess({ state: false, message: error.response.data.message });
+    }
+  };
+
+  const handleOldPic = async imgId => {
+    try {
+      await recoverOldPic(imgId);
+      const newData = await getUser(userInfos.id);
       setUserInfos(newData);
 
-      // setOnSuccess(true);
-      // setOnError(false);
+      setOnSuccess({
+        state: true,
+        message: 'Ancienne photo de profil réactivée',
+      });
     } catch (error) {
-      console.log("erreur dans l'envoi du fichier", error);
+      setOnSuccess({
+        state: false,
+        message: 'Erreur dans la modification de la photo de profil',
+      });
+    }
+  };
 
-      // setOnError(false);
-      // setOnError(true);
+  const handlePoster = async posterPath => {
+    try {
+      await uploadPoster(posterPath);
+      const newData = await getUser(userInfos.id);
+      setUserInfos(newData);
+
+      setOnSuccess({
+        state: true,
+        message: 'Photo de profil ajoutée avec succès !',
+      });
+    } catch (error) {
+      setOnSuccess({
+        state: false,
+        message: "Erreur dans l'ajout de la photo de profil",
+      });
     }
   };
 
@@ -67,7 +103,25 @@ const AccountUpdateProfilPic = ({
         alignItems: 'center',
       }}
     >
-      <Item customheight="auto" customwidth="80vw" margintop="0">
+      <Item
+        customheight="auto"
+        customwidth="80vw"
+        margintop="0"
+        position="relative"
+      >
+        {onSuccess.state ? (
+          <CustomAlert
+            type={'success'}
+            message={onSuccess.message}
+            setOnSuccess={setOnSuccess}
+          />
+        ) : onSuccess.state === false ? (
+          <CustomAlert
+            type={'error'}
+            message={onSuccess.message}
+            setOnSuccess={setOnSuccess}
+          />
+        ) : null}
         <Stack
           direction="row"
           height="33px"
@@ -94,18 +148,34 @@ const AccountUpdateProfilPic = ({
             <ToggleButton
               value="picture"
               onClick={() => setAlignment('picture')}
+              sx={{
+                borderRadius: '0',
+              }}
             >
               {'Vos photos'}
             </ToggleButton>
-            <ToggleButton value="poster" onClick={() => setAlignment('poster')}>
+            <ToggleButton
+              value="poster"
+              onClick={() => setAlignment('poster')}
+              sx={{
+                borderRadius: '0',
+              }}
+            >
               {'Un film / une série'}
             </ToggleButton>
           </ToggleButtonGroup>
         </Stack>
-        <Stack direction="column" alignItems="center" margin="12px 0">
+        <Stack direction="column" alignItems="center" margin="12px 0 0 0">
           <Avatar
             alt={`Photo de profil de ${userInfos.first_name}`}
-            src={`${apiBaseUrl}/uploads/${userInfos.profil_pic}`}
+            src={
+              !userInfos.profil_pics.length
+                ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+                : `${apiBaseUrl}/uploads/${
+                    userInfos.profil_pics.find(pic => pic.isActive === 1)
+                      .filePath
+                  }`
+            }
             sx={{
               width: 125,
               height: 125,
@@ -117,7 +187,7 @@ const AccountUpdateProfilPic = ({
               <Typography marginBottom="10px">
                 {'Depuis votre bibliothèque personnelle'}
               </Typography>
-              <label htmlFor="file-input">
+              <label htmlFor="file-input" style={{ marginBottom: '12px' }}>
                 <Input
                   id="file-input"
                   type="file"
@@ -138,13 +208,44 @@ const AccountUpdateProfilPic = ({
                   {'Importer une photo'}
                 </Button>
               </label>
+              {userInfos.profil_pics.length ? (
+                <ImageList
+                  sx={{
+                    width: '90%',
+                    height: 'auto',
+                    maxHeight: 250,
+                    margin: '0',
+                  }}
+                  cols={3}
+                  rowHeight={100}
+                >
+                  {userInfos.profil_pics.map(pic => {
+                    return (
+                      <ImageListItem
+                        key={pic.id}
+                        onClick={() => handleOldPic(pic.id)}
+                      >
+                        <img
+                          src={`${apiBaseUrl}/uploads/${pic.filePath}`}
+                          alt={`Photo de profil de ${userInfos.first_name}`}
+                          loading="lazy"
+                        />
+                      </ImageListItem>
+                    );
+                  })}
+                </ImageList>
+              ) : null}
             </Stack>
           ) : (
             <Stack direction="column" alignItems="center" margin="12px 0">
               <Typography marginBottom="10px">
                 {'Depuis une recherche de film / série'}
               </Typography>
-              <SearchBar Item={Item} page={'params'} />
+              <SearchBar
+                Item={Item}
+                page={'params'}
+                handlePoster={handlePoster}
+              />
             </Stack>
           )}
         </Stack>

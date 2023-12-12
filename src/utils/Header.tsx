@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 // Import des libs externes
+import * as React from 'react';
 import {
   AppBar,
   Typography,
@@ -187,7 +186,14 @@ const Header = ({ userInfos }) => {
               <Badge badgeContent={4} color="primary">
                 <Avatar
                   alt={`Photo de profil de ${userInfos.first_name}`}
-                  src={`${apiBaseUrl}/uploads/${userInfos.profil_pic}`}
+                  src={
+                    !userInfos.profil_pics.length
+                      ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+                      : `${apiBaseUrl}/uploads/${
+                          userInfos.profil_pics.find(pic => pic.isActive === 1)
+                            .filePath
+                        }`
+                  }
                   sx={{
                     height: '45px',
                     width: '45px',

@@ -23,7 +23,7 @@ import { getMovieDetails } from './request/getMovieDetails';
 import { storeDetailsData } from './request/swipe/storeDetailsData';
 import SearchResults from './SearchResults';
 
-const SearchBar = ({ Item, page }) => {
+const SearchBar = ({ Item, page, handlePoster }) => {
   const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
     useData();
 
@@ -97,6 +97,9 @@ const SearchBar = ({ Item, page }) => {
       component="form"
       ref={containerRef}
       marginTop={page === 'profil' ? '6px' : '0'}
+      display={page === 'params' ? 'flex' : 'block'}
+      flexDirection={page === 'params' ? 'column' : 'row'}
+      alignItems={page === 'params' ? 'center' : 'flex-start'}
     >
       <Item
         sx={{
@@ -107,6 +110,7 @@ const SearchBar = ({ Item, page }) => {
           alignItems: 'center',
           justifyContent: page === 'profil' ? 'initial' : 'center',
           gap: page === 'profil' ? '6px' : '20px',
+          maxWidth: page === 'params' ? '250px' : 'auto',
         }}
       >
         {page === 'profil' ? (
@@ -186,7 +190,9 @@ const SearchBar = ({ Item, page }) => {
               .map(result => (
                 <React.Fragment key={result.id}>
                   {result.poster_path && (
-                    <ImageListItem>
+                    <ImageListItem
+                      onClick={() => handlePoster(result.poster_path)}
+                    >
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${result.poster_path}`}
                         alt={result.title || result.name}
@@ -195,7 +201,9 @@ const SearchBar = ({ Item, page }) => {
                     </ImageListItem>
                   )}
                   {result.backdrop_path && (
-                    <ImageListItem>
+                    <ImageListItem
+                      onClick={() => handlePoster(result.backdrop_path)}
+                    >
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${result.backdrop_path}`}
                         alt={result.title || result.name}
@@ -253,6 +261,7 @@ const SearchBar = ({ Item, page }) => {
 SearchBar.propTypes = {
   Item: PropTypes.elementType.isRequired,
   page: PropTypes.string.isRequired,
+  handlePoster: PropTypes.func,
 };
 
 export default SearchBar;

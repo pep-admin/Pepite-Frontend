@@ -53,7 +53,14 @@ const CriticAdvicesReviewModal = ({
           <Avatar
             variant="square"
             alt={`Photo de profil de ${userInfos.first_name}`}
-            src={`${apiBaseUrl}/uploads/${userInfos.profil_pic}`}
+            src={
+              !userInfos.profil_pics.length
+                ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+                : `${apiBaseUrl}/uploads/${
+                    userInfos.profil_pics.find(pic => pic.isActive === 1)
+                      .filePath
+                  }`
+            }
             sx={{
               width: 100,
               height: 100,

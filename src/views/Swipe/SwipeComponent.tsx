@@ -252,7 +252,7 @@ const SwipeComponent = ({
         }}
       >
         <Stack spacing={1} sx={{ height: '100%', padding: '6px 0' }}>
-          <SearchBar Item={Item} page={'swipe'} />
+          <SearchBar Item={Item} page={'swipe'} handlePoster={null} />
           <Box>
             <SwipeFilter
               Item={Item}

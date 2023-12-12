@@ -1,5 +1,6 @@
 // Import des libs externes
 import { Container, Stack, Typography, Divider } from '@mui/material';
+import { useState } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
@@ -9,14 +10,28 @@ import AccountDisplaySettings from './AccountDisplaySettings';
 import AccountSecuritySettings from './AccountSecuritySettings';
 import AccountDelete from './AccountDelete';
 import AccountFaq from './AccountFaq';
+import AccountUpdateProfilPic from './AccountUpdateProfilPic';
 
 const AccountComponent = () => {
+  const [userInfos, setUserInfos] = useState(
+    JSON.parse(localStorage.getItem('user_infos')),
+  );
+  const [showProfilPicModal, setShowProfilPicModal] = useState(false);
+
   return (
     <>
-      <Header />
+      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
       <Container
         sx={{ minHeight: 'calc(100vh - 60px)', height: 'auto', padding: '6px' }}
       >
+        {showProfilPicModal ? (
+          <AccountUpdateProfilPic
+            showProfilPicModal={showProfilPicModal}
+            setShowProfilPicModal={setShowProfilPicModal}
+            userInfos={userInfos}
+            setUserInfos={setUserInfos}
+          />
+        ) : null}
         <Stack direction="column" spacing={1} height="100%">
           <Item
             customheight="30px"
@@ -41,7 +56,10 @@ const AccountComponent = () => {
               </Typography>
             </Stack>
             <Divider />
-            <AccountPersonalInfos />
+            <AccountPersonalInfos
+              setShowProfilPicModal={setShowProfilPicModal}
+              userInfos={userInfos}
+            />
           </Item>
           <Item>
             <Stack

@@ -19,6 +19,9 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 // Import des composants internes
 import CriticAdvicesReviewModal from './CriticAdvicesReviewModal';
 
+// Import des variables d'environnements
+import apiBaseUrl from '@utils/request/config';
+
 const CriticAdvicesReview = ({
   type,
   newCriticText,
@@ -27,6 +30,8 @@ const CriticAdvicesReview = ({
   isModify,
   newRating,
 }) => {
+  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
+
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
 
   useEffect(() => {
@@ -140,8 +145,14 @@ const CriticAdvicesReview = ({
         </Box>
         <Avatar
           variant="square"
-          alt="Photo de Kate"
-          src="http://127.0.0.1:5173/images/kate.jpg"
+          alt={`Photo de profil de ${userInfos.first_name}`}
+          src={
+            !userInfos.profil_pics.length
+              ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+              : `${apiBaseUrl}/uploads/${
+                  userInfos.profil_pics.find(pic => pic.isActive === 1).filePath
+                }`
+          }
           sx={{
             width: 60,
             height: 60,
@@ -168,7 +179,7 @@ const CriticAdvicesReview = ({
                 fontWeight="bold"
                 fontStyle="italic"
               >
-                {'- Kate Austen -'}
+                {`- ${userInfos.first_name} ${userInfos.last_name} -`}
               </Typography>
             </Typography>
           )}

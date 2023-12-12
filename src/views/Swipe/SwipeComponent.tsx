@@ -35,6 +35,10 @@ const SwipeComponent = ({
   setGenreChosen,
   certification,
 }) => {
+  const [userInfos, setUserInfos] = useState(
+    JSON.parse(localStorage.getItem('user_infos')),
+  );
+
   const { displayType } = useData();
   const prevDisplayTypeRef = useRef('movie');
   const lastCardRef = useRef(null);
@@ -238,7 +242,7 @@ const SwipeComponent = ({
 
   return (
     <>
-      <Header />
+      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
       <Container
         maxWidth="xl"
         sx={{
@@ -248,7 +252,7 @@ const SwipeComponent = ({
         }}
       >
         <Stack spacing={1} sx={{ height: '100%', padding: '6px 0' }}>
-          <SearchBar Item={Item} page={'swipe'} />
+          <SearchBar Item={Item} page={'swipe'} handlePoster={null} />
           <Box>
             <SwipeFilter
               Item={Item}

@@ -30,10 +30,16 @@ import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 import { useData } from '@hooks/DataContext';
 import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
+// Import des variables d'environnements
+import apiBaseUrl from '@utils/request/config';
+
 const ProfilComponent = () => {
   const { id } = useParams();
   const { displayType, chosenMovie } = useData();
 
+  const [userInfos, setUserInfos] = useState(
+    JSON.parse(localStorage.getItem('user_infos')),
+  );
   const [userCritics, setUserCritics] = useState([]);
   const [goldenMovies, setGoldenMovies] = useState([]);
   const [progress, setProgress] = useState(0);
@@ -87,7 +93,7 @@ const ProfilComponent = () => {
 
   return (
     <>
-      <Header />
+      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
       <Card
         sx={{
           height: '30vh',
@@ -129,7 +135,7 @@ const ProfilComponent = () => {
               padding: '0 6px 0 16px',
             }}
           >
-            {'Kate Austen'}
+            {`${userInfos.first_name} ${userInfos.last_name}`}
           </Typography>
         </Box>
       </Card>
@@ -152,12 +158,19 @@ const ProfilComponent = () => {
             left="0"
           >
             <Avatar
-              alt="Remy Sharp"
-              src="http://127.0.0.1:5173/images/kate.jpg"
+              alt={`Photo de profil de ${userInfos.first_name}`}
+              src={
+                !userInfos.profil_pics.length
+                  ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+                  : `${apiBaseUrl}/uploads/${
+                      userInfos.profil_pics.find(pic => pic.isActive === 1)
+                        .filePath
+                    }`
+              }
               sx={{
                 width: 90,
                 height: 90,
-                boxShadow: 'inset 0px 0px 0px 3px #fff',
+                outline: '3.5px solid #fff',
               }}
             />
           </Box>
@@ -216,7 +229,7 @@ const ProfilComponent = () => {
               />
             </Item>
           </Stack>
-          <SearchBar Item={Item} page={'profil'} />
+          <SearchBar Item={Item} page={'profil'} handlePoster={null} />
           <Stack>
             {chosenMovie !== null ? (
               <CriticAdvicesComponent

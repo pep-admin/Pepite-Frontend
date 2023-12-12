@@ -1,6 +1,5 @@
-import * as React from 'react';
-
 // Import des libs externes
+import * as React from 'react';
 import {
   AppBar,
   Typography,
@@ -16,6 +15,7 @@ import {
   ToggleButtonGroup,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -24,10 +24,13 @@ import { useData } from '@hooks/DataContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import { handleLogout } from './request/swipe/fetchData';
 
+// Import des variables d'environnements
+import apiBaseUrl from '@utils/request/config';
+
 const pages = ['Accueil', 'Swipe', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = () => {
+const Header = ({ userInfos }) => {
   const { displayType, setDisplayType } = useData();
   const userId = localStorage.getItem('user_id');
 
@@ -181,7 +184,21 @@ const Header = () => {
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Badge badgeContent={4} color="primary">
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt={`Photo de profil de ${userInfos.first_name}`}
+                  src={
+                    !userInfos.profil_pics.length
+                      ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+                      : `${apiBaseUrl}/uploads/${
+                          userInfos.profil_pics.find(pic => pic.isActive === 1)
+                            .filePath
+                        }`
+                  }
+                  sx={{
+                    height: '45px',
+                    width: '45px',
+                  }}
+                />
               </Badge>
             </IconButton>
           </Tooltip>
@@ -225,6 +242,11 @@ const Header = () => {
       </Toolbar>
     </AppBar>
   );
+};
+
+Header.propTypes = {
+  userInfos: PropTypes.object.isRequired,
+  setUserInfos: PropTypes.func,
 };
 
 export default Header;

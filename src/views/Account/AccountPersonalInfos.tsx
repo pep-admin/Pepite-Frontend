@@ -8,6 +8,7 @@ import {
   Input,
 } from '@mui/material';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import EditIcon from '@mui/icons-material/Edit';
@@ -17,9 +18,10 @@ import DoneIcon from '@mui/icons-material/Done';
 import { convertDate } from '@utils/functions/convertDate';
 import { modifyUserName } from '@utils/request/users/modifyUsername';
 
-const AccountPersonalInfos = () => {
-  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
+// Import des variables d'environnements
+import apiBaseUrl from '@utils/request/config';
 
+const AccountPersonalInfos = ({ setShowProfilPicModal, userInfos }) => {
   const [handleFirstName, setHandleFirstName] = useState({
     modify: false,
     value: userInfos.first_name,
@@ -68,13 +70,20 @@ const AccountPersonalInfos = () => {
         flexBasis="25%"
       >
         <Avatar
-          alt="Remy Sharp"
-          src="http://127.0.0.1:5173/images/kate.jpg"
+          alt={`Photo de profil de ${userInfos.first_name}`}
+          src={
+            !userInfos.profil_pics.length
+              ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+              : `${apiBaseUrl}/uploads/${
+                  userInfos.profil_pics.find(pic => pic.isActive === 1).filePath
+                }`
+          }
           sx={{
             width: 100,
             height: 100,
-            boxShadow: 'inset 0px 0px 0px 3px #fff',
+            cursor: 'pointer',
           }}
+          onClick={() => setShowProfilPicModal(true)}
         />
         <Button
           variant="contained"
@@ -85,6 +94,7 @@ const AccountPersonalInfos = () => {
             fontSize: '0.8em',
             textTransform: 'initial',
           }}
+          onClick={() => setShowProfilPicModal(true)}
         >
           {'Importer une photo'}
         </Button>
@@ -263,6 +273,11 @@ const AccountPersonalInfos = () => {
       </Stack>
     </Stack>
   );
+};
+
+AccountPersonalInfos.propTypes = {
+  setShowProfilPicModal: PropTypes.func.isRequired,
+  userInfos: PropTypes.object.isRequired,
 };
 
 export default AccountPersonalInfos;

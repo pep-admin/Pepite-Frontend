@@ -1,0 +1,143 @@
+/* Fichier CSS pour éviter le bug des balises styles qui s'accumulent dans le head, pour l'animation de la pépite login / register */
+
+/* Pour toutes les keyframes, prend -25px toutes les 2.5 secondes */
+@keyframes riseAnimation0 {
+  0% { transform: translateY(-25px) rotate(0deg); opacity: 0; }
+  25% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+  50% { transform: translateY(-75px) rotate(0deg); opacity: 0.5; }
+  75% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+  100% { transform: translateY(-125px) rotate(0deg); opacity: 0; }
+}
+  
+@keyframes riseAnimation1 {
+  0% { transform: translateY(-10px) rotate(30deg); opacity: 0; }
+  25% { transform: translateY(-35px) rotate(30deg); opacity: 1; }
+  50% { transform: translateY(-65px) rotate(30deg); opacity: 1; }
+  75% { transform: translateY(-85px) rotate(30deg); opacity: 0.5; }
+  100% { transform: translateY(-110px) rotate(30deg); opacity: 0; }
+}
+
+@keyframes riseAnimation2 {
+  0% { transform: translateY(0) rotate(45deg); opacity: 0; }
+  25% { transform: translateY(-25px) rotate(45deg); opacity: 1; }
+  50% { transform: translateY(-50px) rotate(45deg); opacity: 1; }
+  75% { transform: translateY(-75px) rotate(45deg); opacity: 0.5; }
+  100% { transform: translateY(-100px) rotate(45deg); opacity: 0; }
+}
+
+@keyframes riseAnimation3 {
+  0% { transform: translateY(-35px) rotate(80deg); opacity: 0; }
+  25% { transform: translateY(-60px) rotate(80deg); opacity: 1; }
+  50% { transform: translateY(-85px) rotate(80deg); opacity: 0.5; }
+  75% { transform: translateY(-110px) rotate(80deg); opacity: 0; }
+  100% { transform: translateY(-135px) rotate(80deg); opacity: 0; }
+}
+
+@keyframes riseAnimation4 {
+  0% { transform: translateY(-50px) rotate(125deg); opacity: 0; }
+  25% { transform: translateY(-75px) rotate(125deg); opacity: 0.5; }
+  50% { transform: translateY(-100px) rotate(125deg); opacity: 0; }
+  75% { transform: translateY(-125px) rotate(125deg); opacity: 0; }
+  100% { transform: translateY(-150px) rotate(125deg); opacity: 0; }
+}
+
+@keyframes riseAnimation5 {
+  0% { transform: translateY(-15px) rotate(145deg); opacity: 0; }
+  25% { transform: translateY(-40px) rotate(145deg); opacity: 1; }
+  50% { transform: translateY(-65px) rotate(145deg); opacity: 1; }
+  75% { transform: translateY(-90px) rotate(145deg); opacity: 0.5; }
+  100% { transform: translateY(-115px) rotate(145deg); opacity: 0; }
+}
+
+@keyframes riseAnimation6 {
+  0% { transform: translateY(-18px) rotate(180deg); opacity: 0; }
+  25% { transform: translateY(-43px) rotate(180deg); opacity: 1; }
+  50% { transform: translateY(-68px) rotate(180deg); opacity: 0.75; }
+  75% { transform: translateY(-93px) rotate(180deg); opacity: 0.5; }
+  100% { transform: translateY(-118px) rotate(180deg); opacity: 0; }
+}
+
+@keyframes riseAnimation7 {
+  0% { transform: translateY(-5px) rotate(210deg); opacity: 0; }
+  25% { transform: translateY(-30px) rotate(210deg); opacity: 1; }
+  50% { transform: translateY(-55px) rotate(210deg); opacity: 1; }
+  75% { transform: translateY(-80px) rotate(210deg); opacity: 0.5; }
+  100% { transform: translateY(-105px) rotate(210deg); opacity: 0; }
+}
+
+@keyframes riseAnimation8 {
+  0% { transform: translateY(-22px) rotate(245deg); opacity: 0; }
+  25% { transform: translateY(-47px) rotate(245deg); opacity: 1; }
+  50% { transform: translateY(-72px) rotate(245deg); opacity: 0.6; }
+  75% { transform: translateY(-97px) rotate(245deg); opacity: 0; }
+  100% { transform: translateY(-122px) rotate(245deg); opacity: 0; }
+}
+
+@keyframes riseAnimation9 {
+  0% { transform: translateY(-32px) rotate(275deg); opacity: 0; }
+  25% { transform: translateY(-57px) rotate(275deg); opacity: 1; }
+  50% { transform: translateY(-82px) rotate(275deg); opacity: 0.5; }
+  75% { transform: translateY(-107px) rotate(275deg); opacity: 0; }
+  100% { transform: translateY(-132px) rotate(275deg); opacity: 0; }
+}
+
+@keyframes riseAnimation10 {
+  0% { transform: translateY(-8px) rotate(310deg); opacity: 0; }
+  25% { transform: translateY(-33px) rotate(310deg); opacity: 1; }
+  50% { transform: translateY(-58px) rotate(310deg); opacity: 1; }
+  75% { transform: translateY(-83px) rotate(310deg); opacity: 0.5; }
+  100% { transform: translateY(-108px) rotate(310deg); opacity: 0; }
+}
+
+
+/* Style de base pour les cercles animés */
+.animatedCircle {
+  position: absolute;
+  animation: 10s linear forwards;
+}
+
+/* Classes spécifiques pour chaque animation */
+.animatedCircle0 {
+  animation-name: riseAnimation0;
+}
+
+.animatedCircle1 {
+  animation-name: riseAnimation1;
+}
+
+.animatedCircle2 {
+  animation-name: riseAnimation2;
+}
+
+.animatedCircle3 {
+  animation-name: riseAnimation3;
+}
+
+.animatedCircle4 {
+  animation-name: riseAnimation4;
+}
+
+.animatedCircle5 {
+  animation-name: riseAnimation5;
+}
+
+.animatedCircle6 {
+  animation-name: riseAnimation6;
+}
+
+.animatedCircle7 {
+  animation-name: riseAnimation7;
+}
+
+.animatedCircle8 {
+  animation-name: riseAnimation8;
+}
+
+.animatedCircle9 {
+  animation-name: riseAnimation9;
+}
+
+.animatedCircle10 {
+  animation-name: riseAnimation10;
+}
+  

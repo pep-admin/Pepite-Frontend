@@ -70,10 +70,7 @@ const SearchResults = ({ result, handleChoice, setDisplayResults }) => {
 
 SearchResults.propTypes = {
   result: PropTypes.object.isRequired,
-  handleChoice: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.oneOf([null]),
-  ]),
+  handleChoice: PropTypes.oneOfType([PropTypes.func, PropTypes.oneOf([null])]),
   setDisplayResults: PropTypes.func.isRequired,
 };
 

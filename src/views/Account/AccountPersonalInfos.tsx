@@ -6,6 +6,7 @@ import {
   Button,
   LinearProgress,
   Input,
+  Divider,
 } from '@mui/material';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -21,7 +22,7 @@ import { modifyUserName } from '@utils/request/users/modifyUsername';
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
 
-const AccountPersonalInfos = ({ setShowProfilPicModal, userInfos }) => {
+const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
   const [handleFirstName, setHandleFirstName] = useState({
     modify: false,
     value: userInfos.first_name,
@@ -72,10 +73,10 @@ const AccountPersonalInfos = ({ setShowProfilPicModal, userInfos }) => {
         <Avatar
           alt={`Photo de profil de ${userInfos.first_name}`}
           src={
-            !userInfos.profil_pics.length
+            !userInfos.profilPics.length
               ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
               : `${apiBaseUrl}/uploads/${
-                  userInfos.profil_pics.find(pic => pic.isActive === 1).filePath
+                  userInfos.profilPics.find(pic => pic.isActive === 1).filePath
                 }`
           }
           sx={{
@@ -83,7 +84,7 @@ const AccountPersonalInfos = ({ setShowProfilPicModal, userInfos }) => {
             height: 100,
             cursor: 'pointer',
           }}
-          onClick={() => setShowProfilPicModal(true)}
+          onClick={() => setShowPicModal({ state: true, type: 'profil' })}
         />
         <Button
           variant="contained"
@@ -94,11 +95,12 @@ const AccountPersonalInfos = ({ setShowProfilPicModal, userInfos }) => {
             fontSize: '0.8em',
             textTransform: 'initial',
           }}
-          onClick={() => setShowProfilPicModal(true)}
+          onClick={() => setShowPicModal({ state: true, type: 'profil' })}
         >
-          {'Importer une photo'}
+          {'Modifier'}
         </Button>
       </Stack>
+      <Divider orientation="vertical" variant="middle" flexItem />
       <Stack
         direction="column"
         justifyContent="space-evenly"
@@ -276,7 +278,7 @@ const AccountPersonalInfos = ({ setShowProfilPicModal, userInfos }) => {
 };
 
 AccountPersonalInfos.propTypes = {
-  setShowProfilPicModal: PropTypes.func.isRequired,
+  setShowPicModal: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,
 };
 

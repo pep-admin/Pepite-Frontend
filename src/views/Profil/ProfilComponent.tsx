@@ -32,6 +32,7 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
+import AccountUpdatePic from '@views/Account/AccountUpdatePic';
 
 const ProfilComponent = () => {
   const { id } = useParams();
@@ -43,6 +44,10 @@ const ProfilComponent = () => {
   const [userCritics, setUserCritics] = useState([]);
   const [goldenMovies, setGoldenMovies] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [modifyCoverPic, setModifyCoverPic] = useState({
+    state: false,
+    type: null,
+  });
 
   const [newCriticError, setNewCriticError] = useState({
     error: null,
@@ -91,8 +96,20 @@ const ProfilComponent = () => {
     }
   }, [progress]);
 
+  useEffect(() => {
+    console.log('affichage', modifyCoverPic);
+  }, [modifyCoverPic]);
+
   return (
     <>
+      {modifyCoverPic.state ? (
+        <AccountUpdatePic
+          showPicModal={modifyCoverPic}
+          setShowPicModal={setModifyCoverPic}
+          userInfos={userInfos}
+          setUserInfos={setUserInfos}
+        />
+      ) : null}
       <Header userInfos={userInfos} setUserInfos={setUserInfos} />
       <Card
         sx={{
@@ -101,9 +118,16 @@ const ProfilComponent = () => {
           position: 'relative',
           borderRadius: '0',
         }}
+        onClick={() => setModifyCoverPic({ state: true, type: 'couverture' })}
       >
         <CardMedia
-          image="http://127.0.0.1:5173/images/interstellar.jpg"
+          image={
+            !userInfos.coverPics.length
+              ? 'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
+              : `${apiBaseUrl}/uploads/${
+                  userInfos.coverPics.find(pic => pic.isActive === 1).filePath
+                }`
+          }
           sx={{
             height: '100%',
           }}
@@ -160,10 +184,10 @@ const ProfilComponent = () => {
             <Avatar
               alt={`Photo de profil de ${userInfos.first_name}`}
               src={
-                !userInfos.profil_pics.length
+                !userInfos.profilPics.length
                   ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
                   : `${apiBaseUrl}/uploads/${
-                      userInfos.profil_pics.find(pic => pic.isActive === 1)
+                      userInfos.profilPics.find(pic => pic.isActive === 1)
                         .filePath
                     }`
               }

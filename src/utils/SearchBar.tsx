@@ -23,7 +23,7 @@ import { getMovieDetails } from './request/getMovieDetails';
 import { storeDetailsData } from './request/swipe/storeDetailsData';
 import SearchResults from './SearchResults';
 
-const SearchBar = ({ Item, page, handlePoster }) => {
+const SearchBar = ({ Item, page, handlePoster, showPicModal }) => {
   const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
     useData();
 
@@ -191,7 +191,9 @@ const SearchBar = ({ Item, page, handlePoster }) => {
                 <React.Fragment key={result.id}>
                   {result.poster_path && (
                     <ImageListItem
-                      onClick={() => handlePoster(result.poster_path)}
+                      onClick={() =>
+                        handlePoster(result.poster_path, showPicModal.type)
+                      }
                     >
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${result.poster_path}`}
@@ -202,7 +204,9 @@ const SearchBar = ({ Item, page, handlePoster }) => {
                   )}
                   {result.backdrop_path && (
                     <ImageListItem
-                      onClick={() => handlePoster(result.backdrop_path)}
+                      onClick={() =>
+                        handlePoster(result.backdrop_path, showPicModal.type)
+                      }
                     >
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${result.backdrop_path}`}
@@ -262,6 +266,7 @@ SearchBar.propTypes = {
   Item: PropTypes.elementType.isRequired,
   page: PropTypes.string.isRequired,
   handlePoster: PropTypes.func,
+  showPicModal: PropTypes.object,
 };
 
 export default SearchBar;

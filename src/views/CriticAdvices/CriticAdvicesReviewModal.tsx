@@ -54,10 +54,10 @@ const CriticAdvicesReviewModal = ({
             variant="square"
             alt={`Photo de profil de ${userInfos.first_name}`}
             src={
-              !userInfos.profil_pics.length
+              !userInfos.profilPics.length
                 ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
                 : `${apiBaseUrl}/uploads/${
-                    userInfos.profil_pics.find(pic => pic.isActive === 1)
+                    userInfos.profilPics.find(pic => pic.isActive === 1)
                       .filePath
                   }`
             }

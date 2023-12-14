@@ -147,20 +147,20 @@ const CriticAdvicesReview = ({
           variant="square"
           alt={`Photo de profil de ${userInfos.first_name}`}
           src={
-            !userInfos.profil_pics.length
+            !userInfos.profilPics.length
               ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
               : `${apiBaseUrl}/uploads/${
-                  userInfos.profil_pics.find(pic => pic.isActive === 1).filePath
+                  userInfos.profilPics.find(pic => pic.isActive === 1).filePath
                 }`
           }
           sx={{
             width: 60,
-            height: 60,
+            height: 70,
             filter: 'grayscale(1)',
           }}
         />
         <Box
-          height={type === 'new-critic' || isModify ? '100%' : '50px'}
+          height={type === 'new-critic' || isModify ? '100%' : '70px'}
           padding={type === 'new-critic' || isModify ? '0' : '7px 10px 0 20px'}
           display="flex"
           flexGrow="1"

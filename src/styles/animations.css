@@ -141,3 +141,99 @@
   animation-name: riseAnimation10;
 }
   
+@keyframes particle0 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(23px, 12px); opacity: 0; } 
+}
+
+@keyframes particle1 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(23px, -16px); opacity: 0; } 
+}
+
+@keyframes particle2 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(23px, -7px); opacity: 0; } 
+}
+
+@keyframes particle3 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(-23px, -7px); opacity: 0; } 
+}
+
+@keyframes particle4 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(-23px, -15px); opacity: 0; } 
+}
+
+@keyframes particle5 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(-19px, 18px); opacity: 0; }
+}
+
+@keyframes particle6 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(-13px, 20px); opacity: 0; }
+}
+
+@keyframes particle7 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(11px, 21px); opacity: 0; }
+}
+
+@keyframes particle8 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(16px, -23px); opacity: 0; }
+}
+
+@keyframes particle9 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(-17px, -18px); opacity: 0; }
+}
+
+.particles {
+  position: absolute;
+  animation-duration: 1.5s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+.animatedParticles0 {
+  animation-name: particle0;
+}
+
+.animatedParticles1 {
+  animation-name: particle1;
+}
+
+.animatedParticles2 {
+  animation-name: particle2;
+}
+
+.animatedParticles3 {
+  animation-name: particle3;
+}
+
+.animatedParticles4 {
+  animation-name: particle4;
+}
+
+.animatedParticles5 {
+  animation-name: particle5;
+}
+
+.animatedParticles6 {
+  animation-name: particle6;
+}
+
+.animatedParticles7 {
+  animation-name: particle7;
+}
+
+.animatedParticles8 {
+  animation-name: particle8;
+}
+
+.animatedParticles9 {
+  animation-name: particle9;
+}

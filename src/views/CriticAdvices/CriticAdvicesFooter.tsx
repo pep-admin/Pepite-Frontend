@@ -1,7 +1,7 @@
 // Import des libs externes
 import { Stack, Box, Typography, Divider } from '@mui/material';
-import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
 // Import des requêtes internes
 import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
@@ -23,6 +23,9 @@ import { addGold } from '@utils/request/goldNugget/addGold';
 import { getGoldNumber } from '@utils/request/goldNugget/getGoldNumber';
 import { checkGoldStatus } from '@utils/request/goldNugget/checkGoldStatus';
 
+// Import des composants internes
+import Particles from '@utils/anims/particles';
+
 const CriticAdvicesFooter = ({
   criticId,
   displayComments,
@@ -36,6 +39,7 @@ const CriticAdvicesFooter = ({
   const [goldNumber, setGoldNumber] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [isGold, setIsGold] = useState(false);
+  const [particles, setParticles] = useState([]);
 
   // Compte le nombre de commentaires par critique
   const fetchCommentsNumber = async () => {
@@ -91,6 +95,30 @@ const CriticAdvicesFooter = ({
         removeGold(criticId, displayType);
       } else {
         addGold(criticId, displayType);
+
+        const newParticles = [];
+
+        // Génère une explosion de 10 particules lors du clic sur la pépite footer
+        for (let i = 0; i < 10; i++) {
+          const animationClass = `particles animatedParticles${i}`;
+
+          newParticles.push({
+            id: i,
+            color: `hsl(${30 + Math.random() * 10}, ${
+              70 + Math.random() * 30
+            }%, ${50 + Math.random() * 20}%)`, // Couleur orange aléatoire
+            size: 0.2 + Math.random() * 0.25,
+            animationClass: animationClass,
+          });
+        }
+        console.log(newParticles);
+
+        setParticles(newParticles);
+
+        // Nettoyage après animation
+        setTimeout(() => {
+          setParticles([]);
+        }, 1500);
       }
       fetchGoldNumber();
     } catch (error) {
@@ -150,15 +178,25 @@ const CriticAdvicesFooter = ({
           </Typography>
         </Box>
         <Box height="100%" display="flex" alignItems="center" columnGap="5px">
-          <GoldNuggetIcon
+          <Box
+            display="flex"
+            alignItems="center"
             sx={{
-              fontSize: '18px',
               position: 'relative',
-              bottom: '1px',
-              filter: !isGold ? 'grayscale(1) contrast(0.9)' : 'none',
+              cursor: 'pointer',
             }}
             onClick={toggleGold}
-          />
+          >
+            <GoldNuggetIcon
+              sx={{
+                fontSize: '18px',
+                position: 'relative',
+                bottom: '1px',
+                filter: !isGold ? 'grayscale(1) contrast(0.9)' : 'none',
+              }}
+            />
+            <Particles particles={particles} />
+          </Box>
           <Typography component="p" fontSize="1em" fontWeight="bold">
             {goldNumber}
           </Typography>

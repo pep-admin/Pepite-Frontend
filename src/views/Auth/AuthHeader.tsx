@@ -4,7 +4,7 @@ import { GoldNuggetIcon } from '@utils/styledComponent';
 import { useEffect, useRef, useState } from 'react';
 
 // Import d'un fichier CSS pour éviter la surcharge de balises style dans le head
-import '../../styles/animations.css'; 
+import '../../styles/animations.css';
 
 // Import des icônes
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
@@ -15,18 +15,26 @@ const AuthHeader = () => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const animationClass = `animatedCircle animatedCircle${Math.floor(Math.random() * 11)}`;
+      const animationClass = `animatedCircle animatedCircle${Math.floor(
+        Math.random() * 11,
+      )}`;
 
       const newShine = {
         size: `${0.75 + Math.random() * 0.4}em`,
         left: `${Math.random() * 100}%`,
         bottom: '0%',
-        color: `rgba(255, ${Math.random() * (255 - 150) + 150}, 0, ${Math.random() + 0.4})`,
-        animationClass,        
+        color: `rgba(255, ${Math.random() * (255 - 150) + 150}, 0, ${
+          Math.random() + 0.4
+        })`,
+        animationClass,
         id: Math.random(),
         createdAt: Date.now(),
       };
-      setShine(prevShine => prevShine.filter(shineItem => Date.now() - shineItem.createdAt < 10000).concat(newShine));
+      setShine(prevShine =>
+        prevShine
+          .filter(shineItem => Date.now() - shineItem.createdAt < 10000)
+          .concat(newShine),
+      );
     }, 2000);
 
     return () => clearInterval(intervalId);

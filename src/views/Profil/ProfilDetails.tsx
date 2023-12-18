@@ -13,6 +13,8 @@ import {
   Divider,
 } from '@mui/material';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
@@ -24,7 +26,9 @@ import {
 } from '@utils/styledComponent';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 
-const ProfilDetails = () => {
+const ProfilDetails = ({ criticsNumber, goldNumber, userInfos }) => {
+  const { id } = useParams();
+
   // ***** Affichage des amis, abonnements et abonnés ***** //
   const [displayContacts, setDisplayContacts] = useState(null);
   const openMenu = Boolean(displayContacts);
@@ -74,10 +78,10 @@ const ProfilDetails = () => {
                 fontWeight="bold"
                 marginRight="2.5px"
               >
-                {'96'}
+                {`${criticsNumber}`}
               </Typography>
               <Typography component="p" variant="body2" color="secondary">
-                {'notations'}
+                {criticsNumber > 1 ? 'notations' : 'notation'}
               </Typography>
             </ListItemButton>
           </ListItem>
@@ -102,10 +106,10 @@ const ProfilDetails = () => {
                 fontWeight="bold"
                 marginRight="2.5px"
               >
-                {'4'}
+                {`${goldNumber}`}
               </Typography>
               <Typography component="p" variant="body2" color="#EDC800">
-                {'pépites'}
+                {goldNumber > 1 ? 'pépites' : 'pépite'}
               </Typography>
             </ListItemButton>
           </ListItem>
@@ -129,7 +133,7 @@ const ProfilDetails = () => {
                 marginRight="2.5px"
                 fontWeight="bold"
               >
-                {'Ma liste'}
+                {userInfos.id === parseInt(id, 10) ? 'Ma liste' : 'Sa liste'}
               </Typography>
             </ListItemButton>
           </ListItem>
@@ -253,6 +257,12 @@ const ProfilDetails = () => {
       </Stack>
     </>
   );
+};
+
+ProfilDetails.propTypes = {
+  criticsNumber: PropTypes.number.isRequired,
+  goldNumber: PropTypes.number.isRequired,
+  userInfos: PropTypes.object.isRequired,
 };
 
 export default ProfilDetails;

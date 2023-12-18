@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
+// Comptage des pépites footer
 export const getGoldNumber = async (criticId, type) => {
   try {
     const response = await axios.get(

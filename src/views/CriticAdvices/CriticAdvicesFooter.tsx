@@ -2,6 +2,7 @@
 import { Stack, Box, Typography, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 // Import des requêtes internes
 import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
@@ -24,7 +25,7 @@ import { getGoldNumber } from '@utils/request/goldNugget/getGoldNumber';
 import { checkGoldStatus } from '@utils/request/goldNugget/checkGoldStatus';
 
 // Import des composants internes
-import Particles from '@utils/anims/particles';
+import Particles from '@utils/anims/Particles';
 
 const CriticAdvicesFooter = ({
   criticId,
@@ -33,6 +34,11 @@ const CriticAdvicesFooter = ({
   comments,
 }) => {
   const { displayType } = useData();
+
+  // Id de l'utilisateur des paramètres de requête
+  const { id } = useParams();
+  // Id de l'utilisateur du local storage
+  const userId = localStorage.getItem('user_id');
 
   const [commentsNumber, setCommentsNumber] = useState(0);
   const [likesNumber, setLikesNumber] = useState(0);
@@ -201,12 +207,15 @@ const CriticAdvicesFooter = ({
             {goldNumber}
           </Typography>
         </Box>
-        <Box height="100%" display="flex" alignItems="center" columnGap="5px">
-          <AddToPhotosTwoToneIcon fontSize="small" />
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {'À voir'}
-          </Typography>
-        </Box>
+        {/* Affichage conditionnel de la notation rapide / bouton à voir si profil de l'utilisateur connecté */}
+        {id !== userId ? (
+          <Box height="100%" display="flex" alignItems="center" columnGap="5px">
+            <AddToPhotosTwoToneIcon fontSize="small" />
+            <Typography component="p" fontSize="1em" fontWeight="bold">
+              {'À voir'}
+            </Typography>
+          </Box>
+        ) : null}
       </Stack>
     </>
   );

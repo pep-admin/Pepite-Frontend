@@ -23,7 +23,7 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(8, 'Doit contenir au moins 8 caractères')
     .matches(
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/,
       'Au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial',
     )
     .required('Le mot de passe est requis'),
@@ -63,7 +63,7 @@ const RegisterFormContainer = () => {
           last_name: values.lastName,
           first_name: values.firstName,
           email: values.email,
-          password_hash: values.password,
+          new_password: values.password,
         },
       });
 

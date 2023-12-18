@@ -12,6 +12,7 @@ import AccountDelete from './AccountDelete';
 import AccountFaq from './AccountFaq';
 import AccountUpdatePic from './AccountUpdatePic';
 import AccountCoverPic from './AccountCoverPic';
+import AccountUpdatePassword from './AccountUpdatePassword';
 
 const AccountComponent = () => {
   const [userInfos, setUserInfos] = useState(
@@ -21,6 +22,7 @@ const AccountComponent = () => {
     state: false,
     type: null,
   });
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   return (
     <>
@@ -34,6 +36,13 @@ const AccountComponent = () => {
             setShowPicModal={setShowPicModal}
             userInfos={userInfos}
             setUserInfos={setUserInfos}
+          />
+        ) : null}
+        {showPasswordModal ? (
+          <AccountUpdatePassword
+            showPasswordModal={showPasswordModal}
+            setShowPasswordModal={setShowPasswordModal}
+            userInfos={userInfos}
           />
         ) : null}
         <Stack direction="column" spacing={1} height="100%">
@@ -108,7 +117,9 @@ const AccountComponent = () => {
               </Typography>
             </Stack>
             <Divider />
-            <AccountSecuritySettings />
+            <AccountSecuritySettings
+              setShowPasswordModal={setShowPasswordModal}
+            />
           </Item>
           <Item>
             <Stack

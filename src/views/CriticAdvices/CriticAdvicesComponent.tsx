@@ -40,6 +40,7 @@ const CriticAdvicesComponent = ({
   setNewCriticInfo,
   setNewCriticSuccess,
   criticInfos,
+  chosenUser,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -255,6 +256,7 @@ const CriticAdvicesComponent = ({
                 criticInfos={criticInfos}
                 isModify={isModify}
                 newRating={newRating}
+                chosenUser={chosenUser}
               />
               {type === 'new-critic' || isModify ? (
                 <Stack direction="row" flexBasis="100%" justifyContent="center">
@@ -274,10 +276,8 @@ const CriticAdvicesComponent = ({
                     }}
                     onClick={() => {
                       if (newRating === null && !isModify) {
-                        console.log('notez svp');
                         setDisplayRatings(ratingsHeaderRef.current);
                       } else if (newRating !== null && !isModify) {
-                        console.log('publié');
                         submitNewReview();
                       } else if (
                         newRating !== null &&
@@ -327,6 +327,7 @@ CriticAdvicesComponent.propTypes = {
   setNewCriticSuccess: PropTypes.func,
   criticInfos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
+  chosenUser: PropTypes.object.isRequired,
 };
 
 export default CriticAdvicesComponent;

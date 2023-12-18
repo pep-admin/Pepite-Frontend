@@ -49,6 +49,7 @@ const LoginFormComponent = ({ formik }) => {
                 <TextField
                   fullWidth
                   label="Email"
+                  type="text"
                   variant="outlined"
                   autoComplete="e-mail"
                   required

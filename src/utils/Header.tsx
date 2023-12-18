@@ -105,6 +105,18 @@ const Header = ({ userInfos }) => {
           }}
         >
           <ToggleButton
+            value="tous"
+            sx={{
+              padding: '5px',
+              fontSize: '0.7em',
+              fontWeight: 'bold',
+            }}
+            onClick={() => setDisplayType('movie')}
+            selected={displayType === 'all'}
+          >
+            {'Tous'}
+          </ToggleButton>
+          <ToggleButton
             value="films"
             sx={{
               padding: '5px',

@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 // Import des icônes
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -29,7 +30,10 @@ const CriticAdvicesReview = ({
   criticInfos,
   isModify,
   newRating,
+  chosenUser,
 }) => {
+  const { id } = useParams();
+
   const userInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
@@ -115,6 +119,7 @@ const CriticAdvicesReview = ({
           isModify={isModify}
           customTextarea={customTextArea}
           newRating={newRating}
+          chosenUser={chosenUser}
         />
       ) : null}
       <Stack
@@ -145,13 +150,22 @@ const CriticAdvicesReview = ({
         </Box>
         <Avatar
           variant="square"
-          alt={`Photo de profil de ${userInfos.first_name}`}
+          alt={
+            userInfos.id === parseInt(id, 10)
+              ? `Photo de profil de ${userInfos.first_name}`
+              : `Photo de profil de ${chosenUser.first_name}`
+          }
           src={
-            !userInfos.profilPics.length
-              ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
-              : `${apiBaseUrl}/uploads/${
+            // Si profil de l'utilisateur connecté et qu'il a défini une photo de profil
+            userInfos.id === parseInt(id, 10) && userInfos.profilPics.length
+              ? `${apiBaseUrl}/uploads/${
                   userInfos.profilPics.find(pic => pic.isActive === 1).filePath
                 }`
+              : // Si profil d'un autre utilisateur et qu'il a défini une photo de profil
+              userInfos.id !== parseInt(id, 10) && chosenUser?.profilPics.length
+              ? `${apiBaseUrl}/uploads/${chosenUser.profilPics[0].filePath}`
+              : // Si l'utilisateur n'a pas défini de photo de profil
+                'http://127.0.0.1:5173/images/default_profil_pic.png'
           }
           sx={{
             width: 60,
@@ -179,7 +193,9 @@ const CriticAdvicesReview = ({
                 fontWeight="bold"
                 fontStyle="italic"
               >
-                {`- ${userInfos.first_name} ${userInfos.last_name} -`}
+                {userInfos.id === parseInt(id, 10)
+                  ? `- ${userInfos.first_name} ${userInfos.last_name} -`
+                  : `- ${chosenUser.first_name} ${chosenUser.last_name} -`}
               </Typography>
             </Typography>
           )}
@@ -211,6 +227,7 @@ CriticAdvicesReview.propTypes = {
   newCriticText: PropTypes.string.isRequired,
   isModify: PropTypes.bool.isRequired,
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
+  chosenUser: PropTypes.object,
 };
 
 export default CriticAdvicesReview;

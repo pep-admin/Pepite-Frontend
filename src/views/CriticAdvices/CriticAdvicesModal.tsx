@@ -35,9 +35,10 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
 
     if (from === 'critic') {
       movieId = infos.id;
-    } else if (from === 'suggested') {
+    } else if (from === 'suggested' && displayType === 'movie') {
       movieId = infos.movie_id;
-      console.log('movie id', movieId);
+    } else if (from === 'suggested' && displayType === 'tv') {
+      movieId = infos.serie_id;
     }
 
     try {

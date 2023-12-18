@@ -57,7 +57,7 @@ const About = () => {
         <Box>
           <Typography
             variant="h1"
-            color={'#24A5A5'}
+            color={'#fff'}
             fontSize={'4em'}
             marginBottom={'35px'}
           >

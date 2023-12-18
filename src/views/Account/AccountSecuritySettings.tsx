@@ -6,11 +6,12 @@ import {
   Switch,
   Input,
 } from '@mui/material';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import EditIcon from '@mui/icons-material/Edit';
 
-const AccountSecuritySettings = () => {
+const AccountSecuritySettings = ({ setShowPasswordModal }) => {
   return (
     <Stack direction="column" spacing={1} padding="6px 0">
       <Stack
@@ -24,7 +25,10 @@ const AccountSecuritySettings = () => {
           {'Mot de passe : '}
         </Typography>
         <Input disabled defaultValue="********" sx={{ bgcolor: '#ececec' }} />
-        <EditIcon sx={{ fontSize: '20px', color: '#b5b5b5' }} />
+        <EditIcon
+          sx={{ fontSize: '20px', color: '#b5b5b5', cursor: 'pointer' }}
+          onClick={() => setShowPasswordModal(true)}
+        />
       </Stack>
       <Stack
         direction="row"
@@ -78,6 +82,10 @@ const AccountSecuritySettings = () => {
       </Stack>
     </Stack>
   );
+};
+
+AccountSecuritySettings.propTypes = {
+  setShowPasswordModal: PropTypes.func.isRequired,
 };
 
 export default AccountSecuritySettings;

@@ -93,7 +93,7 @@ const AccountUpdatePic = ({
     } catch (error) {
       setOnSuccess({
         state: false,
-        message: "Erreur dans l'ajout de la photo de profil",
+        message: error.response.data.message,
       });
     }
   };

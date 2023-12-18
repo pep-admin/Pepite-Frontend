@@ -108,7 +108,7 @@ const CriticAdvicesContent = ({
                     padding: '0 5px',
                     backgroundColor: '#5ac164',
                     color: '#fff',
-                    lineHeight: '1.43',
+                    lineHeight: '1.5',
                     position: 'relative',
                     top: '4px',
                   }}

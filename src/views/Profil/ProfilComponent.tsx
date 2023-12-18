@@ -16,6 +16,9 @@ import Header from '@utils/Header';
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
+// Import de la requête qui récupère le nombre de critiques et de pépites
+import { getDetailsNumber } from '@utils/request/profil/getDetailsNumber';
+
 // Import des composants internes
 import { Item } from '@utils/styledComponent';
 import ProfilDetails from './ProfilDetails';
@@ -32,17 +35,49 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
+import AccountUpdatePic from '@views/Account/AccountUpdatePic';
+import { getUser } from '@utils/request/users/getUser';
+
+interface Picture {
+  id: number;
+  user_id: number;
+  filePath: string;
+  uploaded_at: string;
+  isActive: boolean;
+}
+
+interface User {
+  coverPics: Picture[];
+  create_datetime: string;
+  email: string;
+  first_name: string;
+  id: number;
+  last_name: string;
+  last_login_date: string;
+  profilPics: Picture[];
+  rank: string;
+}
 
 const ProfilComponent = () => {
   const { id } = useParams();
   const { displayType, chosenMovie } = useData();
 
+  // Utilisateur connecté
   const [userInfos, setUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
+  // Utilisateur externe
+  const [chosenUser, setChosenUser] = useState<User | null>(null);
+
   const [userCritics, setUserCritics] = useState([]);
   const [goldenMovies, setGoldenMovies] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [criticsNumber, setCriticsNumber] = useState(0);
+  const [goldNumber, setGoldNumber] = useState(0);
+  const [modifyCoverPic, setModifyCoverPic] = useState({
+    state: false,
+    type: null,
+  });
 
   const [newCriticError, setNewCriticError] = useState({
     error: null,
@@ -56,6 +91,11 @@ const ProfilComponent = () => {
     success: null,
     message: null,
   });
+
+  const fetchChosenUser = async user_id => {
+    const user = await getUser(user_id);
+    setChosenUser(user);
+  };
 
   const fetchCritics = useCallback(async (type: string) => {
     try {
@@ -91,8 +131,42 @@ const ProfilComponent = () => {
     }
   }, [progress]);
 
+  const countCriticsAndGold = async () => {
+    const count = await getDetailsNumber(id);
+    const criticsNumber = count.totalCriticsCount;
+    const goldNuggetsNumber = count.totalGoldCount;
+
+    setCriticsNumber(criticsNumber);
+    setGoldNumber(goldNuggetsNumber);
+  };
+
+  useEffect(() => {
+    const loggedInUserId = userInfos.id;
+    const profileUserId = parseInt(id, 10);
+
+    // Si l'id de l'utilisateur dans l'URL est différent de celui de l'utilisateur connecté
+    if (loggedInUserId !== profileUserId) {
+      // Fetch les informations de cet utilisateur
+      fetchChosenUser(profileUserId);
+    }
+    // Comptage des critiques et des pépites pour l'utilisateur affiché
+    countCriticsAndGold();
+  }, [id, userInfos]);
+
+  useEffect(() => {
+    console.log('info user externe', chosenUser);
+  }, [chosenUser]);
+
   return (
     <>
+      {modifyCoverPic.state ? (
+        <AccountUpdatePic
+          showPicModal={modifyCoverPic}
+          setShowPicModal={setModifyCoverPic}
+          userInfos={userInfos}
+          setUserInfos={setUserInfos}
+        />
+      ) : null}
       <Header userInfos={userInfos} setUserInfos={setUserInfos} />
       <Card
         sx={{
@@ -101,9 +175,21 @@ const ProfilComponent = () => {
           position: 'relative',
           borderRadius: '0',
         }}
+        onClick={() => setModifyCoverPic({ state: true, type: 'couverture' })}
       >
         <CardMedia
-          image="http://127.0.0.1:5173/images/interstellar.jpg"
+          image={
+            // Si profil de l'utilisateur connecté et qu'il a choisi une photo de couverture
+            userInfos.id === parseInt(id, 10) && userInfos.coverPics.length
+              ? `${apiBaseUrl}/uploads/${
+                  userInfos.coverPics.find(pic => pic.isActive === 1).filePath
+                }`
+              : // Si profil d'un autre utilisateur et qu'il a choisi une photo de couverture
+              userInfos.id !== parseInt(id, 10) && chosenUser?.coverPics.length
+              ? `${apiBaseUrl}/uploads/${chosenUser.coverPics[0].filePath}`
+              : // Si l'utilisateur n'a pas choisi de photo de couverture
+                'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
+          }
           sx={{
             height: '100%',
           }}
@@ -135,7 +221,11 @@ const ProfilComponent = () => {
               padding: '0 6px 0 16px',
             }}
           >
-            {`${userInfos.first_name} ${userInfos.last_name}`}
+            {userInfos.id === parseInt(id, 10)
+              ? `${userInfos.first_name} ${userInfos.last_name}`
+              : chosenUser
+              ? `${chosenUser.first_name} ${chosenUser.last_name}`
+              : null}
           </Typography>
         </Box>
       </Card>
@@ -160,12 +250,18 @@ const ProfilComponent = () => {
             <Avatar
               alt={`Photo de profil de ${userInfos.first_name}`}
               src={
-                !userInfos.profil_pics.length
-                  ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
-                  : `${apiBaseUrl}/uploads/${
-                      userInfos.profil_pics.find(pic => pic.isActive === 1)
+                // Si l'utilisateur affiché est celui connecté et qu'il a défini une photo de profil
+                userInfos.id === parseInt(id, 10) && userInfos.profilPics.length
+                  ? `${apiBaseUrl}/uploads/${
+                      userInfos.profilPics.find(pic => pic.isActive === 1)
                         .filePath
                     }`
+                  : // Si l'utilisateur affiché est un autre que celui connecté et qu'il a défini une photo de profil
+                  userInfos.id !== parseInt(id, 10) &&
+                    chosenUser?.profilPics.length
+                  ? `${apiBaseUrl}/uploads/${chosenUser.profilPics[0].filePath}`
+                  : // Si l'utilisateur n'a pas défini de photo de profil
+                    'http://127.0.0.1:5173/images/default_profil_pic.png'
               }
               sx={{
                 width: 90,
@@ -203,7 +299,9 @@ const ProfilComponent = () => {
                     marginBottom: '2px',
                   }}
                 >
-                  {'Maître noteur'}
+                  {userInfos.id === parseInt(id, 10)
+                    ? `${userInfos.rank}`
+                    : `${chosenUser?.rank}`}
                 </Typography>
               </Box>
               <Item
@@ -214,7 +312,11 @@ const ProfilComponent = () => {
                 flexdirection="column"
                 borderradius="0 0 10px 10px"
               >
-                <ProfilDetails />
+                <ProfilDetails
+                  criticsNumber={criticsNumber}
+                  goldNumber={goldNumber}
+                  userInfos={userInfos}
+                />
               </Item>
             </Box>
             <Item
@@ -226,10 +328,18 @@ const ProfilComponent = () => {
               <ProfilSuggestedNotes
                 goldenMovies={goldenMovies}
                 setGoldenMovies={setGoldenMovies}
+                chosenUser={chosenUser}
+                userInfos={userInfos}
               />
             </Item>
           </Stack>
-          <SearchBar Item={Item} page={'profil'} handlePoster={null} />
+          <SearchBar
+            Item={Item}
+            page={'profil'}
+            userInfos={userInfos}
+            chosenUser={chosenUser}
+            handlePoster={null}
+          />
           <Stack>
             {chosenMovie !== null ? (
               <CriticAdvicesComponent
@@ -241,6 +351,7 @@ const ProfilComponent = () => {
                 setNewCriticInfo={setNewCriticInfo}
                 setNewCriticSuccess={setNewCriticSuccess}
                 criticInfos={null}
+                chosenUser={chosenUser}
               />
             ) : null}
             {newCriticError.error &&
@@ -331,6 +442,7 @@ const ProfilComponent = () => {
                       setNewCriticInfo={setNewCriticInfo}
                       setNewCriticSuccess={setNewCriticSuccess}
                       criticInfos={critic}
+                      chosenUser={chosenUser}
                     />
                   );
                 })

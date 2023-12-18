@@ -1,38 +1,13 @@
 // Import de libs externes
-import { Stack, Typography, Box, styled } from '@mui/material';
+import { Stack, Typography, Box } from '@mui/material';
 import { GoldNuggetIcon } from '@utils/styledComponent';
 import { useEffect, useRef, useState } from 'react';
-import { keyframes } from '@emotion/react';
 
+// Import d'un fichier CSS pour éviter la surcharge de balises style dans le head
+import '../../styles/animations.css';
+
+// Import des icônes
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-
-type AnimatedCircleProps = {
-  size: string;
-  left: string;
-  bottom: string;
-  rotation: string;
-};
-const getRiseKeyframes = rotation => keyframes`
-  0% { transform: translateY(20px) rotate(${rotation}deg); opacity: 0; }
-  45% { transform: translateY(-25px) rotate(${rotation}deg); opacity: 1; }
-  100% { transform: translateY(-100px) rotate(${rotation}deg); opacity: 0; }
-`;
-
-const AnimatedCircle = styled(AutoAwesomeIcon)<AnimatedCircleProps>(({
-  size,
-  left,
-  bottom,
-  rotation,
-}) => {
-  const riseAnimation = getRiseKeyframes(rotation);
-  return {
-    position: 'absolute',
-    left,
-    bottom,
-    fontSize: size,
-    animation: `${riseAnimation} 10s linear forwards`,
-  };
-});
 
 const AuthHeader = () => {
   const logoRef = useRef(null);
@@ -40,24 +15,26 @@ const AuthHeader = () => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
+      const animationClass = `animatedCircle animatedCircle${Math.floor(
+        Math.random() * 11,
+      )}`;
+
       const newShine = {
-        size: (0.75 + Math.random() * 0.4).toString() + 'em',
+        size: `${0.75 + Math.random() * 0.4}em`,
         left: `${Math.random() * 100}%`,
         bottom: '0%',
-        rotation: (Math.random() * 360).toString(),
         color: `rgba(255, ${Math.random() * (255 - 150) + 150}, 0, ${
           Math.random() + 0.4
-        })`, // Génération de la couleur
+        })`,
+        animationClass,
         id: Math.random(),
         createdAt: Date.now(),
       };
-      setShine(prevShine => {
-        const filteredShine = prevShine.filter(
-          shineItem => Date.now() - shineItem.createdAt < 10000,
-        );
-
-        return [...filteredShine, newShine];
-      });
+      setShine(prevShine =>
+        prevShine
+          .filter(shineItem => Date.now() - shineItem.createdAt < 10000)
+          .concat(newShine),
+      );
     }, 2000);
 
     return () => clearInterval(intervalId);
@@ -71,17 +48,19 @@ const AuthHeader = () => {
       flexDirection="column"
       alignItems="center"
     >
-      <Box ref={logoRef} width="100px" position="relative">
+      <Box ref={logoRef} width="70px" position="relative">
         <GoldNuggetIcon sx={{ fontSize: '4.5em' }} />
-        {/* <GoldNuggetWireframe sx={{ fontSize: '4.5em' }} /> */}
         {shine.map(shineItem => (
-          <AnimatedCircle
+          <AutoAwesomeIcon
             key={shineItem.id}
-            size={shineItem.size}
-            left={shineItem.left}
-            bottom={shineItem.bottom}
-            rotation={shineItem.rotation}
-            sx={{ color: shineItem.color }}
+            style={{
+              fontSize: shineItem.size,
+              left: shineItem.left,
+              bottom: shineItem.bottom,
+              color: shineItem.color,
+              position: 'absolute',
+            }}
+            className={shineItem.animationClass}
           />
         ))}
       </Box>

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
-import { searchMulti } from './request/swipe/fetchData';
+import { useParams } from 'react-router-dom';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -18,14 +18,28 @@ import { useData } from '@hooks/DataContext';
 // Import des icônes
 import { MagnifyingGlassIcon } from './styledComponent';
 
-// Import des libs internes
+// Import des requêtes internes
+import {
+  searchMoviesSeries,
+  searchUsers,
+} from './request/search/searchMoviesSeries';
 import { getMovieDetails } from './request/getMovieDetails';
 import { storeDetailsData } from './request/swipe/storeDetailsData';
+
+// Import des composants internes
 import SearchResults from './SearchResults';
 
-const SearchBar = ({ Item, page, handlePoster }) => {
+const SearchBar = ({
+  Item,
+  page,
+  userInfos,
+  chosenUser,
+  handlePoster,
+  showPicModal,
+}) => {
   const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
     useData();
+  const { id } = useParams();
 
   const [error, setError] = useState({ message: null, error: null });
 
@@ -57,9 +71,6 @@ const SearchBar = ({ Item, page, handlePoster }) => {
       console.log('le film choisi', movieData);
       // Stockage des détails du film dans la DB
       storeDetailsData(movieData, displayType);
-      // if (page !== 'profil') {
-      //   setGeneralRatings(movieData.vote_average);
-      // }
     } catch (err) {
       setError({
         message: "Une erreur s'est produite lors de la recherche",
@@ -72,8 +83,24 @@ const SearchBar = ({ Item, page, handlePoster }) => {
     // Fonction débouncing
     const timeoutId = setTimeout(async () => {
       if (query) {
-        const searchResults = await searchMulti(query, displayType);
-        setResults(searchResults);
+        const moviesSeriesResults = await searchMoviesSeries(
+          query,
+          displayType,
+        );
+        const usersResults = await searchUsers(query);
+
+        // Ajouter un champ 'type' pour différencier les résultats
+        const formattedMoviesSeries = moviesSeriesResults.map(item => ({
+          ...item,
+          type: 'movieSeries',
+        }));
+        const formattedUsers = usersResults.map(item => ({
+          ...item,
+          type: 'user',
+        }));
+
+        const combinedResults = [...formattedMoviesSeries, ...formattedUsers];
+        setResults(combinedResults);
       } else {
         setResults([]); // Si la requête est vide, on réinitialise les résultats
       }
@@ -130,7 +157,7 @@ const SearchBar = ({ Item, page, handlePoster }) => {
               overflow="hidden"
               textOverflow="ellipsis"
             >
-              Kate Austen
+              {`${userInfos.first_name} ${userInfos.last_name}`}
             </Typography>
           </Box>
         ) : null}
@@ -138,13 +165,50 @@ const SearchBar = ({ Item, page, handlePoster }) => {
           id="filled-basic"
           inputRef={searchBarRef}
           label={
+            // S'il y a une erreur
             error.message
               ? `${error.message}`
-              : page === 'profil'
+              : // Si page de profil de l'utilisateur connecté et type choisi FILMS
+              page === 'profil' &&
+                userInfos?.id === parseInt(id, 10) &&
+                displayType === 'movie'
+              ? 'Notez un film !'
+              : // Si page de profil de l'utilisateur connecté et type choisi SERIES
+              page === 'profil' &&
+                userInfos?.id === parseInt(id, 10) &&
+                displayType === 'tv'
+              ? 'Notez une série !'
+              : // Si page de profil de l'utilisateur connecté et type choisi TOUS
+              page === 'profil' &&
+                userInfos?.id === parseInt(id, 10) &&
+                displayType === 'all'
               ? 'Notez un film ou une série !'
-              : page === 'params'
+              : // Si page de profil d'un autre utilisateur et type choisi FILMS
+              page === 'profil' &&
+                userInfos?.id !== parseInt(id, 10) &&
+                displayType === 'movie'
+              ? `Conseillez un film à ${chosenUser?.first_name} !`
+              : // Si page de profil d'un autre utilisateur et type choisi SERIES
+              page === 'profil' &&
+                userInfos?.id !== parseInt(id, 10) &&
+                displayType === 'tv'
+              ? `Conseillez une série à ${chosenUser?.first_name} !`
+              : // Si page de profil d'un autre utilisateur et type choisi SERIES
+              page === 'profil' &&
+                userInfos?.id !== parseInt(id, 10) &&
+                displayType === 'all'
+              ? `Conseillez un film ou une série à ${chosenUser?.first_name} !`
+              : // Si choix de poster dans les paramètres
+              page === 'params'
               ? 'Une affiche de film, de série'
-              : 'Rechercher un film, une série, une personne'
+              : // Si le type choisi est films
+              displayType === 'movie'
+              ? 'Rechercher un film, une personne'
+              : // Si le type choisi est séries
+              displayType === 'tv'
+              ? 'Rechercher une série, une personne'
+              : // Si le type choisi est tous
+                'Rechercher un film, une série, une personne'
           }
           variant="filled"
           size="small"
@@ -191,7 +255,9 @@ const SearchBar = ({ Item, page, handlePoster }) => {
                 <React.Fragment key={result.id}>
                   {result.poster_path && (
                     <ImageListItem
-                      onClick={() => handlePoster(result.poster_path)}
+                      onClick={() =>
+                        handlePoster(result.poster_path, showPicModal.type)
+                      }
                     >
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${result.poster_path}`}
@@ -202,7 +268,9 @@ const SearchBar = ({ Item, page, handlePoster }) => {
                   )}
                   {result.backdrop_path && (
                     <ImageListItem
-                      onClick={() => handlePoster(result.backdrop_path)}
+                      onClick={() =>
+                        handlePoster(result.backdrop_path, showPicModal.type)
+                      }
                     >
                       <img
                         src={`https://image.tmdb.org/t/p/w500/${result.backdrop_path}`}
@@ -262,6 +330,9 @@ SearchBar.propTypes = {
   Item: PropTypes.elementType.isRequired,
   page: PropTypes.string.isRequired,
   handlePoster: PropTypes.func,
+  showPicModal: PropTypes.object,
+  userInfos: PropTypes.object,
+  chosenUser: PropTypes.object,
 };
 
 export default SearchBar;

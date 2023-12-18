@@ -33,7 +33,9 @@ const CriticAdvicesContent = ({
   const scoreOutOfFive = originalScore / 2;
   const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
 
-  useEffect(() => {
+  const checkCriticDate = () => {
+    if (type === 'new-critic') return;
+
     const criticDate = new Date(criticInfos.critic_date).getTime(); // Convertir en timestamp
 
     if (!isNaN(criticDate)) {
@@ -45,7 +47,11 @@ const CriticAdvicesContent = ({
         setIsNew(true);
       }
     }
-  }, [criticInfos.critic_date]);
+  };
+
+  useEffect(() => {
+    checkCriticDate();
+  }, []);
 
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
@@ -102,7 +108,7 @@ const CriticAdvicesContent = ({
                     padding: '0 5px',
                     backgroundColor: '#5ac164',
                     color: '#fff',
-                    lineHeight: '1.43',
+                    lineHeight: '1.5',
                     position: 'relative',
                     top: '4px',
                   }}

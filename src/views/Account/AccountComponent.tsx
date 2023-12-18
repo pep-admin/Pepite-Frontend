@@ -10,13 +10,19 @@ import AccountDisplaySettings from './AccountDisplaySettings';
 import AccountSecuritySettings from './AccountSecuritySettings';
 import AccountDelete from './AccountDelete';
 import AccountFaq from './AccountFaq';
-import AccountUpdateProfilPic from './AccountUpdateProfilPic';
+import AccountUpdatePic from './AccountUpdatePic';
+import AccountCoverPic from './AccountCoverPic';
+import AccountUpdatePassword from './AccountUpdatePassword';
 
 const AccountComponent = () => {
   const [userInfos, setUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
-  const [showProfilPicModal, setShowProfilPicModal] = useState(false);
+  const [showPicModal, setShowPicModal] = useState({
+    state: false,
+    type: null,
+  });
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   return (
     <>
@@ -24,12 +30,19 @@ const AccountComponent = () => {
       <Container
         sx={{ minHeight: 'calc(100vh - 60px)', height: 'auto', padding: '6px' }}
       >
-        {showProfilPicModal ? (
-          <AccountUpdateProfilPic
-            showProfilPicModal={showProfilPicModal}
-            setShowProfilPicModal={setShowProfilPicModal}
+        {showPicModal.state ? (
+          <AccountUpdatePic
+            showPicModal={showPicModal}
+            setShowPicModal={setShowPicModal}
             userInfos={userInfos}
             setUserInfos={setUserInfos}
+          />
+        ) : null}
+        {showPasswordModal ? (
+          <AccountUpdatePassword
+            showPasswordModal={showPasswordModal}
+            setShowPasswordModal={setShowPasswordModal}
+            userInfos={userInfos}
           />
         ) : null}
         <Stack direction="column" spacing={1} height="100%">
@@ -57,7 +70,24 @@ const AccountComponent = () => {
             </Stack>
             <Divider />
             <AccountPersonalInfos
-              setShowProfilPicModal={setShowProfilPicModal}
+              setShowPicModal={setShowPicModal}
+              userInfos={userInfos}
+            />
+          </Item>
+          <Item>
+            <Stack
+              direction="row"
+              height="25px"
+              alignItems="center"
+              padding="0 13px"
+            >
+              <Typography variant="body2" component="p" fontWeight="bold">
+                {'Votre photo de couverture'}
+              </Typography>
+            </Stack>
+            <Divider />
+            <AccountCoverPic
+              setShowPicModal={setShowPicModal}
               userInfos={userInfos}
             />
           </Item>
@@ -87,7 +117,9 @@ const AccountComponent = () => {
               </Typography>
             </Stack>
             <Divider />
-            <AccountSecuritySettings />
+            <AccountSecuritySettings
+              setShowPasswordModal={setShowPasswordModal}
+            />
           </Item>
           <Item>
             <Stack

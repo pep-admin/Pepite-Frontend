@@ -1,6 +1,7 @@
 // Import des libs externes
 import { Modal, Stack, Box, Avatar, Typography, Divider } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 // Import des icônes
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -22,8 +23,10 @@ const CriticAdvicesReviewModal = ({
   isModify,
   customTextarea,
   newRating,
+  chosenUser,
 }) => {
   const { displayType, chosenMovie } = useData();
+  const { id } = useParams();
 
   const userInfos = JSON.parse(localStorage.getItem('user_infos'));
 
@@ -52,14 +55,24 @@ const CriticAdvicesReviewModal = ({
         <Stack direction="row">
           <Avatar
             variant="square"
-            alt={`Photo de profil de ${userInfos.first_name}`}
+            alt={
+              userInfos.id === parseInt(id, 10)
+                ? `Photo de profil de ${userInfos.first_name}`
+                : `Photo de profil de ${chosenUser?.first_name}`
+            }
             src={
-              !userInfos.profil_pics.length
-                ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
-                : `${apiBaseUrl}/uploads/${
-                    userInfos.profil_pics.find(pic => pic.isActive === 1)
+              // Si profil de l'utilisateur connecté et qu'il a défini une photo de profil
+              userInfos.id === parseInt(id, 10) && userInfos.profilPics.length
+                ? `${apiBaseUrl}/uploads/${
+                    userInfos.profilPics.find(pic => pic.isActive === 1)
                       .filePath
                   }`
+                : // Si profil d'un autre utilisateur et qu'il a défini une photo de profil
+                userInfos.id !== parseInt(id, 10) &&
+                  chosenUser?.profilPics.length
+                ? `${apiBaseUrl}/uploads/${chosenUser.profilPics[0].filePath}`
+                : // Si l'utilisateur n'a pas défini de photo de profil
+                  'http://127.0.0.1:5173/images/default_profil_pic.png'
             }
             sx={{
               width: 100,
@@ -197,6 +210,7 @@ CriticAdvicesReviewModal.propTypes = {
   isModify: PropTypes.bool.isRequired,
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   customTextarea: PropTypes.func.isRequired,
+  chosenUser: PropTypes.object,
 };
 
 export default CriticAdvicesReviewModal;

@@ -23,8 +23,14 @@ import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNug
 import { useData } from '@hooks/DataContext';
 import { convertRating } from '@utils/functions/convertRating';
 import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
+import ProfilNoGold from './ProfilNoGold';
 
-const ProfilSuggestedNotes = ({ goldenMovies, setGoldenMovies }) => {
+const ProfilSuggestedNotes = ({
+  goldenMovies,
+  setGoldenMovies,
+  userInfos,
+  chosenUser,
+}) => {
   const [showGoldenMovie, setShowGoldenMovie] = useState(false);
   const [goldenMovieInfos, setGoldenMovieInfos] = useState(null);
 
@@ -76,124 +82,128 @@ const ProfilSuggestedNotes = ({ goldenMovies, setGoldenMovies }) => {
             overflowX: 'scroll',
           }}
         >
-          {goldenMovies.map(movie => {
-            return (
-              <React.Fragment key={movie.id}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    width: 95,
-                    flexShrink: 0,
-                    boxShadow: 'none',
-                    position: 'relative',
-                  }}
-                >
-                  <CardActionArea
-                    sx={{ height: 'calc(100% - 23px)' }}
-                    onClick={() => {
-                      setGoldenMovieInfos(movie);
-                      setShowGoldenMovie(true);
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="100%"
-                      image={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                      alt={
-                        displayType === 'movie'
-                          ? `${movie.title}`
-                          : `${movie.name}`
-                      }
-                      sx={{
-                        borderRadius: '10px',
-                        boxShadow:
-                          '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
-                      }}
-                    />
-                  </CardActionArea>
-                  <CardContent
+          {!goldenMovies.length ? (
+            <ProfilNoGold userInfos={userInfos} chosenUser={chosenUser} />
+          ) : (
+            goldenMovies.map(movie => {
+              return (
+                <React.Fragment key={movie.id}>
+                  <Card
                     sx={{
-                      height: '23px',
-                      width: '100%',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      height: '100%',
+                      width: 95,
+                      flexShrink: 0,
+                      boxShadow: 'none',
+                      position: 'relative',
                     }}
                   >
-                    <Typography
-                      gutterBottom
-                      component="h4"
-                      margin="0"
-                      paddingLeft="8px"
-                      maxWidth="100%"
-                      overflow="hidden"
-                      whiteSpace="nowrap"
-                      textOverflow="ellipsis"
-                      sx={{ fontSize: '1em' }}
-                    >
-                      {displayType === 'movie' ? movie.title : movie.name}
-                    </Typography>
-                  </CardContent>
-                  <Box
-                    width="100%"
-                    position="absolute"
-                    bottom="23px"
-                    height="23px"
-                    borderRadius="0 0 10px 10px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{ backgroundColor: '#0000009e' }}
-                  >
-                    <YellowRating
-                      name="half-rating-read"
-                      value={convertRating(movie.vote_average)}
-                      precision={0.1}
-                      readOnly
-                      emptyIcon={
-                        <StarIcon
-                          sx={{ color: '#E1E1E1', fontSize: '1.05em' }}
-                        />
-                      }
-                      sx={{ marginRight: '5px', fontSize: '0.9em' }}
-                    />
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      fontWeight="bold"
-                      sx={{ color: '#faaf00' }}
-                    >
-                      {convertRating(movie.vote_average)}
-                    </Typography>
-                  </Box>
-                  <Box
-                    width="20px"
-                    height="20px"
-                    position="absolute"
-                    top="2px"
-                    right="2px"
-                    borderRadius="50%"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    border="1px solid #f29e50"
-                    sx={{ backgroundColor: '#fff' }}
-                  >
-                    <GoldNuggetIcon
-                      sx={{
-                        fontSize: '1em',
-                        position: 'relative',
-                        top: '0.2px',
-                        right: '0.1px',
+                    <CardActionArea
+                      sx={{ height: 'calc(100% - 23px)' }}
+                      onClick={() => {
+                        setGoldenMovieInfos(movie);
+                        setShowGoldenMovie(true);
                       }}
-                    />
-                  </Box>
-                </Card>
-                <Divider variant="middle" flexItem orientation="vertical" />
-              </React.Fragment>
-            );
-          })}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="100%"
+                        image={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                        alt={
+                          displayType === 'movie'
+                            ? `${movie.title}`
+                            : `${movie.name}`
+                        }
+                        sx={{
+                          borderRadius: '10px',
+                          boxShadow:
+                            '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
+                        }}
+                      />
+                    </CardActionArea>
+                    <CardContent
+                      sx={{
+                        height: '23px',
+                        width: '100%',
+                        padding: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Typography
+                        gutterBottom
+                        component="h4"
+                        margin="0"
+                        paddingLeft="8px"
+                        maxWidth="100%"
+                        overflow="hidden"
+                        whiteSpace="nowrap"
+                        textOverflow="ellipsis"
+                        sx={{ fontSize: '1em' }}
+                      >
+                        {displayType === 'movie' ? movie.title : movie.name}
+                      </Typography>
+                    </CardContent>
+                    <Box
+                      width="100%"
+                      position="absolute"
+                      bottom="23px"
+                      height="23px"
+                      borderRadius="0 0 10px 10px"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      sx={{ backgroundColor: '#0000009e' }}
+                    >
+                      <YellowRating
+                        name="half-rating-read"
+                        value={convertRating(movie.vote_average)}
+                        precision={0.1}
+                        readOnly
+                        emptyIcon={
+                          <StarIcon
+                            sx={{ color: '#E1E1E1', fontSize: '1.05em' }}
+                          />
+                        }
+                        sx={{ marginRight: '5px', fontSize: '0.9em' }}
+                      />
+                      <Typography
+                        variant="body2"
+                        component="span"
+                        fontWeight="bold"
+                        sx={{ color: '#faaf00' }}
+                      >
+                        {convertRating(movie.vote_average)}
+                      </Typography>
+                    </Box>
+                    <Box
+                      width="20px"
+                      height="20px"
+                      position="absolute"
+                      top="2px"
+                      right="2px"
+                      borderRadius="50%"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      border="1px solid #f29e50"
+                      sx={{ backgroundColor: '#fff' }}
+                    >
+                      <GoldNuggetIcon
+                        sx={{
+                          fontSize: '1em',
+                          position: 'relative',
+                          top: '0.2px',
+                          right: '0.1px',
+                        }}
+                      />
+                    </Box>
+                  </Card>
+                  <Divider variant="middle" flexItem orientation="vertical" />
+                </React.Fragment>
+              );
+            })
+          )}
         </Stack>
       </Stack>
     </>
@@ -203,6 +213,8 @@ const ProfilSuggestedNotes = ({ goldenMovies, setGoldenMovies }) => {
 ProfilSuggestedNotes.propTypes = {
   goldenMovies: PropTypes.array.isRequired,
   setGoldenMovies: PropTypes.func.isRequired,
+  userInfos: PropTypes.object.isRequired,
+  chosenUser: PropTypes.object,
 };
 
 export default ProfilSuggestedNotes;

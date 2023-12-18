@@ -105,6 +105,18 @@ const Header = ({ userInfos }) => {
           }}
         >
           <ToggleButton
+            value="tous"
+            sx={{
+              padding: '5px',
+              fontSize: '0.7em',
+              fontWeight: 'bold',
+            }}
+            onClick={() => setDisplayType('movie')}
+            selected={displayType === 'all'}
+          >
+            {'Tous'}
+          </ToggleButton>
+          <ToggleButton
             value="films"
             sx={{
               padding: '5px',
@@ -187,10 +199,10 @@ const Header = ({ userInfos }) => {
                 <Avatar
                   alt={`Photo de profil de ${userInfos.first_name}`}
                   src={
-                    !userInfos.profil_pics.length
+                    !userInfos.profilPics.length
                       ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
                       : `${apiBaseUrl}/uploads/${
-                          userInfos.profil_pics.find(pic => pic.isActive === 1)
+                          userInfos.profilPics.find(pic => pic.isActive === 1)
                             .filePath
                         }`
                   }

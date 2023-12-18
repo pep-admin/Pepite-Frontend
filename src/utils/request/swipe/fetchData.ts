@@ -71,19 +71,6 @@ export const cancelDeletedMovie = async (movieId: number, type: string) => {
   }
 };
 
-// Recherche film / série / personne
-export const searchMulti = async (query: string, displayType: string) => {
-  try {
-    const response = await axios.get(
-      `${apiBaseUrl}/search/movie-serie?query=${query}&displayType=${displayType}`,
-      { withCredentials: true },
-    );
-    return response.data.results;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 // Insertion d'un film dans la liste des non souhaités
 export const addWantedMovie = async (movieId: number, type: string) => {
   try {

@@ -41,7 +41,7 @@ const CriticAdvicesComponent = ({
   setNewCriticSuccess,
   criticInfos,
   chosenUser,
-  countCriticsAndGold
+  countCriticsAndGold,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -338,6 +338,7 @@ CriticAdvicesComponent.propTypes = {
   criticInfos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
+  countCriticsAndGold: PropTypes.func.isRequired,
 };
 
 export default CriticAdvicesComponent;

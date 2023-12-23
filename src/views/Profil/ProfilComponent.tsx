@@ -13,7 +13,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import Header from '@utils/Header';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import de la requête qui récupère le nombre de critiques et de pépites
@@ -63,8 +63,6 @@ interface User {
 const ProfilComponent = () => {
   const { id } = useParams();
   const { displayType, chosenMovie } = useData();
-
-  const personAddRef = useRef(null);
 
   // Utilisateur connecté
   const [userInfos, setUserInfos] = useState(
@@ -190,8 +188,8 @@ const ProfilComponent = () => {
               : // Si profil d'un autre utilisateur et qu'il a choisi une photo de couverture
               userInfos.id !== parseInt(id, 10) && chosenUser?.coverPics.length
               ? `${apiBaseUrl}/uploads/${
-                chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
-              }`
+                  chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
+                }`
               : // Si l'utilisateur n'a pas choisi de photo de couverture
                 'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
           }
@@ -211,14 +209,18 @@ const ProfilComponent = () => {
               'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(14,14,14,0.37) 70%)',
           }}
         >
-          <AddPhotoAlternateTwoToneIcon 
-            fontSize='medium' 
-            sx={{position: 'absolute', 
-            right: '10px', 
-            top: '10px', 
-            color:'#585858', 
-            cursor: 'pointer' }} 
-            onClick={() => setModifyCoverPic({ state: true, type: 'couverture' })}
+          <AddPhotoAlternateTwoToneIcon
+            fontSize="medium"
+            sx={{
+              position: 'absolute',
+              right: '10px',
+              top: '10px',
+              color: '#585858',
+              cursor: 'pointer',
+            }}
+            onClick={() =>
+              setModifyCoverPic({ state: true, type: 'couverture' })
+            }
           />
         </Box>
         <Box
@@ -226,9 +228,9 @@ const ProfilComponent = () => {
           bottom="0"
           right="0"
           width="calc(100% - 108px)"
-          display='flex'
-          alignItems='center'
-          columnGap='5px'
+          display="flex"
+          alignItems="center"
+          columnGap="5px"
         >
           <Typography
             component="h2"
@@ -245,12 +247,9 @@ const ProfilComponent = () => {
               ? `${chosenUser.first_name} ${chosenUser.last_name}`
               : null}
           </Typography>
-          {
-            userInfos.id !== parseInt(id, 10) ?
-              <FriendRequestBtn />
-            :
-            null
-          } 
+          {userInfos.id !== parseInt(id, 10) ? (
+            <FriendRequestBtn receiverId={id} />
+          ) : null}
         </Box>
       </Card>
       <Container

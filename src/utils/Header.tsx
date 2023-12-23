@@ -195,14 +195,14 @@ const Header = ({ userInfos }) => {
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Badge 
-                badgeContent={4} 
+              <Badge
+                badgeContent={4}
                 color="primary"
                 sx={{
                   '& .MuiBadge-badge': {
-                    top: '6px', 
+                    top: '6px',
                     right: '2px',
-                  }
+                  },
                 }}
               >
                 <Avatar
@@ -217,7 +217,7 @@ const Header = ({ userInfos }) => {
                   }
                   sx={{
                     height: '45px',
-                    width: '45px',                      
+                    width: '45px',
                   }}
                 />
               </Badge>

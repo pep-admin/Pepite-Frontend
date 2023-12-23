@@ -29,6 +29,7 @@ import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent'
 // Import des icônes
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
+import PersonAddAlt1TwoToneIcon from '@mui/icons-material/PersonAddAlt1TwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -71,11 +72,12 @@ const ProfilComponent = () => {
   // Utilisateur externe
   const [chosenUser, setChosenUser] = useState<User | null>(null);
 
-  const [userCritics, setUserCritics] = useState([]);
-  const [goldenMovies, setGoldenMovies] = useState([]);
+  const [userCritics, setUserCritics] = useState([]); // Toutes les critiques de l'utilisateur du profil
+  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
   const [progress, setProgress] = useState(0);
-  const [criticsNumber, setCriticsNumber] = useState(0);
-  const [goldNumber, setGoldNumber] = useState(0);
+  const [criticsNumber, setCriticsNumber] = useState(0); // Nombre de critiques de l'utilisateur
+  const [goldNumber, setGoldNumber] = useState(0); // Nombre de pépites de l'utilisateur
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Ancre du bouton d'ajout en ami
   const [modifyCoverPic, setModifyCoverPic] = useState({
     state: false,
     type: null,
@@ -94,11 +96,13 @@ const ProfilComponent = () => {
     message: null,
   });
 
+  // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
   const fetchChosenUser = async user_id => {
     const user = await getUser(user_id);
     setChosenUser(user);
   };
 
+  // Récupère toutes les critiques de l'utilisateur du profil
   const fetchCritics = useCallback(async (type: string) => {
     try {
       const criticData = await getAllCriticsOfUser(id, type);
@@ -154,6 +158,10 @@ const ProfilComponent = () => {
     // Comptage des critiques et des pépites pour l'utilisateur affiché
     countCriticsAndGold();
   }, [id, userInfos]);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
 
   useEffect(() => {
     console.log('info user externe', chosenUser);
@@ -248,7 +256,23 @@ const ProfilComponent = () => {
               : null}
           </Typography>
           {userInfos.id !== parseInt(id, 10) ? (
-            <FriendRequestBtn receiverId={id} />
+            <>
+              <PersonAddAlt1TwoToneIcon
+                sx={{
+                  fontSize: '23.5px',
+                  color: '#0e6666',
+                  position: 'relative',
+                  bottom: '1.1px',
+                  cursor: 'pointer',
+                }}
+                onClick={e => handleClick(e)}
+              />
+              <FriendRequestBtn
+                anchorEl={anchorEl}
+                setAnchorEl={setAnchorEl}
+                receiverId={id}
+              />
+            </>
           ) : null}
         </Box>
       </Card>

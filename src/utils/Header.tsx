@@ -181,6 +181,8 @@ const Header = ({ userInfos }) => {
                 onClick={() => {
                   if (page === 'Swipe') {
                     navigate('/swipe');
+                  } else if (page === 'Mes contacts') {
+                    navigate(`/contacts/${userId}`);
                   }
                   handleCloseNavMenu();
                 }}

@@ -13,7 +13,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import Header from '@utils/Header';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import de la requête qui récupère le nombre de critiques et de pépites
@@ -27,6 +27,7 @@ import SearchBar from '@utils/SearchBar';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 
 // Import des icônes
+import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 
 // Import du contexte
@@ -37,13 +38,14 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 import apiBaseUrl from '@utils/request/config';
 import AccountUpdatePic from '@views/Account/AccountUpdatePic';
 import { getUser } from '@utils/request/users/getUser';
+import FriendRequestBtn from '@utils/FriendRequestBtn';
 
 interface Picture {
   id: number;
   user_id: number;
   filePath: string;
   uploaded_at: string;
-  isActive: boolean;
+  isActive: number;
 }
 
 interface User {
@@ -61,6 +63,8 @@ interface User {
 const ProfilComponent = () => {
   const { id } = useParams();
   const { displayType, chosenMovie } = useData();
+
+  const personAddRef = useRef(null);
 
   // Utilisateur connecté
   const [userInfos, setUserInfos] = useState(
@@ -175,7 +179,6 @@ const ProfilComponent = () => {
           position: 'relative',
           borderRadius: '0',
         }}
-        onClick={() => setModifyCoverPic({ state: true, type: 'couverture' })}
       >
         <CardMedia
           image={
@@ -186,7 +189,9 @@ const ProfilComponent = () => {
                 }`
               : // Si profil d'un autre utilisateur et qu'il a choisi une photo de couverture
               userInfos.id !== parseInt(id, 10) && chosenUser?.coverPics.length
-              ? `${apiBaseUrl}/uploads/${chosenUser.coverPics[0].filePath}`
+              ? `${apiBaseUrl}/uploads/${
+                chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
+              }`
               : // Si l'utilisateur n'a pas choisi de photo de couverture
                 'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
           }
@@ -205,12 +210,25 @@ const ProfilComponent = () => {
             background:
               'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(14,14,14,0.37) 70%)',
           }}
-        ></Box>
+        >
+          <AddPhotoAlternateTwoToneIcon 
+            fontSize='medium' 
+            sx={{position: 'absolute', 
+            right: '10px', 
+            top: '10px', 
+            color:'#585858', 
+            cursor: 'pointer' }} 
+            onClick={() => setModifyCoverPic({ state: true, type: 'couverture' })}
+          />
+        </Box>
         <Box
           position="absolute"
           bottom="0"
           right="0"
           width="calc(100% - 108px)"
+          display='flex'
+          alignItems='center'
+          columnGap='5px'
         >
           <Typography
             component="h2"
@@ -227,6 +245,12 @@ const ProfilComponent = () => {
               ? `${chosenUser.first_name} ${chosenUser.last_name}`
               : null}
           </Typography>
+          {
+            userInfos.id !== parseInt(id, 10) ?
+              <FriendRequestBtn />
+            :
+            null
+          } 
         </Box>
       </Card>
       <Container
@@ -352,6 +376,7 @@ const ProfilComponent = () => {
                 setNewCriticSuccess={setNewCriticSuccess}
                 criticInfos={null}
                 chosenUser={chosenUser}
+                countCriticsAndGold={countCriticsAndGold}
               />
             ) : null}
             {newCriticError.error &&
@@ -443,6 +468,7 @@ const ProfilComponent = () => {
                       setNewCriticSuccess={setNewCriticSuccess}
                       criticInfos={critic}
                       chosenUser={chosenUser}
+                      countCriticsAndGold={countCriticsAndGold}
                     />
                   );
                 })

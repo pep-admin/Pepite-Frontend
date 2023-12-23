@@ -41,6 +41,7 @@ const CriticAdvicesComponent = ({
   setNewCriticSuccess,
   criticInfos,
   chosenUser,
+  countCriticsAndGold
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -60,6 +61,7 @@ const CriticAdvicesComponent = ({
 
   const submitNewReview = async () => {
     try {
+      // Ajoute la nouvelle critique dans la DB
       await addNewCritic(
         chosenMovie.id,
         displayType,
@@ -76,11 +78,16 @@ const CriticAdvicesComponent = ({
       });
       const userId = localStorage.getItem('user_id');
 
+      // Récupère toutes les critiques
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
 
+      // Récupère toutes les pépites
       const response = await getAllGoldNuggetsOfUser(displayType, userId);
       setGoldenMovies(response);
+
+      // Compte le nombre de critiques et de pépites
+      countCriticsAndGold();
     } catch (error) {
       if (error.response.status === 409) {
         setNewCriticInfo({ info: true, message: error.response.data });
@@ -121,6 +128,9 @@ const CriticAdvicesComponent = ({
 
       const response = await getAllGoldNuggetsOfUser(displayType, userId);
       setGoldenMovies(response);
+
+      // Compte le nombre de critiques et de pépites
+      countCriticsAndGold();
     } catch (error) {
       console.log('erreur dans la modification', error);
       setNewCriticError({ error: true, message: error });
@@ -327,7 +337,7 @@ CriticAdvicesComponent.propTypes = {
   setNewCriticSuccess: PropTypes.func,
   criticInfos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
-  chosenUser: PropTypes.object.isRequired,
+  chosenUser: PropTypes.object,
 };
 
 export default CriticAdvicesComponent;

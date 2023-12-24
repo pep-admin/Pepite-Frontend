@@ -19,7 +19,11 @@ import { GoldNuggetIcon } from '@utils/styledComponent';
 import apiBaseUrl from '@utils/request/config';
 import FriendRequestBtn from '@utils/FriendRequestBtn';
 
-const ContactsSuggestions = ({ user }) => {
+const ContactsSuggestions = ({
+  user,
+  friendRequestList,
+  getFriendRequests,
+}) => {
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -107,6 +111,8 @@ const ContactsSuggestions = ({ user }) => {
             anchorEl={anchorEl}
             setAnchorEl={setAnchorEl}
             receiverId={user.id}
+            friendRequestList={friendRequestList}
+            getFriendRequests={getFriendRequests}
           />
         </CardActions>
         <Box
@@ -139,6 +145,8 @@ const ContactsSuggestions = ({ user }) => {
 
 ContactsSuggestions.propTypes = {
   user: PropTypes.object.isRequired,
+  friendRequestList: PropTypes.array,
+  getFriendRequests: PropTypes.func.isRequired,
 };
 
 export default ContactsSuggestions;

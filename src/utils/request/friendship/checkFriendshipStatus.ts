@@ -8,7 +8,7 @@ export const checkFriendshipStatus = async receiverId => {
       withCredentials: true,
     });
 
-    return response.data.status;
+    return response.data;
   } catch (error) {
     console.log("erreur dans la vérification du statut de l'amitié :", error);
   }

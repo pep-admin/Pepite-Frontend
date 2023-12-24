@@ -8,7 +8,7 @@ import apiBaseUrl from '@utils/request/config';
 // Import des icônes
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
-const ContactsFriendRequests = ({ user }) => {
+const ContactsMainItem = ({ user, isLast }) => {
   return (
     <>
       <Stack direction="row" justifyContent="space-between">
@@ -63,13 +63,14 @@ const ContactsFriendRequests = ({ user }) => {
           />
         </Stack>
       </Stack>
-      <Divider />
+      {!isLast ? <Divider /> : null}
     </>
   );
 };
 
-ContactsFriendRequests.propTypes = {
+ContactsMainItem.propTypes = {
   user: PropTypes.object.isRequired,
+  isLast: PropTypes.bool.isRequired,
 };
 
-export default ContactsFriendRequests;
+export default ContactsMainItem;

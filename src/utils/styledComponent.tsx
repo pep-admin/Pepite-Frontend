@@ -5,6 +5,7 @@ import { createSvgIcon } from '@mui/material/utils';
 interface ItemProps {
   customheight?: string | number;
   customwidth?: string | number;
+  maxheight?: string | number;
   minheight?: string | number;
   padding?: string | number;
   margintop?: string | number;
@@ -24,6 +25,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
     theme,
     customheight,
     customwidth,
+    maxheight,
     minheight,
     padding,
     margintop,
@@ -37,6 +39,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
   }) => ({
     height: customheight || 'auto',
     width: customwidth || 'auto',
+    maxHeight: maxheight || 'auto',
     minHeight: minheight || 'auto',
     padding: padding || 'auto',
     marginTop: margintop || 'auto',

@@ -1,10 +1,10 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const validateFriendship = async receiverId => {
+export const handleFriendship = async (receiverId, choice) => {
   await axios.patch(
     `${apiBaseUrl}/friendship/accept`,
-    { receiverId: receiverId },
+    { receiverId: receiverId, choice: choice },
     { withCredentials: true },
   );
 };

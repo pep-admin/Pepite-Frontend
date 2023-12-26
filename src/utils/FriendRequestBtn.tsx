@@ -13,9 +13,10 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 // Import des requêtes
 import { requestNewFriend } from './request/friendship/requestNewFriend';
 import { checkFriendshipStatus } from './request/friendship/checkFriendshipStatus';
-import { validateFriendship } from './request/friendship/validateFriendship';
+import { handleFriendship } from '@utils/request/friendship/handleFriendship';
 
 const FriendRequestBtn = ({
+  page,
   anchorEl,
   setAnchorEl,
   receiverId,
@@ -55,8 +56,8 @@ const FriendRequestBtn = ({
   };
 
   // Accepte une demande d'ami
-  const acceptFriendRequest = async () => {
-    await validateFriendship(receiverId);
+  const acceptFriendRequest = async choice => {
+    await handleFriendship(receiverId, choice);
     handleClose();
     checkStatus(); // Actualise le status d'amitié accepté
     getFriendRequests();
@@ -64,6 +65,8 @@ const FriendRequestBtn = ({
 
   // Si l'utilisateur connecté a reçu une demande d'amitié, on affichera le bouton "accepter"
   useEffect(() => {
+    if (page === 'profil') return;
+
     const isReceiver = friendRequestList.some(
       request => request.id === receiverId,
     );
@@ -111,7 +114,7 @@ const FriendRequestBtn = ({
               direction="row"
               alignItems="center"
               columnGap="7px"
-              onClick={() => acceptFriendRequest()}
+              onClick={() => acceptFriendRequest('accepted')}
             >
               <VerifiedIcon sx={{ color: '#ababab', fontSize: '22px' }} />
               {'Accepter'}
@@ -163,7 +166,8 @@ FriendRequestBtn.propTypes = {
   ]),
   setAnchorEl: PropTypes.func.isRequired,
   friendRequestList: PropTypes.array,
-  getFriendRequests: PropTypes.func.isRequired,
+  getFriendRequests: PropTypes.func,
+  page: PropTypes.string.isRequired,
 };
 
 export default FriendRequestBtn;

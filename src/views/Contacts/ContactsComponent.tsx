@@ -1,25 +1,31 @@
 // Import des libs externes
 import { Container, Stack, Typography, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Import des composants internes
 import Header from '@utils/Header';
 import { Item } from '@utils/styledComponent';
 import SearchBar from '@utils/SearchBar';
 import ContactsSuggestions from './ContactsSuggestions';
-import ContactsFriendRequests from './ContactsMainItem';
+import ContactsMainItem from './ContactsMainItem';
 
 // Import des requêtes
 import { getTenUsers } from '@utils/request/users/getTenUsers';
 import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
+import { getFriendsList } from '@utils/request/friendship/getFriendsList';
+// import { handleFriendship } from '@utils/request/friendship/handleFriendship';
 
 const ContactsComponent = () => {
+  const { id } = useParams();
+
   // Utilisateur connecté
   const [userInfos, setUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
   const [usersSuggestion, setUsersSuggestion] = useState([]);
   const [friendRequestList, setFriendRequestList] = useState([]);
+  const [friendsList, setFriendsList] = useState([]);
 
   // Récupération de dix utilisateurs pour les suggestions
   const getUsers = async () => {
@@ -29,16 +35,20 @@ const ContactsComponent = () => {
 
   // Récupération des demandes d'amis
   const getFriendRequests = async () => {
-    const list = await getFriendRequestList();
-    setFriendRequestList(list);
+    const askList = await getFriendRequestList();
+    setFriendRequestList(askList);
   };
 
   // Récupération de la liste d'amis
-  // const getFriendList = async () => {};
+  const getFriendsNumber = async () => {
+    const friendsList = await getFriendsList(id);
+    setFriendsList(friendsList);
+  };
 
   useEffect(() => {
     getUsers();
     getFriendRequests();
+    getFriendsNumber();
   }, []);
 
   return (
@@ -111,14 +121,17 @@ const ContactsComponent = () => {
               direction="column"
               padding="6px"
               rowGap="6px"
-              sx={{ overflowX: 'scroll' }}
+              sx={{ overflowY: 'scroll' }}
             >
               {friendRequestList.length ? (
                 friendRequestList.map((user, index) => {
                   return (
-                    <ContactsFriendRequests
+                    <ContactsMainItem
                       key={user.id}
+                      type={'requests'}
                       user={user}
+                      getFriendRequests={getFriendRequests}
+                      getFriendsNumber={getFriendsNumber}
                       isLast={index === friendRequestList.length - 1}
                     />
                   );
@@ -167,12 +180,43 @@ const ContactsComponent = () => {
               direction="column"
               padding="6px"
               rowGap="6px"
-              sx={{ overflowX: 'scroll' }}
+              sx={{ overflowY: 'scroll' }}
             >
-              {/* {friendRequestList &&
-                friendRequestList.map((user, index) => {
-                  return <ContactsFriendRequests key={user.id} user={user} isLast={index === friendRequestList.length - 1} />;
-                })} */}
+              {friendsList.length ? (
+                friendsList.map((user, index) => {
+                  return (
+                    <ContactsMainItem
+                      key={user.id}
+                      type={'friends'}
+                      user={user}
+                      getFriendRequests={null}
+                      getFriendsNumber={null}
+                      isLast={index === friendsList.length - 1}
+                    />
+                  );
+                })
+              ) : (
+                <Stack direction="column">
+                  <Typography variant="body1" component="p">
+                    <>
+                      <span style={{ fontWeight: 'bold' }}>
+                        {"Aucune demande d'amitié "}
+                      </span>
+                      {'pour le moment.'}
+                    </>
+                  </Typography>
+                  <Typography variant="body2" component="p">
+                    <>
+                      <span style={{ fontWeight: 'bold' }}>
+                        Ajoutez vos amis{' '}
+                      </span>
+                      ou
+                      <span style={{ fontWeight: 'bold' }}> suivez </span>de
+                      nouvelles personnes !
+                    </>
+                  </Typography>
+                </Stack>
+              )}
             </Stack>
           </Item>
         </Stack>

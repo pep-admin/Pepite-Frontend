@@ -268,9 +268,11 @@ const ProfilComponent = () => {
                 onClick={e => handleClick(e)}
               />
               <FriendRequestBtn
+                page={'profil'}
                 anchorEl={anchorEl}
                 setAnchorEl={setAnchorEl}
                 receiverId={id}
+                getFriendRequests={null}
               />
             </>
           ) : null}

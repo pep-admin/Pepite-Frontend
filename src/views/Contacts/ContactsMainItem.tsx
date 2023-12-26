@@ -7,8 +7,32 @@ import apiBaseUrl from '@utils/request/config';
 
 // Import des icônes
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useState } from 'react';
 
-const ContactsMainItem = ({ user, isLast }) => {
+// Import des requêtes
+import { handleFriendship } from '@utils/request/friendship/handleFriendship';
+
+const ContactsMainItem = ({
+  type,
+  user,
+  getFriendRequests,
+  getFriendsNumber,
+  isLast,
+}) => {
+  const [isCloseFriend, setIsCloseFriend] = useState(false);
+
+  const handleCloseFriend = async () => {
+    setIsCloseFriend(!isCloseFriend);
+  };
+
+  // Accepte une demande d'ami
+  const handleFriendRequest = async choice => {
+    await handleFriendship(user.id, choice);
+    getFriendRequests(); // Supprime la demande de la liste des demandes d'amis
+    getFriendsNumber(); // Ajoute le nouvel ami dans la liste d'amis
+  };
+
   return (
     <>
       <Stack direction="row" justifyContent="space-between">
@@ -40,13 +64,20 @@ const ContactsMainItem = ({ user, isLast }) => {
             </Typography>
           </Stack>
         </Stack>
-        <Stack direction="row" spacing={3} alignItems="center">
+        <Stack direction="row" spacing={2} alignItems="center">
+          {type === 'friends' ? (
+            <FavoriteIcon
+              fontSize="small"
+              sx={{ color: isCloseFriend ? '#F29E50' : '#B9B9B9' }}
+              onClick={() => handleCloseFriend()}
+            />
+          ) : null}
           <Button
             variant="contained"
-            color="primary"
+            color={type === 'requests' ? 'primary' : 'secondary'}
             sx={{
-              height: '25px',
-              width: '57px',
+              height: '20px',
+              width: '60px',
               minWidth: 'auto',
               color: '#fff',
               padding: '0',
@@ -54,12 +85,18 @@ const ContactsMainItem = ({ user, isLast }) => {
               fontWeight: 'normal',
               textTransform: 'initial',
             }}
+            onClick={() =>
+              type === 'requests' ? handleFriendRequest('accepted') : null
+            }
           >
-            {'Accepter'}
+            {type === 'requests' ? 'Accepter' : 'Ami(e)'}
           </Button>
           <DeleteOutlineOutlinedIcon
             fontSize="small"
-            sx={{ color: '#8E8E8E' }}
+            sx={{ color: '#B9B9B9' }}
+            onClick={() =>
+              type === 'requests' ? handleFriendRequest('declined') : null
+            }
           />
         </Stack>
       </Stack>
@@ -71,6 +108,9 @@ const ContactsMainItem = ({ user, isLast }) => {
 ContactsMainItem.propTypes = {
   user: PropTypes.object.isRequired,
   isLast: PropTypes.bool.isRequired,
+  type: PropTypes.string.isRequired,
+  getFriendRequests: PropTypes.func,
+  getFriendsNumber: PropTypes.func,
 };
 
 export default ContactsMainItem;

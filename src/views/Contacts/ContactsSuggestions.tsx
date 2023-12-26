@@ -108,6 +108,7 @@ const ContactsSuggestions = ({
             {'Ajouter'}
           </Button>
           <FriendRequestBtn
+            page={'contacts'}
             anchorEl={anchorEl}
             setAnchorEl={setAnchorEl}
             receiverId={user.id}

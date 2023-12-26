@@ -42,6 +42,8 @@ const ContactsComponent = () => {
   // Récupération de la liste d'amis
   const getFriendsNumber = async () => {
     const friendsList = await getFriendsList(id);
+    console.log('liste amis', friendsList);
+
     setFriendsList(friendsList);
   };
 
@@ -112,7 +114,14 @@ const ContactsComponent = () => {
               <Typography variant="body2" component="p" fontWeight="bold">
                 {"Demandes d'amitié"}
               </Typography>
-              <Typography variant="body2" component="p" fontWeight="bold">
+              <Typography
+                variant="body2"
+                component="p"
+                fontWeight="bold"
+                sx={{
+                  cursor: 'pointer',
+                }}
+              >
                 {'Voir toutes'}
               </Typography>
             </Stack>
@@ -148,12 +157,15 @@ const ContactsComponent = () => {
                   </Typography>
                   <Typography variant="body2" component="p">
                     <>
-                      <span style={{ fontWeight: 'bold' }}>
-                        Ajoutez vos amis{' '}
+                      <span style={{ fontWeight: 'bold', color: '#F29E50' }}>
+                        {'Ajoutez vos amis '}
                       </span>
                       ou
-                      <span style={{ fontWeight: 'bold' }}> suivez </span>de
-                      nouvelles personnes !
+                      <span style={{ fontWeight: 'bold', color: '#24A5A5' }}>
+                        {' '}
+                        suivez{' '}
+                      </span>
+                      de nouvelles personnes !
                     </>
                   </Typography>
                 </Stack>
@@ -169,9 +181,16 @@ const ContactsComponent = () => {
               padding="0 13px"
             >
               <Typography variant="body2" component="p" fontWeight="bold">
-                {'Amis'}
+                {friendsList.length} ami{friendsList.length > 1 ? 's' : ''}
               </Typography>
-              <Typography variant="body2" component="p" fontWeight="bold">
+              <Typography
+                variant="body2"
+                component="p"
+                fontWeight="bold"
+                sx={{
+                  cursor: 'pointer',
+                }}
+              >
                 {'Voir tous'}
               </Typography>
             </Stack>

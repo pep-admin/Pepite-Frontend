@@ -8,10 +8,11 @@ import apiBaseUrl from '@utils/request/config';
 // Import des icônes
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Import des requêtes
 import { handleFriendship } from '@utils/request/friendship/handleFriendship';
+import { handleCloseFriendRequest } from '@utils/request/friendship/handleCloseFriend';
 
 const ContactsMainItem = ({
   type,
@@ -21,9 +22,17 @@ const ContactsMainItem = ({
   isLast,
 }) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
+  const isCloseRef = useRef(false);
 
   const handleCloseFriend = async () => {
     setIsCloseFriend(!isCloseFriend);
+    isCloseRef.current = !isCloseRef.current;
+
+    if (isCloseRef.current) {
+      await handleCloseFriendRequest(user.id, 1);
+    } else {
+      await handleCloseFriendRequest(user.id, 0);
+    }
   };
 
   // Accepte une demande d'ami
@@ -32,6 +41,16 @@ const ContactsMainItem = ({
     getFriendRequests(); // Supprime la demande de la liste des demandes d'amis
     getFriendsNumber(); // Ajoute le nouvel ami dans la liste d'amis
   };
+
+  useEffect(() => {
+    if (user.is_close === 1) {
+      setIsCloseFriend(true);
+      isCloseRef.current = true;
+    } else {
+      setIsCloseFriend(false);
+      isCloseRef.current = false;
+    }
+  }, []);
 
   return (
     <>

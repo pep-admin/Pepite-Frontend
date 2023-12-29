@@ -1,6 +1,10 @@
 //  Import des libs externes
 import { Stack, Avatar, Typography, Divider, Button } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+
+// Import des composants internes
+import CustomAlert from '@utils/CustomAlert';
 
 // Import des variables d'environnement
 import apiBaseUrl from '@utils/request/config';
@@ -11,22 +15,27 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useEffect, useRef, useState } from 'react';
 
 // Import des requêtes
-import { handleFriendship } from '@utils/request/friendship/handleFriendship';
+import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
 import { handleCloseFriendRequest } from '@utils/request/friendship/handleCloseFriend';
 import { removeFriendRequest } from '@utils/request/friendship/removeFriendRequest';
-import CustomAlert from '@utils/CustomAlert';
+import { unfollowSomeone } from '@utils/request/followed/unfollowSomeone';
+import { declineFriendship } from '@utils/request/friendship/declineFriendship';
 
 const ContactsMainItem = ({
   type,
   user,
   getFriendRequests,
   getFriendsNumber,
+  getFollowed,
   isLast,
 }) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
+  const [showRemoveFollowedModal, setShowRemoveFollowedModal] = useState(false);
 
   const isCloseRef = useRef(false);
+
+  const navigate = useNavigate();
 
   const handleCloseFriend = async () => {
     setIsCloseFriend(!isCloseFriend);
@@ -39,18 +48,31 @@ const ContactsMainItem = ({
     }
   };
 
-  // Accepte / refuse une demande d'ami
-  const handleFriendRequest = async choice => {
-    await handleFriendship(user.id, choice);
-    getFriendRequests(); // Supprime la demande de la liste des demandes d'amis
-    getFriendsNumber(); // Ajoute le nouvel ami dans la liste d'amis
+  // Accepte une demande d'ami
+  const acceptFriendRequest = async () => {
+    await acceptFriendship(user.id);
+    getFriendRequests(); // Met à jour la liste des demandes d'amis
+    getFriendsNumber(); // Met à jour la liste d'amis
+  };
+
+  // Refuse une demande d'ami
+  const declineFriendRequest = async () => {
+    await declineFriendship(user.id);
+    getFriendRequests(); // Met à jour la liste des demandes d'amis
+    getFriendsNumber(); // Met à jour la liste d'amis
   };
 
   // Supprime un ami de la liste d'amis
   const removeFriendFromList = async () => {
     await removeFriendRequest(user.id);
-    getFriendRequests(); // Supprime la demande de la liste des demandes d'amis
+    getFriendRequests(); // Met à jour la liste des demandes d'amis
     getFriendsNumber(); // Met à jour la liste des amis
+  };
+
+  // Supprime un suivi de la liste des suivis
+  const removeFollowedFromList = async () => {
+    await unfollowSomeone(user.id);
+    getFollowed();
   };
 
   useEffect(() => {
@@ -63,19 +85,27 @@ const ContactsMainItem = ({
     }
   }, []);
 
-  useEffect(() => {
-    console.log('modale', showRemoveFriendModal);
-  }, [showRemoveFriendModal]);
-
   return (
     <>
-      {showRemoveFriendModal ? (
+      {showRemoveFriendModal || showRemoveFollowedModal ? (
         <CustomAlert
           type="warning"
-          message={`êtes vous sûr(e) de vouloir retirer ${user.first_name} ${user.last_name} de votre liste d'amis?`}
+          message={
+            showRemoveFriendModal
+              ? `Êtes vous sûr(e) de vouloir retirer ${user.first_name} ${user.last_name} de votre liste d'amis?`
+              : `Êtes vous sûr(e) de ne plus vouloir suivre ${user.first_name} ${user.last_name}?`
+          }
           setOnSuccess={null}
-          setShowModal={setShowRemoveFriendModal}
-          confirmation={removeFriendFromList}
+          setShowModal={
+            showRemoveFriendModal
+              ? setShowRemoveFriendModal
+              : setShowRemoveFollowedModal
+          }
+          confirmation={
+            showRemoveFriendModal
+              ? removeFriendFromList
+              : removeFollowedFromList
+          }
         />
       ) : null}
       <Stack direction="row" justifyContent="space-between">
@@ -93,6 +123,7 @@ const ContactsMainItem = ({
               width: 50,
               height: 50,
             }}
+            onClick={() => navigate(`/profil/${user.id}`)}
           />
           <Stack
             direction="column"
@@ -117,8 +148,13 @@ const ContactsMainItem = ({
           ) : null}
           <Button
             variant="contained"
-            color={type === 'requests' ? 'primary' : 'secondary'}
             sx={{
+              backgroundColor:
+                type === 'requests'
+                  ? '#0E6666 !important'
+                  : type === 'followed'
+                  ? '#F29E50 !important'
+                  : '#24A5A5 !important',
               height: '20px',
               width: '60px',
               minWidth: 'auto',
@@ -128,20 +164,27 @@ const ContactsMainItem = ({
               fontWeight: 'normal',
               textTransform: 'initial',
             }}
-            onClick={() =>
-              type === 'requests' ? handleFriendRequest('accepted') : null
-            }
+            onClick={() => (type === 'requests' ? acceptFriendRequest() : null)}
           >
-            {type === 'requests' ? 'Accepter' : 'Ami(e)'}
+            {type === 'requests'
+              ? 'Accepter'
+              : type === 'friends'
+              ? 'Ami(e)'
+              : 'Suivi(e)'}
           </Button>
           <DeleteOutlineOutlinedIcon
             fontSize="small"
             sx={{ color: '#B9B9B9' }}
             onClick={() =>
+              // Suppression de la demande d'amitié reçue
               type === 'requests'
-                ? handleFriendRequest('declined')
-                : type === 'friends'
+                ? declineFriendRequest()
+                : // Apparition de la modale demandant la confirmation de suppression d'un ami
+                type === 'friends'
                 ? setShowRemoveFriendModal(!showRemoveFriendModal)
+                : // Apparition de la modale demandant la confirmation de ne plus suivre quelqu'un
+                type === 'followed'
+                ? setShowRemoveFollowedModal(!showRemoveFollowedModal)
                 : null
             }
           />
@@ -158,6 +201,7 @@ ContactsMainItem.propTypes = {
   type: PropTypes.string.isRequired,
   getFriendRequests: PropTypes.func,
   getFriendsNumber: PropTypes.func,
+  getFollowed: PropTypes.func,
 };
 
 export default ContactsMainItem;

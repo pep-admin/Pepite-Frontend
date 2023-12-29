@@ -30,6 +30,7 @@ import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent'
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 import PersonAddAlt1TwoToneIcon from '@mui/icons-material/PersonAddAlt1TwoTone';
+// import VerifiedTwoToneIcon from '@mui/icons-material/VerifiedTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -77,7 +78,7 @@ const ProfilComponent = () => {
   const [progress, setProgress] = useState(0);
   const [criticsNumber, setCriticsNumber] = useState(0); // Nombre de critiques de l'utilisateur
   const [goldNumber, setGoldNumber] = useState(0); // Nombre de pépites de l'utilisateur
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Ancre du bouton d'ajout en ami
+  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null); // Ancre du bouton d'ajout en ami
   const [modifyCoverPic, setModifyCoverPic] = useState({
     state: false,
     type: null,

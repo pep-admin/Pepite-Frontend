@@ -14,7 +14,7 @@ import ContactsMainItem from './ContactsMainItem';
 import { getTenUsers } from '@utils/request/users/getTenUsers';
 import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
 import { getFriendsList } from '@utils/request/friendship/getFriendsList';
-// import { handleFriendship } from '@utils/request/friendship/handleFriendship';
+import { getFollowedList } from '@utils/request/followed/getFollowedList';
 
 const ContactsComponent = () => {
   const { id } = useParams();
@@ -26,6 +26,7 @@ const ContactsComponent = () => {
   const [usersSuggestion, setUsersSuggestion] = useState([]);
   const [friendRequestList, setFriendRequestList] = useState([]);
   const [friendsList, setFriendsList] = useState([]);
+  const [followedList, setFollowedList] = useState([]);
 
   // Récupération de dix utilisateurs pour les suggestions
   const getUsers = async () => {
@@ -45,11 +46,22 @@ const ContactsComponent = () => {
     setFriendsList(friendsList);
   };
 
+  // Récupération des suivis
+  const getFollowed = async () => {
+    const followedList = await getFollowedList(id);
+    setFollowedList(followedList);
+  };
+
   useEffect(() => {
     getUsers();
     getFriendRequests();
     getFriendsNumber();
+    getFollowed();
   }, []);
+
+  useEffect(() => {
+    console.log('la liste des suivis', followedList);
+  }, [followedList]);
 
   return (
     <>
@@ -97,11 +109,13 @@ const ContactsComponent = () => {
                       friendRequestList={friendRequestList}
                       getFriendRequests={getFriendRequests}
                       getFriendsNumber={getFriendsNumber}
+                      getFollowed={getFollowed}
                     />
                   );
                 })}
             </Stack>
           </Item>
+          {/* Demandes d'amis */}
           <Item overflow="hidden" maxheight="250px">
             <Stack
               direction="row"
@@ -111,7 +125,8 @@ const ContactsComponent = () => {
               padding="0 13px"
             >
               <Typography variant="body2" component="p" fontWeight="bold">
-                {"Demandes d'amitié"}
+                {friendRequestList.length} {"demande d'amitié"}
+                {friendRequestList.length > 1 ? 's' : ''}
               </Typography>
               <Typography
                 variant="body2"
@@ -140,37 +155,26 @@ const ContactsComponent = () => {
                       user={user}
                       getFriendRequests={getFriendRequests}
                       getFriendsNumber={getFriendsNumber}
+                      getFollowed={null}
                       isLast={index === friendRequestList.length - 1}
                     />
                   );
                 })
               ) : (
                 <Stack direction="column">
-                  <Typography variant="body1" component="p">
-                    <>
-                      <span style={{ fontWeight: 'bold' }}>
-                        {"Aucune demande d'amitié "}
-                      </span>
-                      {'pour le moment.'}
-                    </>
-                  </Typography>
                   <Typography variant="body2" component="p">
                     <>
-                      <span style={{ fontWeight: 'bold', color: '#F29E50' }}>
-                        {'Ajoutez vos amis '}
+                      <span style={{ fontWeight: 'bold' }}>
+                        {'Aucune demande en ami '}
                       </span>
-                      ou
-                      <span style={{ fontWeight: 'bold', color: '#24A5A5' }}>
-                        {' '}
-                        suivez{' '}
-                      </span>
-                      de nouvelles personnes !
+                      {'pour le moment.'}
                     </>
                   </Typography>
                 </Stack>
               )}
             </Stack>
           </Item>
+          {/* Amis */}
           <Item overflow="hidden" maxheight="250px">
             <Stack
               direction="row"
@@ -209,28 +213,75 @@ const ContactsComponent = () => {
                       user={user}
                       getFriendRequests={getFriendRequests}
                       getFriendsNumber={getFriendsNumber}
+                      getFollowed={null}
                       isLast={index === friendsList.length - 1}
                     />
                   );
                 })
               ) : (
                 <Stack direction="column">
-                  <Typography variant="body1" component="p">
+                  <Typography variant="body2" component="p">
                     <>
-                      <span style={{ fontWeight: 'bold' }}>
-                        {"Aucune demande d'amitié "}
-                      </span>
-                      {'pour le moment.'}
+                      <span style={{ fontWeight: 'bold' }}>{'Aucun ami '}</span>
+                      {"ne figure encore dans votre liste d'amis."}
                     </>
                   </Typography>
+                </Stack>
+              )}
+            </Stack>
+          </Item>
+          {/* Suivis */}
+          <Item overflow="hidden" maxheight="250px">
+            <Stack
+              direction="row"
+              height="25px"
+              alignItems="center"
+              justifyContent="space-between"
+              padding="0 13px"
+            >
+              <Typography variant="body2" component="p" fontWeight="bold">
+                {followedList.length} suivi{followedList.length > 1 ? 's' : ''}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="p"
+                fontWeight="bold"
+                sx={{
+                  cursor: 'pointer',
+                }}
+              >
+                {'Voir tous'}
+              </Typography>
+            </Stack>
+            <Divider />
+            <Stack
+              direction="column"
+              padding="6px"
+              rowGap="6px"
+              sx={{ overflowY: 'scroll' }}
+            >
+              {followedList.length ? (
+                followedList.map((user, index) => {
+                  return (
+                    <ContactsMainItem
+                      key={user.id}
+                      type={'followed'}
+                      user={user}
+                      getFriendRequests={getFriendRequests}
+                      getFriendsNumber={getFriendsNumber}
+                      getFollowed={getFollowed}
+                      isLast={index === followedList.length - 1}
+                    />
+                  );
+                })
+              ) : (
+                <Stack direction="column">
                   <Typography variant="body2" component="p">
                     <>
                       <span style={{ fontWeight: 'bold' }}>
-                        Ajoutez vos amis{' '}
+                        {'Vous ne suivez encore personne '}
                       </span>
-                      ou
-                      <span style={{ fontWeight: 'bold' }}> suivez </span>de
-                      nouvelles personnes !
+                      {'pour le moment.'}
                     </>
                   </Typography>
                 </Stack>

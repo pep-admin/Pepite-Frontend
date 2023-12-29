@@ -24,10 +24,11 @@ const ContactsSuggestions = ({
   friendRequestList,
   getFriendRequests,
   getFriendsNumber,
+  getFollowed,
 }) => {
   const navigate = useNavigate();
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -116,6 +117,7 @@ const ContactsSuggestions = ({
             friendRequestList={friendRequestList}
             getFriendRequests={getFriendRequests}
             getFriendsNumber={getFriendsNumber}
+            getFollowed={getFollowed}
           />
         </CardActions>
         <Box
@@ -151,6 +153,7 @@ ContactsSuggestions.propTypes = {
   friendRequestList: PropTypes.array,
   getFriendRequests: PropTypes.func.isRequired,
   getFriendsNumber: PropTypes.func.isRequired,
+  getFollowed: PropTypes.func.isRequired,
 };
 
 export default ContactsSuggestions;

@@ -172,7 +172,9 @@ const CriticAdvicesReviewModal = ({
                   fontWeight="bold"
                   fontStyle="italic"
                 >
-                  {`- ${userInfos.first_name} ${userInfos.last_name} -`}
+                  {userInfos.id === parseInt(id, 10)
+                    ? `- ${userInfos.first_name} ${userInfos.last_name} -`
+                    : `- ${chosenUser.first_name} ${chosenUser.last_name} -`}
                 </Typography>
               </Typography>
             )}

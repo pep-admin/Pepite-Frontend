@@ -171,7 +171,7 @@ const ProfilSuggestedNotes = ({
                         variant="body2"
                         component="span"
                         fontWeight="bold"
-                        sx={{ color: '#faaf00' }}
+                        sx={{ color: '#FFDA1B' }}
                       >
                         {convertRating(movie.vote_average)}
                       </Typography>

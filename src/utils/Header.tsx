@@ -181,6 +181,8 @@ const Header = ({ userInfos }) => {
                 onClick={() => {
                   if (page === 'Swipe') {
                     navigate('/swipe');
+                  } else if (page === 'Mes contacts') {
+                    navigate(`/contacts/${userId}`);
                   }
                   handleCloseNavMenu();
                 }}
@@ -195,7 +197,16 @@ const Header = ({ userInfos }) => {
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Badge badgeContent={4} color="primary">
+              <Badge
+                badgeContent={4}
+                color="primary"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    top: '6px',
+                    right: '2px',
+                  },
+                }}
+              >
                 <Avatar
                   alt={`Photo de profil de ${userInfos.first_name}`}
                   src={

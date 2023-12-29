@@ -27,7 +27,10 @@ import SearchBar from '@utils/SearchBar';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 
 // Import des icônes
+import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
+import PersonAddAlt1TwoToneIcon from '@mui/icons-material/PersonAddAlt1TwoTone';
+// import VerifiedTwoToneIcon from '@mui/icons-material/VerifiedTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -37,13 +40,14 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 import apiBaseUrl from '@utils/request/config';
 import AccountUpdatePic from '@views/Account/AccountUpdatePic';
 import { getUser } from '@utils/request/users/getUser';
+import FriendRequestBtn from '@utils/FriendRequestBtn';
 
 interface Picture {
   id: number;
   user_id: number;
   filePath: string;
   uploaded_at: string;
-  isActive: boolean;
+  isActive: number;
 }
 
 interface User {
@@ -69,11 +73,12 @@ const ProfilComponent = () => {
   // Utilisateur externe
   const [chosenUser, setChosenUser] = useState<User | null>(null);
 
-  const [userCritics, setUserCritics] = useState([]);
-  const [goldenMovies, setGoldenMovies] = useState([]);
+  const [userCritics, setUserCritics] = useState([]); // Toutes les critiques de l'utilisateur du profil
+  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
   const [progress, setProgress] = useState(0);
-  const [criticsNumber, setCriticsNumber] = useState(0);
-  const [goldNumber, setGoldNumber] = useState(0);
+  const [criticsNumber, setCriticsNumber] = useState(0); // Nombre de critiques de l'utilisateur
+  const [goldNumber, setGoldNumber] = useState(0); // Nombre de pépites de l'utilisateur
+  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null); // Ancre du bouton d'ajout en ami
   const [modifyCoverPic, setModifyCoverPic] = useState({
     state: false,
     type: null,
@@ -92,11 +97,13 @@ const ProfilComponent = () => {
     message: null,
   });
 
+  // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
   const fetchChosenUser = async user_id => {
     const user = await getUser(user_id);
     setChosenUser(user);
   };
 
+  // Récupère toutes les critiques de l'utilisateur du profil
   const fetchCritics = useCallback(async (type: string) => {
     try {
       const criticData = await getAllCriticsOfUser(id, type);
@@ -153,6 +160,10 @@ const ProfilComponent = () => {
     countCriticsAndGold();
   }, [id, userInfos]);
 
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
   useEffect(() => {
     console.log('info user externe', chosenUser);
   }, [chosenUser]);
@@ -175,7 +186,6 @@ const ProfilComponent = () => {
           position: 'relative',
           borderRadius: '0',
         }}
-        onClick={() => setModifyCoverPic({ state: true, type: 'couverture' })}
       >
         <CardMedia
           image={
@@ -186,7 +196,9 @@ const ProfilComponent = () => {
                 }`
               : // Si profil d'un autre utilisateur et qu'il a choisi une photo de couverture
               userInfos.id !== parseInt(id, 10) && chosenUser?.coverPics.length
-              ? `${apiBaseUrl}/uploads/${chosenUser.coverPics[0].filePath}`
+              ? `${apiBaseUrl}/uploads/${
+                  chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
+                }`
               : // Si l'utilisateur n'a pas choisi de photo de couverture
                 'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
           }
@@ -205,12 +217,29 @@ const ProfilComponent = () => {
             background:
               'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(14,14,14,0.37) 70%)',
           }}
-        ></Box>
+        >
+          <AddPhotoAlternateTwoToneIcon
+            fontSize="medium"
+            sx={{
+              position: 'absolute',
+              right: '10px',
+              top: '10px',
+              color: '#585858',
+              cursor: 'pointer',
+            }}
+            onClick={() =>
+              setModifyCoverPic({ state: true, type: 'couverture' })
+            }
+          />
+        </Box>
         <Box
           position="absolute"
           bottom="0"
           right="0"
           width="calc(100% - 108px)"
+          display="flex"
+          alignItems="center"
+          columnGap="5px"
         >
           <Typography
             component="h2"
@@ -227,6 +256,27 @@ const ProfilComponent = () => {
               ? `${chosenUser.first_name} ${chosenUser.last_name}`
               : null}
           </Typography>
+          {userInfos.id !== parseInt(id, 10) ? (
+            <>
+              <PersonAddAlt1TwoToneIcon
+                sx={{
+                  fontSize: '23.5px',
+                  color: '#0e6666',
+                  position: 'relative',
+                  bottom: '1.1px',
+                  cursor: 'pointer',
+                }}
+                onClick={e => handleClick(e)}
+              />
+              <FriendRequestBtn
+                page={'profil'}
+                anchorEl={anchorEl}
+                setAnchorEl={setAnchorEl}
+                receiverId={id}
+                getFriendRequests={null}
+              />
+            </>
+          ) : null}
         </Box>
       </Card>
       <Container
@@ -352,6 +402,7 @@ const ProfilComponent = () => {
                 setNewCriticSuccess={setNewCriticSuccess}
                 criticInfos={null}
                 chosenUser={chosenUser}
+                countCriticsAndGold={countCriticsAndGold}
               />
             ) : null}
             {newCriticError.error &&
@@ -443,6 +494,7 @@ const ProfilComponent = () => {
                       setNewCriticSuccess={setNewCriticSuccess}
                       criticInfos={critic}
                       chosenUser={chosenUser}
+                      countCriticsAndGold={countCriticsAndGold}
                     />
                   );
                 })

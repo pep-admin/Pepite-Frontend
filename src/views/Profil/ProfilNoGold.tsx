@@ -30,7 +30,7 @@ const ProfilNoGold = ({ userInfos, chosenUser }) => {
             </>
           ) : (
             <>
-              N&apos;hésitez pas à
+              N&apos;hésitez pas à{' '}
               <span style={{ fontWeight: 'bold' }}>
                 lui conseiller un film !
               </span>

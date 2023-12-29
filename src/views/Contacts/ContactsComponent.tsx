@@ -42,8 +42,6 @@ const ContactsComponent = () => {
   // Récupération de la liste d'amis
   const getFriendsNumber = async () => {
     const friendsList = await getFriendsList(id);
-    console.log('liste amis', friendsList);
-
     setFriendsList(friendsList);
   };
 
@@ -98,6 +96,7 @@ const ContactsComponent = () => {
                       user={user}
                       friendRequestList={friendRequestList}
                       getFriendRequests={getFriendRequests}
+                      getFriendsNumber={getFriendsNumber}
                     />
                   );
                 })}
@@ -208,8 +207,8 @@ const ContactsComponent = () => {
                       key={user.id}
                       type={'friends'}
                       user={user}
-                      getFriendRequests={null}
-                      getFriendsNumber={null}
+                      getFriendRequests={getFriendRequests}
+                      getFriendsNumber={getFriendsNumber}
                       isLast={index === friendsList.length - 1}
                     />
                   );

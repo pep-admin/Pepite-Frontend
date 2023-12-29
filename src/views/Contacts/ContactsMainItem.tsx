@@ -13,6 +13,8 @@ import { useEffect, useRef, useState } from 'react';
 // Import des requêtes
 import { handleFriendship } from '@utils/request/friendship/handleFriendship';
 import { handleCloseFriendRequest } from '@utils/request/friendship/handleCloseFriend';
+import { removeFriendRequest } from '@utils/request/friendship/removeFriendRequest';
+import CustomAlert from '@utils/CustomAlert';
 
 const ContactsMainItem = ({
   type,
@@ -22,6 +24,8 @@ const ContactsMainItem = ({
   isLast,
 }) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
+  const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
+
   const isCloseRef = useRef(false);
 
   const handleCloseFriend = async () => {
@@ -35,11 +39,18 @@ const ContactsMainItem = ({
     }
   };
 
-  // Accepte une demande d'ami
+  // Accepte / refuse une demande d'ami
   const handleFriendRequest = async choice => {
     await handleFriendship(user.id, choice);
     getFriendRequests(); // Supprime la demande de la liste des demandes d'amis
     getFriendsNumber(); // Ajoute le nouvel ami dans la liste d'amis
+  };
+
+  // Supprime un ami de la liste d'amis
+  const removeFriendFromList = async () => {
+    await removeFriendRequest(user.id);
+    getFriendRequests(); // Supprime la demande de la liste des demandes d'amis
+    getFriendsNumber(); // Met à jour la liste des amis
   };
 
   useEffect(() => {
@@ -52,8 +63,21 @@ const ContactsMainItem = ({
     }
   }, []);
 
+  useEffect(() => {
+    console.log('modale', showRemoveFriendModal);
+  }, [showRemoveFriendModal]);
+
   return (
     <>
+      {showRemoveFriendModal ? (
+        <CustomAlert
+          type="warning"
+          message={`êtes vous sûr(e) de vouloir retirer ${user.first_name} ${user.last_name} de votre liste d'amis?`}
+          setOnSuccess={null}
+          setShowModal={setShowRemoveFriendModal}
+          confirmation={removeFriendFromList}
+        />
+      ) : null}
       <Stack direction="row" justifyContent="space-between">
         <Stack direction="row" spacing={2}>
           <Avatar
@@ -114,7 +138,11 @@ const ContactsMainItem = ({
             fontSize="small"
             sx={{ color: '#B9B9B9' }}
             onClick={() =>
-              type === 'requests' ? handleFriendRequest('declined') : null
+              type === 'requests'
+                ? handleFriendRequest('declined')
+                : type === 'friends'
+                ? setShowRemoveFriendModal(!showRemoveFriendModal)
+                : null
             }
           />
         </Stack>

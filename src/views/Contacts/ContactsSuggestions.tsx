@@ -23,6 +23,7 @@ const ContactsSuggestions = ({
   user,
   friendRequestList,
   getFriendRequests,
+  getFriendsNumber,
 }) => {
   const navigate = useNavigate();
 
@@ -114,6 +115,7 @@ const ContactsSuggestions = ({
             receiverId={user.id}
             friendRequestList={friendRequestList}
             getFriendRequests={getFriendRequests}
+            getFriendsNumber={getFriendsNumber}
           />
         </CardActions>
         <Box
@@ -148,6 +150,7 @@ ContactsSuggestions.propTypes = {
   user: PropTypes.object.isRequired,
   friendRequestList: PropTypes.array,
   getFriendRequests: PropTypes.func.isRequired,
+  getFriendsNumber: PropTypes.func.isRequired,
 };
 
 export default ContactsSuggestions;

@@ -22,6 +22,7 @@ const FriendRequestBtn = ({
   receiverId,
   friendRequestList,
   getFriendRequests,
+  getFriendsNumber,
 }) => {
   const [friendshipStatus, setFriendshipStatus] = useState({
     status: 'none',
@@ -72,9 +73,10 @@ const FriendRequestBtn = ({
     setReceiveFriendship(isReceiver);
   }, [friendRequestList]);
 
+  // A chaque fois qu'on récupère la liste des personnes suggérées, on met à jour le status (pas de demande, en attente, ou accepté )
   useEffect(() => {
     checkStatus();
-  }, []);
+  }, [getFriendsNumber]);
 
   return (
     <Menu
@@ -167,6 +169,7 @@ FriendRequestBtn.propTypes = {
   friendRequestList: PropTypes.array,
   getFriendRequests: PropTypes.func,
   page: PropTypes.string.isRequired,
+  getFriendsNumber: PropTypes.func.isRequired,
 };
 
 export default FriendRequestBtn;

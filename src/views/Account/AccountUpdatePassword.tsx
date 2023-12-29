@@ -89,12 +89,14 @@ const AccountUpdatePassword = ({
             type={'success'}
             message={'Votre mot de passe a bien été modifié.'}
             setOnSuccess={setOnSuccess}
+            setShowModal={setShowPasswordModal}
           />
         ) : onSuccess === false ? (
           <CustomAlert
             type={'error'}
             message={'Erreur dans la modification du mot de passe.'}
             setOnSuccess={setOnSuccess}
+            setShowModal={setShowPasswordModal}
           />
         ) : (
           <>
@@ -131,7 +133,7 @@ const AccountUpdatePassword = ({
                 margin="18px 0"
                 padding="0 13px"
               >
-                <label htmlFor="oldPassword">Votre ancien mot de passe</label>
+                <label htmlFor="old-password">Votre ancien mot de passe</label>
                 <FormControl
                   variant="filled"
                   fullWidth
@@ -144,10 +146,10 @@ const AccountUpdatePassword = ({
                   }
                 >
                   <Input
-                    name="old-password"
+                    name="oldPassword"
                     id="old-password"
                     type="password"
-                    autoComplete="new-password"
+                    autoComplete="current-password"
                     value={formik.values.oldPassword}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}

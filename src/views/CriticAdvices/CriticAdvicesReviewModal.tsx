@@ -1,7 +1,6 @@
 // Import des libs externes
 import { Modal, Stack, Box, Avatar, Typography, Divider } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router-dom';
 
 // Import des icônes
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -18,17 +17,17 @@ import apiBaseUrl from '@utils/request/config';
 const CriticAdvicesReviewModal = ({
   showReviewModal,
   setShowReviewModal,
-  criticInfos,
+  infos,
   type,
   isModify,
   customTextarea,
   newRating,
-  chosenUser,
+  criticUserInfos,
 }) => {
   const { displayType, chosenMovie } = useData();
-  const { id } = useParams();
+  // const { id } = useParams();
 
-  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
+  // const userInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   return (
     <Modal
@@ -55,23 +54,15 @@ const CriticAdvicesReviewModal = ({
         <Stack direction="row">
           <Avatar
             variant="square"
-            alt={
-              userInfos.id === parseInt(id, 10)
-                ? `Photo de profil de ${userInfos.first_name}`
-                : `Photo de profil de ${chosenUser?.first_name}`
-            }
+            alt={`Photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
             src={
-              // Si profil de l'utilisateur connecté et qu'il a défini une photo de profil
-              userInfos.id === parseInt(id, 10) && userInfos.profilPics.length
+              // Si l'utilisateur qui a posté la critique || le conseil a défini une photo de profil
+              criticUserInfos.profilPics.length
                 ? `${apiBaseUrl}/uploads/${
-                    userInfos.profilPics.find(pic => pic.isActive === 1)
+                    criticUserInfos.profilPics.find(pic => pic.isActive === 1)
                       .filePath
                   }`
-                : // Si profil d'un autre utilisateur et qu'il a défini une photo de profil
-                userInfos.id !== parseInt(id, 10) &&
-                  chosenUser?.profilPics.length
-                ? `${apiBaseUrl}/uploads/${chosenUser.profilPics[0].filePath}`
-                : // Si l'utilisateur n'a pas défini de photo de profil
+                : // Si l'utilisateur qui a posté la critique || le conseil n'a pas défini de photo de profil
                   'http://127.0.0.1:5173/images/default_profil_pic.png'
             }
             sx={{
@@ -100,7 +91,11 @@ const CriticAdvicesReviewModal = ({
           display="flex"
           flexDirection="column"
           width="85vw"
-          height={type === 'new-critic' || isModify ? '80vh' : 'auto'}
+          height={
+            type === 'new-critic' || type === 'new-advice' || isModify
+              ? '80vh'
+              : 'auto'
+          }
           maxHeight="80vh"
           overflow="scroll"
           order="3"
@@ -111,7 +106,9 @@ const CriticAdvicesReviewModal = ({
         >
           <Stack
             direction="column"
-            marginBottom={type === 'new-critic' ? '10px' : 0}
+            marginBottom={
+              type === 'new-critic' || type === 'new-advice' ? '10px' : 0
+            }
             rowGap="3px"
           >
             <Typography
@@ -120,15 +117,19 @@ const CriticAdvicesReviewModal = ({
               color="primary.dark"
               fontWeight="bold"
             >
-              {displayType === 'movie' && type === 'old-critic'
-                ? criticInfos.title
-                : displayType === 'tv' && type === 'old-critic'
-                ? criticInfos.name
+              {displayType === 'movie' &&
+              (type === 'old-critic' || type === 'old-advice')
+                ? infos.title
+                : displayType === 'tv' &&
+                  (type === 'old-critic' || type === 'old-advice')
+                ? infos.name
                 : displayType === 'movie' &&
-                  type === 'new-critic' &&
+                  (type === 'new-critic' || type === 'new-advice') &&
                   chosenMovie
                 ? chosenMovie.title
-                : displayType === 'tv' && type === 'new-critic' && chosenMovie
+                : displayType === 'tv' &&
+                  (type === 'new-critic' || type === 'new-advice') &&
+                  chosenMovie
                 ? chosenMovie.name
                 : null}
             </Typography>
@@ -136,24 +137,26 @@ const CriticAdvicesReviewModal = ({
               <OrangeRating
                 precision={0.5}
                 value={
-                  type === 'old-critic'
-                    ? parseFloat(criticInfos.rating)
+                  type === 'old-critic' || type === 'old-advice'
+                    ? parseFloat(infos.rating)
                     : parseFloat(newRating)
                 }
                 readOnly
               />
               <Typography variant="body2" component="p" fontWeight="bold">
-                {type === 'old-critic'
-                  ? `${formatRating(criticInfos.rating)} / 5`
+                {type === 'old-critic' || type === 'old-advice'
+                  ? `${formatRating(infos.rating)} / 5`
                   : !newRating
                   ? '0 / 5'
                   : `${newRating} / 5`}
               </Typography>
             </Stack>
           </Stack>
-          {type === 'old-critic' ? <Divider sx={{ margin: '12px 0' }} /> : null}
+          {type === 'old-critic' || type === 'old-advice' ? (
+            <Divider sx={{ margin: '12px 0' }} />
+          ) : null}
           <Stack direction="column" flexGrow="1">
-            {type === 'new-critic' || isModify ? (
+            {type === 'new-critic' || type === 'new-advice' || isModify ? (
               customTextarea('big')
             ) : (
               <Typography component="blockquote" textAlign="left">
@@ -164,7 +167,7 @@ const CriticAdvicesReviewModal = ({
                   marginBottom="10px"
                   whiteSpace="pre-wrap"
                 >
-                  {`${criticInfos.text}`}
+                  {`${infos.text}`}
                 </Typography>
                 <Typography
                   variant="body2"
@@ -172,9 +175,7 @@ const CriticAdvicesReviewModal = ({
                   fontWeight="bold"
                   fontStyle="italic"
                 >
-                  {userInfos.id === parseInt(id, 10)
-                    ? `- ${userInfos.first_name} ${userInfos.last_name} -`
-                    : `- ${chosenUser.first_name} ${chosenUser.last_name} -`}
+                  {`- ${criticUserInfos.first_name} ${criticUserInfos.last_name} -`}
                 </Typography>
               </Typography>
             )}
@@ -208,11 +209,11 @@ CriticAdvicesReviewModal.propTypes = {
   type: PropTypes.string.isRequired,
   showReviewModal: PropTypes.bool.isRequired,
   setShowReviewModal: PropTypes.func.isRequired,
-  criticInfos: PropTypes.object,
+  infos: PropTypes.object,
   isModify: PropTypes.bool.isRequired,
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   customTextarea: PropTypes.func.isRequired,
-  chosenUser: PropTypes.object,
+  criticUserInfos: PropTypes.object.isRequired,
 };
 
 export default CriticAdvicesReviewModal;

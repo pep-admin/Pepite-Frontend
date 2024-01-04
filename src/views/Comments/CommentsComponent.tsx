@@ -17,6 +17,9 @@ import { useData } from '@hooks/DataContext';
 const CommentsComponent = ({ criticId, comments, setComments }) => {
   const { displayType } = useData();
 
+  // Infos de l'utilisateur connecté
+  const user_infos = JSON.parse(localStorage.getItem('user_infos'));
+
   const getComments = async () => {
     const response = await getAllCriticComments(displayType, criticId);
     setComments(response.data);
@@ -44,6 +47,7 @@ const CommentsComponent = ({ criticId, comments, setComments }) => {
           criticId={criticId}
           comments={comments}
           getComments={getComments}
+          userInfos={user_infos}
         />
       </Stack>
       {comments.length > 0
@@ -54,6 +58,7 @@ const CommentsComponent = ({ criticId, comments, setComments }) => {
                 comment={comment}
                 setInfos={setComments}
                 getComments={getComments}
+                userInfos={user_infos}
               />
             );
           })

@@ -153,8 +153,8 @@ const ContactsMainItem = ({
                 type === 'requests'
                   ? '#0E6666 !important'
                   : type === 'followed'
-                  ? '#F29E50 !important'
-                  : '#24A5A5 !important',
+                  ? '#24A5A5 !important'
+                  : '#F29E50 !important',
               height: '20px',
               width: '60px',
               minWidth: 'auto',

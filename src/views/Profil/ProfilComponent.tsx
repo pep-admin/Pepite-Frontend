@@ -41,6 +41,7 @@ import apiBaseUrl from '@utils/request/config';
 import AccountUpdatePic from '@views/Account/AccountUpdatePic';
 import { getUser } from '@utils/request/users/getUser';
 import FriendRequestBtn from '@utils/FriendRequestBtn';
+import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
 
 interface Picture {
   id: number;
@@ -74,6 +75,8 @@ const ProfilComponent = () => {
   const [chosenUser, setChosenUser] = useState<User | null>(null);
 
   const [userCritics, setUserCritics] = useState([]); // Toutes les critiques de l'utilisateur du profil
+  const [advicesReceived, setAdvicesReceived] = useState([]); // Tous les conseils reçus par l'utilisateur du profil
+  const [combinedData, setCombinedData] = useState([]); // Les critiques et les conseils combinés
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
   const [progress, setProgress] = useState(0);
   const [criticsNumber, setCriticsNumber] = useState(0); // Nombre de critiques de l'utilisateur
@@ -103,20 +106,39 @@ const ProfilComponent = () => {
     setChosenUser(user);
   };
 
-  // Récupère toutes les critiques de l'utilisateur du profil
-  const fetchCritics = useCallback(async (type: string) => {
-    try {
-      const criticData = await getAllCriticsOfUser(id, type);
-      setUserCritics(criticData);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des données:', error);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Récupère les critiques et conseils de l'utilisateur du profil
+  const fetchCriticsAndAdvices = useCallback(
+    async (type: string) => {
+      try {
+        const criticData = await getAllCriticsOfUser(id, type);
+        setUserCritics(criticData);
+
+        const advicesData = await getAllAdvicesReceived(id, type);
+        setAdvicesReceived(advicesData);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [id],
+  );
+
+  // Mettre à jour combinedData chaque fois que userCritics ou advicesReceived change
+  useEffect(() => {
+    const combined = [
+      ...userCritics.map(critic => ({ ...critic, type: 'critic' })),
+      ...advicesReceived.map(advice => ({ ...advice, type: 'advice' })),
+    ];
+
+    console.log('les résultats combinés', combined);
+
+    // combined.sort((a, b) => new Date(b.critic_date) - new Date(a.critic_date));
+    setCombinedData(combined);
+  }, [userCritics, advicesReceived]);
 
   useEffect(() => {
-    fetchCritics(displayType);
-  }, [fetchCritics, displayType]);
+    fetchCriticsAndAdvices(displayType);
+  }, [fetchCriticsAndAdvices, displayType]);
 
   useEffect(() => {
     let timer;
@@ -163,10 +185,6 @@ const ProfilComponent = () => {
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
-
-  useEffect(() => {
-    console.log('info user externe', chosenUser);
-  }, [chosenUser]);
 
   return (
     <>
@@ -218,19 +236,24 @@ const ProfilComponent = () => {
               'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(14,14,14,0.37) 70%)',
           }}
         >
-          <AddPhotoAlternateTwoToneIcon
-            fontSize="medium"
-            sx={{
-              position: 'absolute',
-              right: '10px',
-              top: '10px',
-              color: '#585858',
-              cursor: 'pointer',
-            }}
-            onClick={() =>
-              setModifyCoverPic({ state: true, type: 'couverture' })
-            }
-          />
+          {
+            // Si profil de l'utilisateur connecté, on permet de changer la photo de couverture
+            userInfos.id === parseInt(id, 10) ? (
+              <AddPhotoAlternateTwoToneIcon
+                fontSize="medium"
+                sx={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '10px',
+                  color: '#585858',
+                  cursor: 'pointer',
+                }}
+                onClick={() =>
+                  setModifyCoverPic({ state: true, type: 'couverture' })
+                }
+              />
+            ) : null
+          }
         </Box>
         <Box
           position="absolute"
@@ -309,7 +332,10 @@ const ProfilComponent = () => {
                   : // Si l'utilisateur affiché est un autre que celui connecté et qu'il a défini une photo de profil
                   userInfos.id !== parseInt(id, 10) &&
                     chosenUser?.profilPics.length
-                  ? `${apiBaseUrl}/uploads/${chosenUser.profilPics[0].filePath}`
+                  ? `${apiBaseUrl}/uploads/${
+                      chosenUser.profilPics.find(pic => pic.isActive === 1)
+                        .filePath
+                    }`
                   : // Si l'utilisateur n'a pas défini de photo de profil
                     'http://127.0.0.1:5173/images/default_profil_pic.png'
               }
@@ -393,14 +419,18 @@ const ProfilComponent = () => {
           <Stack>
             {chosenMovie !== null ? (
               <CriticAdvicesComponent
-                type={'new-critic'}
+                type={
+                  userInfos.id === parseInt(id, 10)
+                    ? 'new-critic'
+                    : 'new-advice'
+                }
                 chosenMovie={chosenMovie}
                 setUserCritics={setUserCritics}
                 setGoldenMovies={setGoldenMovies}
                 setNewCriticError={setNewCriticError}
                 setNewCriticInfo={setNewCriticInfo}
                 setNewCriticSuccess={setNewCriticSuccess}
-                criticInfos={null}
+                infos={null}
                 chosenUser={chosenUser}
                 countCriticsAndGold={countCriticsAndGold}
               />
@@ -480,19 +510,21 @@ const ProfilComponent = () => {
                 </Alert>
               </Item>
             ) : null}
-            {userCritics.length > 0
-              ? userCritics.map(critic => {
+            {combinedData.length > 0
+              ? combinedData.map(infos => {
                   return (
                     <CriticAdvicesComponent
-                      key={critic.id}
-                      type={'old-critic'}
+                      key={infos.id}
+                      type={
+                        infos.type === 'critic' ? 'old-critic' : 'old-advice'
+                      }
                       setUserCritics={setUserCritics}
                       setGoldenMovies={setGoldenMovies}
                       chosenMovie={null}
                       setNewCriticError={setNewCriticError}
                       setNewCriticInfo={setNewCriticInfo}
                       setNewCriticSuccess={setNewCriticSuccess}
-                      criticInfos={critic}
+                      infos={infos}
                       chosenUser={chosenUser}
                       countCriticsAndGold={countCriticsAndGold}
                     />

@@ -20,7 +20,10 @@ import { checkLikeStatusComment } from '@utils/request/comments/checkLikeStatusC
 import { removeCommentLike } from '@utils/request/comments/removeCommentLike';
 import { modifyComment } from '@utils/request/comments/modifyComment';
 
-const CommentsContent = ({ comment, setInfos, getComments }) => {
+// Import des variables d'environnement
+import apiBaseUrl from '@utils/request/config';
+
+const CommentsContent = ({ comment, setInfos, getComments, userInfos }) => {
   const { displayType } = useData();
 
   const [isModify, setIsModify] = useState(false);
@@ -59,19 +62,10 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
   const updateComment = async commentId => {
     try {
       await modifyComment(commentId, displayType, commentUpdated);
-      console.log('commentaire modifié');
-
       getComments();
-      // setNewCriticError({ error: false, message: null });
-
-      // const newCriticsData = await getAllCriticsOfUser(userId, displayType);
-      // setUserCritics(newCriticsData);
       setIsModify(false);
     } catch (error) {
       console.log('erreur dans la modification', error);
-      // setNewCriticError({ error: true, message: error });
-      // setNewCriticInfo({ info: false, message: null });
-      // setNewCriticSuccess({ success: false, message: null });
     }
   };
 
@@ -92,8 +86,17 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
       >
         <Stack direction="row" alignItems="center">
           <Avatar
-            alt="Remy Sharp"
-            src="http://127.0.0.1:5173/images/kate.jpg"
+            alt={`Photo de profil de ${userInfos.first_name} ${userInfos.last_name}`}
+            src={
+              // Si l'utilisateur qui a posté un commentaire a défini une photo de profil
+              userInfos.profilPics.length
+                ? `${apiBaseUrl}/uploads/${
+                    userInfos.profilPics.find(pic => pic.isActive === 1)
+                      .filePath
+                  }`
+                : // Si l'utilisateur n'a pas défini de photo de profil
+                  'http://127.0.0.1:5173/images/default_profil_pic.png'
+            }
             sx={{
               width: 50,
               height: 50,
@@ -125,7 +128,7 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
                 fontSize="1em"
                 fontWeight="bold"
               >
-                {'Kate Austen'}
+                {`${userInfos.first_name} ${userInfos.last_name}`}
               </Typography>
               <ModifyOrDelete
                 parent={'comment'}
@@ -208,6 +211,7 @@ CommentsContent.propTypes = {
   comment: PropTypes.object.isRequired,
   setInfos: PropTypes.func.isRequired,
   getComments: PropTypes.func.isRequired,
+  userInfos: PropTypes.object.isRequired,
 };
 
 export default CommentsContent;

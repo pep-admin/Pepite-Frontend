@@ -36,7 +36,7 @@ const CriticAdvicesHeader = ({
   setDisplayRatings,
   newRating,
   setNewRating,
-  criticInfos,
+  infos,
   setUserCritics,
   isModify,
   setIsModify,
@@ -45,8 +45,13 @@ const CriticAdvicesHeader = ({
   setIsNuggetAnimEnded,
   isTurnip,
   setIsTurnip,
+  chosenUser,
+  criticUserInfos,
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
+
+  // Infos de l'utilisateur connecté
+  const user_infos = JSON.parse(localStorage.getItem('user_infos'));
 
   // Menu des étoiles pour noter une nouvelle critique
   const openRatings = Boolean(displayRatings);
@@ -63,16 +68,6 @@ const CriticAdvicesHeader = ({
       padding="0 10px"
       columnGap="10px"
     >
-      {/* Si conseil d'un ami */}
-      {/* <Avatar
-          alt="Photo de Kate"
-          src="http://127.0.0.1:5173/images/kate.jpg"
-          sx={{
-            width: 37,
-            height: 37,
-            marginRight: '5px'
-          }}
-        /> */}
       <Typography
         variant="body2"
         component="p"
@@ -80,18 +75,37 @@ const CriticAdvicesHeader = ({
         minWidth="80px"
         align="left"
       >
-        {type === 'new-critic' ? 'Nouvelle note' : 'Vous avez noté'}
+        {
+          // Si l'utilisateur connecté souhaite poster une nouvelle critique sur son profil
+          type === 'new-critic'
+            ? 'Nouvelle note'
+            : // Si l'utilisateur connecté souhaite poster un conseil sur le profil d'un ami
+            type === 'new-advice'
+            ? `Conseillez à ${chosenUser.first_name}`
+            : // Si l'utilisateur voit une critique d'un autre utilisateur
+            type === 'old-critic' && infos.sender_id !== user_infos.id
+            ? `${criticUserInfos.first_name} a noté`
+            : // Si l'utilisateur voit son conseil sur le profil d'un ami
+            type === 'old-advice' && infos.sender_id === user_infos.id
+            ? 'Vous avez conseillé'
+            : // TODO : Si l'utilisateur voit un conseil d'un autre utilisateur
+            type === 'old-advice' && infos.sender_id !== user_infos.id
+            ? `${criticUserInfos.first_name} a conseillé`
+            : 'Vous avez noté'
+        }
       </Typography>
       <Box display="flex" alignItems="center" columnGap="5px">
         <OrangeRating
           value={
-            type === 'new-critic' ? newRating : parseFloat(criticInfos.rating)
+            type === 'new-critic' || type === 'new-advice'
+              ? newRating
+              : parseFloat(infos.rating)
           }
           precision={0.5}
           readOnly
           sx={{ position: 'relative', bottom: '0.5px' }}
         />
-        {type === 'new-critic' || isModify ? (
+        {type === 'new-critic' || type === 'new-advice' || isModify ? (
           <>
             <Box
               ref={ratingsHeaderRef}
@@ -110,7 +124,7 @@ const CriticAdvicesHeader = ({
               {newRating === null && !isModify
                 ? '?'
                 : newRating === null && isModify
-                ? `${formatRating(criticInfos.rating)}`
+                ? `${formatRating(infos.rating)}`
                 : newRating}
             </Box>
             <Menu
@@ -233,9 +247,10 @@ const CriticAdvicesHeader = ({
           </>
         ) : null}
         <Typography variant="body2" component="p" fontWeight="bold">
-          {(type === 'new-critic' && !criticInfos) || isModify
+          {((type === 'new-critic' || type === 'new-advice') && !infos) ||
+          isModify
             ? ' / 5'
-            : `${formatRating(criticInfos.rating)} / 5`}
+            : `${formatRating(infos.rating)} / 5`}
         </Typography>
       </Box>
       <Box
@@ -244,7 +259,7 @@ const CriticAdvicesHeader = ({
         justifyContent="flex-end"
         alignItems="center"
       >
-        {type === 'new-critic' ? (
+        {type === 'new-critic' || type === 'new-advice' ? (
           <ClearIcon
             fontSize="small"
             sx={{
@@ -260,7 +275,7 @@ const CriticAdvicesHeader = ({
         ) : (
           <ModifyOrDelete
             parent={'critic'}
-            infos={criticInfos}
+            infos={infos}
             setInfos={setUserCritics}
             isModify={isModify}
             setIsModify={setIsModify}
@@ -284,7 +299,7 @@ CriticAdvicesHeader.propTypes = {
   setDisplayRatings: PropTypes.func.isRequired,
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   setNewRating: PropTypes.func.isRequired,
-  criticInfos: PropTypes.object,
+  infos: PropTypes.object,
   setUserCritics: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
@@ -293,6 +308,8 @@ CriticAdvicesHeader.propTypes = {
   setIsNuggetAnimEnded: PropTypes.func.isRequired,
   isTurnip: PropTypes.bool.isRequired,
   setIsTurnip: PropTypes.func.isRequired,
+  chosenUser: PropTypes.object,
+  criticUserInfos: PropTypes.object.isRequired,
 };
 
 export default CriticAdvicesHeader;

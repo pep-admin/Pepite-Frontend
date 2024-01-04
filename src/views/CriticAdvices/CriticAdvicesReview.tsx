@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router-dom';
 
 // Import des icônes
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -27,20 +26,19 @@ const CriticAdvicesReview = ({
   type,
   newCriticText,
   setNewCriticText,
-  criticInfos,
+  infos,
   isModify,
   newRating,
-  chosenUser,
+  criticUserInfos,
 }) => {
-  const { id } = useParams();
-
-  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
-
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
+
+  // Utilisateur connecté
+  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   useEffect(() => {
     if (isModify) {
-      setNewCriticText(criticInfos.text);
+      setNewCriticText(infos.text);
     } else {
       setNewCriticText('');
     }
@@ -106,7 +104,7 @@ const CriticAdvicesReview = ({
     );
   }
 
-  if (type === 'old-critic' && criticInfos.text === '' && !isModify) return;
+  if (type === 'old-critic' && infos.text === '' && !isModify) return;
 
   return (
     <>
@@ -114,12 +112,12 @@ const CriticAdvicesReview = ({
         <CriticAdvicesReviewModal
           showReviewModal={showReviewModal}
           setShowReviewModal={setShowReviewModal}
-          criticInfos={criticInfos}
+          infos={infos}
           type={type}
           isModify={isModify}
           customTextarea={customTextArea}
           newRating={newRating}
-          chosenUser={chosenUser}
+          criticUserInfos={criticUserInfos}
         />
       ) : null}
       <Stack
@@ -127,7 +125,11 @@ const CriticAdvicesReview = ({
         position="relative"
         borderRadius="10px"
         flexGrow="1"
-        marginBottom={type === 'new-critic' || isModify ? '7px' : '0'}
+        marginBottom={
+          type === 'new-critic' || type === 'new-advice' || isModify
+            ? '7px'
+            : '0'
+        }
         sx={{
           backgroundColor: '#F1F1F1',
         }}
@@ -150,21 +152,22 @@ const CriticAdvicesReview = ({
         </Box>
         <Avatar
           variant="square"
-          alt={
-            userInfos.id === parseInt(id, 10)
-              ? `Photo de profil de ${userInfos.first_name}`
-              : `Photo de profil de ${chosenUser.first_name}`
-          }
+          alt={`Photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
           src={
-            // Si profil de l'utilisateur connecté et qu'il a défini une photo de profil
-            userInfos.id === parseInt(id, 10) && userInfos.profilPics.length
+            // Si l'utilisateur qui a posté la critique ou le conseil a défini une photo de profil
+            (type === 'old-critic' || type === 'old-advice') &&
+            criticUserInfos.profilPics?.length
+              ? `${apiBaseUrl}/uploads/${
+                  criticUserInfos.profilPics.find(pic => pic.isActive === 1)
+                    .filePath
+                }`
+              : // Si nouvelle critique ou nouveau conseil et que l'utilisateur connecté a défini une photo de profil
+              (type === 'new-critic' || type === 'new-advice') &&
+                userInfos.profilPics?.length
               ? `${apiBaseUrl}/uploads/${
                   userInfos.profilPics.find(pic => pic.isActive === 1).filePath
                 }`
-              : // Si profil d'un autre utilisateur et qu'il a défini une photo de profil
-              userInfos.id !== parseInt(id, 10) && chosenUser?.profilPics.length
-              ? `${apiBaseUrl}/uploads/${chosenUser.profilPics[0].filePath}`
-              : // Si l'utilisateur n'a pas défini de photo de profil
+              : // Si l'utilisateur qui a posté la critique || le conseil n'a pas défini de photo de profil
                 'http://127.0.0.1:5173/images/default_profil_pic.png'
           }
           sx={{
@@ -174,18 +177,30 @@ const CriticAdvicesReview = ({
           }}
         />
         <Box
-          height={type === 'new-critic' || isModify ? '100%' : '70px'}
-          padding={type === 'new-critic' || isModify ? '0' : '7px 10px 0 20px'}
+          height={
+            type === 'new-critic' || type === 'new-advice' || isModify
+              ? '100%'
+              : '70px'
+          }
+          padding={
+            type === 'new-critic' || type === 'new-advice' || isModify
+              ? '0'
+              : '7px 10px 0 20px'
+          }
           display="flex"
           flexGrow="1"
-          overflow={type === 'new-critic' || isModify ? 'visible' : 'scroll'}
+          overflow={
+            type === 'new-critic' || type === 'new-advice' || isModify
+              ? 'visible'
+              : 'scroll'
+          }
         >
-          {type === 'new-critic' || isModify ? (
+          {type === 'new-critic' || type === 'new-advice' || isModify ? (
             customTextArea('small')
           ) : (
             <Typography variant="body2" component="blockquote" textAlign="left">
               <Typography variant="body2" component="p">
-                {`${criticInfos.text}`}
+                {`${infos.text}`}
               </Typography>
               <Typography
                 variant="body2"
@@ -193,9 +208,7 @@ const CriticAdvicesReview = ({
                 fontWeight="bold"
                 fontStyle="italic"
               >
-                {userInfos.id === parseInt(id, 10)
-                  ? `- ${userInfos.first_name} ${userInfos.last_name} -`
-                  : `- ${chosenUser.first_name} ${chosenUser.last_name} -`}
+                {`- ${criticUserInfos.first_name} ${criticUserInfos.last_name} -`}
               </Typography>
             </Typography>
           )}
@@ -223,11 +236,11 @@ const CriticAdvicesReview = ({
 CriticAdvicesReview.propTypes = {
   type: PropTypes.string.isRequired,
   setNewCriticText: PropTypes.func.isRequired,
-  criticInfos: PropTypes.object,
+  infos: PropTypes.object,
   newCriticText: PropTypes.string.isRequired,
   isModify: PropTypes.bool.isRequired,
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
-  chosenUser: PropTypes.object,
+  criticUserInfos: PropTypes.object.isRequired,
 };
 
 export default CriticAdvicesReview;

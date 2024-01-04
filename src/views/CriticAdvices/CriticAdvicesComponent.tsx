@@ -30,6 +30,11 @@ import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
 import GoldNugget from '@utils/GoldNugget';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
+import { addNewAdvice } from '@utils/request/advices/postAdvice';
+import { useParams } from 'react-router-dom';
+import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
+import { getUser } from '@utils/request/users/getUser';
+import { convertDate } from '@utils/functions/convertDate';
 
 const CriticAdvicesComponent = ({
   type,
@@ -39,7 +44,7 @@ const CriticAdvicesComponent = ({
   setNewCriticError,
   setNewCriticInfo,
   setNewCriticSuccess,
-  criticInfos,
+  infos,
   chosenUser,
   countCriticsAndGold,
 }) => {
@@ -54,40 +59,79 @@ const CriticAdvicesComponent = ({
   const [showPoster, setShowPoster] = useState(false);
   const [comments, setComments] = useState([]);
   const [displayRatings, setDisplayRatings] = useState(null);
+  const [criticUserInfos, setCriticUserInfos] = useState({});
 
   const ratingsHeaderRef = useRef(null);
 
+  const { id } = useParams(); // Id de l'utilisateur du profil visité
+
   const { displayType, setChosenMovieId, setChosenMovie } = useData();
 
-  const submitNewReview = async () => {
+  const submitNewReview = async type => {
     try {
-      // Ajoute la nouvelle critique dans la DB
-      await addNewCritic(
-        chosenMovie.id,
-        displayType,
-        newRating,
-        newCriticText,
-        isGoldNugget,
-      );
+      // Si le post est une critique
+      if (type === 'critic') {
+        // Ajoute la nouvelle critique dans la DB
+        await addNewCritic(
+          chosenMovie.id,
+          displayType,
+          newRating,
+          newCriticText,
+          isGoldNugget,
+        );
 
-      setNewCriticError({ error: false, message: null });
-      setNewCriticInfo({ info: false, message: null });
-      setNewCriticSuccess({
-        success: true,
-        message: 'Critique ajoutée avec succès !',
-      });
-      const userId = localStorage.getItem('user_id');
+        setNewCriticError({ error: false, message: null });
+        setNewCriticInfo({ info: false, message: null });
+        setNewCriticSuccess({
+          success: true,
+          message: 'Critique ajoutée avec succès !',
+        });
+        // const userId = localStorage.getItem('user_id');
 
-      // Récupère toutes les critiques
-      const newCriticsData = await getAllCriticsOfUser(userId, displayType);
-      setUserCritics(newCriticsData);
+        // Récupère toutes les critiques
+        const newCriticsData = await getAllCriticsOfUser(id, displayType);
+        setUserCritics(newCriticsData);
 
-      // Récupère toutes les pépites
-      const response = await getAllGoldNuggetsOfUser(displayType, userId);
-      setGoldenMovies(response);
+        // Récupère toutes les pépites
+        const response = await getAllGoldNuggetsOfUser(displayType, id);
+        setGoldenMovies(response);
 
-      // Compte le nombre de critiques et de pépites
-      countCriticsAndGold();
+        // Compte le nombre de critiques et de pépites
+        countCriticsAndGold();
+      }
+      // Si le post est un conseil
+      else if (type === 'advice') {
+        // Ajoute le nouveau conseil dans la DB
+        await addNewAdvice(
+          chosenUser.id,
+          chosenMovie.id,
+          displayType,
+          newRating,
+          newCriticText,
+          isGoldNugget,
+        );
+
+        setNewCriticError({ error: false, message: null });
+        setNewCriticInfo({ info: false, message: null });
+        setNewCriticSuccess({
+          success: true,
+          message: 'Conseil ajouté avec succès !',
+        });
+        // const userId = localStorage.getItem('user_id');
+
+        // Récupère toutes les conseils du profil de l'utilisateur
+        const newCriticsData = await getAllAdvicesReceived(id, displayType);
+        console.log("les conseils de l'utilisateur", newCriticsData);
+
+        // setUserCritics(newCriticsData);
+
+        // // Récupère toutes les pépites
+        // const response = await getAllGoldNuggetsOfUser(displayType, userId);
+        // setGoldenMovies(response);
+
+        // Compte le nombre de critiques et de pépites
+        // countCriticsAndGold();
+      }
     } catch (error) {
       if (error.response.status === 409) {
         setNewCriticInfo({ info: true, message: error.response.data });
@@ -105,7 +149,7 @@ const CriticAdvicesComponent = ({
 
   const updateCritic = async () => {
     try {
-      const criticId = criticInfos.critic_id;
+      const criticId = infos.critic_id;
       const userId = localStorage.getItem('user_id');
       await modifyCritic(
         criticId,
@@ -139,12 +183,23 @@ const CriticAdvicesComponent = ({
     }
   };
 
+  const getCriticUserInfos = async () => {
+    const userInfos = await getUser(infos.sender_id);
+    setCriticUserInfos(userInfos);
+  };
+
   useEffect(() => {
     if (isModify) {
-      setNewRating(parseFloat(criticInfos.rating));
+      setNewRating(parseFloat(infos.rating));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModify]);
+
+  useEffect(() => {
+    if (type === 'old-critic' || type === 'old-advice') {
+      getCriticUserInfos();
+    }
+  }, []);
 
   return (
     <>
@@ -152,31 +207,49 @@ const CriticAdvicesComponent = ({
         <CriticAdvicesModal
           showPoster={showPoster}
           setShowPoster={setShowPoster}
-          infos={criticInfos}
+          infos={infos}
           from={'critic'}
         />
       ) : null}
       <Item margintop="6px">
         <Stack height="100%">
-          <CriticAdvicesHeader
-            type={type}
-            ratingsHeaderRef={ratingsHeaderRef}
-            displayRatings={displayRatings}
-            setDisplayRatings={setDisplayRatings}
-            newRating={newRating}
-            setNewRating={setNewRating}
-            criticInfos={criticInfos}
-            setUserCritics={setUserCritics}
-            isModify={isModify}
-            setIsModify={setIsModify}
-            isGoldNugget={isGoldNugget}
-            setIsGoldNugget={setIsGoldNugget}
-            setIsNuggetAnimEnded={setIsNuggetAnimEnded}
-            isTurnip={isTurnip}
-            setIsTurnip={setIsTurnip}
-          />
-          <Divider />
-          <Stack padding="7px 10px">
+          <Stack direction="column" position="relative">
+            <CriticAdvicesHeader
+              type={type}
+              ratingsHeaderRef={ratingsHeaderRef}
+              displayRatings={displayRatings}
+              setDisplayRatings={setDisplayRatings}
+              newRating={newRating}
+              setNewRating={setNewRating}
+              infos={infos}
+              setUserCritics={setUserCritics}
+              isModify={isModify}
+              setIsModify={setIsModify}
+              isGoldNugget={isGoldNugget}
+              setIsGoldNugget={setIsGoldNugget}
+              setIsNuggetAnimEnded={setIsNuggetAnimEnded}
+              isTurnip={isTurnip}
+              setIsTurnip={setIsTurnip}
+              chosenUser={chosenUser}
+              criticUserInfos={criticUserInfos}
+            />
+            <Stack
+              direction="row"
+              alignItems="center"
+              width="100%"
+              position="absolute"
+              top="25px"
+            >
+              <Typography
+                padding="0 10px"
+                sx={{ fontSize: '0.8em', color: '#989898' }}
+              >
+                {`${convertDate(infos.created_at)}`}
+              </Typography>
+              <Divider sx={{ flexGrow: '1' }} />
+            </Stack>
+          </Stack>
+          <Stack padding="10px 8px">
             <Card
               sx={{
                 height: '100%',
@@ -208,7 +281,7 @@ const CriticAdvicesComponent = ({
                     image={
                       chosenMovie !== null
                         ? `https://image.tmdb.org/t/p/w500/${chosenMovie.poster_path}`
-                        : `https://image.tmdb.org/t/p/w500/${criticInfos.poster_path}`
+                        : `https://image.tmdb.org/t/p/w500/${infos.poster_path}`
                     }
                     alt="green iguana"
                     sx={{
@@ -228,7 +301,7 @@ const CriticAdvicesComponent = ({
                   isGoldNugget={isGoldNugget}
                   setIsGoldNugget={setIsGoldNugget}
                   isTurnip={isTurnip}
-                  criticInfos={criticInfos}
+                  infos={infos}
                   isModify={isModify}
                 />
               </Box>
@@ -236,7 +309,9 @@ const CriticAdvicesComponent = ({
                 direction="row"
                 flexGrow="1"
                 marginBottom={
-                  type === 'new-critic' || isModify ? '15px' : '7px'
+                  type === 'new-critic' || type === 'new-advice' || isModify
+                    ? '15px'
+                    : '7px'
                 }
                 sx={{
                   maxHeight: displayOverwiew ? '60px' : '0px',
@@ -254,21 +329,23 @@ const CriticAdvicesComponent = ({
                   align="left"
                   paddingLeft="10px"
                 >
-                  {chosenMovie && type === 'new-critic'
+                  {chosenMovie &&
+                  (type === 'new-critic' || type === 'new-advice')
                     ? chosenMovie.overview
-                    : criticInfos.overview}
+                    : infos.overview}
                 </Typography>
               </Stack>
               <CriticAdvicesReview
                 type={type}
                 newCriticText={newCriticText}
                 setNewCriticText={setNewCriticText}
-                criticInfos={criticInfos}
+                infos={infos}
                 isModify={isModify}
                 newRating={newRating}
                 chosenUser={chosenUser}
+                criticUserInfos={criticUserInfos}
               />
-              {type === 'new-critic' || isModify ? (
+              {type === 'new-critic' || type === 'new-advice' || isModify ? (
                 <Stack direction="row" flexBasis="100%" justifyContent="center">
                   <Button
                     variant="contained"
@@ -285,28 +362,32 @@ const CriticAdvicesComponent = ({
                       },
                     }}
                     onClick={() => {
+                      // Si l'utilisateur tente de publier sans avoir mis de note, on affiche le choix des notes
                       if (newRating === null && !isModify) {
                         setDisplayRatings(ratingsHeaderRef.current);
+                        // Si l'utilisateur a choisi une note on publie la critique || le conseil
                       } else if (newRating !== null && !isModify) {
-                        submitNewReview();
-                      } else if (
-                        newRating !== null &&
-                        criticInfos &&
-                        isModify
-                      ) {
+                        submitNewReview(
+                          type === 'new-critic' ? 'critic' : 'advice',
+                        );
+                      } else if (newRating !== null && infos && isModify) {
                         updateCritic();
                       }
                     }}
                   >
-                    {!isModify ? 'Publier' : 'Modifier'}
+                    {isModify
+                      ? 'Modifier'
+                      : type === 'new-advice'
+                      ? 'Conseiller'
+                      : 'Publier'}
                   </Button>
                 </Stack>
               ) : null}
             </Card>
           </Stack>
-          {type === 'old-critic' ? (
+          {type === 'old-critic' || type === 'old-advice' ? (
             <CriticAdvicesFooter
-              criticId={criticInfos.critic_id}
+              criticId={infos.critic_id}
               displayComments={displayComments}
               setDisplayComments={setDisplayComments}
               comments={comments}
@@ -319,7 +400,7 @@ const CriticAdvicesComponent = ({
       ) : null}
       {displayComments ? (
         <CommentsComponent
-          criticId={criticInfos.critic_id}
+          criticId={infos.critic_id}
           comments={comments}
           setComments={setComments}
         />
@@ -335,7 +416,7 @@ CriticAdvicesComponent.propTypes = {
   setNewCriticError: PropTypes.func,
   setNewCriticInfo: PropTypes.func,
   setNewCriticSuccess: PropTypes.func,
-  criticInfos: PropTypes.object,
+  infos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
   countCriticsAndGold: PropTypes.func.isRequired,

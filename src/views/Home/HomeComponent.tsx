@@ -1,13 +1,8 @@
-// Import des libs externes
-import { useState } from 'react';
-
 // Import des composants internes
 import Header from '@utils/Header';
 
 const Home = () => {
-  const [userInfos, setUserInfos] = useState(
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
+  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   return (
     // <AppBar position="static" sx={{ mb: 2 }}>

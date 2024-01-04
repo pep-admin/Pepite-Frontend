@@ -19,8 +19,12 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let release_dates;
   let title;
 
-  // Dans le cas où on veut parser les infos pour un FILM qui n'est pas une critique
-  if (displayType === 'movie' && requestType !== 'critic') {
+  // Dans le cas où on veut parser les infos pour un FILM qui n'a pas été noté par les utilisateurs
+  if (
+    displayType === 'movie' &&
+    requestType !== 'critic' &&
+    requestType !== 'advice'
+  ) {
     release_date = data.release_date; // date de sortie
     release_dates = JSON.parse(data.release_dates); // certifications (-10, -12...),
     title = data.title; // titre du film
@@ -43,8 +47,12 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let content_ratings;
   let name;
 
-  // Dans le cas où on veut parser les infos pour une SERIE qui n'est pas une critique
-  if (displayType === 'tv' && requestType !== 'critic') {
+  // Dans le cas où on veut parser les infos pour une SERIE qui n'a pas été noté par les utilisateurs
+  if (
+    displayType === 'tv' &&
+    requestType !== 'critic' &&
+    requestType !== 'advice'
+  ) {
     first_air_date = data.first_air_date; // date du premier épisode
     content_ratings = JSON.parse(data.content_ratings); // certifications
     name = data.name; // nom de la série
@@ -62,15 +70,19 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     };
   }
 
-  // Critique
+  // Critique && conseils
   let rating = null;
   let text = null;
   let critic_id = null;
   let is_gold_nugget = 0;
-  let critic_date = null;
+  let created_at = null;
+  let sender_id = null;
 
-  // Dans le cas où on veut parser des infos pour une critique de FILM
-  if (displayType === 'movie' && requestType === 'critic') {
+  // Dans le cas où on veut parser des infos pour un FILM qui a été noté par les utilisateurs ( critiques et conseils )
+  if (
+    displayType === 'movie' &&
+    (requestType === 'critic' || requestType === 'advice')
+  ) {
     release_date = data.release_date;
     release_dates = JSON.parse(data.release_dates);
     title = data.title;
@@ -78,7 +90,13 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text; // le texte de la critique
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
-    critic_date = data.critic_date;
+    if (requestType === 'critic') {
+      created_at = data.critic_date;
+      sender_id = data.user_id;
+    } else {
+      created_at = data.advice_date;
+      sender_id = data.sender_id;
+    }
 
     return {
       genres,
@@ -94,12 +112,16 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       text,
       critic_id,
       is_gold_nugget,
-      critic_date,
+      created_at,
+      sender_id,
     };
   }
 
-  // Dans le cas où on veut parser des infos pour une critique de SERIE
-  if (displayType === 'tv' && requestType === 'critic') {
+  // Dans le cas où on veut parser des infos pour une SERIE qui a été noté par les utilisateurs ( critiques et conseils )
+  if (
+    displayType === 'tv' &&
+    (requestType === 'critic' || requestType === 'advice')
+  ) {
     first_air_date = data.first_air_date;
     content_ratings = JSON.parse(data.content_ratings);
     name = data.name;
@@ -107,7 +129,11 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text;
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
-    critic_date = data.critic_date;
+    if (requestType === 'critic') {
+      created_at = data.critic_date;
+    } else {
+      created_at = data.advice_date;
+    }
 
     return {
       genres,
@@ -123,7 +149,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       text,
       critic_id,
       is_gold_nugget,
-      critic_date,
+      created_at,
     };
   }
 };

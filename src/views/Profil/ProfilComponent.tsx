@@ -402,6 +402,7 @@ const ProfilComponent = () => {
               overflow="hidden"
             >
               <ProfilSuggestedNotes
+                page={'profil'}
                 goldenMovies={goldenMovies}
                 setGoldenMovies={setGoldenMovies}
                 chosenUser={chosenUser}

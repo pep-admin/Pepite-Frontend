@@ -1,5 +1,5 @@
 // Import des libs externes
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Stack,
   Box,
@@ -13,19 +13,26 @@ import {
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-// Import des icônes étoile vide
+// Import des icônes
 import { GoldNuggetIcon, YellowRating } from '@utils/styledComponent';
 import StarIcon from '@mui/icons-material/Star';
-import { useEffect, useState } from 'react';
+
+// Import des requêtes
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
+import { getGoldNuggetsFromAcquaintances } from '@utils/request/goldNugget/getGoldNuggetsFromAcquaintances';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+
+// Import des fonctions
 import { convertRating } from '@utils/functions/convertRating';
+
+// Import des composants internes
 import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
 import ProfilNoGold from './ProfilNoGold';
 
 const ProfilSuggestedNotes = ({
+  page,
   goldenMovies,
   setGoldenMovies,
   userInfos,
@@ -37,9 +44,25 @@ const ProfilSuggestedNotes = ({
   const { displayType } = useData();
   const { id } = useParams();
 
+  /* 
+    Récupère les pépites de l'utilisateur pour la page de profil
+  OU
+    Récupère les pépites des amis et followed pour la page d'accueil
+  */
   const fetchAllGoldNuggetsOfUser = async () => {
-    const response = await getAllGoldNuggetsOfUser(displayType, id);
-    setGoldenMovies(response);
+    let goldNuggets;
+
+    if (page === 'home') {
+      goldNuggets = await getGoldNuggetsFromAcquaintances(
+        displayType,
+        userInfos.id,
+      );
+      console.log('les pépites', goldNuggets);
+    } else if (page === 'profil') {
+      goldNuggets = await getAllGoldNuggetsOfUser(displayType, id);
+    } else return;
+
+    setGoldenMovies(goldNuggets);
   };
 
   useEffect(() => {
@@ -50,6 +73,7 @@ const ProfilSuggestedNotes = ({
     <>
       {showGoldenMovie ? (
         <CriticAdvicesModal
+          page={page}
           showPoster={showGoldenMovie}
           setShowPoster={setShowGoldenMovie}
           infos={goldenMovieInfos}
@@ -65,7 +89,9 @@ const ProfilSuggestedNotes = ({
           padding="0 10px"
         >
           <Typography variant="body2" component="p" fontWeight="bold">
-            {'Dernières pépites'}
+            {page === 'profil'
+              ? 'Vos dernières pépites'
+              : 'Dernières pépites de vos contacts'}
           </Typography>
           <Typography variant="body2" component="p" fontWeight="bold">
             {'Voir +'}
@@ -74,10 +100,10 @@ const ProfilSuggestedNotes = ({
         <Divider />
         <Stack
           direction="row"
-          height="calc(100% - 25.8px)"
+          height={page === 'profil' ? 'calc(100% - 25.8px)' : '150px'}
           justifyContent="flex-start"
           padding="6px 6px 0 6px"
-          gap="10px"
+          columnGap={page === 'profil' ? '10px' : '6px'}
           sx={{
             overflowX: 'scroll',
           }}
@@ -85,7 +111,7 @@ const ProfilSuggestedNotes = ({
           {!goldenMovies.length ? (
             <ProfilNoGold userInfos={userInfos} chosenUser={chosenUser} />
           ) : (
-            goldenMovies.map(movie => {
+            goldenMovies.map((movie, index) => {
               return (
                 <React.Fragment key={movie.id}>
                   <Card
@@ -199,7 +225,9 @@ const ProfilSuggestedNotes = ({
                       />
                     </Box>
                   </Card>
-                  <Divider variant="middle" flexItem orientation="vertical" />
+                  {goldenMovies.length - 1 !== index ? (
+                    <Divider variant="middle" flexItem orientation="vertical" />
+                  ) : null}
                 </React.Fragment>
               );
             })
@@ -215,6 +243,7 @@ ProfilSuggestedNotes.propTypes = {
   setGoldenMovies: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
+  page: PropTypes.string.isRequired,
 };
 
 export default ProfilSuggestedNotes;

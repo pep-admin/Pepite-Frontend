@@ -88,9 +88,9 @@ const Header = ({ userInfos }) => {
           variant="h1"
           color={'#fff'}
           fontSize={'2em'}
-          sx={{ position: 'relative', bottom: '4px' }}
+          sx={{ position: 'relative', bottom: '2px' }}
         >
-          {'Pépite.'}
+          {'PÉPITE.'}
         </Typography>
         <ToggleButtonGroup
           color="primary"
@@ -183,6 +183,8 @@ const Header = ({ userInfos }) => {
                     navigate('/swipe');
                   } else if (page === 'Mes contacts') {
                     navigate(`/contacts/${userId}`);
+                  } else if (page === 'Accueil') {
+                    navigate(`/home/${userId}`);
                   }
                   handleCloseNavMenu();
                 }}

@@ -9,14 +9,25 @@ import { useData } from '@hooks/DataContext';
 // Import des composants internes
 import { GoldNuggetIcon } from '@utils/styledComponent';
 
-const ProfilNoGold = ({ userInfos, chosenUser }) => {
+const ProfilNoGold = ({
+  // page,
+  userInfos,
+  chosenUser,
+}) => {
   const { id } = useParams();
   const { displayType } = useData();
 
   return (
-    <Stack direction="column" alignItems="center" flexGrow="1">
+    <Stack
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      flexGrow="1"
+      bgcolor="#f1f1f1"
+      borderRadius="10px"
+    >
       <GoldNuggetIcon sx={{ fontSize: '4em' }} />
-      <Stack direction="column" spacing={1} marginTop="5px">
+      <Stack direction="column" spacing={1} marginTop="2px">
         <Typography variant="body1" component="h4" align="center">
           {userInfos.id === parseInt(id, 10)
             ? `Vous n'avez encore aucune pépite.`
@@ -60,6 +71,7 @@ const ProfilNoGold = ({ userInfos, chosenUser }) => {
 ProfilNoGold.propTypes = {
   userInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
+  // page: PropTypes.string,
 };
 
 export default ProfilNoGold;

@@ -77,6 +77,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let is_gold_nugget = 0;
   let created_at = null;
   let sender_id = null;
+  let relation_type = null;
 
   // Dans le cas où on veut parser des infos pour un FILM qui a été noté par les utilisateurs ( critiques et conseils )
   if (
@@ -90,6 +91,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text; // le texte de la critique
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
+    relation_type = data.relation_type;
+
     if (requestType === 'critic') {
       created_at = data.critic_date;
       sender_id = data.user_id;
@@ -114,6 +117,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       is_gold_nugget,
       created_at,
       sender_id,
+      relation_type,
     };
   }
 
@@ -129,10 +133,14 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text;
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
+    relation_type = data.relation_type;
+
     if (requestType === 'critic') {
       created_at = data.critic_date;
+      sender_id = data.user_id;
     } else {
       created_at = data.advice_date;
+      sender_id = data.sender_id;
     }
 
     return {
@@ -150,6 +158,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       critic_id,
       is_gold_nugget,
       created_at,
+      sender_id,
+      relation_type,
     };
   }
 };

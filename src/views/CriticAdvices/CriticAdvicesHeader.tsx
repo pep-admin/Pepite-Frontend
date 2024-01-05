@@ -77,21 +77,61 @@ const CriticAdvicesHeader = ({
       >
         {
           // Si l'utilisateur connecté souhaite poster une nouvelle critique sur son profil
-          type === 'new-critic'
-            ? 'Nouvelle note'
-            : // Si l'utilisateur connecté souhaite poster un conseil sur le profil d'un ami
-            type === 'new-advice'
-            ? `Conseillez à ${chosenUser.first_name}`
-            : // Si l'utilisateur voit une critique d'un autre utilisateur
-            type === 'old-critic' && infos.sender_id !== user_infos.id
-            ? `${criticUserInfos.first_name} a noté`
-            : // Si l'utilisateur voit son conseil sur le profil d'un ami
-            type === 'old-advice' && infos.sender_id === user_infos.id
-            ? 'Vous avez conseillé'
-            : // TODO : Si l'utilisateur voit un conseil d'un autre utilisateur
-            type === 'old-advice' && infos.sender_id !== user_infos.id
-            ? `${criticUserInfos.first_name} a conseillé`
-            : 'Vous avez noté'
+          type === 'new-critic' ? (
+            'Nouvelle note'
+          ) : // Si l'utilisateur connecté souhaite poster un conseil sur le profil d'un ami
+          type === 'new-advice' ? (
+            <>
+              Conseillez à{' '}
+              <span
+                style={{
+                  color:
+                    infos.relation_type === 'close_friend'
+                      ? '#F16C22'
+                      : '#F29E50',
+                }}
+              >
+                {chosenUser.first_name} {chosenUser.last_name}
+              </span>
+            </>
+          ) : // Si l'utilisateur voit une critique d'un autre utilisateur
+          type === 'old-critic' && infos.sender_id !== user_infos.id ? (
+            <>
+              <span
+                style={{
+                  color:
+                    infos.relation_type === 'close_friend'
+                      ? '#F16C22'
+                      : infos.relation_type === 'friend'
+                      ? '#F29E50'
+                      : '#24A5A5',
+                }}
+              >
+                {criticUserInfos.first_name} {criticUserInfos.last_name}
+              </span>
+              {' a noté'}
+            </>
+          ) : // Si l'utilisateur voit son conseil sur le profil d'un ami
+          type === 'old-advice' && infos.sender_id === user_infos.id ? (
+            'Vous avez conseillé'
+          ) : // TODO : Si l'utilisateur voit un conseil d'un autre utilisateur
+          type === 'old-advice' && infos.sender_id !== user_infos.id ? (
+            <>
+              <span
+                style={{
+                  color:
+                    infos.relation_type === 'close_friend'
+                      ? '#F16C22'
+                      : '#F29E50',
+                }}
+              >
+                {criticUserInfos.first_name} {criticUserInfos.last_name}
+              </span>
+              {' a conseillé'}
+            </>
+          ) : (
+            'Vous avez noté'
+          )
         }
       </Typography>
       <Box display="flex" alignItems="center" columnGap="5px">

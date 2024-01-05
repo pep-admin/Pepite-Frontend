@@ -29,6 +29,7 @@ const FriendRequestBtn = ({
 }) => {
   const [friendshipStatus, setFriendshipStatus] = useState({
     status: 'none',
+    is_close: false,
     receiverId: null,
   });
   const [receiveFriendship, setReceiveFriendship] = useState(false);
@@ -69,6 +70,8 @@ const FriendRequestBtn = ({
   // Vérifie si l'utilisateur connecté a envoyé une demande en ami, si une demande est en attente, si une amitié existe
   const checkIfFriends = async () => {
     const status = await checkFriendshipStatus(receiverId);
+    console.log('amitié', status);
+
     setFriendshipStatus(status);
   };
 
@@ -134,8 +137,13 @@ const FriendRequestBtn = ({
           ) : // Si l'utilisateur connecté a accepté la demande
           friendshipStatus.status === 'accepted' ? (
             <Stack direction="row" alignItems="center" columnGap="7px">
-              <VerifiedIcon sx={{ color: '#F29E50', fontSize: '22px' }} />
-              {'Ami(e)'}
+              <VerifiedIcon
+                sx={{
+                  color: friendshipStatus.is_close ? '#F16C22' : '#F29E50',
+                  fontSize: '22px',
+                }}
+              />
+              {friendshipStatus.is_close ? 'Ami(e) +' : 'Ami(e)'}
             </Stack>
           ) : // Si l'utilisateur connecté a reçu une demande
           receiveFriendship ? (

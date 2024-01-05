@@ -123,7 +123,7 @@ const SearchBar = ({
     <Box
       component="form"
       ref={containerRef}
-      marginTop={page === 'profil' ? '6px' : '0'}
+      marginTop={page === 'profil' || page === 'home' ? '6px' : '0'}
       display={page === 'params' ? 'flex' : 'block'}
       flexDirection={page === 'params' ? 'column' : 'row'}
       alignItems={page === 'params' ? 'center' : 'flex-start'}
@@ -132,15 +132,19 @@ const SearchBar = ({
         sx={{
           position: 'relative',
           height: page === 'params' ? '30px' : '40px',
-          padding: page === 'profil' || page === 'params' ? '0' : '0 10%',
+          padding:
+            page === 'profil' || page === 'home' || page === 'params'
+              ? '0'
+              : '0 10%',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: page === 'profil' ? 'initial' : 'center',
-          gap: page === 'profil' ? '6px' : '20px',
+          justifyContent:
+            page === 'profil' || page === 'home' ? 'initial' : 'center',
+          gap: page === 'profil' || page === 'home' ? '6px' : '20px',
           maxWidth: page === 'params' ? '250px' : 'auto',
         }}
       >
-        {page === 'profil' ? (
+        {page === 'profil' || page === 'home' ? (
           <Box
             height="100%"
             width="100px"
@@ -169,32 +173,32 @@ const SearchBar = ({
             error.message
               ? `${error.message}`
               : // Si page de profil de l'utilisateur connecté et type choisi FILMS
-              page === 'profil' &&
+              (page === 'profil' || page === 'home') &&
                 userInfos?.id === parseInt(id, 10) &&
                 displayType === 'movie'
               ? 'Notez un film !'
               : // Si page de profil de l'utilisateur connecté et type choisi SERIES
-              page === 'profil' &&
+              (page === 'profil' || page === 'home') &&
                 userInfos?.id === parseInt(id, 10) &&
                 displayType === 'tv'
               ? 'Notez une série !'
               : // Si page de profil de l'utilisateur connecté et type choisi TOUS
-              page === 'profil' &&
+              (page === 'profil' || page === 'home') &&
                 userInfos?.id === parseInt(id, 10) &&
                 displayType === 'all'
               ? 'Notez un film ou une série !'
               : // Si page de profil d'un autre utilisateur et type choisi FILMS
-              page === 'profil' &&
+              (page === 'profil' || page === 'home') &&
                 userInfos?.id !== parseInt(id, 10) &&
                 displayType === 'movie'
               ? `Conseillez un film à ${chosenUser?.first_name} !`
               : // Si page de profil d'un autre utilisateur et type choisi SERIES
-              page === 'profil' &&
+              (page === 'profil' || page === 'home') &&
                 userInfos?.id !== parseInt(id, 10) &&
                 displayType === 'tv'
               ? `Conseillez une série à ${chosenUser?.first_name} !`
               : // Si page de profil d'un autre utilisateur et type choisi SERIES
-              page === 'profil' &&
+              (page === 'profil' || page === 'home') &&
                 userInfos?.id !== parseInt(id, 10) &&
                 displayType === 'all'
               ? `Conseillez un film ou une série à ${chosenUser?.first_name} !`
@@ -213,7 +217,10 @@ const SearchBar = ({
           variant="filled"
           size="small"
           sx={{
-            width: page === 'profil' ? 'calc(100% - 152px)' : '250px',
+            width:
+              page === 'profil' || page === 'home'
+                ? 'calc(100% - 152px)'
+                : '250px',
           }}
           value={query}
           onChange={e => {

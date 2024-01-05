@@ -233,21 +233,25 @@ const CriticAdvicesComponent = ({
               chosenUser={chosenUser}
               criticUserInfos={criticUserInfos}
             />
-            <Stack
-              direction="row"
-              alignItems="center"
-              width="100%"
-              position="absolute"
-              top="25px"
-            >
-              <Typography
-                padding="0 10px"
-                sx={{ fontSize: '0.8em', color: '#989898' }}
+            {type === 'new-critic' || type === 'new-advice' ? (
+              <Divider />
+            ) : (
+              <Stack
+                direction="row"
+                alignItems="center"
+                width="100%"
+                position="absolute"
+                top="25px"
               >
-                {`${convertDate(infos.created_at)}`}
-              </Typography>
-              <Divider sx={{ flexGrow: '1' }} />
-            </Stack>
+                <Typography
+                  padding="0 10px"
+                  sx={{ fontSize: '0.8em', color: '#989898' }}
+                >
+                  {`${convertDate(infos.created_at)}`}
+                </Typography>
+                <Divider sx={{ flexGrow: '1' }} />
+              </Stack>
+            )}
           </Stack>
           <Stack padding="10px 8px">
             <Card
@@ -342,7 +346,7 @@ const CriticAdvicesComponent = ({
                 infos={infos}
                 isModify={isModify}
                 newRating={newRating}
-                chosenUser={chosenUser}
+                // chosenUser={chosenUser}
                 criticUserInfos={criticUserInfos}
               />
               {type === 'new-critic' || type === 'new-advice' || isModify ? (
@@ -419,7 +423,7 @@ CriticAdvicesComponent.propTypes = {
   infos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
-  countCriticsAndGold: PropTypes.func.isRequired,
+  countCriticsAndGold: PropTypes.func,
 };
 
 export default CriticAdvicesComponent;

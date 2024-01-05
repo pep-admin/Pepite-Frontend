@@ -102,14 +102,18 @@ const ProfilSuggestedNotes = ({
           direction="row"
           height={page === 'profil' ? 'calc(100% - 25.8px)' : '150px'}
           justifyContent="flex-start"
-          padding="6px 6px 0 6px"
+          padding={!goldenMovies.length ? '6px' : '6px 6px 0 6px'}
           columnGap={page === 'profil' ? '10px' : '6px'}
           sx={{
             overflowX: 'scroll',
           }}
         >
           {!goldenMovies.length ? (
-            <ProfilNoGold userInfos={userInfos} chosenUser={chosenUser} />
+            <ProfilNoGold
+              page={'profil'}
+              userInfos={userInfos}
+              chosenUser={chosenUser}
+            />
           ) : (
             goldenMovies.map((movie, index) => {
               return (
@@ -203,21 +207,21 @@ const ProfilSuggestedNotes = ({
                       </Typography>
                     </Box>
                     <Box
-                      width="20px"
-                      height="20px"
+                      width="23px"
+                      height="23px"
                       position="absolute"
-                      top="2px"
-                      right="2px"
+                      top="3px"
+                      right="3px"
                       borderRadius="50%"
                       display="flex"
+                      flexDirection="column"
                       alignItems="center"
                       justifyContent="center"
-                      border="1px solid #f29e50"
-                      sx={{ backgroundColor: '#fff' }}
+                      sx={{ backgroundColor: 'rgba(244, 244, 244, 0.5)' }}
                     >
                       <GoldNuggetIcon
                         sx={{
-                          fontSize: '1em',
+                          fontSize: '1.2em',
                           position: 'relative',
                           top: '0.2px',
                           right: '0.1px',

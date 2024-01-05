@@ -1,6 +1,6 @@
 // Import des libs externes
 import { Container, Stack } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
@@ -9,13 +9,36 @@ import SearchBar from '@utils/SearchBar';
 import ContactsComponent from '@views/Contacts/ContactsComponent';
 import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
 
-const Home = () => {
-  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
+// Import des requêtes
+import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 
-  // Utilisateur connecté
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
+
+const Home = () => {
+  const { displayType } = useData();
+
   const [userInfos, setUserInfos] = useState(
+    // L'utilisateur connecté
     JSON.parse(localStorage.getItem('user_infos')),
   );
+  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
+  const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
+
+  const getCritics = async () => {
+    const critics = await getAllCriticsOfAcquaintances(
+      userInfos.id,
+      displayType,
+    );
+    console.log(critics);
+    setCriticsOfAcquaintances(critics);
+  };
+
+  useEffect(() => {
+    getCritics();
+  }, [displayType]);
 
   return (
     <>
@@ -50,6 +73,35 @@ const Home = () => {
               userInfos={userInfos}
             />
           </Item>
+          <SearchBar
+            Item={Item}
+            page={'home'}
+            userInfos={userInfos}
+            chosenUser={null}
+            handlePoster={null}
+            showPicModal={null}
+          />
+          {criticsOfAcquaintances.length ? (
+            criticsOfAcquaintances.map(critic => {
+              return (
+                <CriticAdvicesComponent
+                  key={critic.id}
+                  type={'old-critic'}
+                  setUserCritics={setCriticsOfAcquaintances}
+                  setGoldenMovies={setGoldenMovies}
+                  chosenMovie={null}
+                  setNewCriticError={null}
+                  setNewCriticInfo={null}
+                  setNewCriticSuccess={null}
+                  infos={critic}
+                  chosenUser={null}
+                  countCriticsAndGold={null}
+                />
+              );
+            })
+          ) : (
+            <NoCriticAdvice page={'home'} />
+          )}
         </Stack>
       </Container>
     </>

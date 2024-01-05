@@ -1,6 +1,7 @@
 // Import des libs externes
 import { Modal, Stack, Box, Avatar, Typography, Divider } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 // Import des icônes
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -25,9 +26,7 @@ const CriticAdvicesReviewModal = ({
   criticUserInfos,
 }) => {
   const { displayType, chosenMovie } = useData();
-  // const { id } = useParams();
-
-  // const userInfos = JSON.parse(localStorage.getItem('user_infos'));
+  const navigate = useNavigate();
 
   return (
     <Modal
@@ -70,7 +69,9 @@ const CriticAdvicesReviewModal = ({
               height: 100,
               borderRadius: '50%',
               order: 1,
+              cursor: 'pointer',
             }}
+            onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
           />
           <Box
             height="30px"

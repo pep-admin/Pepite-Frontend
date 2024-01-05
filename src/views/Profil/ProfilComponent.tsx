@@ -42,6 +42,7 @@ import AccountUpdatePic from '@views/Account/AccountUpdatePic';
 import { getUser } from '@utils/request/users/getUser';
 import FriendRequestBtn from '@utils/FriendRequestBtn';
 import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
+import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 
 interface Picture {
   id: number;
@@ -511,27 +512,27 @@ const ProfilComponent = () => {
                 </Alert>
               </Item>
             ) : null}
-            {combinedData.length > 0
-              ? combinedData.map(infos => {
-                  return (
-                    <CriticAdvicesComponent
-                      key={infos.id}
-                      type={
-                        infos.type === 'critic' ? 'old-critic' : 'old-advice'
-                      }
-                      setUserCritics={setUserCritics}
-                      setGoldenMovies={setGoldenMovies}
-                      chosenMovie={null}
-                      setNewCriticError={setNewCriticError}
-                      setNewCriticInfo={setNewCriticInfo}
-                      setNewCriticSuccess={setNewCriticSuccess}
-                      infos={infos}
-                      chosenUser={chosenUser}
-                      countCriticsAndGold={countCriticsAndGold}
-                    />
-                  );
-                })
-              : null}
+            {combinedData.length > 0 ? (
+              combinedData.map(infos => {
+                return (
+                  <CriticAdvicesComponent
+                    key={infos.id}
+                    type={infos.type === 'critic' ? 'old-critic' : 'old-advice'}
+                    setUserCritics={setUserCritics}
+                    setGoldenMovies={setGoldenMovies}
+                    chosenMovie={null}
+                    setNewCriticError={setNewCriticError}
+                    setNewCriticInfo={setNewCriticInfo}
+                    setNewCriticSuccess={setNewCriticSuccess}
+                    infos={infos}
+                    chosenUser={chosenUser}
+                    countCriticsAndGold={countCriticsAndGold}
+                  />
+                );
+              })
+            ) : (
+              <NoCriticAdvice page={'profil'} />
+            )}
           </Stack>
         </Stack>
       </Container>

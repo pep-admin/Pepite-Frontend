@@ -242,11 +242,13 @@ const CriticAdvicesModal = ({
                       value={parseFloat(infos?.rating)}
                       precision={0.1}
                       readOnly
-                      emptyIcon={<StarIcon sx={{ color: '#E1E1E1' }} />}
-                      sx={{ marginRight: '10px', fontSize: '1.5em' }}
+                      emptyIcon={
+                        <StarIcon sx={{ color: '#E1E1E1', fontSize: '1em' }} />
+                      }
+                      sx={{ marginRight: '10px', fontSize: '1.3em' }}
                     />
                     <Typography
-                      fontSize="1.5em"
+                      fontSize="1.3em"
                       color="secondary"
                       fontWeight="bold"
                     >

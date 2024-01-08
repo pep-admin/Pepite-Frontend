@@ -148,7 +148,7 @@ const ContactsSuggestions = ({
             position="absolute"
             color="#052525"
           >
-            3
+            {`${user.count_common_gold_nuggets}`}
           </Typography>
         </Box>
       </Card>

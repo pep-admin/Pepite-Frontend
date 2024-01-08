@@ -10,7 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
@@ -42,7 +42,7 @@ const CriticAdvicesHeader = ({
   setIsModify,
   isGoldNugget,
   setIsGoldNugget,
-  setIsNuggetAnimEnded,
+  // setIsNuggetAnimEnded,
   isTurnip,
   setIsTurnip,
   chosenUser,
@@ -58,6 +58,25 @@ const CriticAdvicesHeader = ({
   const handleRatingsMenu = event => {
     setDisplayRatings(event.currentTarget);
   };
+
+  const closeMenu = () => {
+    setDisplayRatings(null);
+  };
+
+  // Vérifie le statut "pépite" et "navet" à l'ouverture du menu de modification de note
+  useEffect(() => {
+    if (infos?.is_gold_nugget && isModify) {
+      setIsGoldNugget(true);
+      setIsTurnip(false);
+    } else if (infos?.is_turnip && isModify) {
+      setIsGoldNugget(false);
+      setIsTurnip(true);
+    }
+  }, [infos, isModify]);
+
+  useEffect(() => {
+    console.log('gold', isGoldNugget);
+  }, [isGoldNugget]);
 
   return (
     <Stack
@@ -137,7 +156,7 @@ const CriticAdvicesHeader = ({
       <Box display="flex" alignItems="center" columnGap="5px">
         <OrangeRating
           value={
-            type === 'new-critic' || type === 'new-advice'
+            type === 'new-critic' || type === 'new-advice' || isModify
               ? newRating
               : parseFloat(infos.rating)
           }
@@ -171,7 +190,7 @@ const CriticAdvicesHeader = ({
               id="basic-menu"
               anchorEl={displayRatings}
               open={openRatings}
-              onClose={() => setDisplayRatings(null)}
+              onClose={() => closeMenu()}
               TransitionComponent={Fade}
               sx={{
                 marginTop: '5px',
@@ -215,7 +234,10 @@ const CriticAdvicesHeader = ({
                     component="p"
                     fontFamily="Sirin Stencil"
                     sx={{ color: '#fff' }}
-                    onClick={() => setIsTurnip(!isTurnip)}
+                    onClick={() => {
+                      setIsGoldNugget(false);
+                      setIsTurnip(!isTurnip);
+                    }}
                   >
                     {'Navet !'}
                   </Typography>
@@ -274,9 +296,10 @@ const CriticAdvicesHeader = ({
                     sx={{ color: '#fff', lineHeight: '15px' }}
                     onClick={() => {
                       setIsGoldNugget(!isGoldNugget);
-                      if (isGoldNugget) {
-                        setIsNuggetAnimEnded(false);
-                      }
+                      setIsTurnip(false);
+                      // if (isGoldNugget) {
+                      //   setIsNuggetAnimEnded(false);
+                      // }
                     }}
                   >
                     {'Pépite !'}
@@ -345,7 +368,7 @@ CriticAdvicesHeader.propTypes = {
   setIsModify: PropTypes.func.isRequired,
   isGoldNugget: PropTypes.bool.isRequired,
   setIsGoldNugget: PropTypes.func.isRequired,
-  setIsNuggetAnimEnded: PropTypes.func.isRequired,
+  // setIsNuggetAnimEnded: PropTypes.func.isRequired,
   isTurnip: PropTypes.bool.isRequired,
   setIsTurnip: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,

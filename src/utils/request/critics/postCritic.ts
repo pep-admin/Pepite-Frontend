@@ -8,10 +8,11 @@ export const addNewCritic = async (
   rating,
   text,
   isGoldNugget,
+  isTurnip,
 ) => {
   await axios.post(
     `${apiBaseUrl}/critics/add`,
-    { movie_id: movieId, type: type, rating, text, isGoldNugget },
+    { movie_id: movieId, type: type, rating, text, isGoldNugget, isTurnip },
     { withCredentials: true },
   );
 };

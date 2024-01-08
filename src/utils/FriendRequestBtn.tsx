@@ -70,8 +70,6 @@ const FriendRequestBtn = ({
   // Vérifie si l'utilisateur connecté a envoyé une demande en ami, si une demande est en attente, si une amitié existe
   const checkIfFriends = async () => {
     const status = await checkFriendshipStatus(receiverId);
-    console.log('amitié', status);
-
     setFriendshipStatus(status);
   };
 

@@ -1,26 +1,18 @@
 // Import des libs externes
-import { Stack, Typography, CardContent, Box } from '@mui/material';
+import { Stack, Typography, CardContent } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import {
-  GoldNuggetIcon,
-  TurnipIcon,
-  YellowRating,
-} from '@utils/styledComponent';
+import { YellowRating } from '@utils/styledComponent';
 
 const CriticAdvicesContent = ({
   type,
   chosenMovie,
   displayOverview,
   setDisplayOverview,
-  isGoldNugget,
-  isTurnip,
   infos,
-  isModify,
 }) => {
-  // const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
   const [isNew, setIsNew] = useState(false);
 
   let originalScore;
@@ -119,7 +111,6 @@ const CriticAdvicesContent = ({
                 </Typography>
               ) : null}
             </Stack>
-
             <Stack direction="row" columnGap="5px">
               <YellowRating
                 value={roundedScore}
@@ -130,79 +121,6 @@ const CriticAdvicesContent = ({
               <Typography variant="body2" fontWeight="bold" component="p">
                 {`${roundedScore}` + ' / 5'}
               </Typography>
-              {type === 'new-critic' || type === 'new-advice' || isModify ? (
-                <Box
-                  height="20px"
-                  width="60px"
-                  display="flex"
-                  justifyContent="space-between"
-                  marginLeft="10px"
-                >
-                  {isGoldNugget ? (
-                    <>
-                      <GoldNuggetIcon
-                        sx={{
-                          fontSize: '16px',
-                        }}
-                      />
-                      <Typography
-                        variant="body2"
-                        component="p"
-                        fontWeight="bold"
-                      >
-                        {'Pépite !'}
-                      </Typography>
-                    </>
-                  ) : isTurnip ? (
-                    <>
-                      <TurnipIcon
-                        sx={{
-                          fontSize: '16px',
-                        }}
-                      />
-                      <Typography
-                        variant="body2"
-                        component="p"
-                        fontWeight="bold"
-                      >
-                        {'Navet !'}
-                      </Typography>
-                    </>
-                  ) : null}
-                </Box>
-              ) : type === 'old-critic' ? (
-                <Box
-                  height="20px"
-                  width="60px"
-                  display="flex"
-                  justifyContent="space-between"
-                  marginLeft="10px"
-                >
-                  {infos.is_gold_nugget === 1 ? (
-                    <>
-                      <GoldNuggetIcon sx={{ fontSize: '16px' }} />
-                      <Typography
-                        variant="body2"
-                        component="p"
-                        fontWeight="bold"
-                      >
-                        {'Pépite !'}
-                      </Typography>
-                    </>
-                  ) : infos.is_turnip === 1 ? (
-                    <>
-                      <TurnipIcon sx={{ fontSize: '16px' }} />
-                      <Typography
-                        variant="body2"
-                        component="p"
-                        fontWeight="bold"
-                      >
-                        {'Navet !'}
-                      </Typography>
-                    </>
-                  ) : null}
-                </Box>
-              ) : null}
             </Stack>
           </Stack>
           <Stack direction="row">
@@ -326,10 +244,6 @@ CriticAdvicesContent.propTypes = {
   displayOverview: PropTypes.bool.isRequired,
   setDisplayOverview: PropTypes.func.isRequired,
   infos: PropTypes.object,
-  isGoldNugget: PropTypes.bool.isRequired,
-  setIsGoldNugget: PropTypes.func.isRequired,
-  isTurnip: PropTypes.bool.isRequired,
-  isModify: PropTypes.bool.isRequired,
 };
 
 export default CriticAdvicesContent;

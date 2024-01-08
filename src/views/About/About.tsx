@@ -84,7 +84,8 @@ const About = () => {
               component="span"
               className="brand-font"
               fontSize={'1.2em'}
-              color={'primary.main'}
+              fontFamily="Sirin Stencil"
+              color="#fff"
             >
               {'Pépite.'}
             </Typography>

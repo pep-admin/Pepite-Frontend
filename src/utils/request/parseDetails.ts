@@ -75,6 +75,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let text = null;
   let critic_id = null;
   let is_gold_nugget = 0;
+  let is_turnip = 0;
   let created_at = null;
   let sender_id = null;
   let relation_type = null;
@@ -91,6 +92,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text; // le texte de la critique
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
+    is_turnip = Number(data.is_turnip);
     relation_type = data.relation_type;
 
     if (requestType === 'critic') {
@@ -115,6 +117,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       text,
       critic_id,
       is_gold_nugget,
+      is_turnip,
       created_at,
       sender_id,
       relation_type,
@@ -133,6 +136,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text;
     critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
+    is_turnip = Number(data.is_turnip);
     relation_type = data.relation_type;
 
     if (requestType === 'critic') {
@@ -157,6 +161,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       text,
       critic_id,
       is_gold_nugget,
+      is_turnip,
       created_at,
       sender_id,
       relation_type,

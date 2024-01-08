@@ -110,7 +110,7 @@ const ProfilSuggestedNotes = ({
         >
           {!goldenMovies.length ? (
             <ProfilNoGold
-              page={'profil'}
+              page={page}
               userInfos={userInfos}
               chosenUser={chosenUser}
             />

@@ -302,6 +302,7 @@ const SearchBar = ({
             paper: {
               sx: {
                 width: '100%',
+                mt: 1,
               },
             },
           }}
@@ -315,6 +316,14 @@ const SearchBar = ({
               backgroundColor: '#f1f1f1',
               overflowY: 'scroll',
             },
+          }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
           }}
         >
           {results.map(result => {

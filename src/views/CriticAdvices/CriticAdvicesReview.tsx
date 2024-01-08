@@ -133,7 +133,11 @@ const CriticAdvicesReview = ({
         sx={{
           backgroundColor: '#F1F1F1',
         }}
-        onClick={type === 'old-critic' ? () => setShowReviewModal(true) : null}
+        onClick={
+          type === 'old-critic' && !isModify
+            ? () => setShowReviewModal(true)
+            : null
+        }
       >
         <Box
           position="absolute"

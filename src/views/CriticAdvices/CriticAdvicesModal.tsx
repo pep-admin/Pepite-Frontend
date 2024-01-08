@@ -90,7 +90,6 @@ const CriticAdvicesModal = ({
     try {
       const response = await getVideo(displayType, movieId);
       const data = response.data;
-      console.log('les données', data);
       if (data.results.length === 0) {
         setVideoId('no-video');
         return;
@@ -112,18 +111,15 @@ const CriticAdvicesModal = ({
 
   const getGoldNuggetUserInfos = async () => {
     const userInfos = await getUser(infos.user_id);
-    console.log('les infos des users pépites', userInfos);
-
     setGoldNuggetUserInfos(userInfos);
   };
 
   useEffect(() => {
     fetchTrailerUrl();
-    getGoldNuggetUserInfos();
+    if (from !== 'critic') {
+      getGoldNuggetUserInfos();
+    }
   }, []);
-
-  console.log('infos films', infos);
-  console.log('la note', parseFloat(infos?.rating));
 
   return (
     <Modal
@@ -350,7 +346,7 @@ CriticAdvicesModal.propTypes = {
   setShowPoster: PropTypes.func.isRequired,
   infos: PropTypes.object.isRequired,
   from: PropTypes.string.isRequired,
-  page: PropTypes.string.isRequired,
+  page: PropTypes.string,
 };
 
 export default CriticAdvicesModal;

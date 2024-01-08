@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import { useData } from '@hooks/DataContext';
 
 // Import des composants customisés
-import { Item } from '@utils/styledComponent';
+import { GoldNuggetIcon, Item, TurnipIcon } from '@utils/styledComponent';
 
 // Import des composants internes
 import CriticAdvicesHeader from './CriticAdvicesHeader';
@@ -28,7 +28,7 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
-import GoldNugget from '@utils/GoldNugget';
+// import GoldNugget from '@utils/GoldNugget';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
 import { useParams } from 'react-router-dom';
@@ -52,7 +52,7 @@ const CriticAdvicesComponent = ({
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
   const [newCriticText, setNewCriticText] = useState(''); // Nouveau texte de critique
   const [isGoldNugget, setIsGoldNugget] = useState(false); // Pépite ou non
-  const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
+  // const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
   const [isTurnip, setIsTurnip] = useState(false); // Navet ou non
   const [isModify, setIsModify] = useState(false);
   const [displayComments, setDisplayComments] = useState(false);
@@ -78,6 +78,7 @@ const CriticAdvicesComponent = ({
           newRating,
           newCriticText,
           isGoldNugget,
+          isTurnip,
         );
 
         setNewCriticError({ error: false, message: null });
@@ -157,6 +158,7 @@ const CriticAdvicesComponent = ({
         newRating,
         newCriticText,
         isGoldNugget,
+        isTurnip,
       );
 
       setNewCriticError({ error: false, message: null });
@@ -227,7 +229,7 @@ const CriticAdvicesComponent = ({
               setIsModify={setIsModify}
               isGoldNugget={isGoldNugget}
               setIsGoldNugget={setIsGoldNugget}
-              setIsNuggetAnimEnded={setIsNuggetAnimEnded}
+              // setIsNuggetAnimEnded={setIsNuggetAnimEnded}
               isTurnip={isTurnip}
               setIsTurnip={setIsTurnip}
               chosenUser={chosenUser}
@@ -273,10 +275,12 @@ const CriticAdvicesComponent = ({
               >
                 <CardActionArea
                   sx={{
+                    position: 'relative',
                     height: '100%',
                     width: 'auto',
                     display: 'flex',
                     alignItems: 'flex-start',
+                    overflow: 'hidden',
                   }}
                 >
                   <CardMedia
@@ -296,17 +300,60 @@ const CriticAdvicesComponent = ({
                       type === 'old-critic' ? () => setShowPoster(true) : null
                     }
                   />
+                  {((type === 'old-critic' || type === 'old-advice') &&
+                    !isModify &&
+                    (infos?.is_gold_nugget || infos?.is_turnip)) ||
+                  ((type === 'new-critic' ||
+                    type === 'new-advice' ||
+                    isModify) &&
+                    (isGoldNugget || isTurnip)) ? (
+                    <Box
+                      width="23px"
+                      height="23px"
+                      position="absolute"
+                      top="3px"
+                      right="3px"
+                      borderRadius="50%"
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      sx={{ backgroundColor: 'rgba(244, 244, 244, 0.5)' }}
+                    >
+                      {(infos?.is_gold_nugget && !isModify) ||
+                      (isGoldNugget && !isTurnip) ? (
+                        <GoldNuggetIcon
+                          sx={{
+                            fontSize: '1.2em',
+                            position: 'relative',
+                            top: '0.2px',
+                            right: '0.1px',
+                          }}
+                        />
+                      ) : (infos?.is_turnip && !isModify) ||
+                        (!isGoldNugget && isTurnip) ? (
+                        <TurnipIcon
+                          sx={{
+                            fontSize: '1.2em',
+                            position: 'relative',
+                            top: '0.2px',
+                            right: '0.1px',
+                          }}
+                        />
+                      ) : null}
+                    </Box>
+                  ) : null}
                 </CardActionArea>
                 <CriticAdvicesContent
                   type={type}
                   chosenMovie={chosenMovie}
                   displayOverview={displayOverwiew}
                   setDisplayOverview={setDisplayOverview}
-                  isGoldNugget={isGoldNugget}
-                  setIsGoldNugget={setIsGoldNugget}
-                  isTurnip={isTurnip}
+                  // isGoldNugget={isGoldNugget}
+                  // setIsGoldNugget={setIsGoldNugget}
+                  // isTurnip={isTurnip}
                   infos={infos}
-                  isModify={isModify}
+                  // isModify={isModify}
                 />
               </Box>
               <Stack
@@ -399,9 +446,10 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
-      {isGoldNugget && !isNuggetAnimEnded ? (
+      {/* TODO : optimiser l'animation */}
+      {/* {isGoldNugget && !isNuggetAnimEnded ? (
         <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
-      ) : null}
+      ) : null} */}
       {displayComments ? (
         <CommentsComponent
           criticId={infos.critic_id}

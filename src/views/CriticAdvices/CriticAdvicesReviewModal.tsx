@@ -56,7 +56,7 @@ const CriticAdvicesReviewModal = ({
             alt={`Photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
             src={
               // Si l'utilisateur qui a posté la critique || le conseil a défini une photo de profil
-              criticUserInfos.profilPics.length
+              criticUserInfos.profilPics?.length
                 ? `${apiBaseUrl}/uploads/${
                     criticUserInfos.profilPics.find(pic => pic.isActive === 1)
                       .filePath

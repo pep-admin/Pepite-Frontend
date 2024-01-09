@@ -1,4 +1,6 @@
 export const formatRating = rating => {
+  if (!rating) return;
+
   // Si la note a une partie décimale autre que .0, retourner la note telle quelle
   if (rating % 1 !== 0) {
     return rating.toString();

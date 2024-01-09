@@ -6,9 +6,6 @@ import {
   ToggleButtonGroup,
   Stack,
   Box,
-  Typography,
-  Divider,
-  Avatar,
 } from '@mui/material';
 import { getVideo } from '@utils/request/critics/getVideo';
 import { useState, useEffect } from 'react';
@@ -20,19 +17,16 @@ import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { OrangeRating } from '@utils/styledComponent';
-import StarIcon from '@mui/icons-material/Star';
 
 // Import des requêtes
 import { getUser } from '@utils/request/users/getUser';
 
-// Import des variables d'environnement
-import apiBaseUrl from '@utils/request/config';
-
 // Import des fonctions utilitaires
-import { formatRating } from '@utils/functions/formatRating';
+import { getRelationStatusRequest } from '@utils/request/friendship/getRelationStatusRequest';
+
+// Import des composants internes
+import ModalPosterContent from './ModalPosterContent';
 
 interface Picture {
   id: number;
@@ -65,10 +59,9 @@ const CriticAdvicesModal = ({
 
   const [showVideo, setShowVideo] = useState(false);
   const [videoId, setVideoId] = useState(null);
-  const [goldNuggetUserInfos, setGoldNuggetUserInfos] = useState<User | null>(
-    null,
-  );
+  const [goldNuggetUserInfos, setGoldNuggetUserInfos] = useState<User[]>([]);
   const [showUserInfos, setShowUserInfos] = useState(true);
+  const [relationshipStatus, setRelationshipStatus] = useState({});
 
   const opts = {
     height: '100%',
@@ -109,17 +102,46 @@ const CriticAdvicesModal = ({
     }
   };
 
-  const getGoldNuggetUserInfos = async () => {
-    const userInfos = await getUser(infos.user_id);
-    setGoldNuggetUserInfos(userInfos);
+  const getGoldNuggetUsersInfos = async userIds => {
+    try {
+      const userInfosPromises = userIds.map(userId => getUser(userId));
+      const usersInfos = await Promise.all(userInfosPromises);
+      setGoldNuggetUserInfos(usersInfos);
+    } catch (error) {
+      console.error(
+        'Erreur lors de la récupération des informations des utilisateurs:',
+        error,
+      );
+      setGoldNuggetUserInfos([]);
+    }
+  };
+
+  const getRelationStatus = async id => {
+    const relationShip = await getRelationStatusRequest(id);
+    setRelationshipStatus(prevStatus => ({
+      ...prevStatus,
+      [id]: relationShip,
+    }));
   };
 
   useEffect(() => {
-    fetchTrailerUrl();
-    if (from !== 'critic') {
-      getGoldNuggetUserInfos();
+    // Statut des relations entre les utilisateurs qui ont choisi le film en pépite
+    for (const i in infos.users) {
+      getRelationStatus(infos.users[i]);
     }
-  }, []);
+
+    // Informations des utilisateurs qui ont choisi le film en pépite
+    if (from !== 'critic' && infos.users) {
+      getGoldNuggetUsersInfos(infos.users);
+    }
+
+    // Récupère la bande annonce (si existante) du film choisi
+    fetchTrailerUrl();
+  }, [infos]);
+
+  useEffect(() => {
+    console.log('les infos', infos);
+  }, [infos]);
 
   return (
     <Modal
@@ -166,93 +188,12 @@ const CriticAdvicesModal = ({
               }}
             />
             {page === 'home' && showUserInfos ? (
-              <Stack
-                position="absolute"
-                top="0"
-                left="0"
-                height="100%"
-                width="100%"
-                bgcolor="rgba(0, 0, 0, 0.67)"
-                padding="6px"
-                alignItems="center"
-              >
-                <Typography
-                  variant="h2"
-                  align="center"
-                  color="#fff"
-                  fontSize="2.5em"
-                  fontFamily="Sirin Stencil"
-                  marginBottom="7px"
-                >
-                  {'PÉPITE !'}
-                </Typography>
-                <Divider
-                  sx={{
-                    width: '75px',
-                    borderBottomWidth: 'medium',
-                    borderColor: '#fff',
-                  }}
-                />
-                <Stack
-                  width="100%"
-                  flexGrow="1"
-                  alignItems="center"
-                  padding="30px 0"
-                >
-                  <VisibilityOffIcon
-                    fontSize="large"
-                    sx={{
-                      color: '#fff',
-                      marginBottom: '15px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => setShowUserInfos(false)}
-                  />
-                  <Avatar
-                    alt={`Photo de profil de ${goldNuggetUserInfos?.first_name}`}
-                    src={
-                      // Si l'utilisateur a défini une photo de profil
-                      goldNuggetUserInfos?.profilPics.length
-                        ? `${apiBaseUrl}/uploads/${goldNuggetUserInfos?.profilPics.find(
-                            pic => pic.isActive === 1,
-                          ).filePath}`
-                        : // Si l'utilisateur n'a pas défini de photo de profil
-                          'http://127.0.0.1:5173/images/default_profil_pic.png'
-                    }
-                    sx={{
-                      width: 90,
-                      height: 90,
-                      outline: '3.5px solid #fff',
-                      marginBottom: '15px',
-                    }}
-                  />
-                  <Typography sx={{ color: '#fff' }}>
-                    {`${goldNuggetUserInfos?.first_name} ${goldNuggetUserInfos?.last_name} a noté`}
-                  </Typography>
-                  <Typography color="primary" fontSize="2em" fontWeight="bold">
-                    {infos?.title ? `${infos.title}` : `${infos.name}`}
-                  </Typography>
-                  <Stack direction="row" alignItems="center">
-                    <OrangeRating
-                      name="half-rating-read"
-                      value={parseFloat(infos?.rating)}
-                      precision={0.1}
-                      readOnly
-                      emptyIcon={
-                        <StarIcon sx={{ color: '#E1E1E1', fontSize: '1em' }} />
-                      }
-                      sx={{ marginRight: '10px', fontSize: '1.3em' }}
-                    />
-                    <Typography
-                      fontSize="1.3em"
-                      color="secondary"
-                      fontWeight="bold"
-                    >
-                      {`${formatRating(infos?.rating)} / 5`}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </Stack>
+              <ModalPosterContent
+                infos={infos}
+                goldNuggetUserInfos={goldNuggetUserInfos}
+                relationshipStatus={relationshipStatus}
+                setShowUserInfos={setShowUserInfos}
+              />
             ) : page === 'home' && !showUserInfos ? (
               <Stack
                 position="absolute"

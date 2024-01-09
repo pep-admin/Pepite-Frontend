@@ -57,12 +57,29 @@ const ProfilSuggestedNotes = ({
         displayType,
         userInfos.id,
       );
-      console.log('les pépites', goldNuggets);
+      const moviesMap = new Map();
+
+      // Supprime les doublons des pépites et ajoute les ids utilisateurs si plusieurs pépites pour un film
+      goldNuggets.forEach(nugget => {
+        if (!moviesMap.has(nugget.movie_id)) {
+          // Si le film n'est pas encore dans le Map, on ajoute les détails du film et un tableau pour les utilisateurs
+          moviesMap.set(nugget.movie_id, {
+            ...nugget,
+            users: [nugget.user_id],
+          });
+        } else {
+          // Si le film est déjà dans le Map, on ajoute l'id de l'utilisateur au tableau des utilisateurs
+          const existingEntry = moviesMap.get(nugget.movie_id);
+          existingEntry.users.push(nugget.user_id);
+          moviesMap.set(nugget.movie_id, existingEntry);
+        }
+      });
+      const uniqueMoviesArray = Array.from(moviesMap.values());
+      setGoldenMovies(uniqueMoviesArray);
     } else if (page === 'profil') {
       goldNuggets = await getAllGoldNuggetsOfUser(displayType, id);
+      setGoldenMovies(goldNuggets);
     } else return;
-
-    setGoldenMovies(goldNuggets);
   };
 
   useEffect(() => {
@@ -130,7 +147,10 @@ const ProfilSuggestedNotes = ({
                     <CardActionArea
                       sx={{ height: 'calc(100% - 23px)' }}
                       onClick={() => {
-                        setGoldenMovieInfos(movie);
+                        setGoldenMovieInfos({
+                          ...movie,
+                          users: movie.users,
+                        });
                         setShowGoldenMovie(true);
                       }}
                     >
@@ -227,6 +247,16 @@ const ProfilSuggestedNotes = ({
                           right: '0.1px',
                         }}
                       />
+                      {page !== 'profil' && movie?.users.length > 1 ? (
+                        <Typography
+                          variant="body2"
+                          fontWeight="bold"
+                          position="absolute"
+                          color="#052525"
+                        >
+                          {`${movie.users.length}`}
+                        </Typography>
+                      ) : null}
                     </Box>
                   </Card>
                   {goldenMovies.length - 1 !== index ? (

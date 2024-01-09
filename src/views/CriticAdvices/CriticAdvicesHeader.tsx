@@ -101,11 +101,11 @@ const CriticAdvicesHeader = ({
           ) : // Si l'utilisateur connecté souhaite poster un conseil sur le profil d'un ami
           type === 'new-advice' ? (
             <>
-              Conseillez à{' '}
+              {'Conseillez à '}
               <span
                 style={{
                   color:
-                    infos.relation_type === 'close_friend'
+                    infos?.relation_type === 'close_friend'
                       ? '#F16C22'
                       : '#F29E50',
                 }}
@@ -153,7 +153,12 @@ const CriticAdvicesHeader = ({
           )
         }
       </Typography>
-      <Box display="flex" alignItems="center" columnGap="5px">
+      <Box
+        display="flex"
+        alignItems="center"
+        columnGap="5px"
+        whiteSpace="nowrap"
+      >
         <OrangeRating
           value={
             type === 'new-critic' || type === 'new-advice' || isModify

@@ -82,10 +82,10 @@ const Home = () => {
             showPicModal={null}
           />
           {criticsOfAcquaintances.length ? (
-            criticsOfAcquaintances.map(critic => {
+            criticsOfAcquaintances.map((critic, index) => {
               return (
                 <CriticAdvicesComponent
-                  key={critic.id}
+                  key={index}
                   type={'old-critic'}
                   setUserCritics={setCriticsOfAcquaintances}
                   setGoldenMovies={setGoldenMovies}

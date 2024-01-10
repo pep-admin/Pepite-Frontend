@@ -18,7 +18,7 @@ import SendIcon from '@mui/icons-material/Send';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-const CommentsInput = ({ criticId, comments, getComments }) => {
+const CommentsInput = ({ criticId, comments, getComments, userInfos }) => {
   const { displayType } = useData();
 
   const [newComment, setNewComment] = useState('');
@@ -64,7 +64,7 @@ const CommentsInput = ({ criticId, comments, getComments }) => {
           fontSize="1em"
           paddingLeft="12px"
         >
-          {'Kate Austen'}
+          {`${userInfos.first_name} ${userInfos.last_name}`}
         </Typography>
         <TextField
           id="filled-basic"
@@ -99,6 +99,7 @@ CommentsInput.propTypes = {
   criticId: PropTypes.number.isRequired,
   comments: PropTypes.array.isRequired,
   getComments: PropTypes.func.isRequired,
+  userInfos: PropTypes.object.isRequired,
 };
 
 export default CommentsInput;

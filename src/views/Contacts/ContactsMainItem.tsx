@@ -142,7 +142,7 @@ const ContactsMainItem = ({
           {type === 'friends' ? (
             <FavoriteIcon
               fontSize="small"
-              sx={{ color: isCloseFriend ? '#F29E50' : '#B9B9B9' }}
+              sx={{ color: isCloseFriend ? '#F16C22' : '#B9B9B9' }}
               onClick={() => handleCloseFriend()}
             />
           ) : null}
@@ -153,8 +153,10 @@ const ContactsMainItem = ({
                 type === 'requests'
                   ? '#0E6666 !important'
                   : type === 'followed'
-                  ? '#F29E50 !important'
-                  : '#24A5A5 !important',
+                  ? '#24A5A5 !important'
+                  : type === 'friends' && isCloseFriend
+                  ? '#F16C22 !important'
+                  : '#F29E50 !important',
               height: '20px',
               width: '60px',
               minWidth: 'auto',
@@ -168,9 +170,11 @@ const ContactsMainItem = ({
           >
             {type === 'requests'
               ? 'Accepter'
-              : type === 'friends'
-              ? 'Ami(e)'
-              : 'Suivi(e)'}
+              : type === 'followed'
+              ? 'Suivi'
+              : type === 'friends' && isCloseFriend
+              ? 'Ami +'
+              : 'Ami'}
           </Button>
           <DeleteOutlineOutlinedIcon
             fontSize="small"

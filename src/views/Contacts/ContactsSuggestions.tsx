@@ -25,6 +25,7 @@ const ContactsSuggestions = ({
   getFriendRequests,
   getFriendsNumber,
   getFollowed,
+  isLast,
 }) => {
   const navigate = useNavigate();
 
@@ -121,29 +122,39 @@ const ContactsSuggestions = ({
           />
         </CardActions>
         <Box
-          width="20px"
-          height="20px"
+          width="23px"
+          height="23px"
           position="absolute"
-          top="2px"
-          right="2px"
+          top="3px"
+          right="3px"
           borderRadius="50%"
           display="flex"
+          flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          border="1px solid #f29e50"
-          sx={{ backgroundColor: '#fff' }}
+          sx={{ backgroundColor: 'rgba(244, 244, 244, 0.5)' }}
         >
           <GoldNuggetIcon
             sx={{
-              fontSize: '1em',
+              fontSize: '1.2em',
               position: 'relative',
               top: '0.2px',
               right: '0.1px',
             }}
           />
+          <Typography
+            variant="body2"
+            fontWeight="bold"
+            position="absolute"
+            color="#052525"
+          >
+            {`${user.count_common_gold_nuggets}`}
+          </Typography>
         </Box>
       </Card>
-      <Divider variant="middle" flexItem orientation="vertical" />
+      {!isLast ? (
+        <Divider variant="middle" flexItem orientation="vertical" />
+      ) : null}
     </>
   );
 };
@@ -154,6 +165,7 @@ ContactsSuggestions.propTypes = {
   getFriendRequests: PropTypes.func.isRequired,
   getFriendsNumber: PropTypes.func.isRequired,
   getFollowed: PropTypes.func.isRequired,
+  isLast: PropTypes.bool.isRequired,
 };
 
 export default ContactsSuggestions;

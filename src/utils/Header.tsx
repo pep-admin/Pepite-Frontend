@@ -13,6 +13,8 @@ import {
   Badge,
   ToggleButton,
   ToggleButtonGroup,
+  ListItemIcon,
+  Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -22,10 +24,15 @@ import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
-import { handleLogout } from './request/swipe/fetchData';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
+
+// Import des requêtes
+import { handleLogout } from './request/swipe/fetchData';
 
 const pages = ['Accueil', 'Swipe', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
@@ -88,9 +95,13 @@ const Header = ({ userInfos }) => {
           variant="h1"
           color={'#fff'}
           fontSize={'2em'}
-          sx={{ position: 'relative', bottom: '4px' }}
+          sx={{
+            position: 'relative',
+            bottom: '2px',
+            textShadow: '#00000059 1px 4px 3px',
+          }}
         >
-          {'Pépite.'}
+          {'PÉPITE.'}
         </Typography>
         <ToggleButtonGroup
           color="primary"
@@ -183,6 +194,8 @@ const Header = ({ userInfos }) => {
                     navigate('/swipe');
                   } else if (page === 'Mes contacts') {
                     navigate(`/contacts/${userId}`);
+                  } else if (page === 'Accueil') {
+                    navigate(`/home/${userId}`);
                   }
                   handleCloseNavMenu();
                 }}
@@ -240,10 +253,15 @@ const Header = ({ userInfos }) => {
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
+            MenuListProps={{
+              sx: {
+                padding: '0',
+              },
+            }}
           >
-            {settings.map(setting => (
+            {settings.map((setting, index) => [
               <MenuItem
-                key={setting}
+                key={`setting-item-${index}`}
                 onClick={() => {
                   if (setting === 'Déconnexion') {
                     onLogout();
@@ -254,12 +272,32 @@ const Header = ({ userInfos }) => {
                   }
                   handleCloseUserMenu();
                 }}
+                sx={{ padding: '0 16px' }}
               >
+                {setting === 'Profil' ? (
+                  <ListItemIcon>
+                    <PersonIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : setting === 'Compte' ? (
+                  <ListItemIcon>
+                    <SettingsIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : (
+                  <ListItemIcon>
+                    <LogoutIcon fontSize="small" />
+                  </ListItemIcon>
+                )}
                 <Typography variant="body2" textAlign="center">
                   {setting}
                 </Typography>
-              </MenuItem>
-            ))}
+              </MenuItem>,
+              settings.length - 1 !== index && (
+                <Divider
+                  key={`setting-divider-${index}`}
+                  sx={{ width: '80%', margin: '0 auto !important' }}
+                />
+              ),
+            ])}
           </Menu>
         </Box>
       </Toolbar>

@@ -14,7 +14,7 @@ const ContactContainer = () => {
     return null;
   }
 
-  return <ContactsComponent />;
+  return <ContactsComponent page={'contacts'} />;
 };
 
 export default ContactContainer;

@@ -42,7 +42,7 @@ const LoginFormContainer = () => {
       if (response.data.last_login_date === null) {
         navigate('/about');
       } else {
-        navigate('/');
+        navigate(`/home/${response.data.id}`);
       }
     } catch (error) {
       if (error.response && error.response.data) {

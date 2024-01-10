@@ -2,6 +2,7 @@
 import { Container, Stack, Typography, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import des composants internes
 import Header from '@utils/Header';
@@ -16,7 +17,7 @@ import { getFriendRequestList } from '@utils/request/friendship/getFriendRequest
 import { getFriendsList } from '@utils/request/friendship/getFriendsList';
 import { getFollowedList } from '@utils/request/followed/getFollowedList';
 
-const ContactsComponent = () => {
+const ContactsComponent = ({ page }) => {
   const { id } = useParams();
 
   // Utilisateur connecté
@@ -59,9 +60,43 @@ const ContactsComponent = () => {
     getFollowed();
   }, []);
 
-  useEffect(() => {
-    console.log('la liste des suivis', followedList);
-  }, [followedList]);
+  if (page === 'home')
+    return (
+      <Item overflow="hidden">
+        <Stack
+          direction="row"
+          height="25px"
+          alignItems="center"
+          padding="0 13px"
+        >
+          <Typography variant="body2" component="p" fontWeight="bold">
+            {'Personnes suggérées'}
+          </Typography>
+        </Stack>
+        <Divider />
+        <Stack
+          direction="row"
+          padding="6px 6px 0 6px"
+          columnGap="6px"
+          sx={{ overflowX: 'scroll' }}
+        >
+          {usersSuggestion &&
+            usersSuggestion.map((user, index) => {
+              return (
+                <ContactsSuggestions
+                  key={user.id}
+                  user={user}
+                  friendRequestList={friendRequestList}
+                  getFriendRequests={getFriendRequests}
+                  getFriendsNumber={getFriendsNumber}
+                  getFollowed={getFollowed}
+                  isLast={usersSuggestion.length - 1 !== index ? false : true}
+                />
+              );
+            })}
+        </Stack>
+      </Item>
+    );
 
   return (
     <>
@@ -101,7 +136,7 @@ const ContactsComponent = () => {
               sx={{ overflowX: 'scroll' }}
             >
               {usersSuggestion &&
-                usersSuggestion.map(user => {
+                usersSuggestion.map((user, index) => {
                   return (
                     <ContactsSuggestions
                       key={user.id}
@@ -110,6 +145,9 @@ const ContactsComponent = () => {
                       getFriendRequests={getFriendRequests}
                       getFriendsNumber={getFriendsNumber}
                       getFollowed={getFollowed}
+                      isLast={
+                        usersSuggestion.length - 1 !== index ? false : true
+                      }
                     />
                   );
                 })}
@@ -292,6 +330,10 @@ const ContactsComponent = () => {
       </Container>
     </>
   );
+};
+
+ContactsComponent.propTypes = {
+  page: PropTypes.string.isRequired,
 };
 
 export default ContactsComponent;

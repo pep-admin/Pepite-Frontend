@@ -1,5 +1,5 @@
 // Import des libs externes
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Stack,
   Box,
@@ -13,19 +13,26 @@ import {
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-// Import des icônes étoile vide
+// Import des icônes
 import { GoldNuggetIcon, YellowRating } from '@utils/styledComponent';
 import StarIcon from '@mui/icons-material/Star';
-import { useEffect, useState } from 'react';
+
+// Import des requêtes
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
+import { getGoldNuggetsFromAcquaintances } from '@utils/request/goldNugget/getGoldNuggetsFromAcquaintances';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+
+// Import des fonctions
 import { convertRating } from '@utils/functions/convertRating';
+
+// Import des composants internes
 import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
 import ProfilNoGold from './ProfilNoGold';
 
 const ProfilSuggestedNotes = ({
+  page,
   goldenMovies,
   setGoldenMovies,
   userInfos,
@@ -37,9 +44,42 @@ const ProfilSuggestedNotes = ({
   const { displayType } = useData();
   const { id } = useParams();
 
+  /* 
+    Récupère les pépites de l'utilisateur pour la page de profil
+  OU
+    Récupère les pépites des amis et followed pour la page d'accueil
+  */
   const fetchAllGoldNuggetsOfUser = async () => {
-    const response = await getAllGoldNuggetsOfUser(displayType, id);
-    setGoldenMovies(response);
+    let goldNuggets;
+
+    if (page === 'home') {
+      goldNuggets = await getGoldNuggetsFromAcquaintances(
+        displayType,
+        userInfos.id,
+      );
+      const moviesMap = new Map();
+
+      // Supprime les doublons des pépites et ajoute les ids utilisateurs si plusieurs pépites pour un film
+      goldNuggets.forEach(nugget => {
+        if (!moviesMap.has(nugget.movie_id)) {
+          // Si le film n'est pas encore dans le Map, on ajoute les détails du film et un tableau pour les utilisateurs
+          moviesMap.set(nugget.movie_id, {
+            ...nugget,
+            users: [nugget.user_id],
+          });
+        } else {
+          // Si le film est déjà dans le Map, on ajoute l'id de l'utilisateur au tableau des utilisateurs
+          const existingEntry = moviesMap.get(nugget.movie_id);
+          existingEntry.users.push(nugget.user_id);
+          moviesMap.set(nugget.movie_id, existingEntry);
+        }
+      });
+      const uniqueMoviesArray = Array.from(moviesMap.values());
+      setGoldenMovies(uniqueMoviesArray);
+    } else if (page === 'profil') {
+      goldNuggets = await getAllGoldNuggetsOfUser(displayType, id);
+      setGoldenMovies(goldNuggets);
+    } else return;
   };
 
   useEffect(() => {
@@ -50,6 +90,7 @@ const ProfilSuggestedNotes = ({
     <>
       {showGoldenMovie ? (
         <CriticAdvicesModal
+          page={page}
           showPoster={showGoldenMovie}
           setShowPoster={setShowGoldenMovie}
           infos={goldenMovieInfos}
@@ -65,7 +106,9 @@ const ProfilSuggestedNotes = ({
           padding="0 10px"
         >
           <Typography variant="body2" component="p" fontWeight="bold">
-            {'Dernières pépites'}
+            {page === 'profil'
+              ? 'Vos dernières pépites'
+              : 'Dernières pépites de vos contacts'}
           </Typography>
           <Typography variant="body2" component="p" fontWeight="bold">
             {'Voir +'}
@@ -74,18 +117,22 @@ const ProfilSuggestedNotes = ({
         <Divider />
         <Stack
           direction="row"
-          height="calc(100% - 25.8px)"
+          height={page === 'profil' ? 'calc(100% - 25.8px)' : '150px'}
           justifyContent="flex-start"
-          padding="6px 6px 0 6px"
-          gap="10px"
+          padding={!goldenMovies.length ? '6px' : '6px 6px 0 6px'}
+          columnGap={page === 'profil' ? '10px' : '6px'}
           sx={{
             overflowX: 'scroll',
           }}
         >
           {!goldenMovies.length ? (
-            <ProfilNoGold userInfos={userInfos} chosenUser={chosenUser} />
+            <ProfilNoGold
+              page={page}
+              userInfos={userInfos}
+              chosenUser={chosenUser}
+            />
           ) : (
-            goldenMovies.map(movie => {
+            goldenMovies.map((movie, index) => {
               return (
                 <React.Fragment key={movie.id}>
                   <Card
@@ -100,7 +147,10 @@ const ProfilSuggestedNotes = ({
                     <CardActionArea
                       sx={{ height: 'calc(100% - 23px)' }}
                       onClick={() => {
-                        setGoldenMovieInfos(movie);
+                        setGoldenMovieInfos({
+                          ...movie,
+                          users: movie.users,
+                        });
                         setShowGoldenMovie(true);
                       }}
                     >
@@ -177,29 +227,41 @@ const ProfilSuggestedNotes = ({
                       </Typography>
                     </Box>
                     <Box
-                      width="20px"
-                      height="20px"
+                      width="23px"
+                      height="23px"
                       position="absolute"
-                      top="2px"
-                      right="2px"
+                      top="3px"
+                      right="3px"
                       borderRadius="50%"
                       display="flex"
+                      flexDirection="column"
                       alignItems="center"
                       justifyContent="center"
-                      border="1px solid #f29e50"
-                      sx={{ backgroundColor: '#fff' }}
+                      sx={{ backgroundColor: 'rgba(244, 244, 244, 0.5)' }}
                     >
                       <GoldNuggetIcon
                         sx={{
-                          fontSize: '1em',
+                          fontSize: '1.2em',
                           position: 'relative',
                           top: '0.2px',
                           right: '0.1px',
                         }}
                       />
+                      {page !== 'profil' && movie?.users.length > 1 ? (
+                        <Typography
+                          variant="body2"
+                          fontWeight="bold"
+                          position="absolute"
+                          color="#052525"
+                        >
+                          {`${movie.users.length}`}
+                        </Typography>
+                      ) : null}
                     </Box>
                   </Card>
-                  <Divider variant="middle" flexItem orientation="vertical" />
+                  {goldenMovies.length - 1 !== index ? (
+                    <Divider variant="middle" flexItem orientation="vertical" />
+                  ) : null}
                 </React.Fragment>
               );
             })
@@ -215,6 +277,7 @@ ProfilSuggestedNotes.propTypes = {
   setGoldenMovies: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
+  page: PropTypes.string.isRequired,
 };
 
 export default ProfilSuggestedNotes;

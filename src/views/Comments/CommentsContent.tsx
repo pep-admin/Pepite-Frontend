@@ -20,13 +20,43 @@ import { checkLikeStatusComment } from '@utils/request/comments/checkLikeStatusC
 import { removeCommentLike } from '@utils/request/comments/removeCommentLike';
 import { modifyComment } from '@utils/request/comments/modifyComment';
 
-const CommentsContent = ({ comment, setInfos, getComments }) => {
+// Import des variables d'environnement
+import apiBaseUrl from '@utils/request/config';
+import { getUser } from '@utils/request/users/getUser';
+
+interface Picture {
+  id: number;
+  user_id: number;
+  filePath: string;
+  uploaded_at: string;
+  isActive: number;
+}
+
+interface User {
+  coverPics: Picture[];
+  create_datetime: string;
+  email: string;
+  first_name: string;
+  id: number;
+  last_name: string;
+  last_login_date: string;
+  profilPics: Picture[];
+  rank: string;
+}
+
+const CommentsContent = ({ comment, setInfos, getComments, userInfos }) => {
   const { displayType } = useData();
 
   const [isModify, setIsModify] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [likesNumber, setLikesNumber] = useState(0);
   const [commentUpdated, setCommentUpdated] = useState(comment.text);
+  const [commentUserInfos, setCommentUserInfos] = useState<User | null>(null);
+
+  const fetchUserInfos = async () => {
+    const commentUser = await getUser(comment.user_id);
+    setCommentUserInfos(commentUser);
+  };
 
   // Compte le nombre de likes par critique
   const fetchLikesNumber = async () => {
@@ -59,25 +89,17 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
   const updateComment = async commentId => {
     try {
       await modifyComment(commentId, displayType, commentUpdated);
-      console.log('commentaire modifié');
-
       getComments();
-      // setNewCriticError({ error: false, message: null });
-
-      // const newCriticsData = await getAllCriticsOfUser(userId, displayType);
-      // setUserCritics(newCriticsData);
       setIsModify(false);
     } catch (error) {
       console.log('erreur dans la modification', error);
-      // setNewCriticError({ error: true, message: error });
-      // setNewCriticInfo({ info: false, message: null });
-      // setNewCriticSuccess({ success: false, message: null });
     }
   };
 
   useEffect(() => {
     fetchLikesNumber();
     checkLikesStatus();
+    fetchUserInfos();
   }, [hasLiked]);
 
   return (
@@ -92,8 +114,16 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
       >
         <Stack direction="row" alignItems="center">
           <Avatar
-            alt="Remy Sharp"
-            src="http://127.0.0.1:5173/images/kate.jpg"
+            alt={`Photo de profil de ${commentUserInfos?.first_name} ${commentUserInfos?.last_name}`}
+            src={
+              // Si l'utilisateur qui a posté un commentaire a défini une photo de profil
+              commentUserInfos?.profilPics.length
+                ? `${apiBaseUrl}/uploads/${commentUserInfos?.profilPics.find(
+                    pic => pic.isActive === 1,
+                  ).filePath}`
+                : // Si l'utilisateur n'a pas défini de photo de profil
+                  'http://127.0.0.1:5173/images/default_profil_pic.png'
+            }
             sx={{
               width: 50,
               height: 50,
@@ -125,15 +155,17 @@ const CommentsContent = ({ comment, setInfos, getComments }) => {
                 fontSize="1em"
                 fontWeight="bold"
               >
-                {'Kate Austen'}
+                {`${commentUserInfos?.first_name} ${commentUserInfos?.last_name}`}
               </Typography>
-              <ModifyOrDelete
-                parent={'comment'}
-                infos={comment}
-                setInfos={setInfos}
-                isModify={isModify}
-                setIsModify={setIsModify}
-              />
+              {userInfos.id === comment.user_id ? (
+                <ModifyOrDelete
+                  parent={'comment'}
+                  infos={comment}
+                  setInfos={setInfos}
+                  isModify={isModify}
+                  setIsModify={setIsModify}
+                />
+              ) : null}
             </Stack>
             {isModify ? (
               <Stack direction="row" margin="6px 0">
@@ -208,6 +240,7 @@ CommentsContent.propTypes = {
   comment: PropTypes.object.isRequired,
   setInfos: PropTypes.func.isRequired,
   getComments: PropTypes.func.isRequired,
+  userInfos: PropTypes.object.isRequired,
 };
 
 export default CommentsContent;

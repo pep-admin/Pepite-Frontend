@@ -1,44 +1,122 @@
 // Import des libs externes
-import { useState } from 'react';
+import { Container, Stack } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
+import { Item } from '@utils/styledComponent';
+import SearchBar from '@utils/SearchBar';
+import ContactsComponent from '@views/Contacts/ContactsComponent';
+import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
+
+// Import des requêtes
+import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
+
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 
 const Home = () => {
+  const { displayType, chosenMovie } = useData();
+
   const [userInfos, setUserInfos] = useState(
+    // L'utilisateur connecté
     JSON.parse(localStorage.getItem('user_infos')),
   );
+  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
+  const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
+  // const [alertSeverity, setAlertSeverity] = useState({
+  //   state: null,
+  //   message: null,
+  // });
+
+  const getCritics = async () => {
+    const critics = await getAllCriticsOfAcquaintances(
+      userInfos.id,
+      displayType,
+    );
+    console.log(critics);
+    setCriticsOfAcquaintances(critics);
+  };
+
+  useEffect(() => {
+    getCritics();
+  }, [displayType]);
 
   return (
-    // <AppBar position="static" sx={{ mb: 2 }}>
-    //   <Toolbar>
-    //     {/* <Typography variant="body1">{displayBuildDate}</Typography> */}
-    //     <Stack
-    //       direction={'row'}
-    //       justifyContent={'center'}
-    //       alignItems={'center'}
-    //       width={'100%'}
-    //     >
-    //       {/* <Button color="inherit" component={Link} to="/">
-    //         {'Home'}
-    //       </Button>
-    //       <Button color="inherit" component={Link} to="/login">
-    //         Login
-    //       </Button>
-    //       <Button color="inherit" component={Link} to="/register">
-    //         Register
-    //       </Button>
-    //       <Button color="inherit" component={Link} to="/about">
-    //         About
-    //       </Button>
-    //       <Button color="inherit" component={Link} to="/swipe">
-    //         Swipe
-    //       </Button> */}
-
-    //     </Stack>
-    //   </Toolbar>
-    // </AppBar>
-    <Header userInfos={userInfos} />
+    <>
+      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Container
+        maxWidth="xl"
+        sx={{
+          padding: '6px',
+          backgroundColor: '#F4F4F4',
+          minHeight: 'calc(100vh - 60px)',
+        }}
+      >
+        <Stack direction="column" spacing={1}>
+          <SearchBar
+            Item={Item}
+            page={'contacts'}
+            userInfos={userInfos}
+            chosenUser={null}
+            handlePoster={null}
+          />
+          <ContactsComponent page={'home'} />
+          <Item
+            customheight="calc(100% - 6px)"
+            customwidth="100%"
+            margintop="6px"
+            overflow="hidden"
+          >
+            <ProfilSuggestedNotes
+              page={'home'}
+              goldenMovies={goldenMovies}
+              setGoldenMovies={setGoldenMovies}
+              userInfos={userInfos}
+            />
+          </Item>
+          <SearchBar
+            Item={Item}
+            page={'home'}
+            userInfos={userInfos}
+            chosenUser={null}
+            handlePoster={null}
+            showPicModal={null}
+          />
+          {chosenMovie !== null ? (
+            <CriticAdvicesComponent
+              type={'new-critic'}
+              chosenMovie={chosenMovie}
+              setUserCritics={setCriticsOfAcquaintances}
+              setGoldenMovies={setGoldenMovies}
+              infos={null}
+              // chosenUser={chosenUser}
+              // countCriticsAndGold={countCriticsAndGold}
+            />
+          ) : null}
+          {criticsOfAcquaintances.length ? (
+            criticsOfAcquaintances.map((critic, index) => {
+              return (
+                <CriticAdvicesComponent
+                  key={index}
+                  type={'old-critic'}
+                  setUserCritics={setCriticsOfAcquaintances}
+                  setGoldenMovies={setGoldenMovies}
+                  chosenMovie={null}
+                  infos={critic}
+                  chosenUser={null}
+                  countCriticsAndGold={null}
+                />
+              );
+            })
+          ) : (
+            <NoCriticAdvice page={'home'} />
+          )}
+        </Stack>
+      </Container>
+    </>
   );
 };
 

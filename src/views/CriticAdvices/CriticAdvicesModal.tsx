@@ -17,19 +17,58 @@ import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
-const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
+// Import des requêtes
+import { getUser } from '@utils/request/users/getUser';
+
+// Import des fonctions utilitaires
+import { getRelationStatusRequest } from '@utils/request/friendship/getRelationStatusRequest';
+
+// Import des composants internes
+import ModalPosterContent from './ModalPosterContent';
+
+interface Picture {
+  id: number;
+  user_id: number;
+  filePath: string;
+  uploaded_at: string;
+  isActive: number;
+}
+
+interface User {
+  coverPics: Picture[];
+  create_datetime: string;
+  email: string;
+  first_name: string;
+  id: number;
+  last_name: string;
+  last_login_date: string;
+  profilPics: Picture[];
+  rank: string;
+}
+
+const CriticAdvicesModal = ({
+  page,
+  showPoster,
+  setShowPoster,
+  infos,
+  from,
+}) => {
   const { displayType } = useData();
 
   const [showVideo, setShowVideo] = useState(false);
   const [videoId, setVideoId] = useState(null);
+  const [goldNuggetUserInfos, setGoldNuggetUserInfos] = useState<User[]>([]);
+  const [showUserInfos, setShowUserInfos] = useState(true);
+  const [relationshipStatus, setRelationshipStatus] = useState({});
 
   const opts = {
     height: '100%',
     width: '100%',
   };
 
-  // Récupère la bande annonce
+  // Récupère la bande annonce youtube
   const fetchTrailerUrl = async () => {
     let movieId;
 
@@ -44,7 +83,6 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
     try {
       const response = await getVideo(displayType, movieId);
       const data = response.data;
-      console.log('les données', data);
       if (data.results.length === 0) {
         setVideoId('no-video');
         return;
@@ -53,7 +91,6 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
       const trailer = data.results.find(
         video => video.type === 'Trailer' && video.site === 'YouTube',
       );
-      console.log('trailer', trailer);
       if (trailer) {
         setVideoId(trailer.key);
       }
@@ -65,9 +102,46 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
     }
   };
 
+  const getGoldNuggetUsersInfos = async userIds => {
+    try {
+      const userInfosPromises = userIds.map(userId => getUser(userId));
+      const usersInfos = await Promise.all(userInfosPromises);
+      setGoldNuggetUserInfos(usersInfos);
+    } catch (error) {
+      console.error(
+        'Erreur lors de la récupération des informations des utilisateurs:',
+        error,
+      );
+      setGoldNuggetUserInfos([]);
+    }
+  };
+
+  const getRelationStatus = async id => {
+    const relationShip = await getRelationStatusRequest(id);
+    setRelationshipStatus(prevStatus => ({
+      ...prevStatus,
+      [id]: relationShip,
+    }));
+  };
+
   useEffect(() => {
+    // Statut des relations entre les utilisateurs qui ont choisi le film en pépite
+    for (const i in infos.users) {
+      getRelationStatus(infos.users[i]);
+    }
+
+    // Informations des utilisateurs qui ont choisi le film en pépite
+    if (from !== 'critic' && infos.users) {
+      getGoldNuggetUsersInfos(infos.users);
+    }
+
+    // Récupère la bande annonce (si existante) du film choisi
     fetchTrailerUrl();
-  }, []);
+  }, [infos]);
+
+  useEffect(() => {
+    console.log('les infos', infos);
+  }, [infos]);
 
   return (
     <Modal
@@ -86,7 +160,7 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
         <Stack
           direction="row"
           justifyContent="flex-end"
-          width="75vw"
+          width="80vw"
           marginBottom="3px"
         >
           <Box
@@ -102,16 +176,54 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
           </Box>
         </Stack>
         {!showVideo ? (
-          <CardMedia
-            component="img"
-            image={`https://image.tmdb.org/t/p/w500/${infos.poster_path}`}
-            alt="green iguana"
-            sx={{
-              height: 'auto',
-              width: '75vw',
-              objectFit: 'contain',
-            }}
-          />
+          <Stack position="relative">
+            <CardMedia
+              component="img"
+              image={`https://image.tmdb.org/t/p/w500/${infos.poster_path}`}
+              alt="green iguana"
+              sx={{
+                height: 'auto',
+                width: '80vw',
+                objectFit: 'contain',
+              }}
+            />
+            {page === 'home' && showUserInfos ? (
+              <ModalPosterContent
+                infos={infos}
+                goldNuggetUserInfos={goldNuggetUserInfos}
+                relationshipStatus={relationshipStatus}
+                setShowUserInfos={setShowUserInfos}
+              />
+            ) : page === 'home' && !showUserInfos ? (
+              <Stack
+                position="absolute"
+                top="0"
+                left="0"
+                height="54px"
+                width="100%"
+                padding="6px"
+              >
+                <Stack
+                  width="100%"
+                  flexGrow="1"
+                  alignItems="center"
+                  padding="30px 0"
+                >
+                  <Box height="57.4px"></Box>
+                  <VisibilityIcon
+                    fontSize="large"
+                    sx={{
+                      color: '#fff',
+                      marginBottom: '15px',
+                      cursor: 'pointer',
+                      opacity: '0.25',
+                    }}
+                    onClick={() => setShowUserInfos(true)}
+                  />
+                </Stack>
+              </Stack>
+            ) : null}
+          </Stack>
         ) : showVideo && videoId !== null ? (
           <YouTube
             videoId={videoId}
@@ -121,9 +233,7 @@ const CriticAdvicesModal = ({ showPoster, setShowPoster, infos, from }) => {
         ) : null}
 
         <ToggleButtonGroup
-          // value={alignment}
           exclusive
-          // onChange={handleChange}
           aria-label="Platform"
           sx={{
             width: '75vw',
@@ -177,6 +287,7 @@ CriticAdvicesModal.propTypes = {
   setShowPoster: PropTypes.func.isRequired,
   infos: PropTypes.object.isRequired,
   from: PropTypes.string.isRequired,
+  page: PropTypes.string,
 };
 
 export default CriticAdvicesModal;

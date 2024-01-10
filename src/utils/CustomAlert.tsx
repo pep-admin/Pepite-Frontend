@@ -9,9 +9,10 @@ import CloseIcon from '@mui/icons-material/Close';
 const CustomAlert = ({
   type,
   message,
-  setOnSuccess,
+  setOnAlert,
   setShowModal,
   confirmation,
+  usage,
 }) => {
   const [open, setOpen] = useState(true);
 
@@ -19,8 +20,8 @@ const CustomAlert = ({
     if (!open) {
       // Supprime la modale après l'animation du collapse
       const timer = setTimeout(() => {
-        if (setOnSuccess) {
-          setOnSuccess({ state: null, message: null });
+        if (setOnAlert) {
+          setOnAlert({ state: null, message: null });
         }
         if (setShowModal) {
           setShowModal(false);
@@ -29,7 +30,7 @@ const CustomAlert = ({
 
       return () => clearTimeout(timer);
     }
-  }, [open, setOnSuccess]);
+  }, [open, setOnAlert]);
 
   const handleAlert = () => {
     setOpen(false);
@@ -43,7 +44,7 @@ const CustomAlert = ({
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        zIndex: '10',
+        zIndex: '100',
       }}
     >
       <Collapse in={open}>
@@ -61,13 +62,21 @@ const CustomAlert = ({
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
-          sx={{ mb: 2, alignItems: 'center', marginBottom: '0' }}
+          sx={{
+            mb: 2,
+            alignItems: 'center',
+            textAlign: 'center',
+            marginBottom: '0',
+            borderRadius: '0',
+          }}
         >
           {message}
           {type === 'warning' ? (
             <Stack direction="row" justifyContent="center">
-              <Button onClick={() => confirmation()}>{'Confirmer'}</Button>
-              <Button onClick={() => setShowModal(false)}>{'Annuler'}</Button>
+              <Button onClick={() => confirmation(`${usage}`)}>
+                {'Confirmer'}
+              </Button>
+              <Button onClick={() => handleAlert()}>{'Annuler'}</Button>
             </Stack>
           ) : null}
         </Alert>
@@ -79,9 +88,10 @@ const CustomAlert = ({
 CustomAlert.propTypes = {
   type: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
-  setOnSuccess: PropTypes.func,
+  setOnAlert: PropTypes.func,
   setShowModal: PropTypes.func,
   confirmation: PropTypes.func,
+  usage: PropTypes.string,
 };
 
 export default CustomAlert;

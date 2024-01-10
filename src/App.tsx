@@ -37,6 +37,7 @@ export function App() {
               <Route path="/account/:id" element={<AccountContainer />} />
               <Route path="/contacts/:id" element={<ContactContainer />} />
               <Route path="/" element={<HomeContainer />} />
+              <Route path="/home/:id" element={<HomeContainer />} />
               <Route path="/film/:id" element={<Film />} />
             </Routes>
           </BrowserRouter>

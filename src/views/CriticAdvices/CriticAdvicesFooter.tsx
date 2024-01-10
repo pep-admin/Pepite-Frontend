@@ -166,7 +166,11 @@ const CriticAdvicesFooter = ({
         >
           <ChatTwoToneIcon
             fontSize="small"
-            sx={{ position: 'relative', top: '1px' }}
+            sx={{
+              position: 'relative',
+              top: '1px',
+              color: displayComments ? '#24a5a5' : 'inherit',
+            }}
           />
           <Typography component="p" fontSize="1em" fontWeight="bold">
             {commentsNumber}

@@ -35,15 +35,14 @@ import { useParams } from 'react-router-dom';
 import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
 import { getUser } from '@utils/request/users/getUser';
 import { convertDate } from '@utils/functions/convertDate';
+import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
+import CustomAlert from '@utils/CustomAlert';
 
 const CriticAdvicesComponent = ({
   type,
   chosenMovie,
   setUserCritics,
   setGoldenMovies,
-  setNewCriticError,
-  setNewCriticInfo,
-  setNewCriticSuccess,
   infos,
   chosenUser,
   countCriticsAndGold,
@@ -60,6 +59,11 @@ const CriticAdvicesComponent = ({
   const [comments, setComments] = useState([]);
   const [displayRatings, setDisplayRatings] = useState(null);
   const [criticUserInfos, setCriticUserInfos] = useState({});
+  const [alertSeverity, setAlertSeverity] = useState({
+    state: null,
+    message: null,
+    content: null,
+  }); // Message de succès, d'info, d'erreur
 
   const ratingsHeaderRef = useRef(null);
 
@@ -67,10 +71,30 @@ const CriticAdvicesComponent = ({
 
   const { displayType, setChosenMovieId, setChosenMovie } = useData();
 
+  // Ajouter une nouvelle critique / conseil
   const submitNewReview = async type => {
     try {
       // Si le post est une critique
       if (type === 'critic') {
+        // Vérifie si la critique pour ce même film / série est déjà existante
+        const isCriticExists = await checkIfCriticExistsRequest(
+          chosenMovie.id,
+          displayType,
+        );
+
+        if (isCriticExists.exists) {
+          setAlertSeverity({
+            state: 'warning',
+            message: `
+            Vous avez déjà publié une critique pour ${
+              displayType === 'movie' ? 'le film' : 'la série'
+            } 
+            "${chosenMovie.title}". Confirmer malgré tout ?`,
+            content: isCriticExists.criticId,
+          });
+          return;
+        }
+
         // Ajoute la nouvelle critique dans la DB
         await addNewCritic(
           chosenMovie.id,
@@ -81,13 +105,12 @@ const CriticAdvicesComponent = ({
           isTurnip,
         );
 
-        setNewCriticError({ error: false, message: null });
-        setNewCriticInfo({ info: false, message: null });
-        setNewCriticSuccess({
-          success: true,
+        // Message de succès
+        setAlertSeverity({
+          state: 'success',
           message: 'Critique ajoutée avec succès !',
+          content: null,
         });
-        // const userId = localStorage.getItem('user_id');
 
         // Récupère toutes les critiques
         const newCriticsData = await getAllCriticsOfUser(id, displayType);
@@ -99,6 +122,10 @@ const CriticAdvicesComponent = ({
 
         // Compte le nombre de critiques et de pépites
         countCriticsAndGold();
+
+        // Ferme la fenêtre permettant de noter un nouveau film / série
+        setChosenMovieId(null);
+        setChosenMovie(null);
       }
       // Si le post est un conseil
       else if (type === 'advice') {
@@ -112,46 +139,53 @@ const CriticAdvicesComponent = ({
           isGoldNugget,
         );
 
-        setNewCriticError({ error: false, message: null });
-        setNewCriticInfo({ info: false, message: null });
-        setNewCriticSuccess({
-          success: true,
+        // Message de succès
+        setAlertSeverity({
+          state: 'success',
           message: 'Conseil ajouté avec succès !',
+          content: null,
         });
-        // const userId = localStorage.getItem('user_id');
+
+        const userId = localStorage.getItem('user_id');
 
         // Récupère toutes les conseils du profil de l'utilisateur
         const newCriticsData = await getAllAdvicesReceived(id, displayType);
-        console.log("les conseils de l'utilisateur", newCriticsData);
 
-        // setUserCritics(newCriticsData);
+        setUserCritics(newCriticsData);
 
-        // // Récupère toutes les pépites
-        // const response = await getAllGoldNuggetsOfUser(displayType, userId);
-        // setGoldenMovies(response);
+        // Récupère toutes les pépites
+        const response = await getAllGoldNuggetsOfUser(displayType, userId);
+        setGoldenMovies(response);
 
         // Compte le nombre de critiques et de pépites
-        // countCriticsAndGold();
+        countCriticsAndGold();
+
+        // Ferme la fenêtre permettant de conseiller un nouveau film / série
+        setChosenMovieId(null);
+        setChosenMovie(null);
       }
     } catch (error) {
-      if (error.response.status === 409) {
-        setNewCriticInfo({ info: true, message: error.response.data });
-        setNewCriticError({ error: false, message: null });
-        setNewCriticSuccess({ success: false, message: null });
-      } else {
-        setNewCriticError({ error: true, message: error.response.data });
-        setNewCriticInfo({ info: false, message: null });
-        setNewCriticSuccess({ success: false, message: null });
-      }
+      setAlertSeverity({
+        state: 'error',
+        message: error.response.data,
+        content: null,
+      });
     }
-    setChosenMovieId(null);
-    setChosenMovie(null);
   };
 
-  const updateCritic = async () => {
+  // Modifier une critique
+  const updateCritic = async from => {
     try {
-      const criticId = infos.critic_id;
       const userId = localStorage.getItem('user_id');
+      let criticId;
+
+      // Si l'utilisateur tente de re noter à nouveau de zéro
+      if (from === 'overwrite') {
+        criticId = alertSeverity.content;
+      } else {
+        criticId = infos.critic_id;
+      }
+
       await modifyCritic(
         criticId,
         displayType,
@@ -161,27 +195,32 @@ const CriticAdvicesComponent = ({
         isTurnip,
       );
 
-      setNewCriticError({ error: false, message: null });
-      setNewCriticInfo({ info: false, message: null });
-      setNewCriticSuccess({
-        success: true,
+      setAlertSeverity({
+        state: 'success',
         message: 'Critique modifiée avec succès !',
+        content: null,
       });
 
+      // Nouvelle récupération des critiques
       const newCriticsData = await getAllCriticsOfUser(userId, displayType);
       setUserCritics(newCriticsData);
       setIsModify(false);
 
+      // Nouvelle récupération des pépites
       const response = await getAllGoldNuggetsOfUser(displayType, userId);
       setGoldenMovies(response);
 
       // Compte le nombre de critiques et de pépites
       countCriticsAndGold();
+
+      // Si l'utilisateur a choisi d'écraser une critique existante, on ferme la fenêtre qui permet de noter
+      if (from === 'overwrite') {
+        setChosenMovieId(null);
+        setChosenMovie(null);
+      }
     } catch (error) {
       console.log('erreur dans la modification', error);
-      setNewCriticError({ error: true, message: error });
-      setNewCriticInfo({ info: false, message: null });
-      setNewCriticSuccess({ success: false, message: null });
+      setAlertSeverity({ state: 'error', message: error, content: null });
     }
   };
 
@@ -211,6 +250,15 @@ const CriticAdvicesComponent = ({
           setShowPoster={setShowPoster}
           infos={infos}
           from={'critic'}
+        />
+      ) : null}
+      {alertSeverity.state ? (
+        <CustomAlert
+          type={alertSeverity.state}
+          message={alertSeverity.message}
+          setOnAlert={setAlertSeverity}
+          confirmation={updateCritic}
+          usage={'overwrite'}
         />
       ) : null}
       <Item margintop="6px">
@@ -422,7 +470,7 @@ const CriticAdvicesComponent = ({
                           type === 'new-critic' ? 'critic' : 'advice',
                         );
                       } else if (newRating !== null && infos && isModify) {
-                        updateCritic();
+                        updateCritic(null);
                       }
                     }}
                   >

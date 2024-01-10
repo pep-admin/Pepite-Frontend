@@ -95,7 +95,11 @@ const Header = ({ userInfos }) => {
           variant="h1"
           color={'#fff'}
           fontSize={'2em'}
-          sx={{ position: 'relative', bottom: '2px' }}
+          sx={{
+            position: 'relative',
+            bottom: '2px',
+            textShadow: '#00000059 1px 4px 3px',
+          }}
         >
           {'PÉPITE.'}
         </Typography>

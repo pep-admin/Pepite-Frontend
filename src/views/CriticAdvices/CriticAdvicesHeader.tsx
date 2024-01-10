@@ -13,14 +13,12 @@ import {
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-// Import des composants customisés
+// Import des icônes
 import {
   GoldNuggetIcon,
   OrangeRating,
   TurnipIcon,
 } from '@utils/styledComponent';
-
-// Import des icônes
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
@@ -74,9 +72,9 @@ const CriticAdvicesHeader = ({
     }
   }, [infos, isModify]);
 
-  useEffect(() => {
-    console.log('gold', isGoldNugget);
-  }, [isGoldNugget]);
+  // useEffect(() => {
+  //   console.log(user_infos.id === infos.sender_id );
+  // }, [infos]);
 
   return (
     <Stack
@@ -340,7 +338,7 @@ const CriticAdvicesHeader = ({
               setChosenMovie(null);
             }}
           />
-        ) : (
+        ) : user_infos.id === infos.sender_id ? (
           <ModifyOrDelete
             parent={'critic'}
             infos={infos}
@@ -348,7 +346,7 @@ const CriticAdvicesHeader = ({
             isModify={isModify}
             setIsModify={setIsModify}
           />
-        )}
+        ) : null}
       </Box>
     </Stack>
   );

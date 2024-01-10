@@ -13,8 +13,12 @@ import apiBaseUrl from '@utils/request/config';
 // Import des fonctions utilitaires
 import { formatRating } from '@utils/functions/formatRating';
 import { useEffect, useState } from 'react';
-import { getAverageRatingsRequest } from '@utils/request/critics/getAverageRatingsRequest';
+
+// Import des composants internes
 import RelationAverageRatings from './RelationAverageRatings';
+
+// Import des requêtes
+import { getRatingsRequest } from '@utils/request/critics/getRatingsRequest';
 
 const ModalPosterContent = ({
   infos,
@@ -22,8 +26,9 @@ const ModalPosterContent = ({
   setShowUserInfos,
   relationshipStatus,
 }) => {
-  const [relationsAverageRating, setRelationsAverageRating] = useState(null);
+  const [relationsRatings, setRelationsRatings] = useState(null);
   const [showRatingsDetails, setShowRatingsDetails] = useState(null);
+  const [chosenRelationship, setChosenRelationShip] = useState('close_friend');
 
   const openRelationsRatings = Boolean(showRatingsDetails);
 
@@ -41,6 +46,18 @@ const ModalPosterContent = ({
 
     return priorityMap[relationTypeA] - priorityMap[relationTypeB];
   });
+
+  // Ajoute le type de relation pour chaque utilisateur qui a la pépite en commun
+  const sortedAndMappedGoldNuggetUserInfos = sortedGoldNuggetUserInfos.map(
+    userInfo => {
+      const relationType =
+        relationshipStatus[userInfo.id]?.relation_type || 'unknown';
+      return {
+        ...userInfo,
+        relation_type: relationType,
+      };
+    },
+  );
 
   // Compte le nombre de relations qui ont noté la pépite
   const countRelationshipTypes = () => {
@@ -65,19 +82,16 @@ const ModalPosterContent = ({
   const { closeFriendCount, friendCount, followedCount } =
     countRelationshipTypes();
 
-  const getAverageRating = async movieId => {
-    const averageRating = await getAverageRatingsRequest(movieId);
-    console.log('la note moyenne', averageRating);
-    setRelationsAverageRating(averageRating);
+  const getRatings = async movieId => {
+    const averageRating = await getRatingsRequest(movieId);
+    console.log('les notes');
+
+    setRelationsRatings(averageRating);
   };
 
   useEffect(() => {
-    getAverageRating(infos.movie_id);
+    getRatings(infos.movie_id);
   }, [infos]);
-
-  useEffect(() => {
-    console.log(sortedGoldNuggetUserInfos);
-  }, [sortedGoldNuggetUserInfos]);
 
   return (
     <Stack
@@ -118,10 +132,7 @@ const ModalPosterContent = ({
           onClick={() => setShowUserInfos(false)}
         />
         <AvatarGroup max={4}>
-          {sortedGoldNuggetUserInfos?.map((userInfo, index) => {
-            const userRelationType =
-              relationshipStatus[userInfo.id]?.relation_type || 'unknown';
-
+          {sortedAndMappedGoldNuggetUserInfos?.map((userInfo, index) => {
             return (
               <Avatar
                 key={index}
@@ -142,9 +153,9 @@ const ModalPosterContent = ({
                     goldNuggetUserInfos.length > 1 ? '2.5px' : '3.5px',
                   outlineStyle: 'solid',
                   outlineColor:
-                    userRelationType === 'close_friend'
+                    userInfo.relation_type === 'close_friend'
                       ? '#ef3f43'
-                      : userRelationType === 'friend'
+                      : userInfo.relation_type === 'friend'
                       ? '#F29E50'
                       : '#24A5A5',
                   marginBottom: '15px',
@@ -159,6 +170,7 @@ const ModalPosterContent = ({
               align="center"
               sx={{ color: '#fff', fontSize: '1.05em' }}
               onClick={e => {
+                setChosenRelationShip('close_friend');
                 setShowRatingsDetails(e.currentTarget);
               }}
             >
@@ -183,32 +195,75 @@ const ModalPosterContent = ({
               open={openRelationsRatings}
               anchorEl={showRatingsDetails}
               setAnchorEl={setShowRatingsDetails}
+              sortedAndMappedGoldNuggetUserInfos={
+                sortedAndMappedGoldNuggetUserInfos
+              }
+              chosenRelationship={chosenRelationship}
+              ratings={relationsRatings}
             />
           </>
         )}
         {friendCount > 0 && (
-          <Typography align="center" sx={{ color: '#fff', fontSize: '1.05em' }}>
-            {friendCount > 0 && (
-              <>
-                <span style={{ color: '#F29E50', fontWeight: 'bold' }}>
-                  {`${friendCount} ami${friendCount > 1 ? 's' : ''}`}
-                </span>
-                {friendCount > 1 ? ' ont noté' : ' a noté'}
-              </>
-            )}
-          </Typography>
+          <>
+            <Typography
+              align="center"
+              sx={{ color: '#fff', fontSize: '1.05em' }}
+              onClick={e => {
+                setChosenRelationShip('friend');
+                setShowRatingsDetails(e.currentTarget);
+              }}
+            >
+              {friendCount > 0 && (
+                <>
+                  <span style={{ color: '#F29E50', fontWeight: 'bold' }}>
+                    {`${friendCount} ami${friendCount > 1 ? 's' : ''}`}
+                  </span>
+                  {friendCount > 1 ? ' ont noté' : ' a noté'}
+                </>
+              )}
+            </Typography>
+            <RelationAverageRatings
+              open={openRelationsRatings}
+              anchorEl={showRatingsDetails}
+              setAnchorEl={setShowRatingsDetails}
+              sortedAndMappedGoldNuggetUserInfos={
+                sortedAndMappedGoldNuggetUserInfos
+              }
+              chosenRelationship={chosenRelationship}
+              ratings={relationsRatings}
+            />
+          </>
         )}
         {followedCount > 0 && (
-          <Typography align="center" sx={{ color: '#fff', fontSize: '1.05em' }}>
-            {followedCount > 0 && (
-              <>
-                <span style={{ color: '#24A5A5', fontWeight: 'bold' }}>
-                  {`${followedCount} suivi${followedCount > 1 ? 's' : ''}`}
-                </span>
-                {followedCount > 1 ? ' ont noté' : ' a noté'}
-              </>
-            )}
-          </Typography>
+          <>
+            <Typography
+              align="center"
+              sx={{ color: '#fff', fontSize: '1.05em' }}
+              onClick={e => {
+                setChosenRelationShip('followed');
+                setShowRatingsDetails(e.currentTarget);
+              }}
+            >
+              {followedCount > 0 && (
+                <>
+                  <span style={{ color: '#24A5A5', fontWeight: 'bold' }}>
+                    {`${followedCount} suivi${followedCount > 1 ? 's' : ''}`}
+                  </span>
+                  {followedCount > 1 ? ' ont noté' : ' a noté'}
+                </>
+              )}
+            </Typography>
+            <RelationAverageRatings
+              open={openRelationsRatings}
+              anchorEl={showRatingsDetails}
+              setAnchorEl={setShowRatingsDetails}
+              sortedAndMappedGoldNuggetUserInfos={
+                sortedAndMappedGoldNuggetUserInfos
+              }
+              chosenRelationship={chosenRelationship}
+              ratings={relationsRatings}
+            />
+          </>
         )}
         <Typography
           color="primary"
@@ -218,11 +273,11 @@ const ModalPosterContent = ({
         >
           {infos?.title ? `${infos.title}` : `${infos.name}`}
         </Typography>
-        {relationsAverageRating && (
+        {relationsRatings?.average_rating && (
           <Stack direction="row" alignItems="center">
             <OrangeRating
               name="half-rating-read"
-              value={parseFloat(relationsAverageRating)}
+              value={parseFloat(relationsRatings.average_rating)}
               precision={0.1}
               readOnly
               emptyIcon={
@@ -231,7 +286,7 @@ const ModalPosterContent = ({
               sx={{ marginRight: '10px', fontSize: '1.3em' }}
             />
             <Typography fontSize="1.3em" color="secondary" fontWeight="bold">
-              {`${formatRating(relationsAverageRating)} / 5`}
+              {`${formatRating(relationsRatings.average_rating)} / 5`}
             </Typography>
           </Stack>
         )}

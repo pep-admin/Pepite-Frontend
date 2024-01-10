@@ -64,7 +64,14 @@ const AuthHeader = () => {
           />
         ))}
       </Box>
-      <Typography variant="h1" color={'#fff'} fontSize={'4em'}>
+      <Typography
+        variant="h1"
+        color={'#fff'}
+        fontSize={'4em'}
+        sx={{
+          textShadow: '#00000059 1px 4px 3px',
+        }}
+      >
         {'PÉPITE.'}
       </Typography>
       <Typography

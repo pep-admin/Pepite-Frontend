@@ -18,7 +18,7 @@ import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent'
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 
 const Home = () => {
-  const { displayType } = useData();
+  const { displayType, chosenMovie } = useData();
 
   const [userInfos, setUserInfos] = useState(
     // L'utilisateur connecté
@@ -26,6 +26,10 @@ const Home = () => {
   );
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
+  // const [alertSeverity, setAlertSeverity] = useState({
+  //   state: null,
+  //   message: null,
+  // });
 
   const getCritics = async () => {
     const critics = await getAllCriticsOfAcquaintances(
@@ -81,6 +85,17 @@ const Home = () => {
             handlePoster={null}
             showPicModal={null}
           />
+          {chosenMovie !== null ? (
+            <CriticAdvicesComponent
+              type={'new-critic'}
+              chosenMovie={chosenMovie}
+              setUserCritics={setCriticsOfAcquaintances}
+              setGoldenMovies={setGoldenMovies}
+              infos={null}
+              // chosenUser={chosenUser}
+              // countCriticsAndGold={countCriticsAndGold}
+            />
+          ) : null}
           {criticsOfAcquaintances.length ? (
             criticsOfAcquaintances.map((critic, index) => {
               return (
@@ -90,9 +105,6 @@ const Home = () => {
                   setUserCritics={setCriticsOfAcquaintances}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}
-                  setNewCriticError={null}
-                  setNewCriticInfo={null}
-                  setNewCriticSuccess={null}
                   infos={critic}
                   chosenUser={null}
                   countCriticsAndGold={null}

@@ -7,10 +7,6 @@ import {
   Box,
   Avatar,
   Typography,
-  Alert,
-  AlertTitle,
-  Button,
-  CircularProgress,
 } from '@mui/material';
 import Header from '@utils/Header';
 import { useEffect, useState, useCallback } from 'react';
@@ -79,7 +75,6 @@ const ProfilComponent = () => {
   const [advicesReceived, setAdvicesReceived] = useState([]); // Tous les conseils reçus par l'utilisateur du profil
   const [combinedData, setCombinedData] = useState([]); // Les critiques et les conseils combinés
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
-  const [progress, setProgress] = useState(0);
   const [criticsNumber, setCriticsNumber] = useState(0); // Nombre de critiques de l'utilisateur
   const [goldNumber, setGoldNumber] = useState(0); // Nombre de pépites de l'utilisateur
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null); // Ancre du bouton d'ajout en ami
@@ -87,19 +82,7 @@ const ProfilComponent = () => {
     state: false,
     type: null,
   });
-
-  const [newCriticError, setNewCriticError] = useState({
-    error: null,
-    message: null,
-  });
-  const [newCriticInfo, setNewCriticInfo] = useState({
-    info: null,
-    message: null,
-  });
-  const [newCriticSuccess, setNewCriticSuccess] = useState({
-    success: null,
-    message: null,
-  });
+  // const [alertSeverity, setAlertSeverity] = useState({state: null, message: null, action: null}); // Message de succès, d'info, d'erreur
 
   // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
   const fetchChosenUser = async user_id => {
@@ -141,26 +124,6 @@ const ProfilComponent = () => {
     fetchCriticsAndAdvices(displayType);
   }, [fetchCriticsAndAdvices, displayType]);
 
-  useEffect(() => {
-    let timer;
-    if (newCriticSuccess.success) {
-      timer = setInterval(() => {
-        setProgress(prevProgress =>
-          prevProgress >= 100 ? 0 : prevProgress + 10,
-        );
-      }, 800);
-    }
-    return () => {
-      clearInterval(timer);
-    };
-  }, [newCriticSuccess]);
-
-  useEffect(() => {
-    if (progress >= 100) {
-      setNewCriticSuccess({ success: null, message: null });
-    }
-  }, [progress]);
-
   const countCriticsAndGold = async () => {
     const count = await getDetailsNumber(id);
     const criticsNumber = count.totalCriticsCount;
@@ -189,6 +152,15 @@ const ProfilComponent = () => {
 
   return (
     <>
+      {/* {alertSeverity.state ?
+        <CustomAlert 
+          type={alertSeverity.state} 
+          message={alertSeverity.message} 
+          setOnAlert={setAlertSeverity} 
+          />
+        :
+        null
+      } */}
       {modifyCoverPic.state ? (
         <AccountUpdatePic
           showPicModal={modifyCoverPic}
@@ -272,6 +244,7 @@ const ProfilComponent = () => {
               fontWeight: 'bold',
               fontSize: '1.4em',
               padding: '0 6px 0 16px',
+              textShadow: '#00000040 1px 2px 2px',
             }}
           >
             {userInfos.id === parseInt(id, 10)
@@ -429,88 +402,10 @@ const ProfilComponent = () => {
                 chosenMovie={chosenMovie}
                 setUserCritics={setUserCritics}
                 setGoldenMovies={setGoldenMovies}
-                setNewCriticError={setNewCriticError}
-                setNewCriticInfo={setNewCriticInfo}
-                setNewCriticSuccess={setNewCriticSuccess}
                 infos={null}
                 chosenUser={chosenUser}
                 countCriticsAndGold={countCriticsAndGold}
               />
-            ) : null}
-            {newCriticError.error &&
-            !newCriticSuccess.success &&
-            !newCriticInfo.info ? (
-              <Item margintop="6px">
-                <Alert
-                  severity="error"
-                  sx={{ display: 'flex', alignItems: 'center' }}
-                >
-                  {newCriticError.message}
-                </Alert>
-              </Item>
-            ) : !newCriticError.error &&
-              newCriticSuccess.success &&
-              !newCriticInfo.info ? (
-              <Item
-                margintop="6px"
-                display="flex"
-                justifycontent="space-between"
-                alignitems="center"
-              >
-                <Alert
-                  severity="success"
-                  sx={{
-                    flexGrow: '1',
-                    '& .MuiAlert-message': {
-                      flexGrow: '1',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    },
-                  }}
-                >
-                  {newCriticSuccess.message}
-                  <CircularProgress
-                    variant="determinate"
-                    size={18.33}
-                    value={progress}
-                  />
-                </Alert>
-              </Item>
-            ) : !newCriticError.error &&
-              !newCriticSuccess.success &&
-              newCriticInfo.info ? (
-              <Item margintop="6px">
-                <Alert
-                  severity="info"
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    textAlign: 'left',
-                  }}
-                >
-                  <AlertTitle
-                    sx={{
-                      display: 'flex',
-                      marginBottom: '0',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {'Critique déjà existante'}
-                  </AlertTitle>
-                  {'Souhaitez vous la remplacer par cette nouvelle critique ?'}
-                  <Stack direction="row" justifyContent="center">
-                    <Button>{'Remplacer'}</Button>
-                    <Button
-                      onClick={() =>
-                        setNewCriticInfo({ info: false, message: null })
-                      }
-                    >
-                      {'Annuler'}
-                    </Button>
-                  </Stack>
-                </Alert>
-              </Item>
             ) : null}
             {combinedData.length > 0 ? (
               combinedData.map(infos => {
@@ -521,9 +416,6 @@ const ProfilComponent = () => {
                     setUserCritics={setUserCritics}
                     setGoldenMovies={setGoldenMovies}
                     chosenMovie={null}
-                    setNewCriticError={setNewCriticError}
-                    setNewCriticInfo={setNewCriticInfo}
-                    setNewCriticSuccess={setNewCriticSuccess}
                     infos={infos}
                     chosenUser={chosenUser}
                     countCriticsAndGold={countCriticsAndGold}

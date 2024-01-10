@@ -60,8 +60,11 @@ const About = () => {
             color={'#fff'}
             fontSize={'4em'}
             marginBottom={'35px'}
+            sx={{
+              textShadow: '#00000059 1px 4px 3px',
+            }}
           >
-            {'Pépite.'}
+            {'PÉPITE.'}
           </Typography>
         </Box>
         <Box
@@ -87,7 +90,7 @@ const About = () => {
               fontFamily="Sirin Stencil"
               color="#fff"
             >
-              {'Pépite.'}
+              {'PÉPITE.'}
             </Typography>
           </Typography>
           <Box sx={{ p: '0 5%' }}>

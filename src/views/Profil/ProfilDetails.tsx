@@ -42,8 +42,6 @@ const ProfilDetails = ({
     setDisplayContacts(event.currentTarget);
   };
 
-  console.log('les infos user', userInfos);
-
   return (
     <>
       <Stack direction="column" alignItems="center">

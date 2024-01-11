@@ -73,8 +73,8 @@ const CriticAdvicesHeader = ({
   }, [infos, isModify]);
 
   // useEffect(() => {
-  //   console.log(user_infos.id === infos.sender_id );
-  // }, [infos]);
+  //   console.log('chosen user', chosenUser);
+  // }, [chosenUser]);
 
   return (
     <Stack
@@ -103,8 +103,8 @@ const CriticAdvicesHeader = ({
               <span
                 style={{
                   color:
-                    infos?.relation_type === 'close_friend'
-                      ? '#F16C22'
+                    chosenUser?.relation_type === 'close_friend'
+                      ? '#ff7b00'
                       : '#F29E50',
                 }}
               >
@@ -118,7 +118,7 @@ const CriticAdvicesHeader = ({
                 style={{
                   color:
                     infos.relation_type === 'close_friend'
-                      ? '#F16C22'
+                      ? '#ff7b00'
                       : infos.relation_type === 'friend'
                       ? '#F29E50'
                       : '#24A5A5',
@@ -138,7 +138,7 @@ const CriticAdvicesHeader = ({
                 style={{
                   color:
                     infos.relation_type === 'close_friend'
-                      ? '#F16C22'
+                      ? '#ff7b00'
                       : '#F29E50',
                 }}
               >

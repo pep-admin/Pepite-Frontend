@@ -15,6 +15,7 @@ import { useData } from '@hooks/DataContext';
 // Import des requêtes
 import { getWantedMoviesRequest } from '@utils/request/list/getWantedMoviesRequest';
 import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
+import { getWatchedMoviesRequest } from '@utils/request/list/getWatchedMoviesRequest';
 
 const ListComponent = () => {
   const { id } = useParams();
@@ -26,16 +27,22 @@ const ListComponent = () => {
   );
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [wantedMovies, setWantedMovies] = useState([]); // Les films que l'utilisateur a choisi de voir
+  const [watchedMovies, setWatchedMovies] = useState([]); // Les films que l'utilisateur a déjà vu
 
   const getWantedMovies = async () => {
     const wanted = await getWantedMoviesRequest(id, displayType);
-    console.log('films souhaités', wanted);
     setWantedMovies(wanted);
+  };
+
+  const getWatchedMovies = async () => {
+    const watched = await getWatchedMoviesRequest(id, displayType);
+    setWatchedMovies(watched);
   };
 
   useEffect(() => {
     getWantedMovies();
-  }, []);
+    getWatchedMovies();
+  }, [displayType]);
 
   return (
     <>
@@ -78,8 +85,8 @@ const ListComponent = () => {
               padding="0 13px"
             >
               <Typography variant="body2" component="p" fontWeight="bold">
-                {wantedMovies.length}{' '}
-                {`film${wantedMovies.length > 1 ? 's' : ''} à voir`}
+                {wantedMovies.length ? `${wantedMovies.length}` : 'Aucun '}
+                {` film${wantedMovies.length > 1 ? 's' : ''} à voir`}
               </Typography>
               <Typography
                 variant="body2"
@@ -104,11 +111,71 @@ const ListComponent = () => {
                   return (
                     <MainItemList
                       key={movie.id}
-                      type={'movies'}
+                      type={'wanted-movies'}
                       data={movie}
                       getRequest={getWantedMovies}
                       getRequest2={null}
                       isLast={index === wantedMovies.length - 1}
+                    />
+                  );
+                })
+              ) : (
+                <Stack direction="column">
+                  <Typography variant="body2" component="p">
+                    <>
+                      <span style={{ fontWeight: 'bold' }}>
+                        {'Aucun film à voir '}
+                      </span>
+                      {'pour le moment.'}
+                    </>
+                  </Typography>
+                </Stack>
+              )}
+            </Stack>
+          </Item>
+          <Item overflow="hidden" maxheight="250px">
+            <Stack
+              direction="row"
+              height="25px"
+              alignItems="center"
+              justifyContent="space-between"
+              padding="0 13px"
+            >
+              <Typography variant="body2" component="p" fontWeight="bold">
+                {watchedMovies.length}{' '}
+                {`film${watchedMovies.length > 1 ? 's' : ''} à noter`}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="p"
+                fontWeight="bold"
+                sx={{
+                  cursor: 'pointer',
+                }}
+              >
+                {'Voir tous'}
+              </Typography>
+            </Stack>
+            <Divider />
+            <Stack
+              direction="column"
+              padding="6px"
+              rowGap="6px"
+              sx={{
+                maxHeight: '188px',
+                overflowY: 'scroll',
+              }}
+            >
+              {watchedMovies.length ? (
+                watchedMovies.map((movie, index) => {
+                  return (
+                    <MainItemList
+                      key={movie.id}
+                      type={'watched-movies'}
+                      data={movie}
+                      getRequest={getWatchedMovies}
+                      getRequest2={null}
+                      isLast={index === watchedMovies.length - 1}
                     />
                   );
                 })

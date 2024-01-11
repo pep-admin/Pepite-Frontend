@@ -67,7 +67,7 @@ const NoCriticAdvice = ({ page }) => {
                     ) : (
                       <>
                         De vos{' '}
-                        <span style={{ color: '#F16C22' }}>amis proches</span>
+                        <span style={{ color: '#ff7b00' }}>amis proches</span>
                       </>
                     )}
                   </Typography>

@@ -26,12 +26,14 @@ import { declineFriendship } from '@utils/request/friendship/declineFriendship';
 import { YellowRating } from './styledComponent';
 import { convertRating } from './functions/convertRating';
 import { removeWantedMovieRequest } from './request/list/removeWantedMovieRequest';
+import { removeWatchedMovieRequest } from './request/list/removeWatchedMovieRequest';
 
 const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
   const [showRemoveFollowedModal, setShowRemoveFollowedModal] = useState(false);
   const [showRemoveWantedMovie, setShowRemoveWantedMovie] = useState(false);
+  const [showRemoveWatchedMovie, setShowRemoveWatchedMovie] = useState(false);
 
   const isCloseRef = useRef(false);
 
@@ -79,11 +81,19 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
     getRequest(); // Met à jour la liste des suivis
   };
 
+  // Supprime un film de la liste à voir
   const removeWantedMovie = async () => {
     await removeWantedMovieRequest(data.id, displayType);
     getRequest(); // Met à jour la liste des films / séries à voir
   };
 
+  // Supprime un film de la liste des films à noter
+  const removeWatchedMovie = async () => {
+    await removeWatchedMovieRequest(data.id, displayType);
+    getRequest();
+  };
+
+  // Affichage des amis proches au montage du composant
   useEffect(() => {
     if (data.is_close === 1) {
       setIsCloseFriend(true);
@@ -98,7 +108,8 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
     <>
       {showRemoveFriendModal ||
       showRemoveFollowedModal ||
-      showRemoveWantedMovie ? (
+      showRemoveWantedMovie ||
+      showRemoveWatchedMovie ? (
         <CustomAlert
           type="warning"
           message={
@@ -117,7 +128,7 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               </span>
             ) : showRemoveWantedMovie ? (
               <span>
-                {'Êtes-vous sûr(e) de vouloir supprimer '}
+                {'Êtes-vous sûr(e) de vouloir retirer '}
                 {displayType === 'movie' ? (
                   <strong> {data.title} </strong>
                 ) : (
@@ -129,6 +140,18 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
                     : 'séries souhaitées'
                 } ?`}
               </span>
+            ) : showRemoveWatchedMovie ? (
+              <span>
+                {'Êtes-vous sûr(e) de vouloir retirer '}
+                {displayType === 'movie' ? (
+                  <strong> {data.title} </strong>
+                ) : (
+                  <strong> {data.name} </strong>
+                )}
+                {`de votre liste des ${
+                  displayType === 'movie' ? 'films ' : 'séries '
+                } à noter ?`}
+              </span>
             ) : null
           }
           setShowModal={
@@ -138,6 +161,8 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               ? setShowRemoveFollowedModal
               : showRemoveWantedMovie
               ? setShowRemoveWantedMovie
+              : showRemoveWatchedMovie
+              ? setShowRemoveWatchedMovie
               : null
           }
           confirmation={
@@ -147,6 +172,8 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               ? removeFollowedFromList
               : showRemoveWantedMovie
               ? removeWantedMovie
+              : showRemoveWatchedMovie
+              ? removeWatchedMovie
               : null
           }
         />
@@ -156,14 +183,15 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
           <Avatar
             variant={type === 'movies' ? 'square' : 'rounded'}
             alt={
-              type === 'movies'
+              type === 'wanted-movies' || type === 'watched-movies'
                 ? `Poster ${
                     displayType === 'movie' ? 'du film' : 'de la série'
                   } ${displayType === 'movie' ? data.title : data.name}`
                 : `Photo de profil de ${data.first_name} ${data.last_name}`
             }
             src={
-              type === 'movies' && data.poster_path
+              (type === 'wanted-movies' || type === 'watched-movies') &&
+              data.poster_path
                 ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
                 : type === 'movies' && !data.poster_path
                 ? null
@@ -177,19 +205,32 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               width: 50,
               height: 50,
             }}
-            onClick={() => navigate(`/profil/${data.id}`)}
+            onClick={() =>
+              type === 'wanted-movies' || type === 'watched-movies'
+                ? // TO DO : naviguer sur la page de swipe
+                  console.log('aller sur le swipe')
+                : navigate(`/profil/${data.id}`)
+            }
           />
           <Stack
             direction="column"
             alignItems="flex-start"
             justifyContent="center"
           >
-            <Typography variant="body2" component="h4" fontWeight="bold">
-              {type === 'movies'
+            <Typography
+              variant="body2"
+              component="h4"
+              fontWeight="bold"
+              whiteSpace="nowrap"
+              maxWidth="180px"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              {type === 'wanted-movies' || type === 'watched-movies'
                 ? `${data.title}`
                 : `${data.first_name} ${data.last_name}`}
             </Typography>
-            {type === 'movies' ? (
+            {type === 'wanted-movies' || type === 'watched-movies' ? (
               <Stack direction="row" columnGap="3px" flexWrap="wrap">
                 <YellowRating
                   readOnly
@@ -228,7 +269,7 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
           {type === 'friends' ? (
             <FavoriteIcon
               fontSize="small"
-              sx={{ color: isCloseFriend ? '#F16C22' : '#B9B9B9' }}
+              sx={{ color: isCloseFriend ? '#ff7b00' : '#B9B9B9' }}
               onClick={() => handleCloseFriend()}
             />
           ) : null}
@@ -236,12 +277,12 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
             variant="contained"
             sx={{
               backgroundColor:
-                type === 'requests' || type === 'movies'
+                type === 'requests' || type === 'wanted-movies'
                   ? '#0E6666 !important'
                   : type === 'followed'
                   ? '#24A5A5 !important'
                   : type === 'friends' && isCloseFriend
-                  ? '#F16C22 !important'
+                  ? '#ff7b00 !important'
                   : '#F29E50 !important',
               height: '20px',
               width: 'auto',
@@ -263,8 +304,10 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               ? 'Ami +'
               : type === 'friends' && !isCloseFriend
               ? 'Ami'
-              : type === 'movies'
+              : type === 'wanted-movies'
               ? "Je l'ai vu !"
+              : type === 'watched-movies'
+              ? 'Noter'
               : null}
           </Button>
           <DeleteOutlineOutlinedIcon
@@ -280,9 +323,12 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
                 : // Apparition de la modale demandant la confirmation de ne plus suivre quelqu'un
                 type === 'followed'
                 ? setShowRemoveFollowedModal(!showRemoveFollowedModal)
-                : // Supprime le film de la liste des films à voir
-                type === 'movies'
+                : // Retire le film de la liste des films à voir
+                type === 'wanted-movies'
                 ? setShowRemoveWantedMovie(!showRemoveWantedMovie)
+                : // Retire le film de la liste des films à noter
+                type === 'watched-movies'
+                ? setShowRemoveWatchedMovie(!showRemoveWatchedMovie)
                 : null
             }
           />

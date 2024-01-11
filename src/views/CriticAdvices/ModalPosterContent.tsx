@@ -154,7 +154,7 @@ const ModalPosterContent = ({
                   outlineStyle: 'solid',
                   outlineColor:
                     userInfo.relation_type === 'close_friend'
-                      ? '#ef3f43'
+                      ? '#ff7b00'
                       : userInfo.relation_type === 'friend'
                       ? '#F29E50'
                       : '#24A5A5',
@@ -178,7 +178,7 @@ const ModalPosterContent = ({
                 <>
                   <span
                     style={{
-                      color: '#ef3f43',
+                      color: '#ff7b00',
                       fontWeight: 'bold',
                       cursor: 'pointer',
                     }}

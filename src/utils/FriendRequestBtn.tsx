@@ -205,7 +205,10 @@ const FriendRequestBtn = ({
 FriendRequestBtn.propTypes = {
   receiverId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
-  anchorEl: PropTypes.instanceOf(SVGSVGElement),
+  anchorEl: PropTypes.oneOfType([
+    PropTypes.instanceOf(SVGSVGElement),
+    PropTypes.instanceOf(HTMLButtonElement),
+  ]),
   setAnchorEl: PropTypes.func.isRequired,
   friendRequestList: PropTypes.array,
   getFriendRequests: PropTypes.func,

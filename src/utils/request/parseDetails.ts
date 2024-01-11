@@ -1,3 +1,4 @@
+
 // Si récupération des détails des films depuis la DB, on parse les infos
 export const parseDatabaseData = (data, displayType, requestType) => {
   // Informations générales
@@ -21,10 +22,9 @@ export const parseDatabaseData = (data, displayType, requestType) => {
 
   // Dans le cas où on veut parser les infos pour un FILM qui n'a pas été noté par les utilisateurs
   if (
-    (displayType === 'movie' &&
-      requestType !== 'critic' &&
-      requestType !== 'advice') ||
-    requestType === 'list'
+    displayType === 'movie' &&
+    requestType !== 'critic' &&
+    requestType !== 'advice'
   ) {
     release_date = data.release_date; // date de sortie
     release_dates = JSON.parse(data.release_dates); // certifications (-10, -12...),
@@ -86,6 +86,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     displayType === 'movie' &&
     (requestType === 'critic' || requestType === 'advice')
   ) {
+
     release_date = data.release_date;
     release_dates = JSON.parse(data.release_dates);
     title = data.title;

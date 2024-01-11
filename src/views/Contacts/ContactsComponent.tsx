@@ -163,8 +163,10 @@ const ContactsComponent = ({ page }) => {
               padding="0 13px"
             >
               <Typography variant="body2" component="p" fontWeight="bold">
-                {friendRequestList.length} {"demande d'amitié"}
-                {friendRequestList.length > 1 ? 's' : ''}
+                {friendRequestList.length
+                  ? `${friendRequestList.length}`
+                  : 'Aucune '}
+                {` demande${friendRequestList.length > 1 ? 's' : ''} d'amitié`}
               </Typography>
               <Typography
                 variant="body2"
@@ -203,7 +205,7 @@ const ContactsComponent = ({ page }) => {
                   <Typography variant="body2" component="p">
                     <>
                       <span style={{ fontWeight: 'bold' }}>
-                        {'Aucune demande en ami '}
+                        {"Aucune demande d'amitié "}
                       </span>
                       {'pour le moment.'}
                     </>

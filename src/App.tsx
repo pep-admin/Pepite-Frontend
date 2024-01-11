@@ -17,6 +17,7 @@ import ProfilContainer from './containers/Profil/ProfilContainer';
 import AccountContainer from './containers/Account/AccountContainer';
 import HomeContainer from './containers/Home/HomeContainer';
 import ContactContainer from './containers/Contacts/ContactContainer';
+import ListContainer from './containers/List/ListContainer';
 
 export function App() {
   // Permet d'afficher la page dès que les polices sont chargées
@@ -36,6 +37,7 @@ export function App() {
               <Route path="/profil/:id" element={<ProfilContainer />} />
               <Route path="/account/:id" element={<AccountContainer />} />
               <Route path="/contacts/:id" element={<ContactContainer />} />
+              <Route path="/list/:id" element={<ListContainer />} />
               <Route path="/" element={<HomeContainer />} />
               <Route path="/home/:id" element={<HomeContainer />} />
               <Route path="/film/:id" element={<Film />} />

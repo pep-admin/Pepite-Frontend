@@ -71,29 +71,29 @@ export const cancelDeletedMovie = async (movieId: number, type: string) => {
   }
 };
 
-// Insertion d'un film dans la liste des non souhaités
-export const addWantedMovie = async (movieId: number, type: string) => {
-  try {
-    await axios.post(
-      `${apiBaseUrl}/movies/add_wanted`,
-      { movie_id: movieId, type: type },
-      { withCredentials: true },
-    );
-  } catch {
-    console.log(
-      "Impossible d'ajouter ce film dans la liste des films non souhaités",
-    );
-  }
-};
+// // Insertion d'un film dans la liste des films souhaités
+// export const addWantedMovie = async (movieId: number, type: string) => {
+//   try {
+//     await axios.post(
+//       `${apiBaseUrl}/movies/add_wanted`,
+//       { movie_id: movieId, type: type },
+//       { withCredentials: true },
+//     );
+//   } catch {
+//     console.log(
+//       "Impossible d'ajouter ce film dans la liste des films non souhaités",
+//     );
+//   }
+// };
 
-// Annulation d'un film souhaité
-export const removeWantedMovie = async (movieId: number, type: string) => {
-  try {
-    await axios.delete(`${apiBaseUrl}/movies/cancel_wanted`, {
-      data: { movie_id: movieId, type: type },
-      withCredentials: true,
-    });
-  } catch {
-    console.log("Impossible d'annuler un film de la liste des films souhaités");
-  }
-};
+// // Annulation d'un film souhaité
+// export const removeWantedMovie = async (movieId: number, type: string) => {
+//   try {
+//     await axios.delete(`${apiBaseUrl}/movies/cancel_wanted`, {
+//       data: { movie_id: movieId, type: type },
+//       withCredentials: true,
+//     });
+//   } catch {
+//     console.log("Impossible d'annuler un film de la liste des films souhaités");
+//   }
+// };

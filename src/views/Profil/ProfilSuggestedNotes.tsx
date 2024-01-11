@@ -52,7 +52,7 @@ const ProfilSuggestedNotes = ({
   const fetchAllGoldNuggetsOfUser = async () => {
     let goldNuggets;
 
-    if (page === 'home') {
+    if (page === 'home' || page === 'list') {
       goldNuggets = await getGoldNuggetsFromAcquaintances(
         displayType,
         userInfos.id,

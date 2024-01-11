@@ -9,7 +9,7 @@ import Header from '@utils/Header';
 import { Item } from '@utils/styledComponent';
 import SearchBar from '@utils/SearchBar';
 import ContactsSuggestions from './ContactsSuggestions';
-import ContactsMainItem from './ContactsMainItem';
+import MainItemList from '@utils/MainItemList';
 
 // Import des requêtes
 import { getTenUsers } from '@utils/request/users/getTenUsers';
@@ -60,7 +60,7 @@ const ContactsComponent = ({ page }) => {
     getFollowed();
   }, []);
 
-  if (page === 'home')
+  if (page === 'home' || page === 'list')
     return (
       <Item overflow="hidden">
         <Stack
@@ -187,12 +187,12 @@ const ContactsComponent = ({ page }) => {
               {friendRequestList.length ? (
                 friendRequestList.map((user, index) => {
                   return (
-                    <ContactsMainItem
+                    <MainItemList
                       key={user.id}
                       type={'requests'}
-                      user={user}
-                      getFriendRequests={getFriendRequests}
-                      getFriendsNumber={getFriendsNumber}
+                      data={user}
+                      getRequest={getFriendRequests}
+                      getRequest2={getFriendsNumber}
                       getFollowed={null}
                       isLast={index === friendRequestList.length - 1}
                     />
@@ -245,12 +245,12 @@ const ContactsComponent = ({ page }) => {
               {friendsList.length ? (
                 friendsList.map((user, index) => {
                   return (
-                    <ContactsMainItem
+                    <MainItemList
                       key={user.id}
                       type={'friends'}
-                      user={user}
-                      getFriendRequests={getFriendRequests}
-                      getFriendsNumber={getFriendsNumber}
+                      data={user}
+                      getRequest={getFriendRequests}
+                      getRequest2={getFriendsNumber}
                       getFollowed={null}
                       isLast={index === friendsList.length - 1}
                     />
@@ -301,13 +301,12 @@ const ContactsComponent = ({ page }) => {
               {followedList.length ? (
                 followedList.map((user, index) => {
                   return (
-                    <ContactsMainItem
+                    <MainItemList
                       key={user.id}
                       type={'followed'}
-                      user={user}
-                      getFriendRequests={getFriendRequests}
-                      getFriendsNumber={getFriendsNumber}
-                      getFollowed={getFollowed}
+                      data={user}
+                      getRequest={getFollowed}
+                      getRequest2={null}
                       isLast={index === followedList.length - 1}
                     />
                   );

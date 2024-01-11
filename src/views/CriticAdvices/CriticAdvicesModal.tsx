@@ -187,14 +187,14 @@ const CriticAdvicesModal = ({
                 objectFit: 'contain',
               }}
             />
-            {page === 'home' && showUserInfos ? (
+            {(page === 'home' || page === 'list') && showUserInfos ? (
               <ModalPosterContent
                 infos={infos}
                 goldNuggetUserInfos={goldNuggetUserInfos}
                 relationshipStatus={relationshipStatus}
                 setShowUserInfos={setShowUserInfos}
               />
-            ) : page === 'home' && !showUserInfos ? (
+            ) : (page === 'home' || page === 'list') && !showUserInfos ? (
               <Stack
                 position="absolute"
                 top="0"

@@ -24,6 +24,10 @@ import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import SwipeIcon from '@mui/icons-material/Swipe';
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -34,7 +38,7 @@ import apiBaseUrl from '@utils/request/config';
 // Import des requêtes
 import { handleLogout } from './request/swipe/fetchData';
 
-const pages = ['Accueil', 'Swipe', 'Mes contacts'];
+const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = ({ userInfos }) => {
@@ -182,29 +186,60 @@ const Header = ({ userInfos }) => {
             }}
             open={Boolean(anchorElNav)}
             onClose={handleCloseNavMenu}
+            MenuListProps={{
+              sx: {
+                padding: '0',
+              },
+            }}
             sx={{
               display: { xs: 'block', md: 'none' },
             }}
           >
-            {pages.map(page => (
+            {pages.map((page, index) => [
               <MenuItem
                 key={page}
                 onClick={() => {
-                  if (page === 'Swipe') {
+                  if (page === 'Accueil') {
+                    navigate(`/home/${userId}`);
+                  } else if (page === 'Swipe') {
                     navigate('/swipe');
+                  } else if (page === 'Ma liste') {
+                    navigate(`/list/${userId}`);
                   } else if (page === 'Mes contacts') {
                     navigate(`/contacts/${userId}`);
-                  } else if (page === 'Accueil') {
-                    navigate(`/home/${userId}`);
                   }
                   handleCloseNavMenu();
                 }}
+                sx={{ padding: '0 16px' }}
               >
+                {page === 'Accueil' ? (
+                  <ListItemIcon>
+                    <HomeIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : page === 'Swipe' ? (
+                  <ListItemIcon>
+                    <SwipeIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : page === 'Ma liste' ? (
+                  <ListItemIcon>
+                    <ChecklistIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : (
+                  <ListItemIcon>
+                    <GroupsIcon fontSize="small" />
+                  </ListItemIcon>
+                )}
                 <Typography variant="body2" textAlign="center">
                   {page}
                 </Typography>
-              </MenuItem>
-            ))}
+              </MenuItem>,
+              page.length - 1 !== index && (
+                <Divider
+                  key={`page-divider-${index}`}
+                  sx={{ width: '80%', margin: '0 auto !important' }}
+                />
+              ),
+            ])}
           </Menu>
         </Box>
         <Box sx={{ flexGrow: 0 }}>

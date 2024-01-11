@@ -24,7 +24,7 @@ const Home = () => {
     // L'utilisateur connecté
     JSON.parse(localStorage.getItem('user_infos')),
   );
-  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
+  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
   // const [alertSeverity, setAlertSeverity] = useState({
   //   state: null,

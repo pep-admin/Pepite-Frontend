@@ -19,14 +19,12 @@ import confetti from 'canvas-confetti';
 import SwipePoster from './SwipePoster';
 import SwipeContent from './SwipeContent';
 
-// Import de la fonction pour ajouter un film / série dans les souhaits
-import {
-  addWantedMovie,
-  removeWantedMovie,
-} from '@utils/request/swipe/fetchData';
-
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+
+// Import des requêtes
+import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
+import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
 
 const SwipeCard = ({
   id,
@@ -71,11 +69,11 @@ const SwipeCard = ({
 
   const addToWantedList = () => {
     if (!isMovieWantedRef.current && !movies[index].is_wanted) {
-      addWantedMovie(movieDetail.id, displayType);
+      addWantedMovieRequest(movieDetail.id, displayType);
       isMovieWantedRef.current = true;
       explodeConfetti();
     } else {
-      removeWantedMovie(movieDetail.id, displayType);
+      removeWantedMovieRequest(movieDetail.id, displayType);
       isMovieWantedRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies

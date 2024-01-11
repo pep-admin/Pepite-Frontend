@@ -13,7 +13,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des icônes
@@ -26,8 +26,14 @@ import {
 } from '@utils/styledComponent';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 
-const ProfilDetails = ({ criticsNumber, goldNumber, userInfos }) => {
+const ProfilDetails = ({
+  criticsNumber,
+  goldNumber,
+  userInfos,
+  chosenUser,
+}) => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // ***** Affichage des amis, abonnements et abonnés ***** //
   const [displayContacts, setDisplayContacts] = useState(null);
@@ -35,6 +41,8 @@ const ProfilDetails = ({ criticsNumber, goldNumber, userInfos }) => {
   const handleContactMenu = event => {
     setDisplayContacts(event.currentTarget);
   };
+
+  console.log('les infos user', userInfos);
 
   return (
     <>
@@ -132,6 +140,11 @@ const ProfilDetails = ({ criticsNumber, goldNumber, userInfos }) => {
                 color="#3B3B3B"
                 marginRight="2.5px"
                 fontWeight="bold"
+                onClick={() =>
+                  userInfos.id === parseInt(id, 10)
+                    ? navigate(`/list/${userInfos.id}`)
+                    : navigate(`/list/${chosenUser.id}`)
+                }
               >
                 {userInfos.id === parseInt(id, 10) ? 'Ma liste' : 'Sa liste'}
               </Typography>
@@ -263,6 +276,7 @@ ProfilDetails.propTypes = {
   criticsNumber: PropTypes.number.isRequired,
   goldNumber: PropTypes.number.isRequired,
   userInfos: PropTypes.object.isRequired,
+  chosenUser: PropTypes.object,
 };
 
 export default ProfilDetails;

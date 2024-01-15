@@ -134,7 +134,7 @@ const ContactsSuggestions = ({
           sx={{ backgroundColor: 'rgba(244, 244, 244, 0.65)' }}
         >
           <img
-            src="/images/gold_right_top.svg"
+            src="/images/gold_right_top_outlined.svg"
             alt=""
             style={{
               position: 'relative',

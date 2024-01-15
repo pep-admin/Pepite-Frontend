@@ -8,6 +8,7 @@ import {
   CardActionArea,
   CardMedia,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -46,6 +47,8 @@ const CriticAdvicesComponent = ({
   infos,
   chosenUser,
   countCriticsAndGold,
+  areCriticsMore,
+  isLast,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -242,6 +245,10 @@ const CriticAdvicesComponent = ({
     }
   }, []);
 
+  useEffect(() => {
+    console.log('encore des critiques ?', areCriticsMore);
+  }, [areCriticsMore]);
+
   return (
     <>
       {showPoster ? (
@@ -371,7 +378,7 @@ const CriticAdvicesComponent = ({
                       {(infos?.is_gold_nugget && !isModify) ||
                       (isGoldNugget && !isTurnip) ? (
                         <img
-                          src="/images/gold_right_top.svg"
+                          src="/images/gold_right_top_outlined.svg"
                           alt=""
                           style={{
                             position: 'relative',
@@ -494,6 +501,15 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
+      {isLast && areCriticsMore ? (
+        <Stack
+          direction="row"
+          justifyContent="center"
+          margin="10px 0 !important"
+        >
+          <CircularProgress color="primary" />
+        </Stack>
+      ) : null}
       {/* TODO : optimiser l'animation */}
       {/* {isGoldNugget && !isNuggetAnimEnded ? (
         <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
@@ -520,6 +536,8 @@ CriticAdvicesComponent.propTypes = {
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
   countCriticsAndGold: PropTypes.func,
+  areCriticsMore: PropTypes.bool,
+  isLast: PropTypes.bool,
 };
 
 export default CriticAdvicesComponent;

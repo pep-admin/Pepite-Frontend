@@ -20,7 +20,6 @@ import PropTypes from 'prop-types';
 import StarIcon from '@mui/icons-material/Star';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { FollowerIcon, FollowedIcon } from '@utils/styledComponent';
-import { GoldNuggetIcon } from '@utils/GoldNuggetIcon';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 
 const ProfilDetails = ({
@@ -98,18 +97,16 @@ const ProfilDetails = ({
                   minWidth: 'auto',
                   marginRight: '5px',
                   width: '20px',
+                  justifyContent: 'flex-end',
                 }}
               >
-                <GoldNuggetIcon
-                  width={'15.8px'}
-                  height={'15px'}
-                  strokeWidth={'1.7'}
-                  position={'relative'}
-                  top={'0.2px'}
-                  right={'0.1px'}
-                  bottom={null}
-                  filter={null}
-                  isShadowed={true}
+                <img
+                  src="/images/gold_nugget.svg"
+                  alt=""
+                  style={{
+                    position: 'relative',
+                    top: '0.2px',
+                  }}
                 />
               </ListItemIcon>
               <Typography

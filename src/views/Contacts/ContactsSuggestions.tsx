@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import { GoldNuggetIcon } from '@utils/styledComponent';
 import apiBaseUrl from '@utils/request/config';
 import FriendRequestBtn from '@utils/FriendRequestBtn';
 
@@ -132,14 +131,14 @@ const ContactsSuggestions = ({
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          sx={{ backgroundColor: 'rgba(244, 244, 244, 0.5)' }}
+          sx={{ backgroundColor: 'rgba(244, 244, 244, 0.65)' }}
         >
-          <GoldNuggetIcon
-            sx={{
-              fontSize: '1.2em',
+          <img
+            src="/images/gold_right_top.svg"
+            alt=""
+            style={{
               position: 'relative',
               top: '0.2px',
-              right: '0.1px',
             }}
           />
           <Typography

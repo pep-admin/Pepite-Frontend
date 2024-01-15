@@ -189,6 +189,7 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
               gutterBottom
               sx={{
                 color: '#8E8E8E',
+                whiteSpace: 'nowrap',
               }}
             >
               {'Vous possédez déjà un compte ?'}

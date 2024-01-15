@@ -14,11 +14,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import {
-  GoldNuggetIcon,
-  OrangeRating,
-  TurnipIcon,
-} from '@utils/styledComponent';
+import { OrangeRating, TurnipIcon } from '@utils/styledComponent';
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
@@ -226,9 +222,9 @@ const CriticAdvicesHeader = ({
                   height="33.04px"
                   alignItems="center"
                   gap="20px"
-                  padding="5px 11px"
+                  padding="5px 15px"
                   sx={{
-                    backgroundColor: isTurnip ? '#c5739d' : '#8c8c8c',
+                    backgroundColor: isTurnip ? '#c5739d' : '#a09f9f',
                   }}
                 >
                   <TurnipIcon sx={{ height: '25px' }} />
@@ -286,12 +282,19 @@ const CriticAdvicesHeader = ({
                   height="33.04px"
                   alignItems="center"
                   gap="20px"
-                  padding="5px 8px"
+                  padding="5px 15px"
                   sx={{
-                    backgroundColor: isGoldNugget ? '#dda979' : '#8c8c8c',
+                    backgroundColor: isGoldNugget ? '#dda979' : '#a09f9f',
                   }}
                 >
-                  <GoldNuggetIcon sx={{ height: '20px' }} />
+                  <img
+                    src="/images/gold_rating.svg"
+                    alt=""
+                    style={{
+                      position: 'relative',
+                      top: '0.2px',
+                    }}
+                  />
                   <Typography
                     fontSize="1em"
                     component="p"

@@ -18,7 +18,6 @@ import AddToPhotosTwoToneIcon from '@mui/icons-material/AddToPhotosTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { GoldNuggetIcon } from '@utils/styledComponent';
 import { removeGold } from '@utils/request/goldNugget/removeGold';
 import { addGold } from '@utils/request/goldNugget/addGold';
 import { getGoldNumber } from '@utils/request/goldNugget/getGoldNumber';
@@ -197,9 +196,10 @@ const CriticAdvicesFooter = ({
             }}
             onClick={toggleGold}
           >
-            <GoldNuggetIcon
-              sx={{
-                fontSize: '18px',
+            <img
+              src="/images/gold_footer.svg"
+              alt=""
+              style={{
                 position: 'relative',
                 bottom: '1px',
                 filter: !isGold ? 'grayscale(1) contrast(0.9)' : 'none',

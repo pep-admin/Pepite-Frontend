@@ -165,7 +165,7 @@ const Header = ({ userInfos }) => {
           <IconButton
             size="large"
             aria-label="account of current user"
-            aria-controls="menu-appbar"
+            aria-controls="menu-nav-appbar"
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
             sx={{ color: '#052525', paddingRight: '15px' }}
@@ -173,7 +173,7 @@ const Header = ({ userInfos }) => {
             <MenuIcon />
           </IconButton>
           <Menu
-            id="menu-appbar"
+            id="menu-user-appbar"
             anchorEl={anchorElNav}
             anchorOrigin={{
               vertical: 'bottom',
@@ -275,7 +275,7 @@ const Header = ({ userInfos }) => {
           </Tooltip>
           <Menu
             sx={{ mt: '45px' }}
-            id="menu-appbar"
+            id="menu-user-appbar"
             anchorEl={anchorElUser}
             anchorOrigin={{
               vertical: 'top',

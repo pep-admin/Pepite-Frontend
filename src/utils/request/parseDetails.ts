@@ -1,4 +1,3 @@
-
 // Si récupération des détails des films depuis la DB, on parse les infos
 export const parseDatabaseData = (data, displayType, requestType) => {
   // Informations générales
@@ -86,7 +85,6 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     displayType === 'movie' &&
     (requestType === 'critic' || requestType === 'advice')
   ) {
-
     release_date = data.release_date;
     release_dates = JSON.parse(data.release_dates);
     title = data.title;

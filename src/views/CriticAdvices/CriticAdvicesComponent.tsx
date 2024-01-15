@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import { useData } from '@hooks/DataContext';
 
 // Import des composants customisés
-import { GoldNuggetIcon, Item, TurnipIcon } from '@utils/styledComponent';
+import { Item, TurnipIcon } from '@utils/styledComponent';
 
 // Import des composants internes
 import CriticAdvicesHeader from './CriticAdvicesHeader';
@@ -366,16 +366,16 @@ const CriticAdvicesComponent = ({
                       flexDirection="column"
                       alignItems="center"
                       justifyContent="center"
-                      sx={{ backgroundColor: 'rgba(244, 244, 244, 0.5)' }}
+                      sx={{ backgroundColor: 'rgba(244, 244, 244, 0.65)' }}
                     >
                       {(infos?.is_gold_nugget && !isModify) ||
                       (isGoldNugget && !isTurnip) ? (
-                        <GoldNuggetIcon
-                          sx={{
-                            fontSize: '1.2em',
+                        <img
+                          src="/images/gold_right_top.svg"
+                          alt=""
+                          style={{
                             position: 'relative',
                             top: '0.2px',
-                            right: '0.1px',
                           }}
                         />
                       ) : (infos?.is_turnip && !isModify) ||

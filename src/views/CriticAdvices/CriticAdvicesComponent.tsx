@@ -8,6 +8,7 @@ import {
   CardActionArea,
   CardMedia,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -16,7 +17,7 @@ import PropTypes from 'prop-types';
 import { useData } from '@hooks/DataContext';
 
 // Import des composants customisés
-import { GoldNuggetIcon, Item, TurnipIcon } from '@utils/styledComponent';
+import { Item, TurnipIcon } from '@utils/styledComponent';
 
 // Import des composants internes
 import CriticAdvicesHeader from './CriticAdvicesHeader';
@@ -46,6 +47,8 @@ const CriticAdvicesComponent = ({
   infos,
   chosenUser,
   countCriticsAndGold,
+  areMoreCritics,
+  isLast,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -219,7 +222,6 @@ const CriticAdvicesComponent = ({
         setChosenMovie(null);
       }
     } catch (error) {
-      console.log('erreur dans la modification', error);
       setAlertSeverity({ state: 'error', message: error, content: null });
     }
   };
@@ -366,16 +368,16 @@ const CriticAdvicesComponent = ({
                       flexDirection="column"
                       alignItems="center"
                       justifyContent="center"
-                      sx={{ backgroundColor: 'rgba(244, 244, 244, 0.5)' }}
+                      sx={{ backgroundColor: 'rgba(244, 244, 244, 0.65)' }}
                     >
                       {(infos?.is_gold_nugget && !isModify) ||
                       (isGoldNugget && !isTurnip) ? (
-                        <GoldNuggetIcon
-                          sx={{
-                            fontSize: '1.2em',
+                        <img
+                          src="/images/gold_right_top_outlined.svg"
+                          alt=""
+                          style={{
                             position: 'relative',
                             top: '0.2px',
-                            right: '0.1px',
                           }}
                         />
                       ) : (infos?.is_turnip && !isModify) ||
@@ -486,7 +488,7 @@ const CriticAdvicesComponent = ({
           </Stack>
           {type === 'old-critic' || type === 'old-advice' ? (
             <CriticAdvicesFooter
-              criticId={infos.critic_id}
+              infos={infos}
               displayComments={displayComments}
               setDisplayComments={setDisplayComments}
               comments={comments}
@@ -505,6 +507,21 @@ const CriticAdvicesComponent = ({
           setComments={setComments}
         />
       ) : null}
+      {isLast && areMoreCritics ? (
+        <Stack
+          direction="row"
+          justifyContent="center"
+          margin="10px 0 !important"
+        >
+          <CircularProgress color="primary" />
+        </Stack>
+      ) : isLast ? (
+        <Item>
+          <Stack>
+            <Typography>{'Plus rien à afficher pour le moment.'}</Typography>
+          </Stack>
+        </Item>
+      ) : null}
     </>
   );
 };
@@ -520,6 +537,8 @@ CriticAdvicesComponent.propTypes = {
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
   countCriticsAndGold: PropTypes.func,
+  areMoreCritics: PropTypes.bool,
+  isLast: PropTypes.bool,
 };
 
 export default CriticAdvicesComponent;

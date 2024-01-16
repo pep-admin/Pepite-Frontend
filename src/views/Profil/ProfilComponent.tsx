@@ -366,6 +366,7 @@ const ProfilComponent = () => {
                   criticsNumber={criticsNumber}
                   goldNumber={goldNumber}
                   userInfos={userInfos}
+                  chosenUser={chosenUser}
                 />
               </Item>
             </Box>

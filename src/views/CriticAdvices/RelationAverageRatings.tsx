@@ -25,6 +25,8 @@ const RelationAverageRatings = ({
     relation => relation.relation_type === chosenRelationship,
   );
 
+  console.log('les notes', ratings);
+
   return (
     <Menu
       id="basic-menu"
@@ -69,7 +71,7 @@ const RelationAverageRatings = ({
               <OrangeRating
                 readOnly
                 value={
-                  ratings.individual_ratings.find(
+                  ratings?.individual_ratings.find(
                     rating => rating.userId === user.id,
                   ).rating
                 }
@@ -83,7 +85,7 @@ const RelationAverageRatings = ({
               />
               <Typography fontSize="0.8em" fontWeight="bold">
                 {`${formatRating(
-                  ratings.individual_ratings.find(
+                  ratings?.individual_ratings.find(
                     rating => rating.userId === user.id,
                   ).rating,
                 )} / 5`}

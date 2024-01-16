@@ -1,6 +1,6 @@
 // Import de libs externes
 import { Stack, Typography, Box } from '@mui/material';
-import { GoldNuggetIcon } from '@utils/styledComponent';
+import { GoldNuggetIcon } from '@utils/GoldNuggetIcon';
 import { useEffect, useRef, useState } from 'react';
 
 // Import d'un fichier CSS pour éviter la surcharge de balises style dans le head
@@ -49,7 +49,12 @@ const AuthHeader = () => {
       alignItems="center"
     >
       <Box ref={logoRef} width="70px" position="relative">
-        <GoldNuggetIcon sx={{ fontSize: '4.5em' }} />
+        <GoldNuggetIcon
+          width={'64.25px'}
+          height={'61px'}
+          strokeWidth={'1.6'}
+          isShadowed={true}
+        />
         {shine.map(shineItem => (
           <AutoAwesomeIcon
             key={shineItem.id}

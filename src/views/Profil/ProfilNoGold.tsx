@@ -6,9 +6,6 @@ import PropTypes from 'prop-types';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-// Import des composants internes
-import { GoldNuggetIcon } from '@utils/styledComponent';
-
 const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
   const { id } = useParams();
   const { displayType } = useData();
@@ -22,7 +19,15 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
       bgcolor="#f1f1f1"
       borderRadius="10px"
     >
-      <GoldNuggetIcon sx={{ fontSize: '4em' }} />
+      <img
+        src="/images/no_gold.svg"
+        alt=""
+        style={{
+          position: 'relative',
+          top: '0.2px',
+          filter: 'grayscale(1) brightness(0.95)',
+        }}
+      />
       <Stack direction="column" spacing={1} marginTop="2px" padding="0 5px">
         <Typography variant="body1" component="h4" align="center">
           {userInfos.id === parseInt(id, 10) && page === 'profil'

@@ -24,6 +24,10 @@ import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import SwipeIcon from '@mui/icons-material/Swipe';
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -32,9 +36,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import apiBaseUrl from '@utils/request/config';
 
 // Import des requêtes
-import { handleLogout } from './request/swipe/fetchData';
+import { handleLogout } from './request/authRequest';
 
-const pages = ['Accueil', 'Swipe', 'Mes contacts'];
+const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = ({ userInfos }) => {
@@ -161,7 +165,7 @@ const Header = ({ userInfos }) => {
           <IconButton
             size="large"
             aria-label="account of current user"
-            aria-controls="menu-appbar"
+            aria-controls="menu-nav-appbar"
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
             sx={{ color: '#052525', paddingRight: '15px' }}
@@ -169,7 +173,7 @@ const Header = ({ userInfos }) => {
             <MenuIcon />
           </IconButton>
           <Menu
-            id="menu-appbar"
+            id="menu-user-appbar"
             anchorEl={anchorElNav}
             anchorOrigin={{
               vertical: 'bottom',
@@ -182,29 +186,60 @@ const Header = ({ userInfos }) => {
             }}
             open={Boolean(anchorElNav)}
             onClose={handleCloseNavMenu}
+            MenuListProps={{
+              sx: {
+                padding: '0',
+              },
+            }}
             sx={{
               display: { xs: 'block', md: 'none' },
             }}
           >
-            {pages.map(page => (
+            {pages.map((page, index) => [
               <MenuItem
                 key={page}
                 onClick={() => {
-                  if (page === 'Swipe') {
+                  if (page === 'Accueil') {
+                    navigate(`/home/${userId}`);
+                  } else if (page === 'Swipe') {
                     navigate('/swipe');
+                  } else if (page === 'Ma liste') {
+                    navigate(`/list/${userId}`);
                   } else if (page === 'Mes contacts') {
                     navigate(`/contacts/${userId}`);
-                  } else if (page === 'Accueil') {
-                    navigate(`/home/${userId}`);
                   }
                   handleCloseNavMenu();
                 }}
+                sx={{ padding: '0 16px' }}
               >
+                {page === 'Accueil' ? (
+                  <ListItemIcon>
+                    <HomeIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : page === 'Swipe' ? (
+                  <ListItemIcon>
+                    <SwipeIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : page === 'Ma liste' ? (
+                  <ListItemIcon>
+                    <ChecklistIcon fontSize="small" />
+                  </ListItemIcon>
+                ) : (
+                  <ListItemIcon>
+                    <GroupsIcon fontSize="small" />
+                  </ListItemIcon>
+                )}
                 <Typography variant="body2" textAlign="center">
                   {page}
                 </Typography>
-              </MenuItem>
-            ))}
+              </MenuItem>,
+              page.length - 1 !== index && (
+                <Divider
+                  key={`page-divider-${index}`}
+                  sx={{ width: '80%', margin: '0 auto !important' }}
+                />
+              ),
+            ])}
           </Menu>
         </Box>
         <Box sx={{ flexGrow: 0 }}>
@@ -240,7 +275,7 @@ const Header = ({ userInfos }) => {
           </Tooltip>
           <Menu
             sx={{ mt: '45px' }}
-            id="menu-appbar"
+            id="menu-user-appbar"
             anchorEl={anchorElUser}
             anchorOrigin={{
               vertical: 'top',

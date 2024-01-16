@@ -1,8 +1,7 @@
 // Import des libs externes
-import { Stack, Box, Typography, Divider } from '@mui/material';
+import { Stack, Box, Typography, Divider, Menu } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router-dom';
 
 // Import des requêtes internes
 import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
@@ -14,11 +13,13 @@ import { getCommentsNumber } from '@utils/request/comments/getCommentsNumber';
 // Import des icônes
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
-import AddToPhotosTwoToneIcon from '@mui/icons-material/AddToPhotosTwoTone';
+import QueueTwoToneIcon from '@mui/icons-material/QueueTwoTone';
+import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
+import LibraryAddCheckTwoToneIcon from '@mui/icons-material/LibraryAddCheckTwoTone';
+import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { GoldNuggetIcon } from '@utils/styledComponent';
 import { removeGold } from '@utils/request/goldNugget/removeGold';
 import { addGold } from '@utils/request/goldNugget/addGold';
 import { getGoldNumber } from '@utils/request/goldNugget/getGoldNumber';
@@ -26,17 +27,20 @@ import { checkGoldStatus } from '@utils/request/goldNugget/checkGoldStatus';
 
 // Import des composants internes
 import Particles from '@utils/anims/Particles';
+import { getUserMovieStatusRequest } from '@utils/request/list/getUserMovieStatusRequest';
+import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
+import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
+import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
+import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
 
 const CriticAdvicesFooter = ({
-  criticId,
+  infos,
   displayComments,
   setDisplayComments,
   comments,
 }) => {
   const { displayType } = useData();
 
-  // Id de l'utilisateur des paramètres de requête
-  const { id } = useParams();
   // Id de l'utilisateur du local storage
   const userId = localStorage.getItem('user_id');
 
@@ -46,35 +50,82 @@ const CriticAdvicesFooter = ({
   const [hasLiked, setHasLiked] = useState(false);
   const [isGold, setIsGold] = useState(false);
   const [particles, setParticles] = useState([]);
+  const [userMovieStatus, setUserMovieStatus] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Gestion du menu de choix "à voir", "vu"
+  const openSeenMenu = Boolean(anchorEl);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   // Compte le nombre de commentaires par critique
   const fetchCommentsNumber = async () => {
-    const response = await getCommentsNumber(criticId, displayType);
+    const response = await getCommentsNumber(infos.critic_id, displayType);
     setCommentsNumber(response);
   };
 
   // Compte le nombre de likes par critique
   const fetchLikesNumber = async () => {
-    const response = await getLikesNumber(criticId, displayType);
+    const response = await getLikesNumber(infos.critic_id, displayType);
     setLikesNumber(response);
   };
 
   // Compte le nombre de likes par critique
   const fetchGoldNumber = async () => {
-    const response = await getGoldNumber(criticId, displayType);
+    const response = await getGoldNumber(infos.critic_id, displayType);
     setGoldNumber(response);
   };
 
   // Vérifie si l'utilisateur a déjà liké des critiques
   const checkUserLikeStatus = async () => {
-    const response = await checkLikeStatus(criticId, displayType);
+    const response = await checkLikeStatus(infos.critic_id, displayType);
     setHasLiked(response);
   };
 
   // Vérifie si l'utilisateur a déjà liké des critiques
   const checkUserGoldStatus = async () => {
-    const response = await checkGoldStatus(criticId, displayType);
+    const response = await checkGoldStatus(infos.critic_id, displayType);
     setIsGold(response);
+  };
+
+  // Vérifie si l'utilisateur souhaite voir le film, l'a déjà vu, ou l'a déjà noté
+  const getUserMovieStatus = async () => {
+    const response = await getUserMovieStatusRequest(infos.id, displayType);
+    setUserMovieStatus(response);
+  };
+
+  // Ajoute le film à la liste des films souhaités
+  const addWantedMovie = async () => {
+    await addWantedMovieRequest(infos.id, displayType);
+    handleClose();
+    getUserMovieStatus();
+  };
+
+  // Retire le film de la liste des films souhaités
+  const removeWantedMovie = async () => {
+    await removeWantedMovieRequest(infos.id, displayType);
+    handleClose();
+    getUserMovieStatus();
+  };
+
+  // Ajoute le film à la liste des films déjà vus (à noter)
+  const addWatchedMovie = async () => {
+    await addWatchedMovieRequest(infos.id, displayType);
+    handleClose();
+    getUserMovieStatus();
+  };
+
+  // Retire le film de la liste des films déjà vus
+  const removeWatchedMovie = async () => {
+    await removeWatchedMovieRequest(infos.id, displayType);
+    handleClose();
+    getUserMovieStatus();
   };
 
   // Gérer le clic sur l'icône de like
@@ -82,9 +133,9 @@ const CriticAdvicesFooter = ({
     setHasLiked(!hasLiked);
     try {
       if (hasLiked) {
-        removeLike(criticId, displayType);
+        removeLike(infos.critic_id, displayType);
       } else {
-        addLike(criticId, displayType);
+        addLike(infos.critic_id, displayType);
       }
       fetchLikesNumber();
     } catch (error) {
@@ -98,9 +149,9 @@ const CriticAdvicesFooter = ({
     setIsGold(!isGold);
     try {
       if (isGold) {
-        removeGold(criticId, displayType);
+        removeGold(infos.critic_id, displayType);
       } else {
-        addGold(criticId, displayType);
+        addGold(infos.critic_id, displayType);
 
         const newParticles = [];
 
@@ -117,8 +168,6 @@ const CriticAdvicesFooter = ({
             animationClass: animationClass,
           });
         }
-        console.log(newParticles);
-
         setParticles(newParticles);
 
         // Nettoyage après animation
@@ -147,6 +196,10 @@ const CriticAdvicesFooter = ({
     checkUserGoldStatus();
   }, [isGold]);
 
+  useEffect(() => {
+    getUserMovieStatus();
+  }, []);
+
   return (
     <>
       <Divider />
@@ -154,7 +207,7 @@ const CriticAdvicesFooter = ({
         direction="row"
         spacing={5}
         height="30px"
-        padding="0 17px"
+        padding="0 15px"
         flexGrow="1"
       >
         <Box
@@ -197,9 +250,10 @@ const CriticAdvicesFooter = ({
             }}
             onClick={toggleGold}
           >
-            <GoldNuggetIcon
-              sx={{
-                fontSize: '18px',
+            <img
+              src="/images/gold_footer.svg"
+              alt=""
+              style={{
                 position: 'relative',
                 bottom: '1px',
                 filter: !isGold ? 'grayscale(1) contrast(0.9)' : 'none',
@@ -211,14 +265,139 @@ const CriticAdvicesFooter = ({
             {goldNumber}
           </Typography>
         </Box>
-        {/* Affichage conditionnel de la notation rapide / bouton à voir si profil de l'utilisateur connecté */}
-        {id !== userId ? (
-          <Box height="100%" display="flex" alignItems="center" columnGap="5px">
-            <AddToPhotosTwoToneIcon fontSize="small" />
-            <Typography component="p" fontSize="1em" fontWeight="bold">
-              {'À voir'}
-            </Typography>
-          </Box>
+        {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
+        {infos.sender_id !== parseInt(userId, 10) ? (
+          <>
+            <Box
+              height="100%"
+              display="flex"
+              alignItems="center"
+              position="relative"
+              onClick={handleClick}
+            >
+              {userMovieStatus?.isRated || userMovieStatus?.isWatched ? (
+                <Stack
+                  direction="row"
+                  columnGap="5px"
+                  alignItems="center"
+                  color="#5ac164"
+                >
+                  <VisibilityTwoToneIcon fontSize="small" />
+                  <Typography variant="body2" fontWeight="bold">
+                    {'Vu'}
+                  </Typography>
+                </Stack>
+              ) : userMovieStatus?.isWanted ? (
+                <Stack direction="row" columnGap="5px" alignItems="center">
+                  <LibraryAddCheckTwoToneIcon
+                    fontSize="small"
+                    color="primary"
+                  />
+                  <Typography variant="body2" fontWeight="bold">
+                    {'À voir'}
+                  </Typography>
+                </Stack>
+              ) : (
+                <Stack direction="row" columnGap="5px" alignItems="center">
+                  <QueueTwoToneIcon fontSize="small" />
+                  <Typography variant="body2" fontWeight="bold">
+                    {'Non vu'}
+                  </Typography>
+                </Stack>
+              )}
+            </Box>
+            <Menu
+              anchorEl={anchorEl}
+              open={openSeenMenu}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              MenuListProps={{
+                sx: {
+                  padding: '8px 10px !important',
+                },
+              }}
+              elevation={3}
+            >
+              <Stack>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  columnGap="5px"
+                  sx={{
+                    opacity:
+                      userMovieStatus?.isRated || userMovieStatus?.isWatched
+                        ? '0.3'
+                        : '1',
+                  }}
+                  onClick={
+                    !userMovieStatus?.isWanted &&
+                    !userMovieStatus?.isRated &&
+                    !userMovieStatus?.isWatched
+                      ? addWantedMovie
+                      : userMovieStatus?.isWanted &&
+                        !userMovieStatus?.isRated &&
+                        !userMovieStatus?.isWatched
+                      ? removeWantedMovie
+                      : null
+                  }
+                >
+                  <LibraryAddCheckTwoToneIcon
+                    fontSize="small"
+                    color={userMovieStatus?.isWanted ? 'primary' : 'inherit'}
+                  />
+                  <Typography variant="body2" fontWeight="bold">
+                    {'À voir'}
+                  </Typography>
+                </Stack>
+                <Divider sx={{ margin: '8px' }} />
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  columnGap="5px"
+                  onClick={
+                    !userMovieStatus?.isWatched && !userMovieStatus?.isRated
+                      ? addWatchedMovie
+                      : userMovieStatus?.isWatched && !userMovieStatus?.isRated
+                      ? removeWatchedMovie
+                      : null
+                  }
+                >
+                  <VisibilityTwoToneIcon
+                    fontSize="small"
+                    color={
+                      userMovieStatus?.isWatched || userMovieStatus?.isRated
+                        ? 'success'
+                        : 'inherit'
+                    }
+                  />
+                  <Typography variant="body2" fontWeight="bold">
+                    {'Vu'}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Menu>
+            <Box
+              height="100%"
+              display="flex"
+              alignItems="center"
+              columnGap="5px"
+              color={userMovieStatus?.isRated ? '#F29E50' : 'inherit'}
+            >
+              <Stack direction="row" columnGap="5px" alignItems="center">
+                <StarTwoToneIcon fontSize="small" />
+                <Typography variant="body2" fontWeight="bold">
+                  {userMovieStatus?.isRated ? 'Noté' : 'Noter'}
+                </Typography>
+              </Stack>
+            </Box>
+          </>
         ) : null}
       </Stack>
     </>
@@ -226,7 +405,7 @@ const CriticAdvicesFooter = ({
 };
 
 CriticAdvicesFooter.propTypes = {
-  criticId: PropTypes.number.isRequired,
+  infos: PropTypes.object.isRequired,
   displayComments: PropTypes.bool.isRequired,
   setDisplayComments: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,

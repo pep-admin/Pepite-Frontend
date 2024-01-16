@@ -3,14 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Stack, Box, Button, CardMedia, CircularProgress } from '@mui/material';
 import PropTypes from 'prop-types';
 
-// Import des fonction qui permettent de manipuler la liste de déjà vus dans la DB
-import {
-  addSeenMovie,
-  addUnwantedMovie,
-  cancelDeletedMovie,
-  removeSeenMovie,
-} from '@utils/request/swipe/fetchData';
-
 // Import des icônes
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
@@ -23,6 +15,12 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 import { convertRating } from '@utils/functions/convertRating';
+
+// Import des requêtes
+import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
+import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
+import { addUnwantedMovie } from '@utils/request/list/addUnwantedMovieRequest';
+import { recoverUnwantedMovieRequest } from '@utils/request/list/recoverUnwantedMovieRequest';
 
 const SwipePoster = ({
   loading,
@@ -48,10 +46,10 @@ const SwipePoster = ({
 
   const handleMovieSeen = () => {
     if (!isMovieSeenRef.current && !movies[index].is_already_seen) {
-      addSeenMovie(movieDetail.id, displayType);
+      addWatchedMovieRequest(movieDetail.id, displayType);
       isMovieSeenRef.current = true;
     } else {
-      removeSeenMovie(movieDetail.id, displayType);
+      removeWatchedMovieRequest(movieDetail.id, displayType);
       isMovieSeenRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies
@@ -70,7 +68,7 @@ const SwipePoster = ({
       addUnwantedMovie(movieDetail.id, displayType);
       isMovieDeletedRef.current = true;
     } else {
-      cancelDeletedMovie(movieDetail.id, displayType);
+      recoverUnwantedMovieRequest(movieDetail.id, displayType);
       isMovieDeletedRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies

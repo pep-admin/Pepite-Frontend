@@ -87,7 +87,7 @@ const CustomAlert = ({
 
 CustomAlert.propTypes = {
   type: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
+  message: PropTypes.node.isRequired,
   setOnAlert: PropTypes.func,
   setShowModal: PropTypes.func,
   confirmation: PropTypes.func,

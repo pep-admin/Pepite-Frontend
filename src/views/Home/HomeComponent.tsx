@@ -24,25 +24,86 @@ const Home = () => {
     // L'utilisateur connecté
     JSON.parse(localStorage.getItem('user_infos')),
   );
-  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
+  const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
+  const [criticsPage, setCriticsPage] = useState(1); // Page de critiques incrémentée à chaque fois que l'utilisateur scroll en bas de page
+  const [loadingMore, setLoadingMore] = useState(true); // Booléen : charger de nouvelles critiques
+  const [areMoreCritics, setAreMoreCritics] = useState(true);
   // const [alertSeverity, setAlertSeverity] = useState({
   //   state: null,
   //   message: null,
   // });
 
+  /*
+    On récupère 5 critiques selon cet ordre :
+    1) les critiques récentes d'amis proches
+    2) les critiques anciennes d'amis proches
+    3) les critiques récentes d'amis
+    4) les critiques anciennes d'amis
+    5) les critiques récentes des suivis
+    6) les critiques anciennes des suivis
+  */
   const getCritics = async () => {
+    setLoadingMore(true); // Critiques en cours de chargement
+
     const critics = await getAllCriticsOfAcquaintances(
       userInfos.id,
       displayType,
+      criticsPage,
     );
-    console.log(critics);
-    setCriticsOfAcquaintances(critics);
+
+    const newCritics = critics
+      .map(critic => ({
+        ...critic,
+        // Convertir la date en un format comparable
+        timestamp: new Date(critic.created_at).getTime(),
+        // Attribuer une pondération basée sur le type de relation
+        order:
+          critic.relation_type === 'close_friend'
+            ? 3
+            : critic.relation_type === 'friend'
+            ? 2
+            : 1,
+      }))
+      .sort((a, b) => {
+        // On trie d'abord selon la relation, puis par date
+        return b.order - a.order || b.timestamp - a.timestamp;
+      });
+
+    if (!critics.length) {
+      setAreMoreCritics(false);
+    }
+
+    setCriticsOfAcquaintances(existingCritics => [
+      ...existingCritics,
+      ...newCritics,
+    ]);
+
+    // 1000 ms de delay pour permettre de voir le loader de chargement
+    setTimeout(() => {
+      setLoadingMore(false); // Critiques chargées
+    }, 1000);
   };
+
+  // Détecte le scroll en bas de page pour récupérer d'autres critiques
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop !==
+          document.documentElement.offsetHeight ||
+        loadingMore
+      )
+        return;
+      setCriticsPage(currentCount => currentCount + 1); // Récupérer une nouvelle page de critiques
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loadingMore]);
 
   useEffect(() => {
     getCritics();
-  }, [displayType]);
+  }, [displayType, criticsPage]);
 
   return (
     <>
@@ -92,6 +153,8 @@ const Home = () => {
               setUserCritics={setCriticsOfAcquaintances}
               setGoldenMovies={setGoldenMovies}
               infos={null}
+              areMoreCritics={null}
+              isLast={null}
               // chosenUser={chosenUser}
               // countCriticsAndGold={countCriticsAndGold}
             />
@@ -108,6 +171,8 @@ const Home = () => {
                   infos={critic}
                   chosenUser={null}
                   countCriticsAndGold={null}
+                  areMoreCritics={areMoreCritics}
+                  isLast={criticsOfAcquaintances.length - 1 === index}
                 />
               );
             })

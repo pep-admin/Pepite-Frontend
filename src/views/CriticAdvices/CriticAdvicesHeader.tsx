@@ -11,13 +11,15 @@ import {
   ListItemText,
 } from '@mui/material';
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des icônes
 import {
-  GoldNuggetIcon,
+  DarkOrangeRating,
   OrangeRating,
   TurnipIcon,
+  TurquoiseRating,
 } from '@utils/styledComponent';
 import ClearIcon from '@mui/icons-material/Clear';
 
@@ -48,6 +50,8 @@ const CriticAdvicesHeader = ({
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
+  const navigate = useNavigate();
+
   // Infos de l'utilisateur connecté
   const user_infos = JSON.parse(localStorage.getItem('user_infos'));
 
@@ -73,8 +77,8 @@ const CriticAdvicesHeader = ({
   }, [infos, isModify]);
 
   // useEffect(() => {
-  //   console.log(user_infos.id === infos.sender_id );
-  // }, [infos]);
+  //   console.log('chosen user', chosenUser);
+  // }, [chosenUser]);
 
   return (
     <Stack
@@ -85,13 +89,7 @@ const CriticAdvicesHeader = ({
       padding="0 10px"
       columnGap="10px"
     >
-      <Typography
-        variant="body2"
-        component="p"
-        fontWeight="bold"
-        minWidth="80px"
-        align="left"
-      >
+      <Typography variant="body2" component="p" minWidth="80px" align="left">
         {
           // Si l'utilisateur connecté souhaite poster une nouvelle critique sur son profil
           type === 'new-critic' ? (
@@ -102,11 +100,13 @@ const CriticAdvicesHeader = ({
               {'Conseillez à '}
               <span
                 style={{
+                  fontWeight: 'bold',
                   color:
-                    infos?.relation_type === 'close_friend'
-                      ? '#F16C22'
+                    chosenUser?.relation_type === 'close_friend'
+                      ? '#ff7b00'
                       : '#F29E50',
                 }}
+                onClick={() => navigate(`/profil/${chosenUser.id}`)}
               >
                 {chosenUser.first_name} {chosenUser.last_name}
               </span>
@@ -116,13 +116,15 @@ const CriticAdvicesHeader = ({
             <>
               <span
                 style={{
+                  fontWeight: 'bold',
                   color:
                     infos.relation_type === 'close_friend'
-                      ? '#F16C22'
+                      ? '#ff7b00'
                       : infos.relation_type === 'friend'
                       ? '#F29E50'
                       : '#24A5A5',
                 }}
+                onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
               >
                 {criticUserInfos.first_name} {criticUserInfos.last_name}
               </span>
@@ -136,11 +138,13 @@ const CriticAdvicesHeader = ({
             <>
               <span
                 style={{
+                  fontWeight: 'bold',
                   color:
                     infos.relation_type === 'close_friend'
-                      ? '#F16C22'
+                      ? '#ff7b00'
                       : '#F29E50',
                 }}
+                onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
               >
                 {criticUserInfos.first_name} {criticUserInfos.last_name}
               </span>
@@ -157,16 +161,41 @@ const CriticAdvicesHeader = ({
         columnGap="5px"
         whiteSpace="nowrap"
       >
-        <OrangeRating
-          value={
-            type === 'new-critic' || type === 'new-advice' || isModify
-              ? newRating
-              : parseFloat(infos.rating)
-          }
-          precision={0.5}
-          readOnly
-          sx={{ position: 'relative', bottom: '0.5px' }}
-        />
+        {infos.relation_type === 'close_friend' ? (
+          <DarkOrangeRating
+            value={
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? newRating
+                : parseFloat(infos.rating)
+            }
+            precision={0.5}
+            readOnly
+            sx={{ position: 'relative', bottom: '0.5px' }}
+          />
+        ) : infos.relation_type === 'friend' ||
+          infos.sender_id === parseInt(user_infos.id, 10) ? (
+          <OrangeRating
+            value={
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? newRating
+                : parseFloat(infos.rating)
+            }
+            precision={0.5}
+            readOnly
+            sx={{ position: 'relative', bottom: '0.5px' }}
+          />
+        ) : (
+          <TurquoiseRating
+            value={
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? newRating
+                : parseFloat(infos.rating)
+            }
+            precision={0.5}
+            readOnly
+            sx={{ position: 'relative', bottom: '0.5px' }}
+          />
+        )}
         {type === 'new-critic' || type === 'new-advice' || isModify ? (
           <>
             <Box
@@ -226,9 +255,9 @@ const CriticAdvicesHeader = ({
                   height="33.04px"
                   alignItems="center"
                   gap="20px"
-                  padding="5px 11px"
+                  padding="5px 15px"
                   sx={{
-                    backgroundColor: isTurnip ? '#c5739d' : '#8c8c8c',
+                    backgroundColor: isTurnip ? '#c5739d' : '#a09f9f',
                   }}
                 >
                   <TurnipIcon sx={{ height: '25px' }} />
@@ -286,12 +315,19 @@ const CriticAdvicesHeader = ({
                   height="33.04px"
                   alignItems="center"
                   gap="20px"
-                  padding="5px 8px"
+                  padding="5px 15px"
                   sx={{
-                    backgroundColor: isGoldNugget ? '#dda979' : '#8c8c8c',
+                    backgroundColor: isGoldNugget ? '#dda979' : '#a09f9f',
                   }}
                 >
-                  <GoldNuggetIcon sx={{ height: '20px' }} />
+                  <img
+                    src="/images/gold_rating.svg"
+                    alt=""
+                    style={{
+                      position: 'relative',
+                      top: '0.2px',
+                    }}
+                  />
                   <Typography
                     fontSize="1em"
                     component="p"

@@ -28,7 +28,7 @@ const Home = () => {
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
   const [criticsPage, setCriticsPage] = useState(1); // Page de critiques incrémentée à chaque fois que l'utilisateur scroll en bas de page
   const [loadingMore, setLoadingMore] = useState(true); // Booléen : charger de nouvelles critiques
-  const [areCriticsMore, setAreCriticsMore] = useState(true);
+  const [areMoreCritics, setAreMoreCritics] = useState(true);
   // const [alertSeverity, setAlertSeverity] = useState({
   //   state: null,
   //   message: null,
@@ -70,11 +70,10 @@ const Home = () => {
         return b.order - a.order || b.timestamp - a.timestamp;
       });
 
-    if (!newCritics.length) {
-      setAreCriticsMore(false);
+    if (!critics.length) {
+      setAreMoreCritics(false);
     }
 
-    console.log('les critiques triées', newCritics);
     setCriticsOfAcquaintances(existingCritics => [
       ...existingCritics,
       ...newCritics,
@@ -157,7 +156,7 @@ const Home = () => {
               setUserCritics={setCriticsOfAcquaintances}
               setGoldenMovies={setGoldenMovies}
               infos={null}
-              areCriticsMore={null}
+              areMoreCritics={null}
               isLast={null}
               // chosenUser={chosenUser}
               // countCriticsAndGold={countCriticsAndGold}
@@ -175,7 +174,7 @@ const Home = () => {
                   infos={critic}
                   chosenUser={null}
                   countCriticsAndGold={null}
-                  areCriticsMore={areCriticsMore}
+                  areMoreCritics={areMoreCritics}
                   isLast={criticsOfAcquaintances.length - 1 === index}
                 />
               );

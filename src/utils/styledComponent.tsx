@@ -104,59 +104,6 @@ export const NoCriticSvg = createSvgIcon(
   'Icône de bobine de film',
 );
 
-// export const GoldNuggetWireframe = createSvgIcon(
-//   <svg
-//     width="81"
-//     height="73"
-//     viewBox="0 0 81 73"
-//     fill="none"
-//     xmlns="http://www.w3.org/2000/svg"
-//   >
-//     <path
-//       d="M54.9108 0L71.5691 4.43184L76.1523 13.8809L81 25.6712L79.5898 32.9462L66.5452 62.9656L59.4059 69.4044L37.5473 73L20.3602 71.9129L4.75952 64.638L0 54.4364V36.2073L9.51904 20.9885L32.6997 2.25773L54.9108 0Z"
-//       fill="url(#paint0_linear_696_2500)"
-//     />
-//     <path
-//       d="M34 4.5L54 2.5L61.0274 22.7968L44.2455 47.2698L16.6505 52.2985L3.3288 36.3743L12.3253 21.8749L34 4.5Z"
-//       fill="#0E6666"
-//     />
-//     <path
-//       d="M1.66437 38.6791L14.8281 52.8907L18.709 61.3944L19.9726 69.7313L6.10272 63.194L1.66437 53.9328V38.6791Z"
-//       fill="#0E6666"
-//     />
-//     <path
-//       d="M46.4677 49.0298L47.7123 55.8855V62.6595L38.7335 70.8209L21.9317 69.7599L20.9538 61.1904L18 54L46.4677 49.0298Z"
-//       fill="#0E6666"
-//     />
-//     <path
-//       d="M57.6986 2.17911L71.042 5.5452L74.7816 14.7178L77.6712 22.8806L64.7528 22.0391L57.6986 2.17911Z"
-//       fill="#0E6666"
-//     />
-//     <path
-//       d="M63.7578 23.9702L78.6696 24.9399L79.3356 26.1493L78.226 32.1418L71.6061 46.678L50 56.5L49.5436 54.5974L47.7123 46.678L63.7578 23.9702Z"
-//       fill="#0E6666"
-//     />
-//     <path
-//       d="M71.0137 49.0298L64.7808 61.7343L58.9041 67.5396L42.1644 70.8209L49.9315 63.194L50.1781 58.2006L71.0137 49.0298Z"
-//       fill="#0E6666"
-//     />
-//     <defs>
-//       <linearGradient
-//         id="paint0_linear_696_2500"
-//         x1="-10.5411"
-//         y1="7.62687"
-//         x2="76.002"
-//         y2="69.3981"
-//         gradientUnits="userSpaceOnUse"
-//       >
-//         <stop offset="0.4" stopColor="#FFB000" />
-//         <stop offset="1" stopColor="#F9E733" />
-//       </linearGradient>
-//     </defs>
-//   </svg>,
-//   'GoldNuggetWireframe',
-// );
-
 // Création d'une loupe en SVG
 export const MagnifyingGlassIcon = createSvgIcon(
   <svg
@@ -231,6 +178,13 @@ export const FollowedIcon = createSvgIcon(
   </svg>,
   'FollowedIcon',
 );
+
+// Etoiles customisées orange foncé
+export const DarkOrangeRating = styled(Rating)({
+  '.MuiRating-iconFilled': {
+    color: '#ff7b00',
+  },
+});
 
 // Etoiles customisées orange
 export const OrangeRating = styled(Rating)({

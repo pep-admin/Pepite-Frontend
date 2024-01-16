@@ -7,7 +7,7 @@ export const removeWantedMovieRequest = async (
   type: string,
 ) => {
   try {
-    await axios.delete(`${apiBaseUrl}/movies/cancel_wanted`, {
+    await axios.delete(`${apiBaseUrl}/list/cancel_wanted`, {
       data: { movie_id: movieId, type: type },
       withCredentials: true,
     });

@@ -47,7 +47,7 @@ const CriticAdvicesComponent = ({
   infos,
   chosenUser,
   countCriticsAndGold,
-  areCriticsMore,
+  areMoreCritics,
   isLast,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
@@ -246,8 +246,8 @@ const CriticAdvicesComponent = ({
   }, []);
 
   useEffect(() => {
-    console.log('encore des critiques ?', areCriticsMore);
-  }, [areCriticsMore]);
+    console.log('encore des critiques ?', areMoreCritics);
+  }, [areMoreCritics]);
 
   return (
     <>
@@ -493,7 +493,7 @@ const CriticAdvicesComponent = ({
           </Stack>
           {type === 'old-critic' || type === 'old-advice' ? (
             <CriticAdvicesFooter
-              criticId={infos.critic_id}
+              infos={infos}
               displayComments={displayComments}
               setDisplayComments={setDisplayComments}
               comments={comments}
@@ -501,15 +501,6 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
-      {isLast && areCriticsMore ? (
-        <Stack
-          direction="row"
-          justifyContent="center"
-          margin="10px 0 !important"
-        >
-          <CircularProgress color="primary" />
-        </Stack>
-      ) : null}
       {/* TODO : optimiser l'animation */}
       {/* {isGoldNugget && !isNuggetAnimEnded ? (
         <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
@@ -520,6 +511,21 @@ const CriticAdvicesComponent = ({
           comments={comments}
           setComments={setComments}
         />
+      ) : null}
+      {isLast && areMoreCritics ? (
+        <Stack
+          direction="row"
+          justifyContent="center"
+          margin="10px 0 !important"
+        >
+          <CircularProgress color="primary" />
+        </Stack>
+      ) : isLast ? (
+        <Item>
+          <Stack>
+            <Typography>{'Plus rien à afficher pour le moment.'}</Typography>
+          </Stack>
+        </Item>
       ) : null}
     </>
   );
@@ -536,7 +542,7 @@ CriticAdvicesComponent.propTypes = {
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
   countCriticsAndGold: PropTypes.func,
-  areCriticsMore: PropTypes.bool,
+  areMoreCritics: PropTypes.bool,
   isLast: PropTypes.bool,
 };
 

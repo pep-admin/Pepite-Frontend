@@ -36,7 +36,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import apiBaseUrl from '@utils/request/config';
 
 // Import des requêtes
-import { handleLogout } from './request/swipe/fetchData';
+import { handleLogout } from './request/authRequest';
 
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];

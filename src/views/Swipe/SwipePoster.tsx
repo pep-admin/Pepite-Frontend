@@ -17,12 +17,10 @@ import { useData } from '@hooks/DataContext';
 import { convertRating } from '@utils/functions/convertRating';
 
 // Import des requêtes
-import {
-  addUnwantedMovie,
-  cancelDeletedMovie,
-} from '@utils/request/swipe/fetchData';
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
+import { addUnwantedMovie } from '@utils/request/list/addUnwantedMovieRequest';
+import { recoverUnwantedMovieRequest } from '@utils/request/list/recoverUnwantedMovieRequest';
 
 const SwipePoster = ({
   loading,
@@ -70,7 +68,7 @@ const SwipePoster = ({
       addUnwantedMovie(movieDetail.id, displayType);
       isMovieDeletedRef.current = true;
     } else {
-      cancelDeletedMovie(movieDetail.id, displayType);
+      recoverUnwantedMovieRequest(movieDetail.id, displayType);
       isMovieDeletedRef.current = false;
     }
     // Trouve l'objet du film correspondant dans le tableau movies

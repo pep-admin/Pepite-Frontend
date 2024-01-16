@@ -14,7 +14,12 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import { OrangeRating, TurnipIcon } from '@utils/styledComponent';
+import {
+  DarkOrangeRating,
+  OrangeRating,
+  TurnipIcon,
+  TurquoiseRating,
+} from '@utils/styledComponent';
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
@@ -81,13 +86,7 @@ const CriticAdvicesHeader = ({
       padding="0 10px"
       columnGap="10px"
     >
-      <Typography
-        variant="body2"
-        component="p"
-        fontWeight="bold"
-        minWidth="80px"
-        align="left"
-      >
+      <Typography variant="body2" component="p" minWidth="80px" align="left">
         {
           // Si l'utilisateur connecté souhaite poster une nouvelle critique sur son profil
           type === 'new-critic' ? (
@@ -98,6 +97,7 @@ const CriticAdvicesHeader = ({
               {'Conseillez à '}
               <span
                 style={{
+                  fontWeight: 'bold',
                   color:
                     chosenUser?.relation_type === 'close_friend'
                       ? '#ff7b00'
@@ -112,6 +112,7 @@ const CriticAdvicesHeader = ({
             <>
               <span
                 style={{
+                  fontWeight: 'bold',
                   color:
                     infos.relation_type === 'close_friend'
                       ? '#ff7b00'
@@ -132,6 +133,7 @@ const CriticAdvicesHeader = ({
             <>
               <span
                 style={{
+                  fontWeight: 'bold',
                   color:
                     infos.relation_type === 'close_friend'
                       ? '#ff7b00'
@@ -153,16 +155,41 @@ const CriticAdvicesHeader = ({
         columnGap="5px"
         whiteSpace="nowrap"
       >
-        <OrangeRating
-          value={
-            type === 'new-critic' || type === 'new-advice' || isModify
-              ? newRating
-              : parseFloat(infos.rating)
-          }
-          precision={0.5}
-          readOnly
-          sx={{ position: 'relative', bottom: '0.5px' }}
-        />
+        {infos.relation_type === 'close_friend' ? (
+          <DarkOrangeRating
+            value={
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? newRating
+                : parseFloat(infos.rating)
+            }
+            precision={0.5}
+            readOnly
+            sx={{ position: 'relative', bottom: '0.5px' }}
+          />
+        ) : infos.relation_type === 'friend' ||
+          infos.sender_id === parseInt(user_infos.id, 10) ? (
+          <OrangeRating
+            value={
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? newRating
+                : parseFloat(infos.rating)
+            }
+            precision={0.5}
+            readOnly
+            sx={{ position: 'relative', bottom: '0.5px' }}
+          />
+        ) : (
+          <TurquoiseRating
+            value={
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? newRating
+                : parseFloat(infos.rating)
+            }
+            precision={0.5}
+            readOnly
+            sx={{ position: 'relative', bottom: '0.5px' }}
+          />
+        )}
         {type === 'new-critic' || type === 'new-advice' || isModify ? (
           <>
             <Box

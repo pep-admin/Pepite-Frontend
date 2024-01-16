@@ -18,6 +18,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let release_date;
   let release_dates;
   let title;
+  let wanted_date = null;
+  let watched_date = null;
 
   // Dans le cas où on veut parser les infos pour un FILM qui n'a pas été noté par les utilisateurs
   if (
@@ -28,6 +30,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     release_date = data.release_date; // date de sortie
     release_dates = JSON.parse(data.release_dates); // certifications (-10, -12...),
     title = data.title; // titre du film
+    wanted_date = data.wanted_date;
+    watched_date = data.watched_date;
 
     return {
       genres,
@@ -39,6 +43,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       release_dates,
       title,
       vote_average,
+      wanted_date,
+      watched_date,
     };
   }
 
@@ -56,6 +62,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     first_air_date = data.first_air_date; // date du premier épisode
     content_ratings = JSON.parse(data.content_ratings); // certifications
     name = data.name; // nom de la série
+    wanted_date = data.wanted_date;
+    watched_date = data.watched_date;
 
     return {
       genres,
@@ -67,6 +75,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       content_ratings,
       name,
       vote_average,
+      wanted_date,
+      watched_date,
     };
   }
 

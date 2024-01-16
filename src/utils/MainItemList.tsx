@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Import des composants internes
 import CustomAlert from '@utils/CustomAlert';
+import IsNew from '@utils/IsNew';
 
 // Import des variables d'environnement
 import apiBaseUrl from '@utils/request/config';
@@ -27,6 +28,7 @@ import { YellowRating } from './styledComponent';
 import { convertRating } from './functions/convertRating';
 import { removeWantedMovieRequest } from './request/list/removeWantedMovieRequest';
 import { removeWatchedMovieRequest } from './request/list/removeWatchedMovieRequest';
+import { addWatchedMovieRequest } from './request/list/addWatchedMovieRequest';
 
 const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
@@ -91,6 +93,13 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
   const removeWatchedMovie = async () => {
     await removeWatchedMovieRequest(data.id, displayType);
     getRequest();
+  };
+
+  // Ajoute le film à la liste des films déjà vus (à noter)
+  const addWatchedMovie = async () => {
+    await addWatchedMovieRequest(data.id, displayType);
+    getRequest(); // Supprime le film de la liste des films à voir
+    getRequest2(); // Ajoute le film dans la liste des films à noter
   };
 
   // Affichage des amis proches au montage du composant
@@ -217,19 +226,29 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
             alignItems="flex-start"
             justifyContent="center"
           >
-            <Typography
-              variant="body2"
-              component="h4"
-              fontWeight="bold"
-              whiteSpace="nowrap"
-              maxWidth="180px"
-              overflow="hidden"
-              textOverflow="ellipsis"
-            >
-              {type === 'wanted-movies' || type === 'watched-movies'
-                ? `${data.title}`
-                : `${data.first_name} ${data.last_name}`}
-            </Typography>
+            <Stack direction="row" columnGap="5px" alignItems="center">
+              <Typography
+                variant="body2"
+                component="h4"
+                fontWeight="bold"
+                whiteSpace="nowrap"
+                maxWidth="150px"
+                overflow="hidden"
+                textOverflow="ellipsis"
+              >
+                {type === 'wanted-movies' || type === 'watched-movies'
+                  ? `${data.title}`
+                  : `${data.first_name} ${data.last_name}`}
+              </Typography>
+              <IsNew
+                from={'list'}
+                created_at={
+                  type === 'wanted-movies'
+                    ? data.wanted_date
+                    : data.watched_date
+                }
+              />
+            </Stack>
             {type === 'wanted-movies' || type === 'watched-movies' ? (
               <Stack direction="row" columnGap="3px" flexWrap="wrap">
                 <YellowRating
@@ -294,7 +313,13 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               fontWeight: 'normal',
               textTransform: 'initial',
             }}
-            onClick={() => (type === 'requests' ? acceptFriendRequest() : null)}
+            onClick={() =>
+              type === 'requests'
+                ? acceptFriendRequest()
+                : type === 'wanted-movies'
+                ? addWatchedMovie()
+                : null
+            }
           >
             {type === 'requests'
               ? 'Accepter'

@@ -85,6 +85,7 @@ const Home = () => {
     }, 1000);
   };
 
+  // Détecte le scroll en bas de page pour récupérer d'autres critiques
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -98,10 +99,6 @@ const Home = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadingMore]);
-
-  useEffect(() => {
-    console.log('nouveau chargement de critiques', loadingMore);
   }, [loadingMore]);
 
   useEffect(() => {

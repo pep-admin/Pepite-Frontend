@@ -1,10 +1,10 @@
 // Import des libs externes
 import { Stack, Typography, CardContent } from '@mui/material';
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
 import { YellowRating } from '@utils/styledComponent';
+import IsNew from '@utils/IsNew';
 
 const CriticAdvicesContent = ({
   type,
@@ -13,8 +13,6 @@ const CriticAdvicesContent = ({
   setDisplayOverview,
   infos,
 }) => {
-  const [isNew, setIsNew] = useState(false);
-
   let originalScore;
 
   if (type === 'new-critic' || type === 'new-advice')
@@ -25,27 +23,6 @@ const CriticAdvicesContent = ({
 
   const scoreOutOfFive = originalScore / 2;
   const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
-
-  // Vérifie si la critique ou le conseil a moins de 3 jours (bandeau "New")
-  const checkIfNew = () => {
-    if (type === 'new-critic' || type === 'new-advice') return;
-
-    const createdAt = new Date(infos.created_at).getTime();
-
-    if (!isNaN(createdAt)) {
-      const currentDate = new Date().getTime(); // Convertir en timestamp
-      const diffTime = Math.abs(currentDate - createdAt);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays <= 3) {
-        setIsNew(true);
-      }
-    }
-  };
-
-  useEffect(() => {
-    checkIfNew();
-  }, []);
 
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
@@ -92,23 +69,8 @@ const CriticAdvicesContent = ({
                     : null
                 }
               </Typography>
-              {(type === 'old-critic' || type === 'old-advice') && isNew ? (
-                <Typography
-                  component="span"
-                  fontStyle="italic"
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    fontSize: '0.8em',
-                    padding: '0 5px',
-                    backgroundColor: '#5ac164',
-                    color: '#fff',
-                    lineHeight: '1.5',
-                    position: 'relative',
-                    top: '4px',
-                  }}
-                >
-                  {'New !'}
-                </Typography>
+              {type === 'old-critic' || type === 'old-advice' ? (
+                <IsNew from={'critic'} created_at={infos.created_at} />
               ) : null}
             </Stack>
             <Stack direction="row" columnGap="5px">

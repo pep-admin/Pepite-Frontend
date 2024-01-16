@@ -114,7 +114,7 @@ const CriticAdvicesFooter = ({
     getUserMovieStatus();
   };
 
-  // Ajoute le film à la liste des films déjà vus
+  // Ajoute le film à la liste des films déjà vus (à noter)
   const addWatchedMovie = async () => {
     await addWatchedMovieRequest(infos.id, displayType);
     handleClose();
@@ -199,10 +199,6 @@ const CriticAdvicesFooter = ({
   useEffect(() => {
     getUserMovieStatus();
   }, []);
-
-  useEffect(() => {
-    console.log('les status', userMovieStatus);
-  }, [userMovieStatus]);
 
   return (
     <>

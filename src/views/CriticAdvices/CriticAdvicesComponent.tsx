@@ -222,7 +222,6 @@ const CriticAdvicesComponent = ({
         setChosenMovie(null);
       }
     } catch (error) {
-      console.log('erreur dans la modification', error);
       setAlertSeverity({ state: 'error', message: error, content: null });
     }
   };
@@ -244,10 +243,6 @@ const CriticAdvicesComponent = ({
       getCriticUserInfos();
     }
   }, []);
-
-  useEffect(() => {
-    console.log('encore des critiques ?', areMoreCritics);
-  }, [areMoreCritics]);
 
   return (
     <>

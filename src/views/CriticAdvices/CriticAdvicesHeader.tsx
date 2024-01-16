@@ -11,6 +11,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des icônes
@@ -48,6 +49,8 @@ const CriticAdvicesHeader = ({
   criticUserInfos,
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
+
+  const navigate = useNavigate();
 
   // Infos de l'utilisateur connecté
   const user_infos = JSON.parse(localStorage.getItem('user_infos'));
@@ -103,6 +106,7 @@ const CriticAdvicesHeader = ({
                       ? '#ff7b00'
                       : '#F29E50',
                 }}
+                onClick={() => navigate(`/profil/${chosenUser.id}`)}
               >
                 {chosenUser.first_name} {chosenUser.last_name}
               </span>
@@ -120,6 +124,7 @@ const CriticAdvicesHeader = ({
                       ? '#F29E50'
                       : '#24A5A5',
                 }}
+                onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
               >
                 {criticUserInfos.first_name} {criticUserInfos.last_name}
               </span>
@@ -139,6 +144,7 @@ const CriticAdvicesHeader = ({
                       ? '#ff7b00'
                       : '#F29E50',
                 }}
+                onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
               >
                 {criticUserInfos.first_name} {criticUserInfos.last_name}
               </span>

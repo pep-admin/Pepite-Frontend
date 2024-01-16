@@ -82,7 +82,7 @@ const ListComponent = () => {
               height="25px"
               alignItems="center"
               justifyContent="space-between"
-              padding="0 13px"
+              padding="0 10px"
             >
               <Typography variant="body2" component="p" fontWeight="bold">
                 {wantedMovies.length ? `${wantedMovies.length}` : 'Aucun '}
@@ -114,7 +114,7 @@ const ListComponent = () => {
                       type={'wanted-movies'}
                       data={movie}
                       getRequest={getWantedMovies}
-                      getRequest2={null}
+                      getRequest2={getWatchedMovies}
                       isLast={index === wantedMovies.length - 1}
                     />
                   );
@@ -139,7 +139,7 @@ const ListComponent = () => {
               height="25px"
               alignItems="center"
               justifyContent="space-between"
-              padding="0 13px"
+              padding="0 10px"
             >
               <Typography variant="body2" component="p" fontWeight="bold">
                 {watchedMovies.length}{' '}

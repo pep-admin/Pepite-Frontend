@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { animated as a } from 'react-spring';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 
 // Import des composants internes
@@ -30,7 +30,6 @@ const SwipeCard = ({
   id,
   Item,
   movies,
-  setMovies,
   movieDetail,
   generalRatings,
   error,
@@ -38,16 +37,19 @@ const SwipeCard = ({
   index,
   currentMovieIndex,
   setCurrentMovieIndex,
+  setNextMovieIndex,
   setSwipeDirection,
   cardProps,
   certification,
+  moviesStatusUpdated,
+  setMoviesStatusUpdated,
 }) => {
   const AnimatedCard = a(Item);
 
   const { displayType } = useData();
 
-  const isMovieWantedRef = useRef(false);
   const buttonRef = useRef(null);
+  const isWantedRef = useRef(moviesStatusUpdated[currentMovieIndex]?.is_wanted);
 
   function explodeConfetti() {
     if (buttonRef.current) {
@@ -67,26 +69,35 @@ const SwipeCard = ({
     }
   }
 
-  const addToWantedList = () => {
-    if (!isMovieWantedRef.current && !movies[index].is_wanted) {
-      addWantedMovieRequest(movieDetail.id, displayType);
-      isMovieWantedRef.current = true;
-      explodeConfetti();
-    } else {
-      removeWantedMovieRequest(movieDetail.id, displayType);
-      isMovieWantedRef.current = false;
-    }
-    // Trouve l'objet du film correspondant dans le tableau movies
-    const updatedMovies = movies.map(movie => {
-      if (movie.id === movieDetail.id) {
-        return { ...movie, is_wanted: isMovieWantedRef.current };
+  const handleMovieWanted = async () => {
+    const updatedMovies = moviesStatusUpdated.map(movie => {
+      if (movie.id === moviesStatusUpdated[currentMovieIndex].id) {
+        return { ...movie, is_wanted: !isWantedRef.current };
       }
       return movie;
     });
-    // Met à jour le tableau movies avec la nouvelle valeur
-    setMovies(updatedMovies);
-    console.log('film ajouté dans les souhaits');
+
+    if (!isWantedRef.current) {
+      explodeConfetti();
+      await addWantedMovieRequest(
+        moviesStatusUpdated[currentMovieIndex].id,
+        displayType,
+      );
+    } else {
+      await removeWantedMovieRequest(
+        moviesStatusUpdated[currentMovieIndex].id,
+        displayType,
+      );
+    }
+
+    setMoviesStatusUpdated(updatedMovies);
+    isWantedRef.current = !isWantedRef.current;
   };
+
+  // Réinitialisation de la ref "isWantedRef", à chaque fois que l'utilisateur swipe
+  useEffect(() => {
+    isWantedRef.current = moviesStatusUpdated[currentMovieIndex]?.is_wanted;
+  }, [currentMovieIndex]);
 
   return (
     <AnimatedCard
@@ -263,14 +274,15 @@ const SwipeCard = ({
                 >
                   <SwipePoster
                     loading={loading}
-                    movies={movies}
-                    setMovies={setMovies}
                     movieDetail={movieDetail}
                     index={index}
                     currentMovieIndex={currentMovieIndex}
                     setCurrentMovieIndex={setCurrentMovieIndex}
+                    setNextMovieIndex={setNextMovieIndex}
                     generalRatings={generalRatings}
                     setSwipeDirection={setSwipeDirection}
+                    moviesStatusUpdated={moviesStatusUpdated}
+                    setMoviesStatusUpdated={setMoviesStatusUpdated}
                   />
                   <CardContent
                     sx={{
@@ -301,16 +313,28 @@ const SwipeCard = ({
                         transition: 'transform 300ms ease-in-out',
                         transform:
                           // Si le film est vu mais que l'utilisateur le supprime : possibilité de le noter
-                          movies[index].is_already_seen &&
-                          movies[index].is_deleted
+                          moviesStatusUpdated.find(
+                            movie => movie.id === movieDetail.current.id,
+                          ).is_watched &&
+                          moviesStatusUpdated.find(
+                            movie => movie.id === movieDetail.current.id,
+                          ).is_unwanted
                             ? 'translateY(66px)'
                             : // Si le film n'est pas vu et que l'utilisateur le supprime : le film ne sera plus proposé
-                            !movies[index].is_already_seen &&
-                              movies[index].is_deleted
+                            !moviesStatusUpdated.find(
+                                movie => movie.id === movieDetail.current.id,
+                              ).is_watched &&
+                              moviesStatusUpdated.find(
+                                movie => movie.id === movieDetail.current.id,
+                              ).is_unwanted
                             ? 'translateY(-66px)'
                             : // Si le film est vu et que l'utilisateur ne le supprime pas : possibilité de le noter
-                            movies[index].is_already_seen &&
-                              !movies[index].is_deleted
+                            moviesStatusUpdated.find(
+                                movie => movie.id === movieDetail.current.id,
+                              ).is_watched &&
+                              !moviesStatusUpdated.find(
+                                movie => movie.id === movieDetail.current.id,
+                              ).is_unwanted
                             ? 'translateY(66px)'
                             : 'translateY(0px)',
                       }}
@@ -331,8 +355,19 @@ const SwipeCard = ({
                       <Button
                         ref={buttonRef}
                         variant="contained"
-                        color="success"
                         sx={{
+                          bgcolor: moviesStatusUpdated.find(
+                            movie => movie.id === movieDetail.current.id,
+                          ).is_wanted
+                            ? 'success.main'
+                            : 'primary.dark',
+                          '&:hover': {
+                            bgcolor: moviesStatusUpdated.find(
+                              movie => movie.id === movieDetail.current.id,
+                            ).is_wanted
+                              ? 'success.main'
+                              : 'primary.dark',
+                          },
                           color: '#fff',
                           maxHeight: '33px',
                           width: '150px',
@@ -340,9 +375,11 @@ const SwipeCard = ({
                           padding: '0 15px',
                           fontSize: '0.9em',
                         }}
-                        onClick={() => addToWantedList()}
+                        onClick={() => handleMovieWanted()}
                       >
-                        {!movies[index].is_wanted
+                        {!moviesStatusUpdated.find(
+                          movie => movie.id === movieDetail.current.id,
+                        ).is_wanted
                           ? 'Je veux le voir !'
                           : 'Ajouté !'}
                       </Button>
@@ -378,13 +415,15 @@ SwipeCard.propTypes = {
   Item: PropTypes.elementType.isRequired,
   index: PropTypes.number.isRequired,
   movies: PropTypes.array.isRequired,
-  setMovies: PropTypes.func.isRequired,
+  moviesStatusUpdated: PropTypes.array.isRequired,
+  setMoviesStatusUpdated: PropTypes.func.isRequired,
   movieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
   error: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
-  currentMovieIndex: PropTypes.number.isRequired,
+  currentMovieIndex: PropTypes.number,
   setCurrentMovieIndex: PropTypes.func.isRequired,
+  setNextMovieIndex: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
   cardProps: PropTypes.object.isRequired,
   certification: PropTypes.object.isRequired,

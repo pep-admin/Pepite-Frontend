@@ -17,14 +17,13 @@ import { useData } from '@hooks/DataContext';
 
 const SwipeComponent = ({
   movies,
-  setMovies,
   movieDetail,
-  nextMovieDetail,
   generalRatings,
   error,
   loading,
   currentMovieIndex,
   setCurrentMovieIndex,
+  setNextMovieIndex,
   swipeDirection,
   setSwipeDirection,
   countryChosen,
@@ -34,6 +33,8 @@ const SwipeComponent = ({
   genreChosen,
   setGenreChosen,
   certification,
+  moviesStatusUpdated,
+  setMoviesStatusUpdated,
 }) => {
   const [userInfos, setUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
@@ -277,25 +278,25 @@ const SwipeComponent = ({
             borderRadius="10px"
             boxShadow="0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)"
           >
-            {cards.map((card, index) => (
+            {cards.map(card => (
               <SwipeCard
                 key={card.id}
                 id={card.id}
                 Item={Item}
                 movies={movies}
-                setMovies={setMovies}
-                movieDetail={
-                  index === cards.length - 1 ? nextMovieDetail : movieDetail
-                }
+                movieDetail={movieDetail}
                 generalRatings={generalRatings}
                 error={error}
                 loading={loading}
                 index={card.index}
                 currentMovieIndex={currentMovieIndex}
                 setCurrentMovieIndex={setCurrentMovieIndex}
+                setNextMovieIndex={setNextMovieIndex}
                 setSwipeDirection={setSwipeDirection}
                 cardProps={card.cardProps}
                 certification={certification}
+                moviesStatusUpdated={moviesStatusUpdated}
+                setMoviesStatusUpdated={setMoviesStatusUpdated}
               />
             ))}
             {!hasMoreMovies && movies.length > 0 ? (
@@ -332,7 +333,8 @@ const SwipeComponent = ({
 
 SwipeComponent.propTypes = {
   movies: PropTypes.array.isRequired,
-  setMovies: PropTypes.func.isRequired,
+  moviesStatusUpdated: PropTypes.array.isRequired,
+  setMoviesStatusUpdated: PropTypes.func.isRequired,
   movieDetail: PropTypes.object.isRequired,
   nextMovieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
@@ -346,6 +348,7 @@ SwipeComponent.propTypes = {
   }).isRequired,
   currentMovieIndex: PropTypes.number.isRequired,
   setCurrentMovieIndex: PropTypes.func.isRequired,
+  setNextMovieIndex: PropTypes.func.isRequired,
   swipeDirection: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.oneOf([null]),

@@ -52,9 +52,11 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Genre :'}
             </Typography>
             <Typography variant="body2">
-              {movieDetail.genres.length === 0
+              {movieDetail?.current?.genres?.length === 0
                 ? 'Non spécifié'
-                : movieDetail.genres.map(genre => genre.name).join(', ')}
+                : movieDetail?.current?.genres
+                    ?.map(genre => genre.name)
+                    .join(', ')}
             </Typography>
           </Box>
           <Box>
@@ -69,12 +71,13 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
             </Typography>
             <Typography variant="body2">
               {displayType === 'movie' &&
-              movieDetail.release_date &&
-              movieDetail.release_date !== ''
-                ? movieDetail.release_date.split('-')[0]
-                : displayType === 'tv' && movieDetail.first_air_date
-                ? movieDetail.first_air_date.split('-')[0]
-                : displayType === 'tv' && movieDetail.first_air_date === null
+              movieDetail.current?.release_date &&
+              movieDetail.current?.release_date !== ''
+                ? movieDetail.current.release_date.split('-')[0]
+                : displayType === 'tv' && movieDetail.current?.first_air_date
+                ? movieDetail.current.first_air_date.split('-')[0]
+                : displayType === 'tv' &&
+                  movieDetail.current?.first_air_date === null
                 ? 'Non spécifié'
                 : 'Non spécifié'}
             </Typography>
@@ -90,9 +93,9 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Pays :'}
             </Typography>
             <Typography variant="body2">
-              {findFrenchNameCountry(movieDetail.production_countries).join(
-                ', ',
-              )}
+              {findFrenchNameCountry(
+                movieDetail?.current?.production_countries,
+              )?.join(', ')}
             </Typography>
           </Box>
         </Stack>

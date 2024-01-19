@@ -2,7 +2,10 @@ import axios from 'axios';
 import apiBaseUrl from '../config';
 
 // Insertion d'un film dans la liste des non souhaités
-export const addUnwantedMovie = async (movieId: number, type: string) => {
+export const addUnwantedMovieRequest = async (
+  movieId: number,
+  type: string,
+) => {
   try {
     await axios.post(
       `${apiBaseUrl}/list/unwanted`,

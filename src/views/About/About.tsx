@@ -1,4 +1,4 @@
-// Import de libs externes
+// Import des libs externes
 import { useState } from 'react';
 import {
   Container,
@@ -11,6 +11,7 @@ import {
   Button,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useNavigate } from 'react-router-dom';
 
 // Import des icônes
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
@@ -20,6 +21,8 @@ import SwipeUpIcon from '@mui/icons-material/SwipeUp';
 import useCheckAuth from '@hooks/useCheckAuth';
 
 const About = () => {
+  const navigate = useNavigate();
+
   const { isAuthenticated, isLoading } = useCheckAuth();
 
   const [openHelpMain, setOpenHelpMain] = useState(false);
@@ -381,7 +384,7 @@ const About = () => {
         <Button
           variant="contained"
           color="primary"
-          href="http://127.0.0.1:5173/swipe"
+          onClick={() => navigate('/swipe')}
         >
           {"C'est parti !"}
         </Button>

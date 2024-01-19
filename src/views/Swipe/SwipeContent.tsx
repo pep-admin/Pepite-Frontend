@@ -9,6 +9,21 @@ import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
 const SwipeContent = ({ movieDetail, movies, index }) => {
   const { displayType } = useData();
 
+  if (
+    movieDetail.current.id === movies[index].id &&
+    movieDetail.current.genres.length
+  ) {
+    console.log(
+      `genres pour le film ${movieDetail.current.id} =>`,
+      movieDetail.current.genres,
+    );
+  } else if (movieDetail.next.genres.length) {
+    console.log(
+      `genres pour le film ${movieDetail.next.id} =>`,
+      movieDetail.next.genres,
+    );
+  }
+
   return (
     <Stack
       direction="row"
@@ -52,11 +67,19 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Genre :'}
             </Typography>
             <Typography variant="body2">
-              {movieDetail?.current?.genres?.length === 0
-                ? 'Non spécifié'
-                : movieDetail?.current?.genres
-                    ?.map(genre => genre.name)
-                    .join(', ')}
+              {
+                // Si des genres ont été spécifiés pour le film affiché
+                movieDetail.current.id === movies[index].id &&
+                movieDetail.current.genres.length
+                  ? movieDetail.current.genres
+                      ?.map(genre => genre.name)
+                      .join(', ')
+                  : // Si des genres ont été spécifiés pour le film suivant
+                  movieDetail.next.genres.length
+                  ? movieDetail.next.genres?.map(genre => genre.name).join(', ')
+                  : // Si aucun genre n'a été spécifié
+                    'Non spécifié'
+              }
             </Typography>
           </Box>
           <Box>
@@ -71,13 +94,12 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
             </Typography>
             <Typography variant="body2">
               {displayType === 'movie' &&
-              movieDetail.current?.release_date &&
-              movieDetail.current?.release_date !== ''
-                ? movieDetail.current.release_date.split('-')[0]
-                : displayType === 'tv' && movieDetail.current?.first_air_date
-                ? movieDetail.current.first_air_date.split('-')[0]
-                : displayType === 'tv' &&
-                  movieDetail.current?.first_air_date === null
+              movies[index].release_date &&
+              movies[index].release_date !== ''
+                ? movies[index].release_date.split('-')[0]
+                : displayType === 'tv' && movies[index].first_air_date
+                ? movies[index].first_air_date.split('-')[0]
+                : displayType === 'tv' && movies[index].first_air_date === null
                 ? 'Non spécifié'
                 : 'Non spécifié'}
             </Typography>
@@ -93,9 +115,13 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Pays :'}
             </Typography>
             <Typography variant="body2">
-              {findFrenchNameCountry(
-                movieDetail?.current?.production_countries,
-              )?.join(', ')}
+              {movieDetail.current.id === movies[index].id
+                ? findFrenchNameCountry(
+                    movieDetail.current.production_countries,
+                  ).join(', ')
+                : findFrenchNameCountry(
+                    movieDetail.next.production_countries,
+                  ).join(', ')}
             </Typography>
           </Box>
         </Stack>

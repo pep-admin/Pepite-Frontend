@@ -32,12 +32,11 @@ import { addUnwantedMovieRequest } from '@utils/request/list/addUnwantedMovieReq
 import { recoverUnwantedMovieRequest } from '@utils/request/list/recoverUnwantedMovieRequest';
 
 const SwipePoster = ({
+  movies,
   loading,
-  movieDetail,
   index,
   currentMovieIndex,
   setCurrentMovieIndex,
-  setNextMovieIndex,
   generalRatings,
   setSwipeDirection,
   moviesStatusUpdated,
@@ -47,7 +46,6 @@ const SwipePoster = ({
 
   // Largeur de l'affiche pour déterminer le container des notes
   const [posterWidth, setPosterWidth] = useState(null);
-  // const [moviesStatusUpdated, setMoviesStatusUpdated] = useState(movies);
 
   const isWatchedRef = useRef(
     moviesStatusUpdated[currentMovieIndex].is_watched,
@@ -82,7 +80,6 @@ const SwipePoster = ({
 
     setMoviesStatusUpdated(updatedMovies);
     isWatchedRef.current = !isWatchedRef.current;
-    // console.log(`film n°${moviesStatusUpdated[currentMovieIndex].id} est vu?`, isWatchedRef.current);
   };
 
   // Indique un film / série comme non voulu, ou permet à l'utilisateur de revenir sur sa décision
@@ -150,7 +147,6 @@ const SwipePoster = ({
                   setSwipeDirection('left');
                   if (currentMovieIndex !== -1) {
                     setCurrentMovieIndex(prevIndex => prevIndex - 1);
-                    setNextMovieIndex(prevIndex => prevIndex - 1);
                   }
                 }
               }}
@@ -166,9 +162,7 @@ const SwipePoster = ({
             <Button
               variant="contained"
               sx={{
-                backgroundColor: !moviesStatusUpdated.find(
-                  movie => movie.id === movieDetail.current.id,
-                ).is_unwanted
+                backgroundColor: !moviesStatusUpdated[index].is_unwanted
                   ? '#f25050 !important'
                   : '#5AC164',
                 height: '29px',
@@ -188,9 +182,7 @@ const SwipePoster = ({
                 handleDeleteMovie();
               }}
             >
-              {!moviesStatusUpdated.find(
-                movie => movie.id === movieDetail.current.id,
-              ).is_unwanted ? (
+              {!moviesStatusUpdated[index].is_unwanted ? (
                 <DeleteForeverIcon />
               ) : (
                 <RestoreFromTrashIcon />
@@ -201,17 +193,17 @@ const SwipePoster = ({
                 <CardMedia
                   ref={posterRef}
                   component="img"
-                  alt={moviesStatusUpdated[index].title}
+                  alt={movies[index].title}
                   image={
-                    moviesStatusUpdated[index].poster_path !== null
-                      ? `https://image.tmdb.org/t/p/w500/${moviesStatusUpdated[index].poster_path}`
+                    movies[index].poster_path !== null
+                      ? `https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`
                       : 'http://127.0.0.1:5173/images/no_poster.jpg'
                   }
                   sx={{
                     height: '100%',
                     objectFit: 'contain',
                     boxShadow: '8px 7px 12px 0px rgba(0,0,0,0.24)',
-                    filter: moviesStatusUpdated[index].is_deleted
+                    filter: moviesStatusUpdated[index].is_unwanted
                       ? 'grayscale(1)'
                       : 'none',
                   }}
@@ -231,29 +223,22 @@ const SwipePoster = ({
                   justifyContent="center"
                   sx={{
                     backgroundColor:
-                      moviesStatusUpdated.find(
-                        movie => movie.id === movieDetail.current.id,
-                      ).is_unwanted ||
-                      moviesStatusUpdated.find(
-                        movie => movie.id === movieDetail.current.id,
-                      ).is_wanted
+                      moviesStatusUpdated[index].is_unwanted ||
+                      moviesStatusUpdated[index].is_wanted
                         ? '#000000bf'
                         : 'transparent',
                     clipPath: 'polygon(20% 0, 100% 0, 80% 100%, 0 100%)',
                   }}
                 >
-                  {moviesStatusUpdated.find(
-                    movie => movie.id === movieDetail.current.id,
-                  ).is_unwanted ? (
+                  {moviesStatusUpdated[index].is_unwanted ? (
                     <ClearIcon
                       sx={{
                         fontSize: '2.5em',
                         color: '#f25050',
                       }}
                     />
-                  ) : !moviesStatusUpdated.find(
-                      movie => movie.id === movieDetail.current.id,
-                    ).is_unwanted && moviesStatusUpdated[index].is_wanted ? (
+                  ) : !moviesStatusUpdated[index].is_unwanted &&
+                    moviesStatusUpdated[index].is_wanted ? (
                     <PlaylistAddIcon
                       sx={{
                         fontSize: '2.5em',
@@ -267,11 +252,7 @@ const SwipePoster = ({
             <Button
               variant="contained"
               color={
-                moviesStatusUpdated.find(
-                  movie => movie.id === movieDetail.current.id,
-                ).is_watched
-                  ? 'success'
-                  : 'primary'
+                moviesStatusUpdated[index].is_watched ? 'success' : 'primary'
               }
               sx={{
                 height: '29px',
@@ -291,9 +272,7 @@ const SwipePoster = ({
                 handleMovieWatched();
               }}
             >
-              {!moviesStatusUpdated.find(
-                movie => movie.id === movieDetail.current.id,
-              ).is_watched ? (
+              {!moviesStatusUpdated[index].is_watched ? (
                 <Stack
                   direction="row"
                   alignItems="center"
@@ -367,7 +346,6 @@ const SwipePoster = ({
                 // Si ni la dernière card, ni la card "plus aucun film" est affichée, on incrémente normalement
                 if (currentMovieIndex !== moviesStatusUpdated.length - 1) {
                   setCurrentMovieIndex(prevIndex => prevIndex + 1);
-                  setNextMovieIndex(prevIndex => prevIndex + 1);
                 }
                 // Si la dernière card de movies est affichée, on définit l'index courant sur -1
                 else {
@@ -383,15 +361,14 @@ const SwipePoster = ({
 };
 
 const SwipePosterPropTypes = {
+  movies: PropTypes.array.isRequired,
   moviesStatusUpdated: PropTypes.array.isRequired,
   setMoviesStatusUpdated: PropTypes.func,
-  movieDetail: PropTypes.object.isRequired,
   generalRatings: PropTypes.number.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number,
   setCurrentMovieIndex: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
-  setNextMovieIndex: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
 };
 

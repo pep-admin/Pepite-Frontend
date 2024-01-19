@@ -24,7 +24,6 @@ const SwipeContainer = () => {
   const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
-  const [nextMovieIndex, setNextMovieIndex] = useState(currentMovieIndex + 1);
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
   const [swipeDirection, setSwipeDirection] = useState<string | null>(null); // Gauche ou droite
   const [countryChosen, setCountryChosen] = useState('États-Unis');
@@ -227,7 +226,6 @@ const SwipeContainer = () => {
       loading={loading}
       currentMovieIndex={currentMovieIndex}
       setCurrentMovieIndex={setCurrentMovieIndex}
-      setNextMovieIndex={setNextMovieIndex}
       swipeDirection={swipeDirection}
       setSwipeDirection={setSwipeDirection}
       countryChosen={countryChosen}
@@ -239,9 +237,6 @@ const SwipeContainer = () => {
       certification={certification}
       moviesStatusUpdated={moviesStatusUpdated}
       setMoviesStatusUpdated={setMoviesStatusUpdated}
-      // currentMovieStatus={currentMovieStatus}
-      // nextMovieStatus={nextMovieStatus}
-      // checkMovieStatus={checkMovieStatus}
     />
   );
 };

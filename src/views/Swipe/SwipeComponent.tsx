@@ -23,7 +23,6 @@ const SwipeComponent = ({
   loading,
   currentMovieIndex,
   setCurrentMovieIndex,
-  setNextMovieIndex,
   swipeDirection,
   setSwipeDirection,
   countryChosen,
@@ -290,8 +289,9 @@ const SwipeComponent = ({
                 loading={loading}
                 index={card.index}
                 currentMovieIndex={currentMovieIndex}
+                // nextMovieIndex={nextMovieIndex}
                 setCurrentMovieIndex={setCurrentMovieIndex}
-                setNextMovieIndex={setNextMovieIndex}
+                // setNextMovieIndex={setNextMovieIndex}
                 setSwipeDirection={setSwipeDirection}
                 cardProps={card.cardProps}
                 certification={certification}
@@ -348,7 +348,6 @@ SwipeComponent.propTypes = {
   }).isRequired,
   currentMovieIndex: PropTypes.number.isRequired,
   setCurrentMovieIndex: PropTypes.func.isRequired,
-  setNextMovieIndex: PropTypes.func.isRequired,
   swipeDirection: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.oneOf([null]),

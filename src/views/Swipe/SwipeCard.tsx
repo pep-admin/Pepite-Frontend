@@ -37,7 +37,6 @@ const SwipeCard = ({
   index,
   currentMovieIndex,
   setCurrentMovieIndex,
-  setNextMovieIndex,
   setSwipeDirection,
   cardProps,
   certification,
@@ -273,12 +272,11 @@ const SwipeCard = ({
                   }}
                 >
                   <SwipePoster
+                    movies={movies}
                     loading={loading}
-                    movieDetail={movieDetail}
                     index={index}
                     currentMovieIndex={currentMovieIndex}
                     setCurrentMovieIndex={setCurrentMovieIndex}
-                    setNextMovieIndex={setNextMovieIndex}
                     generalRatings={generalRatings}
                     setSwipeDirection={setSwipeDirection}
                     moviesStatusUpdated={moviesStatusUpdated}
@@ -313,28 +311,16 @@ const SwipeCard = ({
                         transition: 'transform 300ms ease-in-out',
                         transform:
                           // Si le film est vu mais que l'utilisateur le supprime : possibilité de le noter
-                          moviesStatusUpdated.find(
-                            movie => movie.id === movieDetail.current.id,
-                          ).is_watched &&
-                          moviesStatusUpdated.find(
-                            movie => movie.id === movieDetail.current.id,
-                          ).is_unwanted
+                          moviesStatusUpdated[index].is_watched &&
+                          moviesStatusUpdated[index].is_unwanted
                             ? 'translateY(66px)'
                             : // Si le film n'est pas vu et que l'utilisateur le supprime : le film ne sera plus proposé
-                            !moviesStatusUpdated.find(
-                                movie => movie.id === movieDetail.current.id,
-                              ).is_watched &&
-                              moviesStatusUpdated.find(
-                                movie => movie.id === movieDetail.current.id,
-                              ).is_unwanted
+                            !moviesStatusUpdated[index].is_watched &&
+                              moviesStatusUpdated[index].is_unwanted
                             ? 'translateY(-66px)'
                             : // Si le film est vu et que l'utilisateur ne le supprime pas : possibilité de le noter
-                            moviesStatusUpdated.find(
-                                movie => movie.id === movieDetail.current.id,
-                              ).is_watched &&
-                              !moviesStatusUpdated.find(
-                                movie => movie.id === movieDetail.current.id,
-                              ).is_unwanted
+                            moviesStatusUpdated[index].is_watched &&
+                              !moviesStatusUpdated[index].is_unwanted
                             ? 'translateY(66px)'
                             : 'translateY(0px)',
                       }}
@@ -356,15 +342,11 @@ const SwipeCard = ({
                         ref={buttonRef}
                         variant="contained"
                         sx={{
-                          bgcolor: moviesStatusUpdated.find(
-                            movie => movie.id === movieDetail.current.id,
-                          ).is_wanted
+                          bgcolor: moviesStatusUpdated[index].is_wanted
                             ? 'success.main'
                             : 'primary.dark',
                           '&:hover': {
-                            bgcolor: moviesStatusUpdated.find(
-                              movie => movie.id === movieDetail.current.id,
-                            ).is_wanted
+                            bgcolor: moviesStatusUpdated[index].is_wanted
                               ? 'success.main'
                               : 'primary.dark',
                           },
@@ -377,9 +359,7 @@ const SwipeCard = ({
                         }}
                         onClick={() => handleMovieWanted()}
                       >
-                        {!moviesStatusUpdated.find(
-                          movie => movie.id === movieDetail.current.id,
-                        ).is_wanted
+                        {!moviesStatusUpdated[index].is_wanted
                           ? 'Je veux le voir !'
                           : 'Ajouté !'}
                       </Button>
@@ -423,7 +403,6 @@ SwipeCard.propTypes = {
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number,
   setCurrentMovieIndex: PropTypes.func.isRequired,
-  setNextMovieIndex: PropTypes.func.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,
   cardProps: PropTypes.object.isRequired,
   certification: PropTypes.object.isRequired,

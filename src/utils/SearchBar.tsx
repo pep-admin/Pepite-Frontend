@@ -115,9 +115,9 @@ const SearchBar = ({
     }
   }, [chosenMovieId]);
 
-  useEffect(() => {
-    console.log('les résultats', results);
-  }, [results]);
+  // useEffect(() => {
+  //   console.log('les résultats', results);
+  // }, [results]);
 
   return (
     <Box

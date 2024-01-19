@@ -18,7 +18,6 @@ import { useData } from '@hooks/DataContext';
 const SwipeComponent = ({
   movies,
   movieDetail,
-  // generalRatings,
   error,
   loading,
   currentMovieIndex,
@@ -284,14 +283,11 @@ const SwipeComponent = ({
                 Item={Item}
                 movies={movies}
                 movieDetail={movieDetail}
-                // generalRatings={generalRatings}
                 error={error}
                 loading={loading}
                 index={card.index}
                 currentMovieIndex={currentMovieIndex}
-                // nextMovieIndex={nextMovieIndex}
                 setCurrentMovieIndex={setCurrentMovieIndex}
-                // setNextMovieIndex={setNextMovieIndex}
                 setSwipeDirection={setSwipeDirection}
                 cardProps={card.cardProps}
                 certification={certification}

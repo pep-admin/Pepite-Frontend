@@ -24,5 +24,5 @@ export const fetchTwentyMovies = async (
     { withCredentials: true },
   );
 
-  return response.data;
+  return response.data.elligible;
 };

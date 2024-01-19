@@ -20,10 +20,9 @@ const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]);
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
+  const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
   const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
-  // const [generalRatings, setGeneralRatings] = useState(0); // Note générale
-  const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
   const [swipeDirection, setSwipeDirection] = useState<string | null>(null); // Gauche ou droite
   const [countryChosen, setCountryChosen] = useState('États-Unis');
@@ -51,30 +50,19 @@ const SwipeContainer = () => {
         // Minimum d'affichage du Skeleton pendant 2 secondes
         const loadingTimer = new Promise(resolve => setTimeout(resolve, 2000));
 
-        const moviesData = await fetchTwentyMovies(
+        const elligibleMovies = await fetchTwentyMovies(
           moviePage,
           displayType,
           countryChosen,
           genreChosen,
         );
 
-        if (!moviesData.unwatched.length || moviesData.unwatched.length < 20) {
+        if (elligibleMovies.length < 20) {
           setHasMoreMovies(false);
         }
 
-        // Les films qui ne sont pas dans les films non voulus
-        const wantedIDs = moviesData.wanted.map(movie => movie.id);
-        // Les films qui ne sont pas dans les films déjà vus
-        const unwatchedIDs = moviesData.unwatched.map(movie => movie.id);
-
-        // Supprime les films qui ont déjà été vus et qui ne sont pas souhaités
-        const filteredMovies = moviesData.unwatched.filter(
-          movie =>
-            wantedIDs.includes(movie.id) && unwatchedIDs.includes(movie.id),
-        );
-
         // Ajoute les options à chaque film
-        const moviesWithOptions = filteredMovies.map(movie => ({
+        const moviesWithOptions = elligibleMovies.map(movie => ({
           ...movie,
           is_wanted: false,
           is_unwanted: false,
@@ -88,7 +76,7 @@ const SwipeContainer = () => {
           ...moviesWithOptions,
         ]);
 
-        await Promise.all([moviesData, loadingTimer]);
+        await Promise.all([elligibleMovies, loadingTimer]);
       } catch (err) {
         setError({
           message: 'Erreur dans la récupération de la page de films.',
@@ -121,6 +109,8 @@ const SwipeContainer = () => {
   // Récupère les détails du film affiché ainsi que les détails du suivant
   const loadMoviesDetails = async () => {
     try {
+      if (!movies[currentMovieIndex]) return;
+
       const nextIndex =
         currentMovieIndex + 1 < movies.length ? currentMovieIndex + 1 : null;
       const movieIdsToFetch = [movies[currentMovieIndex].id];
@@ -189,6 +179,7 @@ const SwipeContainer = () => {
     if (Object.keys(movieDetail).length !== 0) {
       storeDetailsData(movieDetail, displayType);
     }
+    console.log('les détails', movieDetail);
   }, [movieDetail]);
 
   useEffect(() => {
@@ -224,7 +215,6 @@ const SwipeContainer = () => {
       movies={movies}
       movieDetail={movieDetail}
       nextMovieDetail={nextMovieDetail}
-      // generalRatings={generalRatings}
       error={error}
       loading={loading}
       currentMovieIndex={currentMovieIndex}

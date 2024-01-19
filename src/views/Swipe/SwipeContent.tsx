@@ -52,19 +52,19 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Genre :'}
             </Typography>
             <Typography variant="body2">
-              {
-                // Si des genres ont été spécifiés pour le film affiché
+              {!movieDetail.current || !movieDetail.next
+                ? null
+                : // Si des genres ont été spécifiés pour le film affiché
                 movieDetail.current.id === movies[index].id &&
-                movieDetail.current.genres.length
-                  ? movieDetail.current.genres
-                      ?.map(genre => genre.name)
-                      .join(', ')
-                  : // Si des genres ont été spécifiés pour le film suivant
-                  movieDetail.next.genres.length
-                  ? movieDetail.next.genres?.map(genre => genre.name).join(', ')
-                  : // Si aucun genre n'a été spécifié
-                    'Non spécifié'
-              }
+                  movieDetail.current.genres.length
+                ? movieDetail.current.genres
+                    ?.map(genre => genre.name)
+                    .join(', ')
+                : // Si des genres ont été spécifiés pour le film suivant
+                movieDetail.next.genres.length
+                ? movieDetail.next.genres.map(genre => genre.name).join(', ')
+                : // Si aucun genre n'a été spécifié
+                  'Non spécifié'}
             </Typography>
           </Box>
           <Box>
@@ -100,7 +100,9 @@ const SwipeContent = ({ movieDetail, movies, index }) => {
               {'Pays :'}
             </Typography>
             <Typography variant="body2">
-              {movieDetail.current.id === movies[index].id
+              {!movieDetail.current || !movieDetail.next
+                ? null
+                : movieDetail.current.id === movies[index].id
                 ? findFrenchNameCountry(
                     movieDetail.current.production_countries,
                   ).join(', ')

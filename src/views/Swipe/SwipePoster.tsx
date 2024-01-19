@@ -48,10 +48,10 @@ const SwipePoster = ({
   const [posterWidth, setPosterWidth] = useState(null);
 
   const isWatchedRef = useRef(
-    moviesStatusUpdated[currentMovieIndex].is_watched,
+    moviesStatusUpdated[currentMovieIndex]?.is_watched,
   );
   const isUnwantedRef = useRef(
-    moviesStatusUpdated[currentMovieIndex].is_unwanted,
+    moviesStatusUpdated[currentMovieIndex]?.is_unwanted,
   );
 
   // Image du film affiché
@@ -348,7 +348,7 @@ const SwipePoster = ({
                 setSwipeDirection('right');
 
                 // Si ni la dernière card, ni la card "plus aucun film" est affichée, on incrémente normalement
-                if (currentMovieIndex !== moviesStatusUpdated.length - 1) {
+                if (currentMovieIndex !== movies.length - 1) {
                   setCurrentMovieIndex(prevIndex => prevIndex + 1);
                 }
                 // Si la dernière card de movies est affichée, on définit l'index courant sur -1

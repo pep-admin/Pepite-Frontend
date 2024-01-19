@@ -22,7 +22,7 @@ const SwipeContainer = () => {
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
   const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
-  const [generalRatings, setGeneralRatings] = useState(0); // Note générale
+  // const [generalRatings, setGeneralRatings] = useState(0); // Note générale
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
   const [swipeDirection, setSwipeDirection] = useState<string | null>(null); // Gauche ou droite
@@ -138,8 +138,6 @@ const SwipeContainer = () => {
         current: detailsDataArray[0],
         next: detailsDataArray[1],
       });
-      // setMovieDetail(detailsDataArray[0]);
-      setGeneralRatings(detailsDataArray[0].vote_average);
 
       // Préchargement du prochain film
       if (detailsDataArray.length > 1 && detailsDataArray[1]) {
@@ -180,6 +178,7 @@ const SwipeContainer = () => {
       movies.length - currentMovieIndex <= thresholdReload &&
       hasMoreMovies
     ) {
+      console.log('recharge !!!');
       const newPage = moviePage + 1;
       setMoviePage(newPage);
       getMovies(newPage, countryChosen, genreChosen.id);
@@ -206,6 +205,10 @@ const SwipeContainer = () => {
       });
   }, [movieDetail]);
 
+  useEffect(() => {
+    console.log('récupération des films', movies);
+  }, [movies]);
+
   // Si le statut d'authentification est en cours de chargement, affichez un indicateur de chargement
   if (isLoading) {
     return null;
@@ -221,7 +224,7 @@ const SwipeContainer = () => {
       movies={movies}
       movieDetail={movieDetail}
       nextMovieDetail={nextMovieDetail}
-      generalRatings={generalRatings}
+      // generalRatings={generalRatings}
       error={error}
       loading={loading}
       currentMovieIndex={currentMovieIndex}

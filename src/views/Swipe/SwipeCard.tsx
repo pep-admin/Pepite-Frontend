@@ -31,7 +31,7 @@ const SwipeCard = ({
   Item,
   movies,
   movieDetail,
-  generalRatings,
+  // generalRatings,
   error,
   loading,
   index,
@@ -277,7 +277,7 @@ const SwipeCard = ({
                     index={index}
                     currentMovieIndex={currentMovieIndex}
                     setCurrentMovieIndex={setCurrentMovieIndex}
-                    generalRatings={generalRatings}
+                    // generalRatings={generalRatings}
                     setSwipeDirection={setSwipeDirection}
                     moviesStatusUpdated={moviesStatusUpdated}
                     setMoviesStatusUpdated={setMoviesStatusUpdated}
@@ -398,7 +398,7 @@ SwipeCard.propTypes = {
   moviesStatusUpdated: PropTypes.array.isRequired,
   setMoviesStatusUpdated: PropTypes.func.isRequired,
   movieDetail: PropTypes.object.isRequired,
-  generalRatings: PropTypes.number.isRequired,
+  // generalRatings: PropTypes.number.isRequired,
   error: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number,

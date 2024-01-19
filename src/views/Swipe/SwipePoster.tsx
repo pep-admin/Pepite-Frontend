@@ -10,10 +10,12 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 
+// Import des composants internes
+import SwipeRatings from './SwipeRatings';
+
 // Import des icônes
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
-import SwipeRatings from './SwipeRatings';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
@@ -23,7 +25,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { convertRating } from '@utils/functions/convertRating';
 
 // Import des requêtes
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
@@ -37,7 +38,6 @@ const SwipePoster = ({
   index,
   currentMovieIndex,
   setCurrentMovieIndex,
-  generalRatings,
   setSwipeDirection,
   moviesStatusUpdated,
   setMoviesStatusUpdated,
@@ -321,7 +321,11 @@ const SwipePoster = ({
                   alignItems: 'center',
                 }}
               >
-                <SwipeRatings roundedScore={convertRating(generalRatings)} />
+                <SwipeRatings
+                  movies={movies}
+                  index={index}
+                  currentMovieIndex={currentMovieIndex}
+                />
               </Stack>
             ) : null}
           </Box>
@@ -364,7 +368,6 @@ const SwipePosterPropTypes = {
   movies: PropTypes.array.isRequired,
   moviesStatusUpdated: PropTypes.array.isRequired,
   setMoviesStatusUpdated: PropTypes.func,
-  generalRatings: PropTypes.number.isRequired,
   loading: PropTypes.object.isRequired,
   currentMovieIndex: PropTypes.number,
   setCurrentMovieIndex: PropTypes.func.isRequired,

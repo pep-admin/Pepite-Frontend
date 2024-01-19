@@ -9,21 +9,6 @@ import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
 const SwipeContent = ({ movieDetail, movies, index }) => {
   const { displayType } = useData();
 
-  if (
-    movieDetail.current.id === movies[index].id &&
-    movieDetail.current.genres.length
-  ) {
-    console.log(
-      `genres pour le film ${movieDetail.current.id} =>`,
-      movieDetail.current.genres,
-    );
-  } else if (movieDetail.next.genres.length) {
-    console.log(
-      `genres pour le film ${movieDetail.next.id} =>`,
-      movieDetail.next.genres,
-    );
-  }
-
   return (
     <Stack
       direction="row"

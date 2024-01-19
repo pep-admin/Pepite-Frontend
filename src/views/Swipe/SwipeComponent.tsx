@@ -18,7 +18,7 @@ import { useData } from '@hooks/DataContext';
 const SwipeComponent = ({
   movies,
   movieDetail,
-  generalRatings,
+  // generalRatings,
   error,
   loading,
   currentMovieIndex,
@@ -284,7 +284,7 @@ const SwipeComponent = ({
                 Item={Item}
                 movies={movies}
                 movieDetail={movieDetail}
-                generalRatings={generalRatings}
+                // generalRatings={generalRatings}
                 error={error}
                 loading={loading}
                 index={card.index}
@@ -337,7 +337,7 @@ SwipeComponent.propTypes = {
   setMoviesStatusUpdated: PropTypes.func.isRequired,
   movieDetail: PropTypes.object.isRequired,
   nextMovieDetail: PropTypes.object.isRequired,
-  generalRatings: PropTypes.number.isRequired,
+  // generalRatings: PropTypes.number.isRequired,
   error: PropTypes.shape({
     message: PropTypes.string,
     error: PropTypes.object,

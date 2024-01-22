@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 // Import des composants internes
 import Header from '@utils/Header';
+import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
 import { Item } from '@utils/styledComponent';
 import SearchBar from '@utils/SearchBar';
 import MainItemList from '@utils/MainItemList';
@@ -14,8 +15,8 @@ import { useData } from '@hooks/DataContext';
 
 // Import des requêtes
 import { getWantedMoviesRequest } from '@utils/request/list/getWantedMoviesRequest';
-import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
 import { getWatchedMoviesRequest } from '@utils/request/list/getWatchedMoviesRequest';
+import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const ListComponent = () => {
   const { id } = useParams();
@@ -28,6 +29,7 @@ const ListComponent = () => {
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [wantedMovies, setWantedMovies] = useState([]); // Les films que l'utilisateur a choisi de voir
   const [watchedMovies, setWatchedMovies] = useState([]); // Les films que l'utilisateur a déjà vu
+  const [ratedMovies, setRatedMovies] = useState([]); // Les films que l'utilisateur a noté
 
   const getWantedMovies = async () => {
     const wanted = await getWantedMoviesRequest(id, displayType);
@@ -39,9 +41,16 @@ const ListComponent = () => {
     setWatchedMovies(watched);
   };
 
+  const getRatedMovies = async () => {
+    const rated = await getAllCriticsOfUser(id, displayType);
+    console.log('les films notés', rated);
+    setRatedMovies(rated);
+  };
+
   useEffect(() => {
     getWantedMovies();
     getWatchedMovies();
+    getRatedMovies();
   }, [displayType]);
 
   return (
@@ -176,6 +185,66 @@ const ListComponent = () => {
                       getRequest={getWatchedMovies}
                       getRequest2={null}
                       isLast={index === watchedMovies.length - 1}
+                    />
+                  );
+                })
+              ) : (
+                <Stack direction="column">
+                  <Typography variant="body2" component="p">
+                    <>
+                      <span style={{ fontWeight: 'bold' }}>
+                        {'Aucun film à voir '}
+                      </span>
+                      {'pour le moment.'}
+                    </>
+                  </Typography>
+                </Stack>
+              )}
+            </Stack>
+          </Item>
+          <Item overflow="hidden" maxheight="250px">
+            <Stack
+              direction="row"
+              height="25px"
+              alignItems="center"
+              justifyContent="space-between"
+              padding="0 10px"
+            >
+              <Typography variant="body2" component="p" fontWeight="bold">
+                {ratedMovies.length}{' '}
+                {`film${ratedMovies.length > 1 ? 's' : ''} notés`}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="p"
+                fontWeight="bold"
+                sx={{
+                  cursor: 'pointer',
+                }}
+              >
+                {'Voir tous'}
+              </Typography>
+            </Stack>
+            <Divider />
+            <Stack
+              direction="column"
+              padding="6px"
+              rowGap="6px"
+              sx={{
+                maxHeight: '188px',
+                overflowY: 'scroll',
+              }}
+            >
+              {ratedMovies.length ? (
+                ratedMovies.map((movie, index) => {
+                  return (
+                    <MainItemList
+                      key={movie.id}
+                      type={'rated-movies'}
+                      data={movie}
+                      getRequest={getWatchedMovies}
+                      getRequest2={null}
+                      isLast={index === ratedMovies.length - 1}
                     />
                   );
                 })

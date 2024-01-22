@@ -24,7 +24,7 @@ import { handleCloseFriendRequest } from '@utils/request/friendship/handleCloseF
 import { removeFriendRequest } from '@utils/request/friendship/removeFriendRequest';
 import { unfollowSomeone } from '@utils/request/followed/unfollowSomeone';
 import { declineFriendship } from '@utils/request/friendship/declineFriendship';
-import { YellowRating } from './styledComponent';
+import { OrangeRating, YellowRating } from './styledComponent';
 import { convertRating } from './functions/convertRating';
 import { removeWantedMovieRequest } from './request/list/removeWantedMovieRequest';
 import { removeWatchedMovieRequest } from './request/list/removeWatchedMovieRequest';
@@ -192,14 +192,18 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
           <Avatar
             variant={type === 'movies' ? 'square' : 'rounded'}
             alt={
-              type === 'wanted-movies' || type === 'watched-movies'
+              type === 'wanted-movies' ||
+              type === 'watched-movies' ||
+              type === 'rated-movies'
                 ? `Poster ${
                     displayType === 'movie' ? 'du film' : 'de la série'
                   } ${displayType === 'movie' ? data.title : data.name}`
                 : `Photo de profil de ${data.first_name} ${data.last_name}`
             }
             src={
-              (type === 'wanted-movies' || type === 'watched-movies') &&
+              (type === 'wanted-movies' ||
+                type === 'watched-movies' ||
+                type === 'rated-movies') &&
               data.poster_path
                 ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
                 : type === 'movies' && !data.poster_path
@@ -215,7 +219,9 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               height: 50,
             }}
             onClick={() =>
-              type === 'wanted-movies' || type === 'watched-movies'
+              type === 'wanted-movies' ||
+              type === 'watched-movies' ||
+              type === 'rated-movies'
                 ? // TO DO : naviguer sur la page de swipe
                   console.log('aller sur le swipe')
                 : navigate(`/profil/${data.id}`)
@@ -236,7 +242,9 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
-                {type === 'wanted-movies' || type === 'watched-movies'
+                {type === 'wanted-movies' ||
+                type === 'watched-movies' ||
+                type === 'rated-movies'
                   ? `${data.title}`
                   : `${data.first_name} ${data.last_name}`}
               </Typography>
@@ -245,26 +253,49 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
                 created_at={
                   type === 'wanted-movies'
                     ? data.wanted_date
-                    : data.watched_date
+                    : type === 'watched-movies'
+                    ? data.watched_date
+                    : data.created_at
                 }
               />
             </Stack>
-            {type === 'wanted-movies' || type === 'watched-movies' ? (
+            {type === 'wanted-movies' ||
+            type === 'watched-movies' ||
+            type === 'rated-movies' ? (
               <Stack direction="row" columnGap="3px" flexWrap="wrap">
-                <YellowRating
-                  readOnly
-                  value={convertRating(data.vote_average)}
-                  precision={0.1}
-                  sx={{
-                    position: 'relative',
-                    left: '-3px',
-                    bottom: '-1px',
-                  }}
-                />
-                <Typography
-                  fontSize="0.8em"
-                  fontWeight="bold"
-                >{`${convertRating(data.vote_average)} / 5`}</Typography>
+                {type === 'rated-movies' ? (
+                  <>
+                    <OrangeRating
+                      readOnly
+                      value={parseInt(data.rating, 10)}
+                      precision={0.5}
+                      sx={{
+                        position: 'relative',
+                        left: '-3px',
+                        bottom: '-1px',
+                      }}
+                    />
+                    <Typography fontSize="0.8em" fontWeight="bold">
+                      {`${data.rating} / 5`}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <YellowRating
+                      readOnly
+                      value={convertRating(data.vote_average)}
+                      precision={0.1}
+                      sx={{
+                        position: 'relative',
+                        left: '-3px',
+                        bottom: '-1px',
+                      }}
+                    />
+                    <Typography fontSize="0.8em" fontWeight="bold">
+                      {`${convertRating(data.vote_average)} / 5`}
+                    </Typography>
+                  </>
+                )}
                 <Typography
                   fontSize="0.8em"
                   align="left"
@@ -302,6 +333,8 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
                   ? '#24A5A5 !important'
                   : type === 'friends' && isCloseFriend
                   ? '#ff7b00 !important'
+                  : type === 'rated-movies'
+                  ? '#5AC164 !important'
                   : '#F29E50 !important',
               height: '20px',
               width: 'auto',
@@ -333,11 +366,14 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               ? "Je l'ai vu !"
               : type === 'watched-movies'
               ? 'Noter'
-              : null}
+              : 'Noté'}
           </Button>
           <DeleteOutlineOutlinedIcon
             fontSize="small"
-            sx={{ color: '#B9B9B9' }}
+            sx={{
+              color: '#B9B9B9',
+              visibility: type === 'rated-movies' ? 'hidden' : 'visible',
+            }}
             onClick={() =>
               // Suppression de la demande d'amitié reçue
               type === 'requests'

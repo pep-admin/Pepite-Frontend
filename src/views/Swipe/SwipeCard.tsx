@@ -147,9 +147,9 @@ const SwipeCard = ({
                   }}
                 >
                   {movies.length > 0 && index >= 0 && displayType === 'movie'
-                    ? movies[index].title
+                    ? movies[index]?.title
                     : movies.length > 0 && index >= 0 && displayType === 'tv'
-                    ? movies[index].name
+                    ? movies[index]?.name
                     : null}
                 </Typography>
                 <img
@@ -313,15 +313,15 @@ const SwipeCard = ({
                           // Si le film est vu mais que l'utilisateur le supprime : possibilité de le noter
                           moviesStatusUpdated[index].is_watched &&
                           moviesStatusUpdated[index].is_unwanted
-                            ? 'translateY(66px)'
+                            ? 'translateY(63px)'
                             : // Si le film n'est pas vu et que l'utilisateur le supprime : le film ne sera plus proposé
                             !moviesStatusUpdated[index].is_watched &&
                               moviesStatusUpdated[index].is_unwanted
-                            ? 'translateY(-66px)'
+                            ? 'translateY(-63px)'
                             : // Si le film est vu et que l'utilisateur ne le supprime pas : possibilité de le noter
                             moviesStatusUpdated[index].is_watched &&
                               !moviesStatusUpdated[index].is_unwanted
-                            ? 'translateY(66px)'
+                            ? 'translateY(63px)'
                             : 'translateY(0px)',
                       }}
                     >
@@ -329,7 +329,7 @@ const SwipeCard = ({
                         variant="contained"
                         color="secondary"
                         sx={{
-                          maxHeight: '33px',
+                          height: '30px',
                           width: '150px',
                           margin: 'auto',
                           padding: '0 15px',
@@ -351,7 +351,7 @@ const SwipeCard = ({
                               : 'primary.dark',
                           },
                           color: '#fff',
-                          maxHeight: '33px',
+                          height: '30px',
                           width: '150px',
                           margin: 'auto',
                           padding: '0 15px',
@@ -366,7 +366,7 @@ const SwipeCard = ({
                       <Button
                         variant="contained"
                         sx={{
-                          maxHeight: '33px',
+                          height: '30px',
                           width: '150px',
                           margin: 'auto',
                           padding: '0 15px',

@@ -1,5 +1,5 @@
 // Libs externes
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // Imports internes
 import SwipeComponent from '@views/Swipe/SwipeComponent';
@@ -36,12 +36,6 @@ const SwipeContainer = () => {
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
 
   const { displayType } = useData();
-
-  const moviesRef = useRef(movies);
-
-  useEffect(() => {
-    moviesRef.current = movies;
-  }, [movies]);
 
   // Récupère 20 films selon la page
   const getMovies = useCallback(
@@ -96,6 +90,8 @@ const SwipeContainer = () => {
   const fetchMovieDetails = async movieId => {
     try {
       const details = await getMovieDetails(displayType, movieId);
+      console.log(details);
+
       return details;
     } catch (err) {
       console.log(err);
@@ -117,6 +113,7 @@ const SwipeContainer = () => {
       if (nextIndex !== null) {
         movieIdsToFetch.push(movies[nextIndex].id);
       }
+      console.log('les ids à fetch', movieIdsToFetch);
 
       // Récupérer les détails pour les deux films simultanément
       const detailsDataArray = await Promise.all(
@@ -148,7 +145,7 @@ const SwipeContainer = () => {
     if (movies.length === 0 || currentMovieIndex === -1) return;
 
     loadMoviesDetails();
-  }, [movies, currentMovieIndex, displayType]);
+  }, [movies, currentMovieIndex]);
 
   useEffect(() => {
     setLoading({ movies: true, details: true });
@@ -179,7 +176,6 @@ const SwipeContainer = () => {
     if (Object.keys(movieDetail).length !== 0) {
       storeDetailsData(movieDetail, displayType);
     }
-    console.log('les détails', movieDetail);
   }, [movieDetail]);
 
   useEffect(() => {
@@ -196,9 +192,9 @@ const SwipeContainer = () => {
       });
   }, [movieDetail]);
 
-  useEffect(() => {
-    console.log('récupération des films', movies);
-  }, [movies]);
+  // useEffect(() => {
+  //   console.log('récupération des films', movies);
+  // }, [movies]);
 
   // Si le statut d'authentification est en cours de chargement, affichez un indicateur de chargement
   if (isLoading) {

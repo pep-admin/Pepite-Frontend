@@ -126,7 +126,7 @@ const Header = ({ userInfos }) => {
               fontSize: '0.7em',
               fontWeight: 'bold',
             }}
-            onClick={() => setDisplayType('movie')}
+            // onClick={() => setDisplayType('all')}
             selected={displayType === 'all'}
           >
             {'Tous'}

@@ -15,7 +15,7 @@ import { formatRating } from '@utils/functions/formatRating';
 import { useEffect, useState } from 'react';
 
 // Import des composants internes
-import RelationAverageRatings from './RelationAverageRatings';
+import AcquaintancesMenu from '@utils/AcquaintancesMenu';
 
 // Import des requêtes
 import { getRatingsRequest } from '@utils/request/critics/getRatingsRequest';
@@ -191,13 +191,12 @@ const ModalPosterContent = ({
                 </>
               )}
             </Typography>
-            <RelationAverageRatings
+            <AcquaintancesMenu
+              page={'poster'}
               open={openRelationsRatings}
               anchorEl={showRatingsDetails}
               setAnchorEl={setShowRatingsDetails}
-              sortedAndMappedGoldNuggetUserInfos={
-                sortedAndMappedGoldNuggetUserInfos
-              }
+              infos={sortedAndMappedGoldNuggetUserInfos}
               chosenRelationship={chosenRelationship}
               ratings={relationsRatings}
             />
@@ -222,13 +221,12 @@ const ModalPosterContent = ({
                 </>
               )}
             </Typography>
-            <RelationAverageRatings
+            <AcquaintancesMenu
+              page={'poster'}
               open={openRelationsRatings}
               anchorEl={showRatingsDetails}
               setAnchorEl={setShowRatingsDetails}
-              sortedAndMappedGoldNuggetUserInfos={
-                sortedAndMappedGoldNuggetUserInfos
-              }
+              infos={sortedAndMappedGoldNuggetUserInfos}
               chosenRelationship={chosenRelationship}
               ratings={relationsRatings}
             />
@@ -253,13 +251,12 @@ const ModalPosterContent = ({
                 </>
               )}
             </Typography>
-            <RelationAverageRatings
+            <AcquaintancesMenu
+              page={'poster'}
               open={openRelationsRatings}
               anchorEl={showRatingsDetails}
               setAnchorEl={setShowRatingsDetails}
-              sortedAndMappedGoldNuggetUserInfos={
-                sortedAndMappedGoldNuggetUserInfos
-              }
+              infos={sortedAndMappedGoldNuggetUserInfos}
               chosenRelationship={chosenRelationship}
               ratings={relationsRatings}
             />

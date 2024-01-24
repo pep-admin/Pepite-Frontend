@@ -50,7 +50,7 @@ const IsNew = ({ from, created_at }) => {
 
 IsNew.propTypes = {
   from: PropTypes.string.isRequired,
-  created_at: PropTypes.string.isRequired,
+  created_at: PropTypes.string,
 };
 
 export default IsNew;

@@ -6,6 +6,8 @@ export const getFriendRequestList = async () => {
     const response = await axios.get(`${apiBaseUrl}/friendship/requests_list`, {
       withCredentials: true,
     });
+    console.log(response.data);
+
     if (response.data === "Aucune demande d'amitié reçue") return [];
     else return response.data;
   } catch (error) {

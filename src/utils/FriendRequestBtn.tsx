@@ -18,13 +18,13 @@ import { followSomeone } from './request/followed/followSomeone';
 import { unfollowSomeone } from './request/followed/unfollowSomeone';
 
 const FriendRequestBtn = ({
-  page,
   anchorEl,
   setAnchorEl,
   receiverId,
-  friendRequestList,
-  getFriendRequests,
-  getFriendsNumber,
+  friendsList,
+  followedList,
+  getFriendsRequests,
+  getFriends,
   getFollowed,
 }) => {
   const [friendshipStatus, setFriendshipStatus] = useState({
@@ -32,7 +32,6 @@ const FriendRequestBtn = ({
     is_close: false,
     receiverId: null,
   });
-  const [receiveFriendship, setReceiveFriendship] = useState(false);
   const [followedStatus, setFollowedStatus] = useState({
     status: 'none',
     receiverId: null,
@@ -84,28 +83,20 @@ const FriendRequestBtn = ({
     await acceptFriendship(receiverId);
     handleClose();
     checkIfFriends(); // Actualise le status d'amitié accepté
-    getFriendRequests();
+    getFriendsRequests();
+    getFriends();
   };
 
-  // Si l'utilisateur connecté a reçu une demande d'amitié, on affichera le bouton "accepter"
+  // A chaque fois qu'on récupère la liste des personnes suggérées, on met à jour le status (pas de demande, en attente, à confirmer, ou accepté )
   useEffect(() => {
-    if (page === 'profil') return;
-
-    const isReceiver = friendRequestList.some(
-      request => request.id === receiverId,
-    );
-    setReceiveFriendship(isReceiver);
-  }, [friendRequestList]);
-
-  // A chaque fois qu'on récupère la liste des personnes suggérées, on met à jour le status (pas de demande, en attente, ou accepté )
-  useEffect(() => {
+    // console.log(friendsList);
     checkIfFriends();
-  }, [getFriendsNumber]);
+  }, [friendsList]);
 
   // A chaque fois qu'on récupère la liste des suivis, on met à jour le status (suivi ou non)
   useEffect(() => {
     checkIfFollowed();
-  }, [getFollowed]);
+  }, [followedList]);
 
   return (
     <Menu
@@ -127,10 +118,10 @@ const FriendRequestBtn = ({
       >
         {
           // Si l'utilisateur connecté a fait une demande d'amitié
-          friendshipStatus.status === 'pending' && !receiveFriendship ? (
+          friendshipStatus.status === 'pending' ? (
             <Stack direction="row" alignItems="center" columnGap="7px">
               <TimelapseIcon sx={{ color: '#ababab', fontSize: '22px' }} />
-              {'Demande en attente'}
+              {'Annuler la demande'}
             </Stack>
           ) : // Si l'utilisateur connecté a accepté la demande
           friendshipStatus.status === 'accepted' ? (
@@ -144,7 +135,7 @@ const FriendRequestBtn = ({
               {friendshipStatus.is_close ? 'Ami(e) +' : 'Ami(e)'}
             </Stack>
           ) : // Si l'utilisateur connecté a reçu une demande
-          receiveFriendship ? (
+          friendshipStatus.status === 'awaiting_response' ? (
             <Stack
               direction="row"
               alignItems="center"
@@ -210,10 +201,10 @@ FriendRequestBtn.propTypes = {
     PropTypes.instanceOf(HTMLButtonElement),
   ]),
   setAnchorEl: PropTypes.func.isRequired,
-  friendRequestList: PropTypes.array,
-  getFriendRequests: PropTypes.func,
-  page: PropTypes.string.isRequired,
-  getFriendsNumber: PropTypes.func,
+  friendsList: PropTypes.array.isRequired,
+  followedList: PropTypes.array.isRequired,
+  getFriendsRequests: PropTypes.func,
+  getFriends: PropTypes.func,
   getFollowed: PropTypes.func,
 };
 

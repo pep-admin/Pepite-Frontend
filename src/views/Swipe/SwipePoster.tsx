@@ -1,93 +1,117 @@
 // Import des libs externes
 import { useState, useEffect, useRef } from 'react';
-import { Stack, Box, Button, CardMedia, CircularProgress } from '@mui/material';
+import {
+  Stack,
+  Box,
+  Button,
+  CardMedia,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
 import PropTypes from 'prop-types';
+
+// Import des composants internes
+import SwipeRatings from './SwipeRatings';
 
 // Import des icônes
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
-import SwipeRatings from './SwipeRatings';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ClearIcon from '@mui/icons-material/Clear';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { convertRating } from '@utils/functions/convertRating';
 
 // Import des requêtes
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
-import { addUnwantedMovie } from '@utils/request/list/addUnwantedMovieRequest';
+import { addUnwantedMovieRequest } from '@utils/request/list/addUnwantedMovieRequest';
 import { recoverUnwantedMovieRequest } from '@utils/request/list/recoverUnwantedMovieRequest';
 
 const SwipePoster = ({
-  loading,
   movies,
-  setMovies,
-  movieDetail,
+  loading,
   index,
   currentMovieIndex,
   setCurrentMovieIndex,
-  generalRatings,
   setSwipeDirection,
+  moviesStatusUpdated,
+  setMoviesStatusUpdated,
 }) => {
   const { displayType } = useData();
 
   // Largeur de l'affiche pour déterminer le container des notes
   const [posterWidth, setPosterWidth] = useState(null);
-  const [currentMovieId, setCurrentMovieId] = useState(null);
+
+  const isWatchedRef = useRef(
+    moviesStatusUpdated[currentMovieIndex]?.is_watched,
+  );
+  const isUnwantedRef = useRef(
+    moviesStatusUpdated[currentMovieIndex]?.is_unwanted,
+  );
 
   // Image du film affiché
   const posterRef = useRef<HTMLImageElement | null>(null);
-  const isMovieSeenRef = useRef(false);
-  const isMovieDeletedRef = useRef(false);
 
-  const handleMovieSeen = () => {
-    if (!isMovieSeenRef.current && !movies[index].is_already_seen) {
-      addWatchedMovieRequest(movieDetail.id, displayType);
-      isMovieSeenRef.current = true;
-    } else {
-      removeWatchedMovieRequest(movieDetail.id, displayType);
-      isMovieSeenRef.current = false;
-    }
-    // Trouve l'objet du film correspondant dans le tableau movies
-    const updatedMovies = movies.map(movie => {
-      if (movie.id === movieDetail.id) {
-        return { ...movie, is_already_seen: isMovieSeenRef.current };
+  // Indique un film / série comme déjà vu, ou permet à l'utilisateur de revenir sur sa décision
+  const handleMovieWatched = async () => {
+    const updatedMovies = moviesStatusUpdated.map(movie => {
+      if (movie.id === moviesStatusUpdated[currentMovieIndex].id) {
+        return { ...movie, is_watched: !isWatchedRef.current };
       }
       return movie;
     });
-    // Met à jour le tableau movies avec la nouvelle valeur
-    setMovies(updatedMovies);
+
+    if (!isWatchedRef.current) {
+      await addWatchedMovieRequest(
+        moviesStatusUpdated[currentMovieIndex].id,
+        displayType,
+      );
+    } else {
+      await removeWatchedMovieRequest(
+        moviesStatusUpdated[currentMovieIndex].id,
+        displayType,
+      );
+    }
+
+    setMoviesStatusUpdated(updatedMovies);
+    isWatchedRef.current = !isWatchedRef.current;
   };
 
-  const handleDeleteMovie = () => {
-    if (!isMovieDeletedRef.current && !movies[index].is_deleted) {
-      addUnwantedMovie(movieDetail.id, displayType);
-      isMovieDeletedRef.current = true;
-    } else {
-      recoverUnwantedMovieRequest(movieDetail.id, displayType);
-      isMovieDeletedRef.current = false;
-    }
-    // Trouve l'objet du film correspondant dans le tableau movies
-    const updatedMovies = movies.map(movie => {
-      if (movie.id === movieDetail.id) {
-        return { ...movie, is_deleted: isMovieDeletedRef.current };
+  // Indique un film / série comme non voulu, ou permet à l'utilisateur de revenir sur sa décision
+  const handleDeleteMovie = async () => {
+    const updatedMovies = moviesStatusUpdated.map(movie => {
+      if (movie.id === moviesStatusUpdated[currentMovieIndex].id) {
+        return { ...movie, is_unwanted: !isUnwantedRef.current };
       }
       return movie;
     });
-    // Met à jour le tableau movies avec la nouvelle valeur
-    setMovies(updatedMovies);
+
+    if (!isUnwantedRef.current) {
+      await addUnwantedMovieRequest(
+        moviesStatusUpdated[currentMovieIndex].id,
+        displayType,
+      );
+    } else {
+      await recoverUnwantedMovieRequest(
+        moviesStatusUpdated[currentMovieIndex].id,
+        displayType,
+      );
+    }
+
+    setMoviesStatusUpdated(updatedMovies);
+    isUnwantedRef.current = !isUnwantedRef.current;
   };
 
+  // Réinitialisation des refs "est déjà vu", "n'est pas voulu", "est voulu" à chaque fois que l'utilisateur swipe
   useEffect(() => {
-    if (movieDetail && currentMovieId !== movieDetail.id) {
-      isMovieSeenRef.current = false; // Réinitialisation à false lorsque le film change
-      setCurrentMovieId(movieDetail.id); // Id du film actuel
-    }
-  }, [movieDetail, currentMovieId]);
+    isWatchedRef.current = moviesStatusUpdated[currentMovieIndex]?.is_watched;
+    isUnwantedRef.current = moviesStatusUpdated[currentMovieIndex]?.is_unwanted;
+  }, [currentMovieIndex]);
 
   return (
     <Stack
@@ -138,7 +162,7 @@ const SwipePoster = ({
             <Button
               variant="contained"
               sx={{
-                backgroundColor: !movies[index].is_deleted
+                backgroundColor: !moviesStatusUpdated[index].is_unwanted
                   ? '#f25050 !important'
                   : '#5AC164',
                 height: '29px',
@@ -158,13 +182,13 @@ const SwipePoster = ({
                 handleDeleteMovie();
               }}
             >
-              {!movies[index].is_deleted ? (
+              {!moviesStatusUpdated[index].is_unwanted ? (
                 <DeleteForeverIcon />
               ) : (
                 <RestoreFromTrashIcon />
               )}
             </Button>
-            {movies.length > 0 && movies[index] ? (
+            {moviesStatusUpdated.length > 0 && moviesStatusUpdated[index] ? (
               <>
                 <CardMedia
                   ref={posterRef}
@@ -179,7 +203,9 @@ const SwipePoster = ({
                     height: '100%',
                     objectFit: 'contain',
                     boxShadow: '8px 7px 12px 0px rgba(0,0,0,0.24)',
-                    filter: movies[index].is_deleted ? 'grayscale(1)' : 'none',
+                    filter: moviesStatusUpdated[index].is_unwanted
+                      ? 'grayscale(1)'
+                      : 'none',
                   }}
                   onLoad={() => {
                     if (posterRef.current) {
@@ -197,20 +223,22 @@ const SwipePoster = ({
                   justifyContent="center"
                   sx={{
                     backgroundColor:
-                      movies[index].is_deleted || movies[index].is_wanted
+                      moviesStatusUpdated[index].is_unwanted ||
+                      moviesStatusUpdated[index].is_wanted
                         ? '#000000bf'
                         : 'transparent',
                     clipPath: 'polygon(20% 0, 100% 0, 80% 100%, 0 100%)',
                   }}
                 >
-                  {movies[index].is_deleted ? (
+                  {moviesStatusUpdated[index].is_unwanted ? (
                     <ClearIcon
                       sx={{
                         fontSize: '2.5em',
                         color: '#f25050',
                       }}
                     />
-                  ) : !movies[index].is_deleted && movies[index].is_wanted ? (
+                  ) : !moviesStatusUpdated[index].is_unwanted &&
+                    moviesStatusUpdated[index].is_wanted ? (
                     <PlaylistAddIcon
                       sx={{
                         fontSize: '2.5em',
@@ -223,10 +251,12 @@ const SwipePoster = ({
             ) : null}
             <Button
               variant="contained"
-              color={movies[index].is_already_seen ? 'secondary' : 'primary'}
+              color={
+                moviesStatusUpdated[index].is_watched ? 'success' : 'primary'
+              }
               sx={{
                 height: '29px',
-                width: '72px',
+                width: '70px',
                 minWidth: 'auto',
                 padding: '0',
                 position: 'absolute',
@@ -236,12 +266,45 @@ const SwipePoster = ({
                 textTransform: 'none',
                 fontWeight: 'normal',
                 cursor: 'pointer',
+                color: '#fff',
               }}
               onClick={() => {
-                handleMovieSeen();
+                handleMovieWatched();
               }}
             >
-              {!movies[index].is_already_seen ? 'Déjà vu ?' : 'Déjà vu !'}
+              {!moviesStatusUpdated[index].is_watched ? (
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  columnGap="5px"
+                  paddingRight="1px"
+                >
+                  <VisibilityOffIcon fontSize="small" />
+                  <Typography
+                    variant="body2"
+                    component="span"
+                    lineHeight="10px"
+                  >
+                    {'Non vu'}
+                  </Typography>
+                </Stack>
+              ) : (
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  columnGap="5px"
+                  paddingRight="1px"
+                >
+                  <VisibilityIcon fontSize="small" />
+                  <Typography
+                    variant="body2"
+                    component="span"
+                    lineHeight="10px"
+                  >
+                    {'Déjà vu'}
+                  </Typography>
+                </Stack>
+              )}
             </Button>
             {posterWidth !== null ? (
               <Stack
@@ -258,7 +321,11 @@ const SwipePoster = ({
                   alignItems: 'center',
                 }}
               >
-                <SwipeRatings roundedScore={convertRating(generalRatings)} />
+                <SwipeRatings
+                  movies={movies}
+                  index={index}
+                  currentMovieIndex={currentMovieIndex}
+                />
               </Stack>
             ) : null}
           </Box>
@@ -299,11 +366,10 @@ const SwipePoster = ({
 
 const SwipePosterPropTypes = {
   movies: PropTypes.array.isRequired,
-  setMovies: PropTypes.func.isRequired,
-  movieDetail: PropTypes.object.isRequired,
-  generalRatings: PropTypes.number.isRequired,
+  moviesStatusUpdated: PropTypes.array.isRequired,
+  setMoviesStatusUpdated: PropTypes.func,
   loading: PropTypes.object.isRequired,
-  currentMovieIndex: PropTypes.number.isRequired,
+  currentMovieIndex: PropTypes.number,
   setCurrentMovieIndex: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   setSwipeDirection: PropTypes.func.isRequired,

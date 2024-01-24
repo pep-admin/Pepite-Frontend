@@ -8,7 +8,33 @@ import { OrangeRating } from '@utils/styledComponent';
 import { YellowRating } from '@utils/styledComponent';
 import { TurquoiseRating } from '@utils/styledComponent';
 
-const SwipeRatings = ({ roundedScore }) => {
+// Fonction qui divise la note par 2 et arrondit au dizième
+import { convertRating } from '@utils/functions/convertRating';
+
+const SwipeRatings = ({ movies, index, currentMovieIndex }) => {
+  // Détermine la note NUMBER / 5 selon l'index précédent, courant, suivant et selon la disponibilité
+  const getMovieRatingValue = movieIndex => {
+    if (movieIndex < 0 || movieIndex >= movies.length) {
+      return 0;
+    }
+    if (movies[movieIndex].vote_count !== 0) {
+      return convertRating(movies[movieIndex].vote_average);
+    }
+    return 0;
+  };
+
+  // Détermine la note STRING / 5 selon l'index précédent, courant, suivant et selon la disponibilité
+  const getMovieRatingText = movieIndex => {
+    if (
+      movieIndex < 0 ||
+      movieIndex >= movies.length ||
+      movies[movieIndex].vote_count === 0
+    ) {
+      return '? / 5';
+    }
+    return `${convertRating(movies[movieIndex].vote_average)} / 5`;
+  };
+
   return (
     <>
       <Box
@@ -21,7 +47,16 @@ const SwipeRatings = ({ roundedScore }) => {
         <YellowRating
           name="half-rating-read"
           size="small"
-          value={roundedScore}
+          value={getMovieRatingValue(
+            // Film affiché
+            index === currentMovieIndex
+              ? currentMovieIndex
+              : // Film suivant
+              index === currentMovieIndex + 1
+              ? currentMovieIndex + 1
+              : // Film précédent
+                currentMovieIndex - 1,
+          )}
           precision={0.1}
           readOnly
           emptyIcon={<StarIcon sx={{ color: '#E1E1E1' }} fontSize="inherit" />}
@@ -38,7 +73,16 @@ const SwipeRatings = ({ roundedScore }) => {
             top: 0.5,
           }}
         >
-          {`${roundedScore}` + ' / 5'}
+          {getMovieRatingText(
+            // Film affiché
+            index === currentMovieIndex
+              ? currentMovieIndex
+              : // Film suivant
+              index === currentMovieIndex + 1
+              ? currentMovieIndex + 1
+              : // Film précédent
+                currentMovieIndex - 1,
+          )}
         </Typography>
         <Box minWidth="170px" position="relative" bottom="5px" textAlign="left">
           <Typography
@@ -147,7 +191,9 @@ const SwipeRatings = ({ roundedScore }) => {
 };
 
 const SwipeRatingsPropTypes = {
-  roundedScore: PropTypes.number.isRequired,
+  movies: PropTypes.array.isRequired,
+  index: PropTypes.number.isRequired,
+  currentMovieIndex: PropTypes.number.isRequired,
 };
 
 SwipeRatings.propTypes = SwipeRatingsPropTypes;

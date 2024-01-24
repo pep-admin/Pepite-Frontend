@@ -151,7 +151,7 @@ const CriticAdvicesHeader = ({
               {' a conseillé'}
             </>
           ) : (
-            'Vous avez noté'
+            <span style={{ fontWeight: 'bold' }}>{'Vous avez noté'}</span>
           )
         }
       </Typography>

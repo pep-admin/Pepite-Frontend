@@ -17,10 +17,10 @@ export function findCertificationFr(type, movieDetail) {
   let certification;
 
   if (type === 'movie') {
-    frenchRelease = movieDetail.release_dates.results.find(
+    frenchRelease = movieDetail.current.release_dates.results.find(
       entry => entry.iso_3166_1 === 'FR',
     );
-    usRelease = movieDetail.release_dates.results.find(
+    usRelease = movieDetail.current.release_dates.results.find(
       entry => entry.iso_3166_1 === 'US',
     );
 
@@ -48,12 +48,10 @@ export function findCertificationFr(type, movieDetail) {
       }
     }
   } else if (type === 'tv') {
-    console.log(movieDetail);
-
-    frenchRelease = movieDetail.content_ratings.results.find(
+    frenchRelease = movieDetail.current.content_ratings.results.find(
       entry => entry.iso_3166_1 === 'FR',
     );
-    usRelease = movieDetail.content_ratings.results.find(
+    usRelease = movieDetail.current.content_ratings.results.find(
       entry => entry.iso_3166_1 === 'US',
     );
 

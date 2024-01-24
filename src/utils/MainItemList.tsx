@@ -41,12 +41,14 @@ const MainItemList = ({
 }) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
   const [showMutualFriends, setShowMutualFriends] = useState(null);
+  const [showOtherRatings, setShowOtherRatings] = useState(null);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
   const [showRemoveFollowedModal, setShowRemoveFollowedModal] = useState(false);
   const [showRemoveWantedMovie, setShowRemoveWantedMovie] = useState(false);
   const [showRemoveWatchedMovie, setShowRemoveWatchedMovie] = useState(false);
 
   const openMutualFriends = Boolean(showMutualFriends);
+  const openOtherRatings = Boolean(showOtherRatings);
 
   const isCloseRef = useRef(false);
 
@@ -318,10 +320,42 @@ const MainItemList = ({
                   align="left"
                   height="14.22px"
                   flexBasis="100%"
+                  color={
+                    data.friends_and_followed_critics.length
+                      ? 'inherit'
+                      : '#B9B9B9'
+                  }
                 >
                   <>
-                    {'noté par'}
-                    <span style={{ fontWeight: 'bold' }}> 3 connaissances</span>
+                    {data.friends_and_followed_critics.length ? (
+                      <>
+                        {'Noté par '}
+                        <span
+                          style={{ fontWeight: 'bold' }}
+                          onClick={e => {
+                            setShowOtherRatings(e.currentTarget);
+                          }}
+                        >
+                          {`${
+                            data.friends_and_followed_critics.length
+                          } connaissance${
+                            data.friends_and_followed_critics.length > 1
+                              ? 's'
+                              : ''
+                          }`}
+                        </span>
+                        <AcquaintancesMenu
+                          page={'list'}
+                          open={openOtherRatings}
+                          anchorEl={showOtherRatings}
+                          setAnchorEl={setShowOtherRatings}
+                          infos={data.friends_and_followed_critics}
+                          ratings={data.friends_and_followed_critics}
+                        />
+                      </>
+                    ) : (
+                      'Noté par aucune connaissance'
+                    )}
                   </>
                 </Typography>
               </Stack>
@@ -354,8 +388,6 @@ const MainItemList = ({
                   anchorEl={showMutualFriends}
                   setAnchorEl={setShowMutualFriends}
                   infos={list}
-                  // chosenRelationship={chosenRelationship}
-                  // ratings={relationsRatings}
                 />
               </>
             )}

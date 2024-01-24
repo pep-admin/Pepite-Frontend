@@ -179,33 +179,45 @@ export const FollowedIcon = createSvgIcon(
   'FollowedIcon',
 );
 
-// Etoiles customisées orange foncé
-export const DarkOrangeRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#ff7b00',
-  },
-});
+const createCustomRating = color =>
+  styled(Rating)({
+    '.MuiRating-iconFilled': {
+      color: color,
+    },
+  });
 
-// Etoiles customisées orange
-export const OrangeRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#F29E50',
-  },
-});
+export const DarkOrangeRating = createCustomRating('#ff7b00');
+export const OrangeRating = createCustomRating('#F29E50');
+export const YellowRating = createCustomRating('#FFDA1B');
+export const TurquoiseRating = createCustomRating('#24A5A5');
 
-// Etoiles customisées jaune
-export const YellowRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#FFDA1B',
-  },
-});
+// // Etoiles customisées orange foncé
+// export const DarkOrangeRating = styled(Rating)({
+//   '.MuiRating-iconFilled': {
+//     color: '#ff7b00',
+//   },
+// });
 
-// Etoiles customisées turquoise
-export const TurquoiseRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#24A5A5',
-  },
-});
+// // Etoiles customisées orange
+// export const OrangeRating = styled(Rating)({
+//   '.MuiRating-iconFilled': {
+//     color: '#F29E50',
+//   },
+// });
+
+// // Etoiles customisées jaune
+// export const YellowRating = styled(Rating)({
+//   '.MuiRating-iconFilled': {
+//     color: '#FFDA1B',
+//   },
+// });
+
+// // Etoiles customisées turquoise
+// export const TurquoiseRating = styled(Rating)({
+//   '.MuiRating-iconFilled': {
+//     color: '#24A5A5',
+//   },
+// });
 
 // SVG commentaire
 export const MessageIcon = createSvgIcon(

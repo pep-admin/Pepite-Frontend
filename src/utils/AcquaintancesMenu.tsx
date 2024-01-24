@@ -9,8 +9,8 @@ import {
 } from '@mui/material';
 import { formatRating } from '@utils/functions/formatRating';
 import apiBaseUrl from '@utils/request/config';
-import { OrangeRating } from '@utils/styledComponent';
 import PropTypes from 'prop-types';
+import ColoredRating from './ColoredRating';
 
 const AcquaintancesMenu = ({
   page,
@@ -27,9 +27,11 @@ const AcquaintancesMenu = ({
       ? infos.filter(relation => relation.relation_type === chosenRelationship)
       : infos;
 
+  // Url de la photo de profil par défaut
   const getDefaultProfilePicUrl = () =>
     'http://127.0.0.1:5173/images/default_profil_pic.png';
 
+  // Fonction qui récupère la photo de profil active de l'utilisateur
   const getProfilePicUrl = user => {
     if (page === 'poster') {
       const activePic = user.profilPics?.find(pic => pic.isActive === 1);
@@ -37,7 +39,7 @@ const AcquaintancesMenu = ({
         ? `${apiBaseUrl}/uploads/${activePic.filePath}`
         : getDefaultProfilePicUrl();
     } else {
-      return user.file_path.length
+      return user.file_path?.length
         ? `${apiBaseUrl}/uploads/${user.file_path}`
         : getDefaultProfilePicUrl();
     }
@@ -45,24 +47,23 @@ const AcquaintancesMenu = ({
 
   return (
     <Menu
-      id="basic-menu"
       anchorEl={anchorEl}
       open={open}
       onClose={() => setAnchorEl(null)}
       MenuListProps={{
-        'aria-labelledby': 'basic-button',
         sx: {
           padding: '0',
         },
       }}
+      autoFocus={false}
     >
       {filteredUsers?.map((user, index) => [
         <MenuItem
           key={user.id}
           onClick={() => setAnchorEl(null)}
           sx={{
-            columnGap: '13px',
-            padding: '6px',
+            columnGap: '10px',
+            padding: '6px 10px 6px 8px',
             fontSize: '0.9em',
           }}
         >
@@ -78,29 +79,36 @@ const AcquaintancesMenu = ({
             <Typography variant="body2">
               {`${user.first_name} ${user.last_name}`}
             </Typography>
-            {page === 'poster' ? (
+            {page === 'poster' || page === 'list' ? (
               <Stack direction="row" alignItems="center">
-                <OrangeRating
-                  readOnly
-                  value={
-                    ratings?.individual_ratings.find(
-                      rating => rating.userId === user.id,
-                    ).rating
-                  }
+                <ColoredRating
+                  readOnly={true}
                   precision={0.5}
-                  sx={{
-                    fontSize: '0.9em',
-                    position: 'relative',
-                    left: '-4px',
-                    bottom: '1.1px',
-                  }}
+                  color={
+                    page === 'poster'
+                      ? '#F29E50'
+                      : user.relation_type === 'close_friend'
+                      ? '#ff7b00'
+                      : user.relation_type === 'friend'
+                      ? '#F29E50'
+                      : '#24A5A5'
+                  }
+                  value={
+                    page === 'poster'
+                      ? ratings?.individual_ratings.find(
+                          rating => rating.userId === user.id,
+                        )?.rating
+                      : user.rating
+                  }
                 />
                 <Typography fontSize="0.8em" fontWeight="bold">
-                  {`${formatRating(
-                    ratings?.individual_ratings.find(
-                      rating => rating.userId === user.id,
-                    ).rating,
-                  )} / 5`}
+                  {page === 'poster'
+                    ? `${formatRating(
+                        ratings?.individual_ratings.find(
+                          rating => rating.userId === user.id,
+                        ).rating,
+                      )} / 5`
+                    : `${user.rating} / 5`}
                 </Typography>
               </Stack>
             ) : null}
@@ -121,7 +129,7 @@ AcquaintancesMenu.propTypes = {
   setAnchorEl: PropTypes.func.isRequired,
   infos: PropTypes.array,
   chosenRelationship: PropTypes.string,
-  ratings: PropTypes.object,
+  ratings: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 export default AcquaintancesMenu;

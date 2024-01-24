@@ -6,6 +6,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   const overview = data.overview;
   const poster_path = data.poster_path;
   const vote_average = parseFloat(data.vote_average);
+  const friends_and_followed_critics = data.friends_and_followed_critics;
+
   let id;
 
   if (displayType === 'movie') {
@@ -20,6 +22,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let title;
   let wanted_date = null;
   let watched_date = null;
+  // let friends_and_followed_critics = null;
 
   // Dans le cas où on veut parser les infos pour un FILM qui n'a pas été noté par les utilisateurs
   if (
@@ -32,6 +35,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     title = data.title; // titre du film
     wanted_date = data.wanted_date;
     watched_date = data.watched_date;
+    // friends_and_followed_critics = data.friends_and_followed_critics;
 
     return {
       genres,
@@ -45,6 +49,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       vote_average,
       wanted_date,
       watched_date,
+      friends_and_followed_critics,
     };
   }
 
@@ -64,6 +69,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     name = data.name; // nom de la série
     wanted_date = data.wanted_date;
     watched_date = data.watched_date;
+    // friends_and_followed_critics = data.friends_and_followed_critics;
 
     return {
       genres,
@@ -77,6 +83,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       vote_average,
       wanted_date,
       watched_date,
+      friends_and_followed_critics,
     };
   }
 
@@ -131,6 +138,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       created_at,
       sender_id,
       relation_type,
+      friends_and_followed_critics,
     };
   }
 
@@ -175,6 +183,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       created_at,
       sender_id,
       relation_type,
+      friends_and_followed_critics,
     };
   }
 };

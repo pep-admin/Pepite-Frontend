@@ -36,13 +36,15 @@ const ContactsComponent = ({ page }) => {
   };
 
   // Récupération des demandes d'amis
-  const getFriendRequests = async () => {
+  const getFriendsRequests = async () => {
     const askList = await getFriendRequestList();
+    console.log(askList);
+
     setFriendRequestList(askList);
   };
 
   // Récupération de la liste d'amis
-  const getFriendsNumber = async () => {
+  const getFriends = async () => {
     const friendsList = await getFriendsList(id);
     setFriendsList(friendsList);
   };
@@ -55,8 +57,8 @@ const ContactsComponent = ({ page }) => {
 
   useEffect(() => {
     getUsers();
-    getFriendRequests();
-    getFriendsNumber();
+    getFriendsRequests();
+    getFriends();
     getFollowed();
   }, []);
 
@@ -86,9 +88,10 @@ const ContactsComponent = ({ page }) => {
                 <ContactsSuggestions
                   key={user.id}
                   user={user}
-                  friendRequestList={friendRequestList}
-                  getFriendRequests={getFriendRequests}
-                  getFriendsNumber={getFriendsNumber}
+                  friendsList={friendsList}
+                  followedList={followedList}
+                  getFriendsRequests={getFriendsRequests}
+                  getFriends={getFriends}
                   getFollowed={getFollowed}
                   isLast={usersSuggestion.length - 1 !== index ? false : true}
                 />
@@ -133,7 +136,7 @@ const ContactsComponent = ({ page }) => {
               direction="row"
               padding="6px 6px 0 6px"
               columnGap="6px"
-              sx={{ overflowX: 'scroll' }}
+              sx={{ maxHeight: '188px', overflowY: 'scroll' }}
             >
               {usersSuggestion &&
                 usersSuggestion.map((user, index) => {
@@ -141,9 +144,10 @@ const ContactsComponent = ({ page }) => {
                     <ContactsSuggestions
                       key={user.id}
                       user={user}
-                      friendRequestList={friendRequestList}
-                      getFriendRequests={getFriendRequests}
-                      getFriendsNumber={getFriendsNumber}
+                      friendsList={friendsList}
+                      followedList={followedList}
+                      getFriendsRequests={getFriendsRequests}
+                      getFriends={getFriends}
                       getFollowed={getFollowed}
                       isLast={
                         usersSuggestion.length - 1 !== index ? false : true
@@ -184,7 +188,7 @@ const ContactsComponent = ({ page }) => {
               direction="column"
               padding="6px"
               rowGap="6px"
-              sx={{ overflowY: 'scroll' }}
+              sx={{ maxHeight: '188px', overflowY: 'scroll' }}
             >
               {friendRequestList.length ? (
                 friendRequestList.map((user, index) => {
@@ -193,8 +197,9 @@ const ContactsComponent = ({ page }) => {
                       key={user.id}
                       type={'requests'}
                       data={user}
-                      getRequest={getFriendRequests}
-                      getRequest2={getFriendsNumber}
+                      list={friendRequestList[index].common_friends_details}
+                      getRequest={getFriendsRequests}
+                      getRequest2={getFriends}
                       getFollowed={null}
                       isLast={index === friendRequestList.length - 1}
                     />
@@ -242,7 +247,7 @@ const ContactsComponent = ({ page }) => {
               direction="column"
               padding="6px"
               rowGap="6px"
-              sx={{ overflowY: 'scroll' }}
+              sx={{ maxHeight: '188px', overflowY: 'scroll' }}
             >
               {friendsList.length ? (
                 friendsList.map((user, index) => {
@@ -251,8 +256,9 @@ const ContactsComponent = ({ page }) => {
                       key={user.id}
                       type={'friends'}
                       data={user}
-                      getRequest={getFriendRequests}
-                      getRequest2={getFriendsNumber}
+                      list={friendsList[index].common_friends_details}
+                      getRequest={getFriendsRequests}
+                      getRequest2={getFriends}
                       getFollowed={null}
                       isLast={index === friendsList.length - 1}
                     />
@@ -307,6 +313,7 @@ const ContactsComponent = ({ page }) => {
                       key={user.id}
                       type={'followed'}
                       data={user}
+                      list={followedList[index].common_friends_details}
                       getRequest={getFollowed}
                       getRequest2={null}
                       isLast={index === followedList.length - 1}

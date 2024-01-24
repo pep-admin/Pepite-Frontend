@@ -29,13 +29,24 @@ import { convertRating } from './functions/convertRating';
 import { removeWantedMovieRequest } from './request/list/removeWantedMovieRequest';
 import { removeWatchedMovieRequest } from './request/list/removeWatchedMovieRequest';
 import { addWatchedMovieRequest } from './request/list/addWatchedMovieRequest';
+import AcquaintancesMenu from './AcquaintancesMenu';
 
-const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
+const MainItemList = ({
+  type,
+  data,
+  list,
+  getRequest,
+  getRequest2,
+  isLast,
+}) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
+  const [showMutualFriends, setShowMutualFriends] = useState(null);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
   const [showRemoveFollowedModal, setShowRemoveFollowedModal] = useState(false);
   const [showRemoveWantedMovie, setShowRemoveWantedMovie] = useState(false);
   const [showRemoveWatchedMovie, setShowRemoveWatchedMovie] = useState(false);
+
+  const openMutualFriends = Boolean(showMutualFriends);
 
   const isCloseRef = useRef(false);
 
@@ -309,9 +320,38 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
                 </Typography>
               </Stack>
             ) : (
-              <Typography variant="body2" component="h4" color="primary">
-                {`3 amis en commun`}
-              </Typography>
+              <>
+                <Typography
+                  variant="body2"
+                  component="h4"
+                  color="primary"
+                  sx={{
+                    color: data.common_friends_details?.length
+                      ? '#24A5A5'
+                      : '#B9B9B9',
+                  }}
+                  onClick={e => {
+                    data.common_friends_details?.length
+                      ? setShowMutualFriends(e.currentTarget)
+                      : null;
+                  }}
+                >
+                  {data.common_friends_details?.length
+                    ? `${data.common_friends_details.length} ami${
+                        data.common_friends_details.length > 1 ? 's' : ''
+                      } en commun`
+                    : 'Aucun ami en commun'}
+                </Typography>
+                <AcquaintancesMenu
+                  page={'contacts'}
+                  open={openMutualFriends}
+                  anchorEl={showMutualFriends}
+                  setAnchorEl={setShowMutualFriends}
+                  infos={list}
+                  // chosenRelationship={chosenRelationship}
+                  // ratings={relationsRatings}
+                />
+              </>
             )}
           </Stack>
         </Stack>
@@ -343,6 +383,7 @@ const MainItemList = ({ type, data, getRequest, getRequest2, isLast }) => {
               color: '#fff',
               padding: '0 8px',
               fontSize: '0.9em',
+              lineHeight: '20px',
               fontWeight: 'normal',
               textTransform: 'initial',
             }}
@@ -407,6 +448,7 @@ MainItemList.propTypes = {
   getRequest: PropTypes.func.isRequired,
   getRequest2: PropTypes.func,
   getFollowed: PropTypes.func,
+  list: PropTypes.array,
 };
 
 export default MainItemList;

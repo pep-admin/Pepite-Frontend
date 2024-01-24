@@ -47,7 +47,7 @@ const CriticAdvicesComponent = ({
   infos,
   chosenUser,
   countCriticsAndGold,
-  areMoreCritics,
+  haveMoreCritics,
   isLast,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
@@ -507,7 +507,7 @@ const CriticAdvicesComponent = ({
           setComments={setComments}
         />
       ) : null}
-      {isLast && areMoreCritics ? (
+      {isLast && haveMoreCritics ? (
         <Stack
           direction="row"
           justifyContent="center"
@@ -537,7 +537,7 @@ CriticAdvicesComponent.propTypes = {
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
   countCriticsAndGold: PropTypes.func,
-  areMoreCritics: PropTypes.bool,
+  haveMoreCritics: PropTypes.bool,
   isLast: PropTypes.bool,
 };
 

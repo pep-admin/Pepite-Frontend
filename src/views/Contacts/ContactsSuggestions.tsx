@@ -20,9 +20,10 @@ import FriendRequestBtn from '@utils/FriendRequestBtn';
 
 const ContactsSuggestions = ({
   user,
-  friendRequestList,
-  getFriendRequests,
-  getFriendsNumber,
+  friendsList,
+  followedList,
+  getFriendsRequests,
+  getFriends,
   getFollowed,
   isLast,
 }) => {
@@ -110,13 +111,13 @@ const ContactsSuggestions = ({
             {'Ajouter'}
           </Button>
           <FriendRequestBtn
-            page={'contacts'}
             anchorEl={anchorEl}
             setAnchorEl={setAnchorEl}
             receiverId={user.id}
-            friendRequestList={friendRequestList}
-            getFriendRequests={getFriendRequests}
-            getFriendsNumber={getFriendsNumber}
+            friendsList={friendsList}
+            followedList={followedList}
+            getFriendsRequests={getFriendsRequests}
+            getFriends={getFriends}
             getFollowed={getFollowed}
           />
         </CardActions>
@@ -160,9 +161,10 @@ const ContactsSuggestions = ({
 
 ContactsSuggestions.propTypes = {
   user: PropTypes.object.isRequired,
-  friendRequestList: PropTypes.array,
-  getFriendRequests: PropTypes.func.isRequired,
-  getFriendsNumber: PropTypes.func.isRequired,
+  friendsList: PropTypes.array.isRequired,
+  followedList: PropTypes.array.isRequired,
+  getFriendsRequests: PropTypes.func,
+  getFriends: PropTypes.func,
   getFollowed: PropTypes.func.isRequired,
   isLast: PropTypes.bool.isRequired,
 };

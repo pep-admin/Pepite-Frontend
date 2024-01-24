@@ -12,20 +12,22 @@ import apiBaseUrl from '@utils/request/config';
 import { OrangeRating } from '@utils/styledComponent';
 import PropTypes from 'prop-types';
 
-const RelationAverageRatings = ({
+const AcquaintancesMenu = ({
+  page,
   open,
   anchorEl,
   setAnchorEl,
-  sortedAndMappedGoldNuggetUserInfos,
+  infos,
   chosenRelationship,
   ratings,
 }) => {
   // Filtre les utilisateurs selon leur relation avec l'utilisateur connecté, selon le choix d'affichage (amis proches, amis ou suivis)
-  const filteredUsers = sortedAndMappedGoldNuggetUserInfos.filter(
-    relation => relation.relation_type === chosenRelationship,
-  );
+  const filteredUsers =
+    page === 'poster'
+      ? infos.filter(relation => relation.relation_type === chosenRelationship)
+      : infos;
 
-  console.log('les notes', ratings);
+  console.log('les infos', infos);
 
   return (
     <Menu
@@ -40,7 +42,7 @@ const RelationAverageRatings = ({
         },
       }}
     >
-      {filteredUsers.map((user, index) => [
+      {filteredUsers?.map((user, index) => [
         <MenuItem
           key={user.id}
           onClick={() => setAnchorEl(null)}
@@ -101,13 +103,14 @@ const RelationAverageRatings = ({
   );
 };
 
-RelationAverageRatings.propTypes = {
+AcquaintancesMenu.propTypes = {
+  page: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
   anchorEl: PropTypes.instanceOf(Element),
   setAnchorEl: PropTypes.func.isRequired,
-  sortedAndMappedGoldNuggetUserInfos: PropTypes.array.isRequired,
-  chosenRelationship: PropTypes.string.isRequired,
-  ratings: PropTypes.object.isRequired,
+  infos: PropTypes.array,
+  chosenRelationship: PropTypes.string,
+  ratings: PropTypes.object,
 };
 
-export default RelationAverageRatings;
+export default AcquaintancesMenu;

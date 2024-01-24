@@ -122,6 +122,7 @@ const ListComponent = () => {
                       key={movie.id}
                       type={'wanted-movies'}
                       data={movie}
+                      list={null}
                       getRequest={getWantedMovies}
                       getRequest2={getWatchedMovies}
                       isLast={index === wantedMovies.length - 1}
@@ -182,6 +183,7 @@ const ListComponent = () => {
                       key={movie.id}
                       type={'watched-movies'}
                       data={movie}
+                      list={null}
                       getRequest={getWatchedMovies}
                       getRequest2={null}
                       isLast={index === watchedMovies.length - 1}
@@ -242,6 +244,7 @@ const ListComponent = () => {
                       key={movie.id}
                       type={'rated-movies'}
                       data={movie}
+                      list={null}
                       getRequest={getWatchedMovies}
                       getRequest2={null}
                       isLast={index === ratedMovies.length - 1}

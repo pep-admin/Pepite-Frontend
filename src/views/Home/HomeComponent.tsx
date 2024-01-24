@@ -28,7 +28,7 @@ const Home = () => {
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
   const [criticsPage, setCriticsPage] = useState(1); // Page de critiques incrémentée à chaque fois que l'utilisateur scroll en bas de page
   const [loadingMore, setLoadingMore] = useState(true); // Booléen : charger de nouvelles critiques
-  const [areMoreCritics, setAreMoreCritics] = useState(true);
+  const [haveMoreCritics, setHaveMoreCritics] = useState(true);
   // const [alertSeverity, setAlertSeverity] = useState({
   //   state: null,
   //   message: null,
@@ -71,7 +71,7 @@ const Home = () => {
       });
 
     if (!critics.length) {
-      setAreMoreCritics(false);
+      setHaveMoreCritics(false);
     }
 
     setCriticsOfAcquaintances(existingCritics => [
@@ -87,6 +87,8 @@ const Home = () => {
 
   // Détecte le scroll en bas de page pour récupérer d'autres critiques
   useEffect(() => {
+    if (!haveMoreCritics) return;
+
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop !==
@@ -153,7 +155,7 @@ const Home = () => {
               setUserCritics={setCriticsOfAcquaintances}
               setGoldenMovies={setGoldenMovies}
               infos={null}
-              areMoreCritics={null}
+              haveMoreCritics={null}
               isLast={null}
               // chosenUser={chosenUser}
               // countCriticsAndGold={countCriticsAndGold}
@@ -171,7 +173,7 @@ const Home = () => {
                   infos={critic}
                   chosenUser={null}
                   countCriticsAndGold={null}
-                  areMoreCritics={areMoreCritics}
+                  haveMoreCritics={haveMoreCritics}
                   isLast={criticsOfAcquaintances.length - 1 === index}
                 />
               );

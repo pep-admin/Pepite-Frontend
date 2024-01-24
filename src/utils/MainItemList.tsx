@@ -228,6 +228,12 @@ const MainItemList = ({
             sx={{
               width: 50,
               height: 50,
+              borderRadius:
+                type === 'wanted-movies' ||
+                type === 'watched-movies' ||
+                type === 'rated-movies'
+                  ? '4px'
+                  : '50%',
             }}
             onClick={() =>
               type === 'wanted-movies' ||

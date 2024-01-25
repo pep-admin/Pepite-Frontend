@@ -1,25 +1,20 @@
 // Import des libs externes
 import {
   Stack,
-  Box,
   Typography,
   LinearProgress,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
-  Menu,
-  Fade,
   Divider,
 } from '@mui/material';
-import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { FollowerIcon, FollowedIcon } from '@utils/styledComponent';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 
 const ProfilDetails = ({
@@ -30,13 +25,6 @@ const ProfilDetails = ({
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  // ***** Affichage des amis, abonnements et abonnés ***** //
-  const [displayContacts, setDisplayContacts] = useState(null);
-  const openMenu = Boolean(displayContacts);
-  const handleContactMenu = event => {
-    setDisplayContacts(event.currentTarget);
-  };
 
   return (
     <>
@@ -155,12 +143,8 @@ const ProfilDetails = ({
           <Divider sx={{ width: '60px', alignSelf: 'center' }} />
           <ListItem sx={{ display: 'flex', padding: '0', columnGap: '5px' }}>
             <ListItemButton
-              id="fade-button"
-              aria-controls={openMenu ? 'fade-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={openMenu ? 'true' : undefined}
               sx={{ padding: '0' }}
-              onClick={handleContactMenu}
+              onClick={() => navigate(`/contacts/${id}`)}
             >
               <ListItemIcon
                 sx={{
@@ -186,88 +170,6 @@ const ProfilDetails = ({
               </Typography>
             </ListItemButton>
           </ListItem>
-          <Menu
-            id="fade-menu"
-            MenuListProps={{
-              'aria-labelledby': 'fade-button',
-            }}
-            anchorEl={displayContacts}
-            open={openMenu}
-            onClose={() => setDisplayContacts(null)}
-            TransitionComponent={Fade}
-          >
-            <Box padding="0 8px">
-              <ListItem
-                sx={{ display: 'flex', padding: '0', columnGap: '5px' }}
-              >
-                <ListItemIcon
-                  sx={{ position: 'relative', bottom: '1px', minWidth: 'auto' }}
-                >
-                  <PeopleAltIcon fontSize="small" color="secondary" />
-                </ListItemIcon>
-                <ListItemButton sx={{ padding: '0', display: 'flex' }}>
-                  <Typography
-                    component="p"
-                    variant="body2"
-                    color="secondary"
-                    fontWeight="bold"
-                    marginRight="2.5px"
-                  >
-                    {'45'}
-                  </Typography>
-                  <Typography component="p" variant="body2" color="secondary">
-                    {'amis'}
-                  </Typography>
-                </ListItemButton>
-              </ListItem>
-              <ListItem
-                sx={{ display: 'flex', padding: '0', columnGap: '5px' }}
-              >
-                <ListItemIcon
-                  sx={{ position: 'relative', bottom: '1px', minWidth: 'auto' }}
-                >
-                  <FollowerIcon sx={{ width: '20px', height: '15px' }} />
-                </ListItemIcon>
-                <ListItemButton sx={{ padding: '0', display: 'flex' }}>
-                  <Typography
-                    component="p"
-                    variant="body2"
-                    color="#24A5A5"
-                    fontWeight="bold"
-                    marginRight="2.5px"
-                  >
-                    {'32'}
-                  </Typography>
-                  <Typography component="p" variant="body2" color="#24A5A5">
-                    {'abonnés'}
-                  </Typography>
-                </ListItemButton>
-              </ListItem>
-              <ListItem
-                sx={{ display: 'flex', padding: '0', columnGap: '5px' }}
-              >
-                <ListItemIcon
-                  sx={{ position: 'relative', bottom: '1px', minWidth: 'auto' }}
-                >
-                  <FollowedIcon sx={{ width: '20px', height: '15px' }} />
-                </ListItemIcon>
-                <ListItemButton sx={{ padding: '0', display: 'flex' }}>
-                  <Typography
-                    component="p"
-                    variant="body2"
-                    color="#094B4B"
-                    fontWeight="bold"
-                    marginRight="2.5px"
-                  >
-                    {'24'}
-                  </Typography>
-                  <Typography component="p" variant="body2" color="#094B4B">
-                    {'abonnements'}
-                  </Typography>
-                </ListItemButton>
-              </ListItem>
-            </Box>
-          </Menu>
         </List>
       </Stack>
     </>

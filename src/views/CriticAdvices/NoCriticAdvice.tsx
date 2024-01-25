@@ -152,7 +152,7 @@ const NoCriticAdvice = ({ page }) => {
                       color: '#5C5C5C',
                     }}
                   >
-                    {'Selon le nombre de critiques postées'}
+                    {'En troisième position'}
                   </Typography>
                 </ListItem>
               </List>

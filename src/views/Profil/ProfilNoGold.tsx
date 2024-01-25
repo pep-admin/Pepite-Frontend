@@ -28,7 +28,7 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
           filter: 'grayscale(1) brightness(0.95)',
         }}
       />
-      <Stack direction="column" spacing={1} marginTop="2px" padding="0 5px">
+      <Stack direction="column" spacing={1} marginTop="10px" padding="0 5px">
         <Typography variant="body1" component="h4" align="center">
           {userInfos.id === parseInt(id, 10) && page === 'profil'
             ? `Vous n'avez encore aucune pépite.`

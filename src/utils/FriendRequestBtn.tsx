@@ -16,6 +16,7 @@ import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
 import { checkFollowedStatus } from './request/followed/checkFollowedStatus';
 import { followSomeone } from './request/followed/followSomeone';
 import { unfollowSomeone } from './request/followed/unfollowSomeone';
+import { cancelFriendShip } from './request/friendship/cancelFriendship';
 
 const FriendRequestBtn = ({
   anchorEl,
@@ -78,13 +79,20 @@ const FriendRequestBtn = ({
     setFollowedStatus(status);
   };
 
-  // Accepte une demande d'ami
+  // Accepte une demande d'amitié
   const acceptFriendRequest = async () => {
     await acceptFriendship(receiverId);
     handleClose();
     checkIfFriends(); // Actualise le status d'amitié accepté
     getFriendsRequests();
     getFriends();
+  };
+
+  // Annuler une demande d'amitié
+  const cancelFriendshipRequest = async () => {
+    await cancelFriendShip(receiverId);
+    handleClose();
+    checkIfFriends(); // Supprime le bouton de demande en attente
   };
 
   // A chaque fois qu'on récupère la liste des personnes suggérées, on met à jour le status (pas de demande, en attente, à confirmer, ou accepté )
@@ -119,7 +127,12 @@ const FriendRequestBtn = ({
         {
           // Si l'utilisateur connecté a fait une demande d'amitié
           friendshipStatus.status === 'pending' ? (
-            <Stack direction="row" alignItems="center" columnGap="7px">
+            <Stack
+              direction="row"
+              alignItems="center"
+              columnGap="7px"
+              onClick={() => cancelFriendshipRequest()}
+            >
               <TimelapseIcon sx={{ color: '#ababab', fontSize: '22px' }} />
               {'Annuler la demande'}
             </Stack>
@@ -201,8 +214,8 @@ FriendRequestBtn.propTypes = {
     PropTypes.instanceOf(HTMLButtonElement),
   ]),
   setAnchorEl: PropTypes.func.isRequired,
-  friendsList: PropTypes.array.isRequired,
-  followedList: PropTypes.array.isRequired,
+  friendsList: PropTypes.array,
+  followedList: PropTypes.array,
   getFriendsRequests: PropTypes.func,
   getFriends: PropTypes.func,
   getFollowed: PropTypes.func,

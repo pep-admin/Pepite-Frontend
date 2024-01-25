@@ -132,6 +132,8 @@ const CriticAdvicesComponent = ({
       }
       // Si le post est un conseil
       else if (type === 'advice') {
+        console.log("ajout d'un nouveau conseil");
+
         // Ajoute le nouveau conseil dans la DB
         await addNewAdvice(
           chosenUser.id,

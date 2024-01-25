@@ -68,9 +68,10 @@ const SearchBar = ({
     try {
       const movieData = await getMovieDetails(displayType, id);
       setChosenMovie(movieData);
-      console.log('le film choisi', movieData);
+
       // Stockage des détails du film dans la DB
-      storeDetailsData(movieData, displayType);
+      const movieToStore = { current: movieData };
+      storeDetailsData(movieToStore, displayType);
     } catch (err) {
       setError({
         message: "Une erreur s'est produite lors de la recherche",

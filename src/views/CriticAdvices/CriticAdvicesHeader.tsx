@@ -89,11 +89,20 @@ const CriticAdvicesHeader = ({
       padding="0 10px"
       columnGap="10px"
     >
-      <Typography variant="body2" component="p" minWidth="80px" align="left">
+      <Typography
+        variant="body2"
+        component="p"
+        minWidth="80px"
+        align="left"
+        whiteSpace="nowrap"
+        maxWidth="363px"
+        overflow="hidden"
+        textOverflow="ellipsis"
+      >
         {
           // Si l'utilisateur connecté souhaite poster une nouvelle critique sur son profil
           type === 'new-critic' ? (
-            'Nouvelle note'
+            <span style={{ fontWeight: 'bold' }}>{'Nouvelle note'}</span>
           ) : // Si l'utilisateur connecté souhaite poster un conseil sur le profil d'un ami
           type === 'new-advice' ? (
             <>
@@ -132,7 +141,7 @@ const CriticAdvicesHeader = ({
             </>
           ) : // Si l'utilisateur voit son conseil sur le profil d'un ami
           type === 'old-advice' && infos.sender_id === user_infos.id ? (
-            'Vous avez conseillé'
+            <span style={{ fontWeight: 'bold' }}>{'Vous avez conseillé'}</span>
           ) : // TODO : Si l'utilisateur voit un conseil d'un autre utilisateur
           type === 'old-advice' && infos.sender_id !== user_infos.id ? (
             <>
@@ -161,7 +170,8 @@ const CriticAdvicesHeader = ({
         columnGap="5px"
         whiteSpace="nowrap"
       >
-        {infos.relation_type === 'close_friend' ? (
+        {(type === 'old-critic' || type === 'old-advice' || !isModify) &&
+        infos?.relation_type === 'close_friend' ? (
           <DarkOrangeRating
             value={
               type === 'new-critic' || type === 'new-advice' || isModify
@@ -172,7 +182,10 @@ const CriticAdvicesHeader = ({
             readOnly
             sx={{ position: 'relative', bottom: '0.5px' }}
           />
-        ) : infos.relation_type === 'friend' ||
+        ) : type === 'new-critic' ||
+          type === 'new-advice' ||
+          isModify ||
+          infos?.relation_type === 'friend' ||
           infos.sender_id === parseInt(user_infos.id, 10) ? (
           <OrangeRating
             value={

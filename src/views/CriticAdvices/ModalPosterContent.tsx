@@ -20,6 +20,9 @@ import AcquaintancesMenu from '@utils/AcquaintancesMenu';
 // Import des requêtes
 import { getRatingsRequest } from '@utils/request/critics/getRatingsRequest';
 
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+
 const ModalPosterContent = ({
   infos,
   goldNuggetUserInfos,
@@ -29,6 +32,8 @@ const ModalPosterContent = ({
   const [relationsRatings, setRelationsRatings] = useState(null);
   const [showRatingsDetails, setShowRatingsDetails] = useState(null);
   const [chosenRelationship, setChosenRelationShip] = useState('close_friend');
+
+  const { displayType } = useData();
 
   const openRelationsRatings = Boolean(showRatingsDetails);
 
@@ -83,7 +88,7 @@ const ModalPosterContent = ({
     countRelationshipTypes();
 
   const getRatings = async movieId => {
-    const averageRating = await getRatingsRequest(movieId);
+    const averageRating = await getRatingsRequest(movieId, displayType);
     console.log('les notes');
 
     setRelationsRatings(averageRating);

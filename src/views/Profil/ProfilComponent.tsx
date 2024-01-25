@@ -114,9 +114,10 @@ const ProfilComponent = () => {
       ...advicesReceived.map(advice => ({ ...advice, type: 'advice' })),
     ];
 
-    console.log('les résultats combinés', combined);
-
-    // combined.sort((a, b) => new Date(b.critic_date) - new Date(a.critic_date));
+    combined.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
     setCombinedData(combined);
   }, [userCritics, advicesReceived]);
 
@@ -266,11 +267,9 @@ const ProfilComponent = () => {
                 onClick={e => handleClick(e)}
               />
               <FriendRequestBtn
-                page={'profil'}
                 anchorEl={anchorEl}
                 setAnchorEl={setAnchorEl}
                 receiverId={id}
-                getFriendRequests={null}
               />
             </>
           ) : null}
@@ -412,7 +411,7 @@ const ProfilComponent = () => {
               combinedData.map(infos => {
                 return (
                   <CriticAdvicesComponent
-                    key={infos.id}
+                    key={`${infos.type}-${infos.id}`}
                     type={infos.type === 'critic' ? 'old-critic' : 'old-advice'}
                     setUserCritics={setUserCritics}
                     setGoldenMovies={setGoldenMovies}

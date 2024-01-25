@@ -394,6 +394,7 @@ const ProfilComponent = () => {
           <Stack>
             {chosenMovie !== null ? (
               <CriticAdvicesComponent
+                page={'profil'}
                 type={
                   userInfos.id === parseInt(id, 10)
                     ? 'new-critic'
@@ -411,6 +412,7 @@ const ProfilComponent = () => {
               combinedData.map(infos => {
                 return (
                   <CriticAdvicesComponent
+                    page={'profil'}
                     key={`${infos.type}-${infos.id}`}
                     type={infos.type === 'critic' ? 'old-critic' : 'old-advice'}
                     setUserCritics={setUserCritics}

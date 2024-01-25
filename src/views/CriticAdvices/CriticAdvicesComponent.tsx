@@ -40,6 +40,7 @@ import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCritic
 import CustomAlert from '@utils/CustomAlert';
 
 const CriticAdvicesComponent = ({
+  page,
   type,
   chosenMovie,
   setUserCritics,
@@ -269,6 +270,7 @@ const CriticAdvicesComponent = ({
         <Stack height="100%">
           <Stack direction="column" position="relative">
             <CriticAdvicesHeader
+              page={page}
               type={type}
               ratingsHeaderRef={ratingsHeaderRef}
               displayRatings={displayRatings}
@@ -520,7 +522,7 @@ const CriticAdvicesComponent = ({
       ) : isLast ? (
         <Item>
           <Stack>
-            <Typography>{'Plus rien à afficher pour le moment.'}</Typography>
+            <Typography fontSize="1em">{"Et c'est tout !"}</Typography>
           </Stack>
         </Item>
       ) : null}
@@ -529,6 +531,7 @@ const CriticAdvicesComponent = ({
 };
 
 CriticAdvicesComponent.propTypes = {
+  page: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),
   setUserCritics: PropTypes.func,

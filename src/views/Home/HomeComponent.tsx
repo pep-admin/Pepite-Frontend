@@ -70,7 +70,8 @@ const Home = () => {
         return b.order - a.order || b.timestamp - a.timestamp;
       });
 
-    if (!critics.length) {
+    // Si plus assez de critiques à récupérer, on affichera le message qui indique qu'il n'y a plus de critiques à parcourir
+    if (critics.length < 5) {
       setHaveMoreCritics(false);
     }
 
@@ -150,6 +151,7 @@ const Home = () => {
           />
           {chosenMovie !== null ? (
             <CriticAdvicesComponent
+              page={'home'}
               type={'new-critic'}
               chosenMovie={chosenMovie}
               setUserCritics={setCriticsOfAcquaintances}
@@ -165,6 +167,7 @@ const Home = () => {
             criticsOfAcquaintances.map((critic, index) => {
               return (
                 <CriticAdvicesComponent
+                  page={'home'}
                   key={index}
                   type={'old-critic'}
                   setUserCritics={setCriticsOfAcquaintances}

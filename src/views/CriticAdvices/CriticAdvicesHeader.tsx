@@ -11,16 +11,11 @@ import {
   ListItemText,
 } from '@mui/material';
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import {
-  DarkOrangeRating,
-  OrangeRating,
-  TurnipIcon,
-  TurquoiseRating,
-} from '@utils/styledComponent';
+import { TurnipIcon } from '@utils/styledComponent';
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
@@ -28,8 +23,10 @@ import { useData } from '@hooks/DataContext';
 import { ratings } from '@utils/data/ratings';
 import ModifyOrDelete from '@utils/ModifyOrDelete';
 import { formatRating } from '@utils/functions/formatRating';
+import ColoredRating from '@utils/ColoredRating';
 
 const CriticAdvicesHeader = ({
+  page,
   type,
   ratingsHeaderRef,
   displayRatings,
@@ -49,6 +46,8 @@ const CriticAdvicesHeader = ({
   criticUserInfos,
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
+
+  const { id } = useParams();
 
   const navigate = useNavigate();
 
@@ -101,10 +100,10 @@ const CriticAdvicesHeader = ({
       >
         {
           // Si l'utilisateur connecté souhaite poster une nouvelle critique sur son profil
-          type === 'new-critic' ? (
+          page === 'profil' && type === 'new-critic' ? (
             <span style={{ fontWeight: 'bold' }}>{'Nouvelle note'}</span>
           ) : // Si l'utilisateur connecté souhaite poster un conseil sur le profil d'un ami
-          type === 'new-advice' ? (
+          page === 'profil' && type === 'new-advice' ? (
             <>
               {'Conseillez à '}
               <span
@@ -127,9 +126,13 @@ const CriticAdvicesHeader = ({
                 style={{
                   fontWeight: 'bold',
                   color:
-                    infos.relation_type === 'close_friend'
+                    (page === 'profil' &&
+                      chosenUser?.relation_type === 'close_friend') ||
+                    (page === 'home' && infos?.relation_type === 'close_friend')
                       ? '#ff7b00'
-                      : infos.relation_type === 'friend'
+                      : (page === 'profil' &&
+                          chosenUser?.relation_type === 'friend') ||
+                        (page === 'home' && infos?.relation_type === 'friend')
                       ? '#F29E50'
                       : '#24A5A5',
                 }}
@@ -140,16 +143,20 @@ const CriticAdvicesHeader = ({
               {' a noté'}
             </>
           ) : // Si l'utilisateur voit son conseil sur le profil d'un ami
-          type === 'old-advice' && infos.sender_id === user_infos.id ? (
+          page === 'profil' &&
+            type === 'old-advice' &&
+            infos.sender_id === user_infos.id ? (
             <span style={{ fontWeight: 'bold' }}>{'Vous avez conseillé'}</span>
           ) : // TODO : Si l'utilisateur voit un conseil d'un autre utilisateur
-          type === 'old-advice' && infos.sender_id !== user_infos.id ? (
+          page === 'profil' &&
+            type === 'old-advice' &&
+            infos.sender_id !== user_infos.id ? (
             <>
               <span
                 style={{
                   fontWeight: 'bold',
                   color:
-                    infos.relation_type === 'close_friend'
+                    chosenUser?.relation_type === 'close_friend'
                       ? '#ff7b00'
                       : '#F29E50',
                 }}
@@ -170,45 +177,28 @@ const CriticAdvicesHeader = ({
         columnGap="5px"
         whiteSpace="nowrap"
       >
-        {(type === 'old-critic' || type === 'old-advice' || !isModify) &&
-        infos?.relation_type === 'close_friend' ? (
-          <DarkOrangeRating
-            value={
-              type === 'new-critic' || type === 'new-advice' || isModify
-                ? newRating
-                : parseFloat(infos.rating)
-            }
-            precision={0.5}
-            readOnly
-            sx={{ position: 'relative', bottom: '0.5px' }}
-          />
-        ) : type === 'new-critic' ||
-          type === 'new-advice' ||
-          isModify ||
-          infos?.relation_type === 'friend' ||
-          infos.sender_id === parseInt(user_infos.id, 10) ? (
-          <OrangeRating
-            value={
-              type === 'new-critic' || type === 'new-advice' || isModify
-                ? newRating
-                : parseFloat(infos.rating)
-            }
-            precision={0.5}
-            readOnly
-            sx={{ position: 'relative', bottom: '0.5px' }}
-          />
-        ) : (
-          <TurquoiseRating
-            value={
-              type === 'new-critic' || type === 'new-advice' || isModify
-                ? newRating
-                : parseFloat(infos.rating)
-            }
-            precision={0.5}
-            readOnly
-            sx={{ position: 'relative', bottom: '0.5px' }}
-          />
-        )}
+        <ColoredRating
+          readOnly={true}
+          precision={0.5}
+          color={
+            (page === 'profil' && chosenUser?.relation_type === 'friend') ||
+            (page === 'home' && infos?.relation_type === 'friend') ||
+            user_infos.id === parseInt(id, 10)
+              ? // (type === 'new-critic' || type === 'new-advice' || isModify) ?
+                '#F29E50'
+              : (page === 'profil' &&
+                  chosenUser?.relation_type === 'close_friend') ||
+                (page === 'home' && infos?.relation_type === 'close_friend')
+              ? '#ff7b00'
+              : '#24A5A5'
+          }
+          value={
+            type === 'new-critic' || type === 'new-advice' || isModify
+              ? newRating
+              : parseFloat(infos.rating)
+          }
+          sx={{ position: 'relative', bottom: '0.5px' }}
+        />
         {type === 'new-critic' || type === 'new-advice' || isModify ? (
           <>
             <Box
@@ -303,7 +293,8 @@ const CriticAdvicesHeader = ({
                         }}
                       >
                         <ListItemIcon sx={{ minWidth: 'auto' }}>
-                          <OrangeRating
+                          <ColoredRating
+                            color="#F29E50"
                             value={rating.number}
                             precision={0.5}
                             readOnly
@@ -402,6 +393,7 @@ const CriticAdvicesHeader = ({
 };
 
 CriticAdvicesHeader.propTypes = {
+  page: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   ratingsHeaderRef: PropTypes.oneOfType([
     PropTypes.object,

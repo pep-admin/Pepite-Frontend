@@ -1,10 +1,10 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const checkIfCriticExistsRequest = async (movieId, type) => {
+export const checkIfAdviceExistsRequest = async (movieId, type) => {
   try {
     const response = await axios.get(
-      `${apiBaseUrl}/critics/check_previous/${movieId}`,
+      `${apiBaseUrl}/advices/check_previous/${movieId}`,
       {
         params: { type: type },
         withCredentials: true,
@@ -13,9 +13,12 @@ export const checkIfCriticExistsRequest = async (movieId, type) => {
 
     return {
       exists: response.data.exists,
-      id: response.data.criticId,
+      id: response.data.adviceId,
     };
   } catch (error) {
-    console.log('erreur dans la vérification de la critique :', error);
+    console.log(
+      "erreur dans la vérification de l'existance du conseil :",
+      error,
+    );
   }
 };

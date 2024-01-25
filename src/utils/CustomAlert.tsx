@@ -7,14 +7,16 @@ import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
 
 const CustomAlert = ({
-  type,
+  alertType,
+  criticOrAdvice,
   message,
   setOnAlert,
   setShowModal,
   confirmation,
-  usage,
 }) => {
   const [open, setOpen] = useState(true);
+
+  console.log(criticOrAdvice);
 
   useEffect(() => {
     if (!open) {
@@ -49,7 +51,7 @@ const CustomAlert = ({
     >
       <Collapse in={open}>
         <Alert
-          severity={type}
+          severity={alertType}
           action={
             <IconButton
               aria-label="close"
@@ -71,9 +73,16 @@ const CustomAlert = ({
           }}
         >
           {message}
-          {type === 'warning' ? (
+          {alertType === 'warning' ? (
             <Stack direction="row" justifyContent="center">
-              <Button onClick={() => confirmation(`${usage}`)}>
+              <Button
+                onClick={() =>
+                  confirmation(
+                    true,
+                    criticOrAdvice === 'new-critic' ? 'critic' : 'advice',
+                  )
+                }
+              >
                 {'Confirmer'}
               </Button>
               <Button onClick={() => handleAlert()}>{'Annuler'}</Button>
@@ -86,12 +95,12 @@ const CustomAlert = ({
 };
 
 CustomAlert.propTypes = {
-  type: PropTypes.string.isRequired,
+  alertType: PropTypes.string.isRequired,
   message: PropTypes.node.isRequired,
   setOnAlert: PropTypes.func,
   setShowModal: PropTypes.func,
   confirmation: PropTypes.func,
-  usage: PropTypes.string,
+  criticOrAdvice: PropTypes.string.isRequired,
 };
 
 export default CustomAlert;

@@ -1,6 +1,6 @@
 // Import des libs externes
 import { Container, Stack } from '@mui/material';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
@@ -20,19 +20,28 @@ import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 const Home = () => {
   const { displayType, chosenMovie } = useData();
 
+  const scrollDownRef = useRef(null);
+
+  // L'utilisateur connecté
   const [userInfos, setUserInfos] = useState(
-    // L'utilisateur connecté
     JSON.parse(localStorage.getItem('user_infos')),
   );
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
   const [criticsPage, setCriticsPage] = useState(1); // Page de critiques incrémentée à chaque fois que l'utilisateur scroll en bas de page
-  const [loadingMore, setLoadingMore] = useState(true); // Booléen : charger de nouvelles critiques
+  const [loadingMore, setLoadingMore] = useState(false); // Booléen : charger de nouvelles critiques
   const [haveMoreCritics, setHaveMoreCritics] = useState(true);
+
   // const [alertSeverity, setAlertSeverity] = useState({
   //   state: null,
   //   message: null,
   // });
+
+  const resetAndLoadCritics = async () => {
+    setCriticsPage(1); // Réinitialiser la pagination
+    setCriticsOfAcquaintances([]); // Réinitialiser la liste des critiques
+    await getCritics(); // Charger les nouvelles critiques
+  };
 
   /*
     On récupère 5 critiques selon cet ordre :
@@ -43,8 +52,12 @@ const Home = () => {
     5) les critiques récentes des suivis
     6) les critiques anciennes des suivis
   */
+
   const getCritics = async () => {
-    setLoadingMore(true); // Critiques en cours de chargement
+    if (loadingMore) return; // Éviter les appels redondants
+    setLoadingMore(true); // Indiquer que le chargement est en cours
+
+    console.log('récup de nouvelles critiques');
 
     const critics = await getAllCriticsOfAcquaintances(
       userInfos.id,
@@ -80,33 +93,41 @@ const Home = () => {
       ...newCritics,
     ]);
 
-    // 1000 ms de delay pour permettre de voir le loader de chargement
-    setTimeout(() => {
-      setLoadingMore(false); // Critiques chargées
-    }, 1000);
+    setLoadingMore(false); // Fin du chargement
   };
 
-  // Détecte le scroll en bas de page pour récupérer d'autres critiques
-  useEffect(() => {
-    if (!haveMoreCritics) return;
+  const handleObserver = entities => {
+    const target = entities[0];
+    if (target.isIntersecting && haveMoreCritics && !loadingMore) {
+      setCriticsPage(prevPage => prevPage + 1);
+    }
+  };
 
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop !==
-          document.documentElement.offsetHeight ||
-        loadingMore
-      )
-        return;
-      setCriticsPage(currentCount => currentCount + 1); // Récupérer une nouvelle page de critiques
+  useEffect(() => {
+    const option = {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0,
     };
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (scrollDownRef.current) observer.observe(scrollDownRef.current);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadingMore]);
+    return () => {
+      if (scrollDownRef.current) observer.unobserve(scrollDownRef.current);
+    };
+  }, [scrollDownRef, haveMoreCritics, loadingMore]);
 
   useEffect(() => {
-    getCritics();
-  }, [displayType, criticsPage]);
+    resetAndLoadCritics();
+  }, [displayType]);
+
+  useEffect(() => {
+    console.log('page', criticsPage);
+
+    if (criticsPage > 1) {
+      getCritics();
+    }
+  }, [criticsPage]);
 
   return (
     <>
@@ -136,6 +157,7 @@ const Home = () => {
           >
             <ProfilSuggestedNotes
               page={'home'}
+              userCritics={criticsOfAcquaintances}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
               userInfos={userInfos}
@@ -155,6 +177,7 @@ const Home = () => {
               type={'new-critic'}
               chosenMovie={chosenMovie}
               setUserCritics={setCriticsOfAcquaintances}
+              setAdvicesReceived={null}
               setGoldenMovies={setGoldenMovies}
               infos={null}
               haveMoreCritics={null}
@@ -166,19 +189,22 @@ const Home = () => {
           {criticsOfAcquaintances.length ? (
             criticsOfAcquaintances.map((critic, index) => {
               return (
-                <CriticAdvicesComponent
-                  page={'home'}
-                  key={index}
-                  type={'old-critic'}
-                  setUserCritics={setCriticsOfAcquaintances}
-                  setGoldenMovies={setGoldenMovies}
-                  chosenMovie={null}
-                  infos={critic}
-                  chosenUser={null}
-                  countCriticsAndGold={null}
-                  haveMoreCritics={haveMoreCritics}
-                  isLast={criticsOfAcquaintances.length - 1 === index}
-                />
+                <React.Fragment key={index}>
+                  <CriticAdvicesComponent
+                    page={'home'}
+                    type={'old-critic'}
+                    setUserCritics={setCriticsOfAcquaintances}
+                    setAdvicesReceived={null}
+                    setGoldenMovies={setGoldenMovies}
+                    chosenMovie={null}
+                    infos={critic}
+                    chosenUser={null}
+                    countCriticsAndGold={null}
+                    haveMoreCritics={haveMoreCritics}
+                    isLast={criticsOfAcquaintances.length - 1 === index}
+                  />
+                  {haveMoreCritics && <div ref={scrollDownRef}></div>}
+                </React.Fragment>
               );
             })
           ) : (

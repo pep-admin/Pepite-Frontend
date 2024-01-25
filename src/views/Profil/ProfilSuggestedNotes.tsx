@@ -33,11 +33,14 @@ import ProfilNoGold from './ProfilNoGold';
 
 const ProfilSuggestedNotes = ({
   page,
+  userCritics,
   goldenMovies,
   setGoldenMovies,
   userInfos,
   chosenUser,
 }) => {
+  console.log('rendu');
+
   const [showGoldenMovie, setShowGoldenMovie] = useState(false);
   const [goldenMovieInfos, setGoldenMovieInfos] = useState(null);
 
@@ -84,7 +87,7 @@ const ProfilSuggestedNotes = ({
 
   useEffect(() => {
     fetchAllGoldNuggetsOfUser();
-  }, [displayType]);
+  }, [displayType, id, userCritics]);
 
   return (
     <>
@@ -278,6 +281,7 @@ ProfilSuggestedNotes.propTypes = {
   userInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
   page: PropTypes.string.isRequired,
+  userCritics: PropTypes.array.isRequired,
 };
 
 export default ProfilSuggestedNotes;

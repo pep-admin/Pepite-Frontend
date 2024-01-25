@@ -29,7 +29,7 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
         }}
       />
       <Stack direction="column" spacing={1} marginTop="10px" padding="0 5px">
-        <Typography variant="body1" component="h4" align="center">
+        <Typography fontSize="1em" component="h4" align="center">
           {userInfos.id === parseInt(id, 10) && page === 'profil'
             ? `Vous n'avez encore aucune pépite.`
             : userInfos.id != parseInt(id, 10) && page === 'profil'

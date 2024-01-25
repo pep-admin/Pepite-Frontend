@@ -104,8 +104,6 @@ const CriticAdvicesReview = ({
     );
   }
 
-  if (type === 'old-critic' && infos.text === '' && !isModify) return;
-
   return (
     <>
       {showReviewModal ? (

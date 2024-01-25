@@ -118,6 +118,7 @@ const ProfilComponent = () => {
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
+
     setCombinedData(combined);
   }, [userCritics, advicesReceived]);
 
@@ -377,6 +378,7 @@ const ProfilComponent = () => {
             >
               <ProfilSuggestedNotes
                 page={'profil'}
+                userCritics={userCritics}
                 goldenMovies={goldenMovies}
                 setGoldenMovies={setGoldenMovies}
                 chosenUser={chosenUser}
@@ -402,6 +404,7 @@ const ProfilComponent = () => {
                 }
                 chosenMovie={chosenMovie}
                 setUserCritics={setUserCritics}
+                setAdvicesReceived={setAdvicesReceived}
                 setGoldenMovies={setGoldenMovies}
                 infos={null}
                 chosenUser={chosenUser}
@@ -416,6 +419,7 @@ const ProfilComponent = () => {
                     key={`${infos.type}-${infos.id}`}
                     type={infos.type === 'critic' ? 'old-critic' : 'old-advice'}
                     setUserCritics={setUserCritics}
+                    setAdvicesReceived={setAdvicesReceived}
                     setGoldenMovies={setGoldenMovies}
                     chosenMovie={null}
                     infos={infos}

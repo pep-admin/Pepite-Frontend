@@ -10,7 +10,7 @@ import {
   Button,
   CircularProgress,
 } from '@mui/material';
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Import du contexte
@@ -548,4 +548,6 @@ CriticAdvicesComponent.propTypes = {
   setAdvicesReceived: PropTypes.func,
 };
 
-export default CriticAdvicesComponent;
+export default React.memo(CriticAdvicesComponent);
+
+// export default CriticAdvicesComponent;

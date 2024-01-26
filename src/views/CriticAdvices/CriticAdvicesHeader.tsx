@@ -10,7 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -56,13 +56,17 @@ const CriticAdvicesHeader = ({
 
   // Menu des étoiles pour noter une nouvelle critique
   const openRatings = Boolean(displayRatings);
-  const handleRatingsMenu = event => {
-    setDisplayRatings(event.currentTarget);
-  };
 
-  const closeMenu = () => {
+  const handleRatingsMenu = useCallback(
+    event => {
+      setDisplayRatings(event.currentTarget);
+    },
+    [setDisplayRatings],
+  );
+
+  const closeMenu = useCallback(() => {
     setDisplayRatings(null);
-  };
+  }, [setDisplayRatings]);
 
   // Vérifie le statut "pépite" et "navet" à l'ouverture du menu de modification de note
   useEffect(() => {
@@ -419,4 +423,4 @@ CriticAdvicesHeader.propTypes = {
   criticUserInfos: PropTypes.object.isRequired,
 };
 
-export default CriticAdvicesHeader;
+export default React.memo(CriticAdvicesHeader);

@@ -57,8 +57,6 @@ const Home = () => {
     if (loadingMore) return; // Éviter les appels redondants
     setLoadingMore(true); // Indiquer que le chargement est en cours
 
-    console.log('récup de nouvelles critiques');
-
     const critics = await getAllCriticsOfAcquaintances(
       userInfos.id,
       displayType,
@@ -70,14 +68,17 @@ const Home = () => {
         ...critic,
         // Convertir la date en un format comparable
         timestamp: new Date(critic.created_at).getTime(),
-        // Attribuer une pondération basée sur le type de relation
+        // Ordre d'affichage basé sur le type de relation
         order:
           critic.relation_type === 'close_friend'
-            ? 3
+            ? 3 // Critiques des amis proches en premier
             : critic.relation_type === 'friend'
-            ? 2
-            : 1,
+            ? 2 // Critiques des amis en deuxième
+            : critic.relation_type === 'followed'
+            ? 1 // Critiques des suivis en troisième
+            : 0, // Critiques de l'utilisateur connecté
       }))
+
       .sort((a, b) => {
         // On trie d'abord selon la relation, puis par date
         return b.order - a.order || b.timestamp - a.timestamp;
@@ -179,6 +180,8 @@ const Home = () => {
               setUserCritics={setCriticsOfAcquaintances}
               setAdvicesReceived={null}
               setGoldenMovies={setGoldenMovies}
+              chosenUser={null}
+              countCriticsAndGold={null}
               infos={null}
               haveMoreCritics={null}
               isLast={null}

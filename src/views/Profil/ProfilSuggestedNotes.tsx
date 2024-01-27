@@ -39,10 +39,9 @@ const ProfilSuggestedNotes = ({
   userInfos,
   chosenUser,
 }) => {
-  console.log('rendu');
-
   const [showGoldenMovie, setShowGoldenMovie] = useState(false);
   const [goldenMovieInfos, setGoldenMovieInfos] = useState(null);
+  const [areGoldenMoviesFetched, setAreGoldenMoviesFetched] = useState(false);
 
   const { displayType } = useData();
   const { id } = useParams();
@@ -53,8 +52,10 @@ const ProfilSuggestedNotes = ({
     Récupère les pépites des amis et followed pour la page d'accueil
   */
   const fetchAllGoldNuggetsOfUser = async () => {
+    setAreGoldenMoviesFetched(false);
     let goldNuggets;
 
+    // Si on est sur la page home ou la page de la liste de films, on récupère les pépites des connaissances
     if (page === 'home' || page === 'list') {
       goldNuggets = await getGoldNuggetsFromAcquaintances(
         displayType,
@@ -79,10 +80,14 @@ const ProfilSuggestedNotes = ({
       });
       const uniqueMoviesArray = Array.from(moviesMap.values());
       setGoldenMovies(uniqueMoviesArray);
+
+      // Si on est sur la page de profil, on récupère les pépites de l'utilisateur connecté
     } else if (page === 'profil') {
       goldNuggets = await getAllGoldNuggetsOfUser(displayType, id);
       setGoldenMovies(goldNuggets);
     } else return;
+
+    setAreGoldenMoviesFetched(true);
   };
 
   useEffect(() => {
@@ -128,7 +133,7 @@ const ProfilSuggestedNotes = ({
             overflowX: 'scroll',
           }}
         >
-          {!goldenMovies.length ? (
+          {!goldenMovies.length && areGoldenMoviesFetched ? (
             <ProfilNoGold
               page={page}
               userInfos={userInfos}

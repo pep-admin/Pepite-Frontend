@@ -16,8 +16,6 @@ const CustomAlert = ({
 }) => {
   const [open, setOpen] = useState(true);
 
-  console.log(criticOrAdvice);
-
   useEffect(() => {
     if (!open) {
       // Supprime la modale après l'animation du collapse
@@ -100,7 +98,7 @@ CustomAlert.propTypes = {
   setOnAlert: PropTypes.func,
   setShowModal: PropTypes.func,
   confirmation: PropTypes.func,
-  criticOrAdvice: PropTypes.string.isRequired,
+  criticOrAdvice: PropTypes.string,
 };
 
 export default CustomAlert;

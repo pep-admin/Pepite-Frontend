@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Container, Stack, Typography, Divider } from '@mui/material';
+import { Container, Stack, Typography, Divider, Skeleton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -12,7 +12,7 @@ import ContactsSuggestions from './ContactsSuggestions';
 import MainItemList from '@utils/MainItemList';
 
 // Import des requêtes
-import { getTenUsers } from '@utils/request/users/getTenUsers';
+import { getUsersSuggestions } from '@utils/request/users/getUsersSuggestions';
 import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
 import { getFriendsList } from '@utils/request/friendship/getFriendsList';
 import { getFollowedList } from '@utils/request/followed/getFollowedList';
@@ -24,22 +24,67 @@ const ContactsComponent = ({ page }) => {
   const [userInfos, setUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
-  const [usersSuggestion, setUsersSuggestion] = useState([]);
-  const [friendRequestList, setFriendRequestList] = useState([]);
-  const [friendsList, setFriendsList] = useState([]);
-  const [followedList, setFollowedList] = useState([]);
+  const [usersSuggestion, setUsersSuggestion] = useState([]); // Les utilisateurs suggérés
+  const [suggestionsPage, setSuggestionsPage] = useState(1); // La page d'utilisateurs incrémenté à chaque scroll vers la gauche
+  const [cardsToShow, setCardsToShow] = useState(0); // Le nombre d'utilisateurs à fetch selon la largeur du viewport
+  const [areUsersLoading, setAreUsersLoading] = useState(false); // Etat de chargement des utilisateurs suggérés
+  const [hasMore, setHasMore] = useState(true);
 
-  // Récupération de dix utilisateurs pour les suggestions
-  const getUsers = async () => {
-    const users = await getTenUsers();
-    setUsersSuggestion(users);
+  // Pour la page contacts
+  const [friendRequestList, setFriendRequestList] = useState([]); // Liste des demandes d'amitié
+  const [friendsList, setFriendsList] = useState([]); // Liste des amis
+  const [followedList, setFollowedList] = useState([]); // Liste des suivis
+
+  // Détecte le scroll lorsque l'utilisateur cherche à voir de nouveaux utilisateurs suggérés
+  const handleScroll = event => {
+    const { scrollLeft, clientWidth, scrollWidth } = event.currentTarget;
+
+    if (
+      scrollWidth - Math.ceil(scrollLeft + clientWidth) < 100 &&
+      !areUsersLoading &&
+      hasMore
+    ) {
+      setAreUsersLoading(true);
+      setSuggestionsPage(prevPage => prevPage + 1);
+    }
   };
+
+  // Récupère les utilisateurs suggérés
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setAreUsersLoading(true);
+
+        const response = await getUsersSuggestions(
+          cardsToShow,
+          suggestionsPage,
+        );
+
+        if (response.data.hasMore) {
+          setUsersSuggestion(prevUsers => [
+            ...prevUsers,
+            ...response.data.users,
+          ]);
+        } else {
+          setHasMore(false); // Indiquez que vous avez atteint la fin des données
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des utilisateurs', error);
+      } finally {
+        setAreUsersLoading(false);
+      }
+    };
+
+    if (cardsToShow && hasMore) {
+      console.log('chargement...');
+
+      loadUsers();
+    }
+  }, [suggestionsPage, cardsToShow]);
 
   // Récupération des demandes d'amis
   const getFriendsRequests = async () => {
     const askList = await getFriendRequestList();
-    console.log(askList);
-
     setFriendRequestList(askList);
   };
 
@@ -56,7 +101,32 @@ const ContactsComponent = ({ page }) => {
   };
 
   useEffect(() => {
-    getUsers();
+    console.log('suggestion utilisateurs :', usersSuggestion);
+  }, [usersSuggestion]);
+
+  useEffect(() => {
+    const calculateCardsToShow = () => {
+      const viewportWidth = window.innerWidth;
+      const cardWidth = 95; // Largeur d'une carte
+      const gap = 6; // Espace entre les cartes
+      const cardsToShow = Math.floor(viewportWidth / (cardWidth + gap)) + 1;
+      setCardsToShow(cardsToShow);
+    };
+
+    // Calcul initial
+    calculateCardsToShow();
+
+    // Ajuster le nombre de cartes lors du redimensionnement de la fenêtre
+    window.addEventListener('resize', calculateCardsToShow);
+
+    // Nettoyage de l'event listener
+    return () => {
+      window.removeEventListener('resize', calculateCardsToShow);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (page === 'home' || page === 'list') return;
     getFriendsRequests();
     getFriends();
     getFollowed();
@@ -81,6 +151,7 @@ const ContactsComponent = ({ page }) => {
           padding="6px 6px 0 6px"
           columnGap="6px"
           sx={{ overflowX: 'scroll' }}
+          onScroll={handleScroll}
         >
           {usersSuggestion &&
             usersSuggestion.map((user, index) => {
@@ -97,6 +168,35 @@ const ContactsComponent = ({ page }) => {
                 />
               );
             })}
+          {areUsersLoading &&
+            [...Array(cardsToShow)].map(
+              (
+                e,
+                i, // où `n` est le nombre de skeletons à afficher
+              ) => (
+                <Stack key={i} height="144px" alignItems="center">
+                  <Skeleton
+                    variant="rounded"
+                    width={95}
+                    height={95}
+                    animation="wave"
+                  />
+                  <Skeleton
+                    variant="text"
+                    width={80}
+                    sx={{ fontSize: '0.95em', marginTop: '4px' }}
+                    animation="wave"
+                  />
+                  <Skeleton
+                    variant="text"
+                    width={70}
+                    height={27}
+                    sx={{ marginTop: '-4px' }}
+                    animation="wave"
+                  />
+                </Stack>
+              ),
+            )}
         </Stack>
       </Item>
     );

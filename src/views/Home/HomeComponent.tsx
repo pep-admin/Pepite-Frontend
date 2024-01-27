@@ -30,6 +30,7 @@ const Home = () => {
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
   const [criticsPage, setCriticsPage] = useState(1); // Page de critiques incrémentée à chaque fois que l'utilisateur scroll en bas de page
   const [loadingMore, setLoadingMore] = useState(false); // Booléen : charger de nouvelles critiques
+  const [areCriticsFetched, setAreCriticsFetched] = useState(false);
   const [haveMoreCritics, setHaveMoreCritics] = useState(true);
 
   // const [alertSeverity, setAlertSeverity] = useState({
@@ -51,10 +52,11 @@ const Home = () => {
     4) les critiques anciennes d'amis
     5) les critiques récentes des suivis
     6) les critiques anciennes des suivis
+    7) les critiques de l'utilisateur connecté
   */
 
   const getCritics = async () => {
-    if (loadingMore) return; // Éviter les appels redondants
+    if (loadingMore) return; // Évite les appels redondants
     setLoadingMore(true); // Indiquer que le chargement est en cours
 
     const critics = await getAllCriticsOfAcquaintances(
@@ -94,7 +96,11 @@ const Home = () => {
       ...newCritics,
     ]);
 
-    setLoadingMore(false); // Fin du chargement
+    setAreCriticsFetched(true);
+
+    setTimeout(() => {
+      setLoadingMore(false); // Fin du chargemen
+    }, 1000);
   };
 
   const handleObserver = entities => {
@@ -123,8 +129,6 @@ const Home = () => {
   }, [displayType]);
 
   useEffect(() => {
-    console.log('page', criticsPage);
-
     if (criticsPage > 1) {
       getCritics();
     }
@@ -185,11 +189,12 @@ const Home = () => {
               infos={null}
               haveMoreCritics={null}
               isLast={null}
+              loadingMore={loadingMore}
               // chosenUser={chosenUser}
               // countCriticsAndGold={countCriticsAndGold}
             />
           ) : null}
-          {criticsOfAcquaintances.length ? (
+          {criticsOfAcquaintances.length && areCriticsFetched ? (
             criticsOfAcquaintances.map((critic, index) => {
               return (
                 <React.Fragment key={index}>
@@ -205,14 +210,15 @@ const Home = () => {
                     countCriticsAndGold={null}
                     haveMoreCritics={haveMoreCritics}
                     isLast={criticsOfAcquaintances.length - 1 === index}
+                    loadingMore={loadingMore}
                   />
                   {haveMoreCritics && <div ref={scrollDownRef}></div>}
                 </React.Fragment>
               );
             })
-          ) : (
+          ) : areCriticsFetched ? (
             <NoCriticAdvice page={'home'} />
-          )}
+          ) : null}
         </Stack>
       </Container>
     </>

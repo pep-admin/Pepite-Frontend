@@ -119,15 +119,15 @@ const AccountUpdatePic = ({
       >
         {onSuccess.state ? (
           <CustomAlert
-            type={'success'}
+            alertType={'success'}
             message={onSuccess.message}
-            setOnSuccess={setOnSuccess}
+            setOnAlert={setOnSuccess}
           />
         ) : onSuccess.state === false ? (
           <CustomAlert
-            type={'error'}
+            alertType={'error'}
             message={onSuccess.message}
-            setOnSuccess={setOnSuccess}
+            setOnAlert={setOnSuccess}
           />
         ) : null}
         <Stack

@@ -73,7 +73,7 @@ const CriticAdvicesContent = ({
                 textAlign="left"
                 color="primary.dark"
                 sx={{
-                  maxWidth: '160px',
+                  maxWidth: '190px',
                 }}
               >
                 {title}

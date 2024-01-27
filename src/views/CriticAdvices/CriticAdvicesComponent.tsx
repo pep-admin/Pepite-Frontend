@@ -1,14 +1,5 @@
 // Import des libs externes
-import {
-  Stack,
-  Box,
-  Typography,
-  Divider,
-  Card,
-  Button,
-  CircularProgress,
-  Skeleton,
-} from '@mui/material';
+import { Stack, Box, Typography, Divider, Card, Button } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
@@ -23,24 +14,27 @@ import CriticAdvicesHeader from './CriticAdvicesHeader';
 import CriticAdvicesContent from './CriticAdvicesContent';
 import CriticAdvicesReview from './CriticAdvicesReview';
 import CriticAdvicesFooter from './CriticAdvicesFooter';
+import CommentsComponent from '@views/Comments/CommentsComponent';
+import CriticAdvicesModal from './CriticAdvicesModal';
+import CustomAlert from '@utils/CustomAlert';
+import CriticAdvicesPoster from './CriticAdvicesPoster';
+// import GoldNugget from '@utils/GoldNugget';
+
+// Import des requêtes
 import { addNewCritic } from '@utils/request/critics/postCritic';
 import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
-import CommentsComponent from '@views/Comments/CommentsComponent';
-import CriticAdvicesModal from './CriticAdvicesModal';
-// import GoldNugget from '@utils/GoldNugget';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
 import { useParams } from 'react-router-dom';
 import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
 import { getUser } from '@utils/request/users/getUser';
-import { convertDate } from '@utils/functions/convertDate';
-import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
-import CustomAlert from '@utils/CustomAlert';
 import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
 import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
-import CriticAdvicesPoster from './CriticAdvicesPoster';
-import CriticAdvicesContentSkeleton from './CriticAdvicesContentSkeleton';
+import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
+
+// Import des fonctions utiles
+import { convertDate } from '@utils/functions/convertDate';
 
 const CriticAdvicesComponent = ({
   page,
@@ -54,7 +48,7 @@ const CriticAdvicesComponent = ({
   countCriticsAndGold,
   haveMoreCritics,
   isLast,
-  loadingMore,
+  // loadingMore,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -240,10 +234,6 @@ const CriticAdvicesComponent = ({
     }
   }, []);
 
-  useEffect(() => {
-    console.log('loading ?', loadingMore);
-  }, [loadingMore]);
-
   return (
     <>
       {showPoster ? (
@@ -267,39 +257,29 @@ const CriticAdvicesComponent = ({
       <Item margintop="6px">
         <Stack height="100%">
           <Stack direction="column" position="relative">
-            {loadingMore ? (
-              <Stack height="35px" justifyContent="center" padding="0 8px">
-                <Skeleton
-                  variant="text"
-                  sx={{ fontSize: '1rem' }}
-                  animation="wave"
-                />
-              </Stack>
-            ) : (
-              <CriticAdvicesHeader
-                page={page}
-                type={type}
-                ratingsHeaderRef={ratingsHeaderRef}
-                displayRatings={displayRatings}
-                setDisplayRatings={setDisplayRatings}
-                newRating={newRating}
-                setNewRating={setNewRating}
-                infos={infos}
-                setUserCritics={setUserCritics}
-                isModify={isModify}
-                setIsModify={setIsModify}
-                isGoldNugget={isGoldNugget}
-                setIsGoldNugget={setIsGoldNugget}
-                // setIsNuggetAnimEnded={setIsNuggetAnimEnded}
-                isTurnip={isTurnip}
-                setIsTurnip={setIsTurnip}
-                chosenUser={chosenUser}
-                criticUserInfos={criticUserInfos}
-              />
-            )}
+            <CriticAdvicesHeader
+              page={page}
+              type={type}
+              ratingsHeaderRef={ratingsHeaderRef}
+              displayRatings={displayRatings}
+              setDisplayRatings={setDisplayRatings}
+              newRating={newRating}
+              setNewRating={setNewRating}
+              infos={infos}
+              setUserCritics={setUserCritics}
+              isModify={isModify}
+              setIsModify={setIsModify}
+              isGoldNugget={isGoldNugget}
+              setIsGoldNugget={setIsGoldNugget}
+              // setIsNuggetAnimEnded={setIsNuggetAnimEnded}
+              isTurnip={isTurnip}
+              setIsTurnip={setIsTurnip}
+              chosenUser={chosenUser}
+              criticUserInfos={criticUserInfos}
+            />
             {type === 'new-critic' || type === 'new-advice' ? (
               <Divider />
-            ) : loadingMore ? null : (
+            ) : (
               <Stack
                 direction="row"
                 alignItems="center"
@@ -335,37 +315,22 @@ const CriticAdvicesComponent = ({
                 flexGrow="1"
                 sx={{ transition: 'margin-bottom 0.5s ease-in-out' }}
               >
-                {loadingMore ? (
-                  <Stack height="auto" justifyContent="center">
-                    <Skeleton
-                      variant="rounded"
-                      width={80}
-                      height={120}
-                      animation="wave"
-                    />
-                  </Stack>
-                ) : (
-                  <CriticAdvicesPoster
-                    chosenMovie={chosenMovie}
-                    type={type}
-                    setShowPoster={setShowPoster}
-                    isModify={isModify}
-                    infos={infos}
-                    isGoldNugget={isGoldNugget}
-                    isTurnip={isTurnip}
-                  />
-                )}
-                {loadingMore ? (
-                  <CriticAdvicesContentSkeleton />
-                ) : (
-                  <CriticAdvicesContent
-                    type={type}
-                    chosenMovie={chosenMovie}
-                    displayOverview={displayOverwiew}
-                    setDisplayOverview={setDisplayOverview}
-                    infos={infos}
-                  />
-                )}
+                <CriticAdvicesPoster
+                  chosenMovie={chosenMovie}
+                  type={type}
+                  setShowPoster={setShowPoster}
+                  isModify={isModify}
+                  infos={infos}
+                  isGoldNugget={isGoldNugget}
+                  isTurnip={isTurnip}
+                />
+                <CriticAdvicesContent
+                  type={type}
+                  chosenMovie={chosenMovie}
+                  displayOverview={displayOverwiew}
+                  setDisplayOverview={setDisplayOverview}
+                  infos={infos}
+                />
               </Box>
               <Stack
                 direction="row"
@@ -399,11 +364,7 @@ const CriticAdvicesComponent = ({
               </Stack>
               {(type === 'old-critic' || type === 'old-advice') &&
               infos.text === '' &&
-              !isModify ? null : loadingMore ? (
-                <Stack height="auto" width="100%" justifyContent="center">
-                  <Skeleton variant="rounded" height={70} animation="wave" />
-                </Stack>
-              ) : (
+              !isModify ? null : (
                 <CriticAdvicesReview
                   type={type}
                   newCriticText={newCriticText}
@@ -461,14 +422,12 @@ const CriticAdvicesComponent = ({
             </Card>
           </Stack>
           {type === 'old-critic' || type === 'old-advice' ? (
-            loadingMore ? null : (
-              <CriticAdvicesFooter
-                infos={infos}
-                displayComments={displayComments}
-                setDisplayComments={setDisplayComments}
-                comments={comments}
-              />
-            )
+            <CriticAdvicesFooter
+              infos={infos}
+              displayComments={displayComments}
+              setDisplayComments={setDisplayComments}
+              comments={comments}
+            />
           ) : null}
         </Stack>
       </Item>
@@ -483,15 +442,7 @@ const CriticAdvicesComponent = ({
           setComments={setComments}
         />
       ) : null}
-      {isLast && haveMoreCritics ? (
-        <Stack
-          direction="row"
-          justifyContent="center"
-          margin="10px 0 !important"
-        >
-          <CircularProgress color="primary" />
-        </Stack>
-      ) : isLast ? (
+      {isLast && !haveMoreCritics ? (
         <Item>
           <Stack>
             <Typography fontSize="1em">{"Et c'est tout !"}</Typography>
@@ -517,7 +468,6 @@ CriticAdvicesComponent.propTypes = {
   haveMoreCritics: PropTypes.bool,
   isLast: PropTypes.bool,
   setAdvicesReceived: PropTypes.func,
-  loadingMore: PropTypes.bool.isRequired,
 };
 
 export default React.memo(CriticAdvicesComponent);

@@ -16,6 +16,7 @@ import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriti
 import { useData } from '@hooks/DataContext';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
+import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 const Home = () => {
   const { displayType, chosenMovie } = useData();
@@ -57,7 +58,8 @@ const Home = () => {
 
   const getCritics = async () => {
     if (loadingMore) return; // Évite les appels redondants
-    setLoadingMore(true); // Indiquer que le chargement est en cours
+    // setLoadingMore(true); // Indiquer que le chargement est en cours
+    setLoadingMore(true);
 
     const critics = await getAllCriticsOfAcquaintances(
       userInfos.id,
@@ -86,6 +88,8 @@ const Home = () => {
         return b.order - a.order || b.timestamp - a.timestamp;
       });
 
+    console.log('new critics', critics);
+
     // Si plus assez de critiques à récupérer, on affichera le message qui indique qu'il n'y a plus de critiques à parcourir
     if (critics.length < 5) {
       setHaveMoreCritics(false);
@@ -98,14 +102,14 @@ const Home = () => {
 
     setAreCriticsFetched(true);
 
-    setTimeout(() => {
-      setLoadingMore(false); // Fin du chargemen
-    }, 1000);
+    setLoadingMore(false); // Fin du chargement
   };
 
   const handleObserver = entities => {
     const target = entities[0];
     if (target.isIntersecting && haveMoreCritics && !loadingMore) {
+      console.log('recharge !!!');
+
       setCriticsPage(prevPage => prevPage + 1);
     }
   };
@@ -113,7 +117,7 @@ const Home = () => {
   useEffect(() => {
     const option = {
       root: null,
-      rootMargin: '20px',
+      rootMargin: '250px',
       threshold: 0,
     };
     const observer = new IntersectionObserver(handleObserver, option);
@@ -133,6 +137,10 @@ const Home = () => {
       getCritics();
     }
   }, [criticsPage]);
+
+  useEffect(() => {
+    console.log('chargement...', loadingMore);
+  }, [loadingMore]);
 
   return (
     <>
@@ -189,12 +197,12 @@ const Home = () => {
               infos={null}
               haveMoreCritics={null}
               isLast={null}
-              loadingMore={loadingMore}
+              // loadingMore={loadingMore}
               // chosenUser={chosenUser}
               // countCriticsAndGold={countCriticsAndGold}
             />
           ) : null}
-          {criticsOfAcquaintances.length && areCriticsFetched ? (
+          {criticsOfAcquaintances.length ? (
             criticsOfAcquaintances.map((critic, index) => {
               return (
                 <React.Fragment key={index}>
@@ -210,15 +218,17 @@ const Home = () => {
                     countCriticsAndGold={null}
                     haveMoreCritics={haveMoreCritics}
                     isLast={criticsOfAcquaintances.length - 1 === index}
-                    loadingMore={loadingMore}
+                    // loadingMore={loadingMore}
                   />
-                  {haveMoreCritics && <div ref={scrollDownRef}></div>}
+                  {/* {haveMoreCritics && <div ref={scrollDownRef}></div>} */}
                 </React.Fragment>
               );
             })
-          ) : areCriticsFetched ? (
+          ) : !criticsOfAcquaintances.length && areCriticsFetched ? (
             <NoCriticAdvice page={'home'} />
           ) : null}
+          {loadingMore && <SkeletonCard />}
+          {haveMoreCritics && <div ref={scrollDownRef}></div>}
         </Stack>
       </Container>
     </>

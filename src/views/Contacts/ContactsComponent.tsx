@@ -27,7 +27,7 @@ const ContactsComponent = ({ page }) => {
   const [usersSuggestion, setUsersSuggestion] = useState([]); // Les utilisateurs suggérés
   const [suggestionsPage, setSuggestionsPage] = useState(1); // La page d'utilisateurs incrémenté à chaque scroll vers la gauche
   const [cardsToShow, setCardsToShow] = useState(0); // Le nombre d'utilisateurs à fetch selon la largeur du viewport
-  const [areUsersLoading, setAreUsersLoading] = useState(false); // Etat de chargement des utilisateurs suggérés
+  const [areUsersLoading, setAreUsersLoading] = useState(true); // Etat de chargement des utilisateurs suggérés
   const [hasMore, setHasMore] = useState(true);
 
   // Pour la page contacts
@@ -38,9 +38,10 @@ const ContactsComponent = ({ page }) => {
   // Détecte le scroll lorsque l'utilisateur cherche à voir de nouveaux utilisateurs suggérés
   const handleScroll = event => {
     const { scrollLeft, clientWidth, scrollWidth } = event.currentTarget;
+    // console.log( scrollWidth - Math.ceil(scrollLeft + clientWidth));
 
     if (
-      scrollWidth - Math.ceil(scrollLeft + clientWidth) < 100 &&
+      scrollWidth - Math.ceil(scrollLeft + clientWidth) < 40 &&
       !areUsersLoading &&
       hasMore
     ) {
@@ -54,7 +55,6 @@ const ContactsComponent = ({ page }) => {
     const loadUsers = async () => {
       try {
         setAreUsersLoading(true);
-
         const response = await getUsersSuggestions(
           cardsToShow,
           suggestionsPage,
@@ -66,7 +66,7 @@ const ContactsComponent = ({ page }) => {
             ...response.data.users,
           ]);
         } else {
-          setHasMore(false); // Indiquez que vous avez atteint la fin des données
+          setHasMore(false); // Fin des données d'utilisateurs
         }
       } catch (error) {
         console.error('Erreur lors du chargement des utilisateurs', error);
@@ -76,8 +76,6 @@ const ContactsComponent = ({ page }) => {
     };
 
     if (cardsToShow && hasMore) {
-      console.log('chargement...');
-
       loadUsers();
     }
   }, [suggestionsPage, cardsToShow]);
@@ -100,9 +98,13 @@ const ContactsComponent = ({ page }) => {
     setFollowedList(followedList);
   };
 
-  useEffect(() => {
-    console.log('suggestion utilisateurs :', usersSuggestion);
-  }, [usersSuggestion]);
+  // useEffect(() => {
+  //   console.log('les utilisateurs chargent...', areUsersLoading);
+  // }, [areUsersLoading])
+
+  // useEffect(() => {
+  //   console.log('suggestion utilisateurs :', usersSuggestion);
+  // }, [usersSuggestion]);
 
   useEffect(() => {
     const calculateCardsToShow = () => {
@@ -171,7 +173,7 @@ const ContactsComponent = ({ page }) => {
           {areUsersLoading &&
             [...Array(cardsToShow)].map(
               (
-                e,
+                _,
                 i, // où `n` est le nombre de skeletons à afficher
               ) => (
                 <Stack key={i} height="144px" alignItems="center">

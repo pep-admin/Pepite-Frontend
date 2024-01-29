@@ -17,16 +17,18 @@ import { getDetailsNumber } from '@utils/request/profil/getDetailsNumber';
 
 // Import des composants internes
 import { Item } from '@utils/styledComponent';
-import ProfilDetails from './ProfilDetails';
-import ProfilSuggestedNotes from './ProfilSuggestedNotes';
+import ProfilDetails from '@views/Profil/ProfilDetails';
+import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
 import SearchBar from '@utils/SearchBar';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
+import AccountUpdatePic from '@views/Account/AccountUpdatePic';
+import FriendRequestBtn from '@utils/FriendRequestBtn';
 
 // Import des icônes
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 import PersonAddAlt1TwoToneIcon from '@mui/icons-material/PersonAddAlt1TwoTone';
-// import VerifiedTwoToneIcon from '@mui/icons-material/VerifiedTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -34,11 +36,10 @@ import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
-import AccountUpdatePic from '@views/Account/AccountUpdatePic';
+
+// Import des requêtes
 import { getUser } from '@utils/request/users/getUser';
-import FriendRequestBtn from '@utils/FriendRequestBtn';
 import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
-import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 
 interface Picture {
   id: number;
@@ -77,11 +78,11 @@ const ProfilComponent = () => {
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
   const [criticsNumber, setCriticsNumber] = useState(0); // Nombre de critiques de l'utilisateur
   const [goldNumber, setGoldNumber] = useState(0); // Nombre de pépites de l'utilisateur
-  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null); // Ancre du bouton d'ajout en ami
   const [modifyCoverPic, setModifyCoverPic] = useState({
     state: false,
     type: null,
   });
+  const [anchorProfilBtn, setAnchorProfilBtn] = useState(null);
   // const [alertSeverity, setAlertSeverity] = useState({state: null, message: null, action: null}); // Message de succès, d'info, d'erreur
 
   // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
@@ -149,7 +150,7 @@ const ProfilComponent = () => {
   }, [id, userInfos]);
 
   const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+    setAnchorProfilBtn(event.currentTarget);
   };
 
   return (
@@ -268,8 +269,9 @@ const ProfilComponent = () => {
                 onClick={e => handleClick(e)}
               />
               <FriendRequestBtn
-                anchorEl={anchorEl}
-                setAnchorEl={setAnchorEl}
+                page={'profil'}
+                anchorProfilBtn={anchorProfilBtn}
+                setAnchorProfilBtn={setAnchorProfilBtn}
                 receiverId={id}
               />
             </>
@@ -376,7 +378,7 @@ const ProfilComponent = () => {
               margintop="6px"
               overflow="hidden"
             >
-              <ProfilSuggestedNotes
+              <SuggestedGoldNuggets
                 page={'profil'}
                 userCritics={userCritics}
                 goldenMovies={goldenMovies}

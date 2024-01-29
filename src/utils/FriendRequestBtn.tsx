@@ -20,6 +20,8 @@ import { cancelFriendShip } from './request/friendship/cancelFriendship';
 
 const FriendRequestBtn = ({
   page,
+  anchorProfilBtn,
+  setAnchorProfilBtn,
   receiverId,
   friendsList,
   followedList,
@@ -42,10 +44,14 @@ const FriendRequestBtn = ({
     setAnchorEl(event.currentTarget);
   };
 
-  const open = Boolean(anchorEl);
+  const open = Boolean(page === 'profil' ? anchorProfilBtn : anchorEl);
 
   const handleClose = () => {
-    setAnchorEl(null);
+    if (page === 'profil') {
+      setAnchorProfilBtn(null);
+    } else {
+      setAnchorEl(null);
+    }
   };
 
   // Envoie une demande d'amitié
@@ -110,7 +116,6 @@ const FriendRequestBtn = ({
 
   // A chaque fois qu'on récupère la liste des personnes suggérées, on met à jour le status (pas de demande, en attente, à confirmer, ou accepté )
   useEffect(() => {
-    // console.log(friendsList);
     checkIfFriends();
   }, [friendsList]);
 
@@ -131,6 +136,7 @@ const FriendRequestBtn = ({
           fontWeight: 'normal',
           fontSize: '0.9em',
           padding: '0',
+          display: page === 'profil' ? 'none' : 'flex',
         }}
         onClick={e => handleClick(e)}
       >
@@ -138,7 +144,7 @@ const FriendRequestBtn = ({
       </Button>
       <Menu
         id="basic-menu"
-        anchorEl={anchorEl}
+        anchorEl={page === 'profil' ? anchorProfilBtn : anchorEl}
         open={open}
         onClose={handleClose}
         autoFocus={false}
@@ -148,6 +154,14 @@ const FriendRequestBtn = ({
             padding: '0',
             bgcolor: '#ededed',
           },
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
         <MenuItem
@@ -238,6 +252,8 @@ const FriendRequestBtn = ({
 
 FriendRequestBtn.propTypes = {
   page: PropTypes.string.isRequired,
+  anchorProfilBtn: PropTypes.instanceOf(Element),
+  setAnchorProfilBtn: PropTypes.func,
   receiverId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   friendsList: PropTypes.array,

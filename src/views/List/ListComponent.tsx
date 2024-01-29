@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 
 // Import des composants internes
 import Header from '@utils/Header';
-import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
+import ProfilSuggestedNotes from '@views/Profil/SuggestedGoldNuggets';
 import { Item } from '@utils/styledComponent';
 import SearchBar from '@utils/SearchBar';
 import MainItemList from '@utils/MainItemList';

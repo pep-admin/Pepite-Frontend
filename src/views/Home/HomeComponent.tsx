@@ -7,7 +7,7 @@ import Header from '@utils/Header';
 import SearchBar from '@utils/SearchBar';
 import { Item } from '@utils/styledComponent';
 import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
-import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
+import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
@@ -175,7 +175,7 @@ const Home = () => {
             margintop="6px"
             overflow="hidden"
           >
-            <ProfilSuggestedNotes
+            <SuggestedGoldNuggets
               page={'home'}
               userCritics={criticsOfAcquaintances}
               goldenMovies={goldenMovies}

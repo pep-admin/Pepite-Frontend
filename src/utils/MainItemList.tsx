@@ -133,7 +133,7 @@ const MainItemList = ({
       showRemoveWantedMovie ||
       showRemoveWatchedMovie ? (
         <CustomAlert
-          type="warning"
+          alertType="warning"
           message={
             showRemoveFriendModal ? (
               <span>

@@ -1,22 +1,22 @@
 // Import des libs externes
 import { Container, Stack } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Import des composants internes
 import Header from '@utils/Header';
-import { Item } from '@utils/styledComponent';
 import SearchBar from '@utils/SearchBar';
-import ContactsComponent from '@views/Contacts/ContactsComponent';
+import { Item } from '@utils/styledComponent';
+import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
 import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
+import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
+import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 // Import des requêtes
 import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
-import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
-import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 const Home = () => {
   const { displayType, chosenMovie } = useData();
@@ -161,7 +161,14 @@ const Home = () => {
             chosenUser={null}
             handlePoster={null}
           />
-          <ContactsComponent page={'home'} />
+          <ContactsSuggestions
+            page={'home'}
+            friendsList={null}
+            followedList={null}
+            getFriendsRequests={null}
+            getFriends={null}
+            getFollowed={null}
+          />
           <Item
             customheight="calc(100% - 6px)"
             customwidth="100%"
@@ -205,23 +212,21 @@ const Home = () => {
           {criticsOfAcquaintances.length ? (
             criticsOfAcquaintances.map((critic, index) => {
               return (
-                <React.Fragment key={index}>
-                  <CriticAdvicesComponent
-                    page={'home'}
-                    type={'old-critic'}
-                    setUserCritics={setCriticsOfAcquaintances}
-                    setAdvicesReceived={null}
-                    setGoldenMovies={setGoldenMovies}
-                    chosenMovie={null}
-                    infos={critic}
-                    chosenUser={null}
-                    countCriticsAndGold={null}
-                    haveMoreCritics={haveMoreCritics}
-                    isLast={criticsOfAcquaintances.length - 1 === index}
-                    // loadingMore={loadingMore}
-                  />
-                  {/* {haveMoreCritics && <div ref={scrollDownRef}></div>} */}
-                </React.Fragment>
+                <CriticAdvicesComponent
+                  key={index}
+                  page={'home'}
+                  type={'old-critic'}
+                  setUserCritics={setCriticsOfAcquaintances}
+                  setAdvicesReceived={null}
+                  setGoldenMovies={setGoldenMovies}
+                  chosenMovie={null}
+                  infos={critic}
+                  chosenUser={null}
+                  countCriticsAndGold={null}
+                  haveMoreCritics={haveMoreCritics}
+                  isLast={criticsOfAcquaintances.length - 1 === index}
+                  // loadingMore={loadingMore}
+                />
               );
             })
           ) : !criticsOfAcquaintances.length && areCriticsFetched ? (

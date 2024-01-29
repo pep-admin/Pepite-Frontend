@@ -89,7 +89,7 @@ CriticAdvicesPoster.propTypes = {
   type: PropTypes.string.isRequired,
   setShowPoster: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
-  infos: PropTypes.object.isRequired,
+  infos: PropTypes.object,
   isGoldNugget: PropTypes.bool.isRequired,
   isTurnip: PropTypes.bool.isRequired,
 };

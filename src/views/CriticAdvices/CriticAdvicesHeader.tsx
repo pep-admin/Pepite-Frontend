@@ -79,9 +79,91 @@ const CriticAdvicesHeader = ({
     }
   }, [infos, isModify]);
 
-  // useEffect(() => {
-  //   console.log('chosen user', chosenUser);
-  // }, [chosenUser]);
+  // Génère le contenu du header selon plusieurs conditions
+  const generateContent = () => {
+    // Si l'utilisateur veut poster une nouvelle critique
+    if (type === 'new-critic') {
+      return <span style={{ fontWeight: 'bold' }}>{'Nouvelle note'}</span>;
+
+      // Si l'utilisateur veut conseiller un film / une série à un ami
+    } else if (type === 'new-advice') {
+      return (
+        <>
+          {'Conseillez à '}
+          <span
+            style={{
+              fontWeight: 'bold',
+              color:
+                chosenUser?.relation_type === 'close_friend'
+                  ? '#ff7b00'
+                  : '#F29E50',
+            }}
+            onClick={() => navigate(`/profil/${chosenUser.id}`)}
+          >
+            {chosenUser.first_name} {chosenUser.last_name}
+          </span>
+        </>
+      );
+
+      // Si l'utilisateur voit la critique d'une de ses connaissances
+    } else if (type === 'old-critic' && infos.sender_id !== user_infos.id) {
+      const color =
+        (page === 'profil' && chosenUser?.relation_type === 'close_friend') ||
+        (page === 'home' && infos?.relation_type === 'close_friend')
+          ? '#ff7b00'
+          : '#F29E50';
+
+      return (
+        <>
+          <span
+            style={{ fontWeight: 'bold', color }}
+            onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
+          >
+            {criticUserInfos.first_name} {criticUserInfos.last_name}
+          </span>
+          {' a noté'}
+        </>
+      );
+
+      // Si l'utilisateur voit un de ses ancien conseil
+    } else if (
+      page === 'profil' &&
+      type === 'old-advice' &&
+      infos.sender_id === user_infos.id
+    ) {
+      return (
+        <span style={{ fontWeight: 'bold' }}>{'Vous avez conseillé'}</span>
+      );
+
+      // Si l'utilisateur voit une de ses anciennes critiques
+    } else if (type === 'old-critic' && infos.sender_id === user_infos.id) {
+      return <span style={{ fontWeight: 'bold' }}>{'Vous avez noté'}</span>;
+
+      // Si l'utilisateur voit le conseil de quelqu'un d'autre
+    } else if (
+      page === 'profil' &&
+      type === 'old-advice' &&
+      infos.sender_id !== user_infos.id
+    ) {
+      return (
+        <>
+          <span
+            style={{
+              fontWeight: 'bold',
+              color:
+                chosenUser?.relation_type === 'close_friend'
+                  ? '#ff7b00'
+                  : '#F29E50',
+            }}
+            onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
+          >
+            {criticUserInfos.first_name} {criticUserInfos.last_name}
+          </span>
+          {' a conseillé'}
+        </>
+      );
+    }
+  };
 
   return (
     <Stack
@@ -102,78 +184,7 @@ const CriticAdvicesHeader = ({
         overflow="hidden"
         textOverflow="ellipsis"
       >
-        {
-          // Si l'utilisateur connecté souhaite poster une nouvelle critique sur son profil
-          page === 'profil' && type === 'new-critic' ? (
-            <span style={{ fontWeight: 'bold' }}>{'Nouvelle note'}</span>
-          ) : // Si l'utilisateur connecté souhaite poster un conseil sur le profil d'un ami
-          page === 'profil' && type === 'new-advice' ? (
-            <>
-              {'Conseillez à '}
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  color:
-                    chosenUser?.relation_type === 'close_friend'
-                      ? '#ff7b00'
-                      : '#F29E50',
-                }}
-                onClick={() => navigate(`/profil/${chosenUser.id}`)}
-              >
-                {chosenUser.first_name} {chosenUser.last_name}
-              </span>
-            </>
-          ) : // Si l'utilisateur voit une critique d'un autre utilisateur
-          type === 'old-critic' && infos.sender_id !== user_infos.id ? (
-            <>
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  color:
-                    (page === 'profil' &&
-                      chosenUser?.relation_type === 'close_friend') ||
-                    (page === 'home' && infos?.relation_type === 'close_friend')
-                      ? '#ff7b00'
-                      : (page === 'profil' &&
-                          chosenUser?.relation_type === 'friend') ||
-                        (page === 'home' && infos?.relation_type === 'friend')
-                      ? '#F29E50'
-                      : '#24A5A5',
-                }}
-                onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
-              >
-                {criticUserInfos.first_name} {criticUserInfos.last_name}
-              </span>
-              {' a noté'}
-            </>
-          ) : // Si l'utilisateur voit son conseil sur le profil d'un ami
-          page === 'profil' &&
-            type === 'old-advice' &&
-            infos.sender_id === user_infos.id ? (
-            <span style={{ fontWeight: 'bold' }}>{'Vous avez conseillé'}</span>
-          ) : // TODO : Si l'utilisateur voit un conseil d'un autre utilisateur
-          page === 'profil' &&
-            type === 'old-advice' &&
-            infos.sender_id !== user_infos.id ? (
-            <>
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  color:
-                    chosenUser?.relation_type === 'close_friend'
-                      ? '#ff7b00'
-                      : '#F29E50',
-                }}
-                onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
-              >
-                {criticUserInfos.first_name} {criticUserInfos.last_name}
-              </span>
-              {' a conseillé'}
-            </>
-          ) : (
-            <span style={{ fontWeight: 'bold' }}>{'Vous avez noté'}</span>
-          )
-        }
+        {generateContent()}
       </Typography>
       <Box
         display="flex"

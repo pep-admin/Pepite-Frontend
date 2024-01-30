@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import Header from '@utils/Header';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import de la requête qui récupère le nombre de critiques et de pépites
@@ -40,6 +40,7 @@ import apiBaseUrl from '@utils/request/config';
 // Import des requêtes
 import { getUser } from '@utils/request/users/getUser';
 import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
+import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 interface Picture {
   id: number;
@@ -83,6 +84,10 @@ const ProfilComponent = () => {
     type: null,
   });
   const [anchorProfilBtn, setAnchorProfilBtn] = useState(null);
+  const [areCriticAdvicesFetched, setAreCriticAdvicesFetched] = useState(false);
+
+  const isFirstRender = useRef(true);
+
   // const [alertSeverity, setAlertSeverity] = useState({state: null, message: null, action: null}); // Message de succès, d'info, d'erreur
 
   // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
@@ -95,6 +100,8 @@ const ProfilComponent = () => {
   const fetchCriticsAndAdvices = useCallback(
     async (type: string) => {
       try {
+        setAreCriticAdvicesFetched(false);
+
         const criticData = await getAllCriticsOfUser(id, type);
         setUserCritics(criticData);
 
@@ -102,6 +109,8 @@ const ProfilComponent = () => {
         setAdvicesReceived(advicesData);
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
+      } finally {
+        setAreCriticAdvicesFetched(true);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
@@ -122,10 +131,6 @@ const ProfilComponent = () => {
 
     setCombinedData(combined);
   }, [userCritics, advicesReceived]);
-
-  useEffect(() => {
-    fetchCriticsAndAdvices(displayType);
-  }, [fetchCriticsAndAdvices, displayType]);
 
   const countCriticsAndGold = async () => {
     const count = await getDetailsNumber(id);
@@ -148,6 +153,23 @@ const ProfilComponent = () => {
     // Comptage des critiques et des pépites pour l'utilisateur affiché
     countCriticsAndGold();
   }, [id, userInfos]);
+
+  // useEffect(() => {
+  //   setAreCriticAdvicesFetched(false);
+  //   fetchCriticsAndAdvices(displayType);
+  // }, [fetchCriticsAndAdvices, displayType]);
+
+  useEffect(() => {
+    // Ignore le premier rendu
+    if (isFirstRender.current) {
+      fetchCriticsAndAdvices(displayType);
+      isFirstRender.current = false;
+    } else {
+      setUserCritics([]);
+      setAdvicesReceived([]);
+      fetchCriticsAndAdvices(displayType);
+    }
+  }, [displayType]);
 
   const handleClick = event => {
     setAnchorProfilBtn(event.currentTarget);
@@ -380,7 +402,7 @@ const ProfilComponent = () => {
             >
               <SuggestedGoldNuggets
                 page={'profil'}
-                userCritics={userCritics}
+                // userCritics={userCritics}
                 goldenMovies={goldenMovies}
                 setGoldenMovies={setGoldenMovies}
                 chosenUser={chosenUser}
@@ -430,8 +452,10 @@ const ProfilComponent = () => {
                   />
                 );
               })
-            ) : (
+            ) : !combinedData.length && areCriticAdvicesFetched ? (
               <NoCriticAdvice page={'profil'} />
+            ) : (
+              <SkeletonCard />
             )}
           </Stack>
         </Stack>

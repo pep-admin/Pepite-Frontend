@@ -17,11 +17,10 @@ import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriti
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+import useVerticalScroll from '@hooks/useVerticalScroll';
 
 const Home = () => {
   const { displayType, chosenMovie } = useData();
-
-  const scrollDownRef = useRef(null);
 
   // L'utilisateur connecté
   const [userInfos, setUserInfos] = useState(
@@ -29,21 +28,22 @@ const Home = () => {
   );
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
-  const [criticsPage, setCriticsPage] = useState(1); // Page de critiques incrémentée à chaque fois que l'utilisateur scroll en bas de page
-  const [loadingMore, setLoadingMore] = useState(false); // Booléen : charger de nouvelles critiques
-  const [areCriticsFetched, setAreCriticsFetched] = useState(false);
-  const [haveMoreCritics, setHaveMoreCritics] = useState(true);
+  // const [areCriticsFetched, setAreCriticsFetched] = useState(false);
+  // const [haveMoreCritics, setHaveMoreCritics] = useState(true);
+
+  const firstRender = useRef(true);
 
   // const [alertSeverity, setAlertSeverity] = useState({
   //   state: null,
   //   message: null,
   // });
 
-  const resetAndLoadCritics = async () => {
-    setCriticsPage(1); // Réinitialiser la pagination
-    setCriticsOfAcquaintances([]); // Réinitialiser la liste des critiques
-    await getCritics(); // Charger les nouvelles critiques
-  };
+  // const resetAndLoadCritics = async () => {
+  //   setCriticsPage(1); // Réinitialiser la pagination
+  //   setCriticsOfAcquaintances([]); // Réinitialiser la liste des critiques
+  //   setAreCriticsFetched(false); // Chargement en cours
+  //   await getCritics(); // Charger les nouvelles critiques
+  // };
 
   /*
     On récupère 5 critiques selon cet ordre :
@@ -56,15 +56,13 @@ const Home = () => {
     7) les critiques de l'utilisateur connecté
   */
 
-  const getCritics = async () => {
-    if (loadingMore) return; // Évite les appels redondants
-    // setLoadingMore(true); // Indiquer que le chargement est en cours
-    setLoadingMore(true);
+  const getCritics = async page => {
+    console.log('recup des critiques');
 
     const critics = await getAllCriticsOfAcquaintances(
       userInfos.id,
       displayType,
-      criticsPage,
+      page,
     );
 
     const newCritics = critics
@@ -88,59 +86,35 @@ const Home = () => {
         return b.order - a.order || b.timestamp - a.timestamp;
       });
 
-    console.log('new critics', critics);
-
-    // Si plus assez de critiques à récupérer, on affichera le message qui indique qu'il n'y a plus de critiques à parcourir
-    if (critics.length < 5) {
-      setHaveMoreCritics(false);
-    }
+    // // Si plus assez de critiques à récupérer, on affichera le message qui indique qu'il n'y a plus de critiques à parcourir
+    // if (critics.length < 5) {
+    //   setHaveMoreCritics(false);
+    // }
 
     setCriticsOfAcquaintances(existingCritics => [
       ...existingCritics,
       ...newCritics,
     ]);
 
-    setAreCriticsFetched(true);
+    // setAreCriticsFetched(true);
 
-    setLoadingMore(false); // Fin du chargement
+    // Return un booléen true si des données supplémentaires existent, sinon false
+    return critics.length >= 5;
   };
 
-  const handleObserver = entities => {
-    const target = entities[0];
-    if (target.isIntersecting && haveMoreCritics && !loadingMore) {
-      console.log('recharge !!!');
+  const { observerRef, loading, hasMore } = useVerticalScroll(
+    firstRender,
+    getCritics,
+    displayType,
+    setCriticsOfAcquaintances,
+  );
 
-      setCriticsPage(prevPage => prevPage + 1);
+  // Détecte le premier rendu du composant
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
     }
-  };
-
-  useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: '250px',
-      threshold: 0,
-    };
-    const observer = new IntersectionObserver(handleObserver, option);
-    if (scrollDownRef.current) observer.observe(scrollDownRef.current);
-
-    return () => {
-      if (scrollDownRef.current) observer.unobserve(scrollDownRef.current);
-    };
-  }, [scrollDownRef, haveMoreCritics, loadingMore]);
-
-  useEffect(() => {
-    resetAndLoadCritics();
-  }, [displayType]);
-
-  useEffect(() => {
-    if (criticsPage > 1) {
-      getCritics();
-    }
-  }, [criticsPage]);
-
-  useEffect(() => {
-    console.log('chargement...', loadingMore);
-  }, [loadingMore]);
+  }, []);
 
   return (
     <>
@@ -177,7 +151,7 @@ const Home = () => {
           >
             <SuggestedGoldNuggets
               page={'home'}
-              userCritics={criticsOfAcquaintances}
+              // userCritics={criticsOfAcquaintances}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
               userInfos={userInfos}
@@ -223,17 +197,17 @@ const Home = () => {
                   infos={critic}
                   chosenUser={null}
                   countCriticsAndGold={null}
-                  haveMoreCritics={haveMoreCritics}
+                  haveMoreCritics={hasMore}
                   isLast={criticsOfAcquaintances.length - 1 === index}
                   // loadingMore={loadingMore}
                 />
               );
             })
-          ) : !criticsOfAcquaintances.length && areCriticsFetched ? (
+          ) : !criticsOfAcquaintances.length && !loading ? (
             <NoCriticAdvice page={'home'} />
           ) : null}
-          {loadingMore && <SkeletonCard />}
-          {haveMoreCritics && <div ref={scrollDownRef}></div>}
+          {loading && <SkeletonCard />}
+          {hasMore && <div ref={observerRef}></div>}
         </Stack>
       </Container>
     </>

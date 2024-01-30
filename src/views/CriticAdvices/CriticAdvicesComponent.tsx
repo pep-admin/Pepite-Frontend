@@ -35,6 +35,7 @@ import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCritic
 
 // Import des fonctions utiles
 import { convertDate } from '@utils/functions/convertDate';
+import { useCardsToShow } from '@hooks/useCardsToShow';
 
 const CriticAdvicesComponent = ({
   page,
@@ -74,6 +75,11 @@ const CriticAdvicesComponent = ({
 
   const { displayType, setChosenMovieId, setChosenMovie } = useData();
 
+  /* Calcule les cards à afficher selon la largeur du viewport.
+    width: 95px, gap: 6px, 3 cards en plus pour la marge
+  */
+  const cardsToShow = useCardsToShow(95, 6, 3);
+
   // Fonction pour effectuer les mises à jour après la modification
   const performUpdatePostProcessing = async (
     type,
@@ -106,8 +112,14 @@ const CriticAdvicesComponent = ({
       setAdvicesReceived(newData);
     }
 
-    const response = await getAllGoldNuggetsOfUser(displayType, userId);
-    setGoldenMovies(response);
+    const response = await getAllGoldNuggetsOfUser(
+      displayType,
+      userId,
+      cardsToShow,
+      1,
+    );
+
+    setGoldenMovies(response.data.goldenMovies);
 
     countCriticsAndGold();
     setIsModify(false);

@@ -20,7 +20,6 @@ const useVerticalScroll = (
 
     setLoading(true); // chargement en cours
     const hasMoreData = await loadDataFunction(pageRef.current); // Vérifie si des données sont encore disponibles
-    console.log('encore ?', hasMoreData);
 
     pageRef.current++; // incrémente le numéro de la page après chaque chargement de données
 
@@ -33,16 +32,12 @@ const useVerticalScroll = (
     const observer = new IntersectionObserver(
       entries => {
         if (entries[0].isIntersecting && hasMore) {
-          console.log('recharge !!!');
-
           loadMore();
         }
       },
       { rootMargin: '250px' }, // à 250px de la div de bas de page, on lance la fonction
     );
     if (observerRef.current) {
-      console.log(observerRef.current);
-
       observer.observe(observerRef.current);
     }
     return () => {
@@ -55,7 +50,6 @@ const useVerticalScroll = (
   // Réinitialise la pagination et recharger les données en fonction des dépendances
   useEffect(() => {
     if (firstRender.current) return;
-    console.log('changement de type =>', displayType);
 
     pageRef.current = 1;
     setHasMore(true);

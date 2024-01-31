@@ -98,14 +98,13 @@ const Header = ({ userInfos }) => {
         <Typography
           variant="h1"
           color={'#fff'}
-          fontSize={'2em'}
+          fontSize={'2.3em'}
           sx={{
-            position: 'relative',
-            bottom: '2px',
-            textShadow: '#00000059 1px 4px 3px',
+            letterSpacing: '-3.5px',
+            textShadow: '#02455C -3px 2.75px 0',
           }}
         >
-          {'PÉPITE.'}
+          {'pépite.'}
         </Typography>
         <ToggleButtonGroup
           color="primary"

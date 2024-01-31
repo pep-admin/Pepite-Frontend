@@ -1,44 +1,43 @@
 // Import de libs externes
 import { Stack, Typography, Box } from '@mui/material';
-import { GoldNuggetIcon } from '@utils/GoldNuggetIcon';
-import { useEffect, useRef, useState } from 'react';
+// import { useEffect, useRef, useState } from 'react';
 
 // Import d'un fichier CSS pour éviter la surcharge de balises style dans le head
 import '../../styles/animations.css';
 
 // Import des icônes
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+// import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 const AuthHeader = () => {
-  const logoRef = useRef(null);
-  const [shine, setShine] = useState([]);
+  // const logoRef = useRef(null);
+  // const [shine, setShine] = useState([]);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const animationClass = `animatedCircle animatedCircle${Math.floor(
-        Math.random() * 11,
-      )}`;
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     const animationClass = `animatedCircle animatedCircle${Math.floor(
+  //       Math.random() * 11,
+  //     )}`;
 
-      const newShine = {
-        size: `${0.75 + Math.random() * 0.4}em`,
-        left: `${Math.random() * 100}%`,
-        bottom: '0%',
-        color: `rgba(255, ${Math.random() * (255 - 150) + 150}, 0, ${
-          Math.random() + 0.4
-        })`,
-        animationClass,
-        id: Math.random(),
-        createdAt: Date.now(),
-      };
-      setShine(prevShine =>
-        prevShine
-          .filter(shineItem => Date.now() - shineItem.createdAt < 10000)
-          .concat(newShine),
-      );
-    }, 2000);
+  //     const newShine = {
+  //       size: `${0.75 + Math.random() * 0.4}em`,
+  //       left: `${Math.random() * 100}%`,
+  //       bottom: '0%',
+  //       color: `rgba(255, ${Math.random() * (255 - 150) + 150}, 0, ${
+  //         Math.random() + 0.4
+  //       })`,
+  //       animationClass,
+  //       id: Math.random(),
+  //       createdAt: Date.now(),
+  //     };
+  //     setShine(prevShine =>
+  //       prevShine
+  //         .filter(shineItem => Date.now() - shineItem.createdAt < 10000)
+  //         .concat(newShine),
+  //     );
+  //   }, 2000);
 
-    return () => clearInterval(intervalId);
-  }, []);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   return (
     <Stack
@@ -48,14 +47,15 @@ const AuthHeader = () => {
       flexDirection="column"
       alignItems="center"
     >
-      <Box ref={logoRef} width="70px" position="relative">
-        <GoldNuggetIcon
-          width={'64.25px'}
-          height={'61px'}
-          strokeWidth={'1.6'}
-          isShadowed={true}
-        />
-        {shine.map(shineItem => (
+      <Box
+        // ref={logoRef}
+        position="relative"
+        sx={{
+          filter: 'contrast(1.09) brightness(0.9)',
+        }}
+      >
+        <img src="/images/pepite_logo.svg" alt="cornet de pop corns" />
+        {/* {shine.map(shineItem => (
           <AutoAwesomeIcon
             key={shineItem.id}
             style={{
@@ -67,17 +67,18 @@ const AuthHeader = () => {
             }}
             className={shineItem.animationClass}
           />
-        ))}
+        ))} */}
       </Box>
       <Typography
         variant="h1"
         color={'#fff'}
-        fontSize={'4em'}
+        fontSize={'4.4em'}
         sx={{
-          textShadow: '#00000059 1px 4px 3px',
+          letterSpacing: '-5.5px',
+          textShadow: '#02455C -5px 4.5px 0',
         }}
       >
-        {'PÉPITE.'}
+        {'pépite.'}
       </Typography>
       <Typography
         variant="h5"

@@ -5,20 +5,18 @@ const theme = createTheme({
 
   typography: {
     allVariants: {
-      letterSpacing: '0.03em',
       fontFamily: 'Pragati Narrow',
     },
     h1: {
-      fontFamily: 'Sirin Stencil',
+      fontFamily: 'League Spartan',
+      fontWeight: 800,
     },
     body1: {
-      fontFamily: 'Pragati Narrow',
-      fontWeight: 'normal',
+      fontWeight: 400,
       fontSize: '1.2em',
     },
     body2: {
-      fontFamily: 'Pragati Narrow',
-      fontWeight: 'normal',
+      fontWeight: 400,
       fontSize: '0.9em',
     },
   },

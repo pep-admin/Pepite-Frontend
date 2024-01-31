@@ -17,6 +17,7 @@ import QueueTwoToneIcon from '@mui/icons-material/QueueTwoTone';
 import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
 import LibraryAddCheckTwoToneIcon from '@mui/icons-material/LibraryAddCheckTwoTone';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
+import DiamondTwoToneIcon from '@mui/icons-material/DiamondTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -250,7 +251,15 @@ const CriticAdvicesFooter = ({
             }}
             onClick={toggleGold}
           >
-            <img
+            <DiamondTwoToneIcon
+              fontSize="small"
+              sx={{
+                position: 'relative',
+                top: '1px',
+                color: isGold ? '#F29E50' : 'inherit',
+              }}
+            />
+            {/* <img
               src="/images/gold_footer.svg"
               alt=""
               style={{
@@ -260,7 +269,7 @@ const CriticAdvicesFooter = ({
                   ? 'grayscale(1) contrast(0.9) brightness(1.08)'
                   : 'none',
               }}
-            />
+            /> */}
             <Particles particles={particles} />
           </Box>
           <Typography component="p" fontSize="1em" fontWeight="bold">

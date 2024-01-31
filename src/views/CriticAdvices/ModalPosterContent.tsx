@@ -106,18 +106,22 @@ const ModalPosterContent = ({
       height="100%"
       width="100%"
       bgcolor="rgba(0, 0, 0, 0.67)"
-      padding="6px"
+      padding="6px 15px"
       alignItems="center"
     >
       <Typography
         variant="h2"
         align="center"
         color="#fff"
-        fontSize="2.5em"
-        fontFamily="Sirin Stencil"
+        fontSize="3em"
+        fontFamily="League Spartan"
+        fontWeight={800}
         marginBottom="7px"
+        sx={{
+          letterSpacing: '-3.5px',
+        }}
       >
-        {'PÉPITE.'}
+        {'pépite.'}
       </Typography>
       <Divider
         sx={{
@@ -270,7 +274,7 @@ const ModalPosterContent = ({
         <Typography
           color="primary"
           align="center"
-          fontSize="2em"
+          fontSize="1.8em"
           fontWeight="bold"
         >
           {infos?.title ? `${infos.title}` : `${infos.name}`}

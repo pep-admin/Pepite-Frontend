@@ -61,13 +61,14 @@ const About = () => {
           <Typography
             variant="h1"
             color={'#fff'}
-            fontSize={'4em'}
+            fontSize={'4.4em'}
             marginBottom={'35px'}
             sx={{
-              textShadow: '#00000059 1px 4px 3px',
+              letterSpacing: '-5.5px',
+              textShadow: '#02455C -5px 4.5px 0',
             }}
           >
-            {'PÉPITE.'}
+            {'pépite.'}
           </Typography>
         </Box>
         <Box
@@ -89,11 +90,13 @@ const About = () => {
               variant="h3"
               component="span"
               className="brand-font"
-              fontSize={'1.2em'}
-              fontFamily="Sirin Stencil"
+              fontSize={'1.3em'}
+              fontFamily="League Spartan"
               color="#fff"
+              letterSpacing="-1.5px"
+              fontWeight="800"
             >
-              {'PÉPITE.'}
+              {'pépite.'}
             </Typography>
           </Typography>
           <Box sx={{ p: '0 5%' }}>

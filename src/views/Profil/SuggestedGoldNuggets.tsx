@@ -95,7 +95,7 @@ const SuggestedGoldNuggets = ({
   // Hook personnalisé de détection du scroll horizontal
   const [isFetching] = useHorizontalScroll(
     loadGoldNuggets,
-    100,
+    250,
     scrollContainerRef.current,
     hasMoreDataRef.current,
   );
@@ -103,15 +103,10 @@ const SuggestedGoldNuggets = ({
   useEffect(() => {
     // Exécute uniquement si le chargement initial n'a pas encore été fait et si le nombre de cards a été calculé
     if (!initialLoadDone.current && cardsToShow > 0) {
-      console.log('Chargement initial avec nombre de cards calculé');
       loadGoldNuggets();
       initialLoadDone.current = true; // Chargement initial terminé
     }
   }, [cardsToShow]);
-
-  useEffect(() => {
-    console.log('les pépites', goldenMovies);
-  }, [goldenMovies]);
 
   // Réinitialisation des pépites si l'utilisateur change le type (film ou série)
   useEffect(() => {
@@ -166,23 +161,6 @@ const SuggestedGoldNuggets = ({
             overflowX: 'scroll',
           }}
         >
-          {(isFetching || areGoldNuggetsLoading) &&
-            [...Array(cardsToShow)].map((_, i) => (
-              <Stack key={i} height="144px" alignItems="center">
-                <Skeleton
-                  variant="rounded"
-                  width={95}
-                  height={121}
-                  animation="wave"
-                />
-                <Skeleton
-                  variant="text"
-                  width={70}
-                  height={23}
-                  animation="wave"
-                />
-              </Stack>
-            ))}
           {goldenMovies.length > 0 &&
             goldenMovies.map((movie, index) => {
               if (displayType === 'movie' && !movie.movie_id) return null;
@@ -203,6 +181,23 @@ const SuggestedGoldNuggets = ({
                 />
               );
             })}
+          {(isFetching || areGoldNuggetsLoading) &&
+            [...Array(cardsToShow)].map((_, i) => (
+              <Stack key={i} height="144px" alignItems="center">
+                <Skeleton
+                  variant="rounded"
+                  width={95}
+                  height={121}
+                  animation="wave"
+                />
+                <Skeleton
+                  variant="text"
+                  width={70}
+                  height={23}
+                  animation="wave"
+                />
+              </Stack>
+            ))}
           {!goldenMovies.length && !areGoldNuggetsLoading && (
             <ProfilNoGold
               page={page}

@@ -28,8 +28,7 @@ const Home = () => {
   );
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
-  // const [areCriticsFetched, setAreCriticsFetched] = useState(false);
-  // const [haveMoreCritics, setHaveMoreCritics] = useState(true);
+  const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
 
   const firstRender = useRef(true);
 
@@ -37,13 +36,6 @@ const Home = () => {
   //   state: null,
   //   message: null,
   // });
-
-  // const resetAndLoadCritics = async () => {
-  //   setCriticsPage(1); // Réinitialiser la pagination
-  //   setCriticsOfAcquaintances([]); // Réinitialiser la liste des critiques
-  //   setAreCriticsFetched(false); // Chargement en cours
-  //   await getCritics(); // Charger les nouvelles critiques
-  // };
 
   /*
     On récupère 5 critiques selon cet ordre :
@@ -86,17 +78,12 @@ const Home = () => {
         return b.order - a.order || b.timestamp - a.timestamp;
       });
 
-    // // Si plus assez de critiques à récupérer, on affichera le message qui indique qu'il n'y a plus de critiques à parcourir
-    // if (critics.length < 5) {
-    //   setHaveMoreCritics(false);
-    // }
-
     setCriticsOfAcquaintances(existingCritics => [
       ...existingCritics,
       ...newCritics,
     ]);
 
-    // setAreCriticsFetched(true);
+    setIsDataFetched(true);
 
     // Return un booléen true si des données supplémentaires existent, sinon false
     return critics.length >= 5;
@@ -107,6 +94,7 @@ const Home = () => {
     getCritics,
     displayType,
     setCriticsOfAcquaintances,
+    setIsDataFetched,
   );
 
   // Détecte le premier rendu du composant
@@ -151,7 +139,6 @@ const Home = () => {
           >
             <SuggestedGoldNuggets
               page={'home'}
-              // userCritics={criticsOfAcquaintances}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
               userInfos={userInfos}
@@ -170,17 +157,13 @@ const Home = () => {
               page={'home'}
               type={'new-critic'}
               chosenMovie={chosenMovie}
-              setUserCritics={setCriticsOfAcquaintances}
-              setAdvicesReceived={null}
+              setData={setCriticsOfAcquaintances}
+              // setAdvicesReceived={null}
               setGoldenMovies={setGoldenMovies}
               chosenUser={null}
-              countCriticsAndGold={null}
               infos={null}
               haveMoreCritics={null}
               isLast={null}
-              // loadingMore={loadingMore}
-              // chosenUser={chosenUser}
-              // countCriticsAndGold={countCriticsAndGold}
             />
           ) : null}
           {criticsOfAcquaintances.length ? (
@@ -190,20 +173,19 @@ const Home = () => {
                   key={index}
                   page={'home'}
                   type={'old-critic'}
-                  setUserCritics={setCriticsOfAcquaintances}
-                  setAdvicesReceived={null}
+                  setData={setCriticsOfAcquaintances}
+                  // setUserCritics={setCriticsOfAcquaintances}
+                  // setAdvicesReceived={null}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}
                   infos={critic}
                   chosenUser={null}
-                  countCriticsAndGold={null}
                   haveMoreCritics={hasMore}
                   isLast={criticsOfAcquaintances.length - 1 === index}
-                  // loadingMore={loadingMore}
                 />
               );
             })
-          ) : !criticsOfAcquaintances.length && !loading ? (
+          ) : !criticsOfAcquaintances.length && isDataFetched ? (
             <NoCriticAdvice page={'home'} />
           ) : null}
           {loading && <SkeletonCard />}

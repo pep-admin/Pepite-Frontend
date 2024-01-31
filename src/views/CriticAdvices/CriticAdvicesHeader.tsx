@@ -34,7 +34,7 @@ const CriticAdvicesHeader = ({
   newRating,
   setNewRating,
   infos,
-  setUserCritics,
+  setData,
   isModify,
   setIsModify,
   isGoldNugget,
@@ -397,7 +397,8 @@ const CriticAdvicesHeader = ({
           <ModifyOrDelete
             parent={'critic'}
             infos={infos}
-            setInfos={setUserCritics}
+            setData={setData}
+            // setInfos={setUserCritics}
             isModify={isModify}
             setIsModify={setIsModify}
           />
@@ -422,7 +423,7 @@ CriticAdvicesHeader.propTypes = {
   newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
   setNewRating: PropTypes.func.isRequired,
   infos: PropTypes.object,
-  setUserCritics: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
   isGoldNugget: PropTypes.bool.isRequired,

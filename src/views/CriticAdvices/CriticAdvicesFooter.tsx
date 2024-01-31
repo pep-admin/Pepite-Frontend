@@ -256,7 +256,9 @@ const CriticAdvicesFooter = ({
               style={{
                 position: 'relative',
                 bottom: '1px',
-                filter: !isGold ? 'grayscale(1) contrast(0.9)' : 'none',
+                filter: !isGold
+                  ? 'grayscale(1) contrast(0.9) brightness(1.08)'
+                  : 'none',
               }}
             />
             <Particles particles={particles} />

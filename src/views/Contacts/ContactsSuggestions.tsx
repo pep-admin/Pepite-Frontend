@@ -28,6 +28,7 @@ const ContactsSuggestions = ({
 
   const scrollContainerRef = useRef(null);
   const suggestionsPageRef = useRef(1);
+  const firstRender = useRef(true);
 
   /* Calcule les cards à afficher selon la largeur du viewport.
     width: 95px, gap: 6px, 3 cards en plus pour la marge
@@ -61,13 +62,16 @@ const ContactsSuggestions = ({
   // Hook personnalisé de détection du scroll horizontal
   const [isFetching] = useHorizontalScroll(
     loadUsers,
-    100,
+    250,
     scrollContainerRef.current,
     hasMore,
   );
 
   useEffect(() => {
-    if (cardsToShow && hasMore) loadUsers();
+    if (firstRender.current && cardsToShow && hasMore) {
+      firstRender.current = false;
+      loadUsers();
+    }
   }, [cardsToShow, hasMore]);
 
   return (

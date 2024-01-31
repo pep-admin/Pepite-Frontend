@@ -12,9 +12,6 @@ import Header from '@utils/Header';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
-// Import de la requête qui récupère le nombre de critiques et de pépites
-import { getDetailsNumber } from '@utils/request/profil/getDetailsNumber';
-
 // Import des composants internes
 import { Item } from '@utils/styledComponent';
 import ProfilDetails from '@views/Profil/ProfilDetails';
@@ -24,6 +21,7 @@ import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent'
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 import AccountUpdatePic from '@views/Account/AccountUpdatePic';
 import FriendRequestBtn from '@utils/FriendRequestBtn';
+import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 // Import des icônes
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
@@ -32,15 +30,17 @@ import PersonAddAlt1TwoToneIcon from '@mui/icons-material/PersonAddAlt1TwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
 
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
 
 // Import des requêtes
 import { getUser } from '@utils/request/users/getUser';
-import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
-import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
+import { getCriticsOfUser } from '@utils/request/critics/getCritics';
+import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
+
+// Import du hook de scroll vertical infini
+import useVerticalScroll from '@hooks/useVerticalScroll';
 
 interface Picture {
   id: number;
@@ -73,20 +73,18 @@ const ProfilComponent = () => {
   // Utilisateur externe
   const [chosenUser, setChosenUser] = useState<User | null>(null);
 
-  const [userCritics, setUserCritics] = useState([]); // Toutes les critiques de l'utilisateur du profil
-  const [advicesReceived, setAdvicesReceived] = useState([]); // Tous les conseils reçus par l'utilisateur du profil
-  const [combinedData, setCombinedData] = useState([]); // Les critiques et les conseils combinés
+  // const [userCritics, setUserCritics] = useState([]); // Toutes les critiques de l'utilisateur du profil
+  // const [advicesReceived, setAdvicesReceived] = useState([]); // Tous les conseils reçus par l'utilisateur du profil
+  const [criticsAndAdvices, setCriticsAndAdvices] = useState([]);
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
-  const [criticsNumber, setCriticsNumber] = useState(0); // Nombre de critiques de l'utilisateur
-  const [goldNumber, setGoldNumber] = useState(0); // Nombre de pépites de l'utilisateur
   const [modifyCoverPic, setModifyCoverPic] = useState({
     state: false,
     type: null,
   });
   const [anchorProfilBtn, setAnchorProfilBtn] = useState(null);
-  const [areCriticAdvicesFetched, setAreCriticAdvicesFetched] = useState(false);
+  const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
 
-  const isFirstRender = useRef(true);
+  const firstRender = useRef(true);
 
   // const [alertSeverity, setAlertSeverity] = useState({state: null, message: null, action: null}); // Message de succès, d'info, d'erreur
 
@@ -97,50 +95,52 @@ const ProfilComponent = () => {
   };
 
   // Récupère les critiques et conseils de l'utilisateur du profil
-  const fetchCriticsAndAdvices = useCallback(
-    async (type: string) => {
+  const getCriticsAndAdvices = useCallback(
+    async page => {
       try {
-        setAreCriticAdvicesFetched(false);
+        let hasMoreCritics = true;
+        let hasMoreAdvices = true;
 
-        const criticData = await getAllCriticsOfUser(id, type);
-        setUserCritics(criticData);
+        const criticsData = await getCriticsOfUser(id, displayType, page);
+        if (criticsData.length < 3) {
+          // Si les critiques reçues sont inférieures à 3
+          hasMoreCritics = false;
+        }
+        // setUserCritics(criticsData);
 
-        const advicesData = await getAllAdvicesReceived(id, type);
-        setAdvicesReceived(advicesData);
+        const advicesData = await getAdvicesReceived(id, displayType, page);
+        if (advicesData.length < 3) {
+          // Si les conseils reçus sont inférieurs à 3
+          hasMoreAdvices = false;
+        }
+
+        const combinedData = [...criticsData, ...advicesData];
+        setCriticsAndAdvices(prevData => [...prevData, ...combinedData]);
+
+        setIsDataFetched(true);
+
+        // Retourne true s'il reste des critiques ou des conseils à charger
+        return hasMoreCritics || hasMoreAdvices;
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
-      } finally {
-        setAreCriticAdvicesFetched(true);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [id],
+    [id, displayType],
   );
 
-  // Mettre à jour combinedData chaque fois que userCritics ou advicesReceived change
+  const { observerRef, loading, hasMore } = useVerticalScroll(
+    firstRender,
+    getCriticsAndAdvices,
+    displayType,
+    setCriticsAndAdvices,
+    setIsDataFetched,
+  );
+
   useEffect(() => {
-    const combined = [
-      ...userCritics.map(critic => ({ ...critic, type: 'critic' })),
-      ...advicesReceived.map(advice => ({ ...advice, type: 'advice' })),
-    ];
+    console.log('les critiques et conseils', criticsAndAdvices);
+  }, [criticsAndAdvices]);
 
-    combined.sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    );
-
-    setCombinedData(combined);
-  }, [userCritics, advicesReceived]);
-
-  const countCriticsAndGold = async () => {
-    const count = await getDetailsNumber(id);
-    const criticsNumber = count.totalCriticsCount;
-    const goldNuggetsNumber = count.totalGoldCount;
-
-    setCriticsNumber(criticsNumber);
-    setGoldNumber(goldNuggetsNumber);
-  };
-
+  // Récupération des informations de l'utilisateur si le profil est différent de l'utilisateur connecté
   useEffect(() => {
     const loggedInUserId = userInfos.id;
     const profileUserId = parseInt(id, 10);
@@ -150,26 +150,19 @@ const ProfilComponent = () => {
       // Fetch les informations de cet utilisateur
       fetchChosenUser(profileUserId);
     }
-    // Comptage des critiques et des pépites pour l'utilisateur affiché
-    countCriticsAndGold();
   }, [id, userInfos]);
 
-  // useEffect(() => {
-  //   setAreCriticAdvicesFetched(false);
-  //   fetchCriticsAndAdvices(displayType);
-  // }, [fetchCriticsAndAdvices, displayType]);
-
+  // Réinitialisation lors du changement de type (films ou séries)
   useEffect(() => {
-    // Ignore le premier rendu
-    if (isFirstRender.current) {
-      fetchCriticsAndAdvices(displayType);
-      isFirstRender.current = false;
+    // Premier rendu
+    if (firstRender.current) {
+      firstRender.current = false;
+      // Réinitialisation
     } else {
-      setUserCritics([]);
-      setAdvicesReceived([]);
-      fetchCriticsAndAdvices(displayType);
+      // setUserCritics([]);
+      // setAdvicesReceived([]);
     }
-  }, [displayType]);
+  }, [displayType, id]);
 
   const handleClick = event => {
     setAnchorProfilBtn(event.currentTarget);
@@ -387,8 +380,8 @@ const ProfilComponent = () => {
                 borderradius="0 0 10px 10px"
               >
                 <ProfilDetails
-                  criticsNumber={criticsNumber}
-                  goldNumber={goldNumber}
+                  criticsAndAdvices={criticsAndAdvices}
+                  // userCritics={userCritics}
                   userInfos={userInfos}
                   chosenUser={chosenUser}
                 />
@@ -417,47 +410,45 @@ const ProfilComponent = () => {
             chosenUser={chosenUser}
             handlePoster={null}
           />
-          <Stack>
-            {chosenMovie !== null ? (
-              <CriticAdvicesComponent
-                page={'profil'}
-                type={
-                  userInfos.id === parseInt(id, 10)
-                    ? 'new-critic'
-                    : 'new-advice'
-                }
-                chosenMovie={chosenMovie}
-                setUserCritics={setUserCritics}
-                setAdvicesReceived={setAdvicesReceived}
-                setGoldenMovies={setGoldenMovies}
-                infos={null}
-                chosenUser={chosenUser}
-                countCriticsAndGold={countCriticsAndGold}
-              />
-            ) : null}
-            {combinedData.length > 0 ? (
-              combinedData.map(infos => {
-                return (
-                  <CriticAdvicesComponent
-                    page={'profil'}
-                    key={`${infos.type}-${infos.id}`}
-                    type={infos.type === 'critic' ? 'old-critic' : 'old-advice'}
-                    setUserCritics={setUserCritics}
-                    setAdvicesReceived={setAdvicesReceived}
-                    setGoldenMovies={setGoldenMovies}
-                    chosenMovie={null}
-                    infos={infos}
-                    chosenUser={chosenUser}
-                    countCriticsAndGold={countCriticsAndGold}
-                  />
-                );
-              })
-            ) : !combinedData.length && areCriticAdvicesFetched ? (
-              <NoCriticAdvice page={'profil'} />
-            ) : (
-              <SkeletonCard />
-            )}
-          </Stack>
+          {chosenMovie !== null ? (
+            <CriticAdvicesComponent
+              page={'profil'}
+              type={
+                userInfos.id === parseInt(id, 10) ? 'new-critic' : 'new-advice'
+              }
+              chosenMovie={chosenMovie}
+              // criticsAndAdvices={criticsAndAdvices}
+              setData={setCriticsAndAdvices}
+              // setUserCritics={setUserCritics}
+              // setAdvicesReceived={setAdvicesReceived}
+              setGoldenMovies={setGoldenMovies}
+              infos={null}
+              chosenUser={chosenUser}
+            />
+          ) : null}
+          {criticsAndAdvices.length ? (
+            criticsAndAdvices.map(infos => {
+              return (
+                <CriticAdvicesComponent
+                  key={`${infos.type}-${infos.id}`}
+                  page={'profil'}
+                  type={infos.critic_id ? 'old-critic' : 'old-advice'}
+                  // criticsAndAdvices={criticsAndAdvices}
+                  setData={setCriticsAndAdvices}
+                  // setUserCritics={setUserCritics}
+                  // setAdvicesReceived={setAdvicesReceived}
+                  setGoldenMovies={setGoldenMovies}
+                  chosenMovie={null}
+                  infos={infos}
+                  chosenUser={chosenUser}
+                />
+              );
+            })
+          ) : !criticsAndAdvices.length && isDataFetched ? (
+            <NoCriticAdvice page={'profil'} />
+          ) : null}
+          {loading && <SkeletonCard />}
+          {hasMore && <div ref={observerRef}></div>}
         </Stack>
       </Container>
     </>

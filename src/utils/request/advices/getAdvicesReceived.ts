@@ -2,10 +2,10 @@ import axios from 'axios';
 import { parseDatabaseData } from '../parseDetails';
 import apiBaseUrl from '../config';
 
-// Récupération de toutes les conseils reçus d'un utilisateur
-export const getAllAdvicesReceived = async (userId, type) => {
+// Récupération des conseils reçus d'un utilisateur
+export const getAdvicesReceived = async (userId, type, page) => {
   const response = await axios.get(`${apiBaseUrl}/advices/all/${userId}`, {
-    params: { type: type },
+    params: { type: type, page: page },
     withCredentials: true,
   });
 

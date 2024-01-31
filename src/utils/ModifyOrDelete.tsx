@@ -16,16 +16,16 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import ClearIcon from '@mui/icons-material/Clear';
 
-// Import des requêtes internes
-import { deleteCritic } from './request/critics/deleteCritic';
-import { getAllCriticsOfUser } from './request/critics/getCritics';
-
 // Import du contexte
 import { useData } from '@hooks/DataContext';
+
+// Import des requêtes internes
+import { deleteCritic } from './request/critics/deleteCritic';
 import { deleteComment } from './request/comments/deleteComment';
 import { getAllCriticComments } from './request/comments/getComments';
+import { getCriticsOfUser } from './request/critics/getCritics';
 
-const ModifyOrDelete = ({ parent, infos, setInfos, isModify, setIsModify }) => {
+const ModifyOrDelete = ({ parent, infos, setData, isModify, setIsModify }) => {
   const { displayType } = useData();
 
   // Menu des outils pour modifier / supprimer
@@ -41,15 +41,15 @@ const ModifyOrDelete = ({ parent, infos, setInfos, isModify, setIsModify }) => {
     if (tool === 'delete' && parent === 'critic') {
       // TO DO: faire apparaître une modale
       await deleteCritic(infos.critic_id, displayType);
-      const newCriticsData = await getAllCriticsOfUser(userId, displayType);
-      setInfos(newCriticsData);
+      const newCriticsData = await getCriticsOfUser(userId, displayType, 1);
+      setData(newCriticsData);
     } else if (tool === 'delete' && parent === 'comment') {
       await deleteComment(infos.id, displayType);
       const newCommentsData = await getAllCriticComments(
         displayType,
         infos.critic_id,
       );
-      setInfos(newCommentsData.data);
+      setData(newCommentsData.data);
     }
   };
 
@@ -129,7 +129,7 @@ const ModifyOrDelete = ({ parent, infos, setInfos, isModify, setIsModify }) => {
 
 ModifyOrDelete.propTypes = {
   infos: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-  setInfos: PropTypes.func.isRequired,
+  setData: PropTypes.func,
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
   parent: PropTypes.string.isRequired,

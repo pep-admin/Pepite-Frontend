@@ -56,7 +56,7 @@ const CommentsComponent = ({ criticId, comments, setComments }) => {
               <CommentsContent
                 key={comment.id}
                 comment={comment}
-                setInfos={setComments}
+                setData={setComments}
                 getComments={getComments}
                 userInfos={user_infos}
               />

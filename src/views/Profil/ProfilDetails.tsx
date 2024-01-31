@@ -16,15 +16,26 @@ import PropTypes from 'prop-types';
 import StarIcon from '@mui/icons-material/Star';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
+import { useEffect, useState } from 'react';
+import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
 
-const ProfilDetails = ({
-  criticsNumber,
-  goldNumber,
-  userInfos,
-  chosenUser,
-}) => {
+const ProfilDetails = ({ criticsAndAdvices, userInfos, chosenUser }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [criticsNumber, setCriticsNumber] = useState(0);
+  const [goldNuggetsNumber, setGoldNuggetsNumber] = useState(0);
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const { criticsNumber, goldNuggetsNumber } =
+        await countCriticsAndGoldUser(id);
+      setCriticsNumber(criticsNumber);
+      setGoldNuggetsNumber(goldNuggetsNumber);
+    };
+
+    fetchCounts();
+  }, [id, criticsAndAdvices]);
 
   return (
     <>
@@ -104,10 +115,10 @@ const ProfilDetails = ({
                 fontWeight="bold"
                 marginRight="2.5px"
               >
-                {`${goldNumber}`}
+                {`${goldNuggetsNumber}`}
               </Typography>
               <Typography component="p" variant="body2" color="#EDC800">
-                {goldNumber > 1 ? 'pépites' : 'pépite'}
+                {goldNuggetsNumber > 1 ? 'pépites' : 'pépite'}
               </Typography>
             </ListItemButton>
           </ListItem>
@@ -177,8 +188,7 @@ const ProfilDetails = ({
 };
 
 ProfilDetails.propTypes = {
-  criticsNumber: PropTypes.number.isRequired,
-  goldNumber: PropTypes.number.isRequired,
+  criticsAndAdvices: PropTypes.array.isRequired,
   userInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
 };

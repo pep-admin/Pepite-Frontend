@@ -16,7 +16,7 @@ import { useData } from '@hooks/DataContext';
 // Import des requêtes
 import { getWantedMoviesRequest } from '@utils/request/list/getWantedMoviesRequest';
 import { getWatchedMoviesRequest } from '@utils/request/list/getWatchedMoviesRequest';
-import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
+import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const ListComponent = () => {
   const { id } = useParams();
@@ -42,7 +42,7 @@ const ListComponent = () => {
   };
 
   const getRatedMovies = async () => {
-    const rated = await getAllCriticsOfUser(id, displayType);
+    const rated = await getCriticsOfUser(id, displayType, 1);
     console.log('les films notés', rated);
     setRatedMovies(rated);
   };

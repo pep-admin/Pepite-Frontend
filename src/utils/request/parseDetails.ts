@@ -156,7 +156,6 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     name = data.name;
     rating = data.rating;
     text = data.text;
-    // critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
     is_turnip = Number(data.is_turnip);
     relation_type = data.relation_type;

@@ -22,12 +22,12 @@ import CriticAdvicesPoster from './CriticAdvicesPoster';
 
 // Import des requêtes
 import { addNewCritic } from '@utils/request/critics/postCritic';
-import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
+import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
 import { useParams } from 'react-router-dom';
-import { getAllAdvicesReceived } from '@utils/request/advices/getAllAdvicesReceived';
+import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
 import { getUser } from '@utils/request/users/getUser';
 import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
 import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
@@ -41,15 +41,12 @@ const CriticAdvicesComponent = ({
   page,
   type,
   chosenMovie,
-  setUserCritics,
-  setAdvicesReceived,
+  setData,
   setGoldenMovies,
   infos,
   chosenUser,
-  countCriticsAndGold,
   haveMoreCritics,
   isLast,
-  // loadingMore,
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -103,14 +100,15 @@ const CriticAdvicesComponent = ({
 
     const newData =
       type === 'critic'
-        ? await getAllCriticsOfUser(userId, displayType)
-        : await getAllAdvicesReceived(id, displayType);
+        ? await getCriticsOfUser(userId, displayType, 1)
+        : await getAdvicesReceived(id, displayType, 1);
 
-    if (type === 'critic') {
-      setUserCritics(newData);
-    } else {
-      setAdvicesReceived(newData);
-    }
+    setData(newData);
+    // if (type === 'critic') {
+    //   setUserCritics(newData);
+    // } else {
+    //   setAdvicesReceived(newData);
+    // }
 
     const response = await getAllGoldNuggetsOfUser(
       displayType,
@@ -121,7 +119,7 @@ const CriticAdvicesComponent = ({
 
     setGoldenMovies(response.data.goldenMovies);
 
-    countCriticsAndGold();
+    // countCriticsAndGold();
     setIsModify(false);
 
     setChosenMovieId(null);
@@ -278,7 +276,8 @@ const CriticAdvicesComponent = ({
               newRating={newRating}
               setNewRating={setNewRating}
               infos={infos}
-              setUserCritics={setUserCritics}
+              setData={setData}
+              // setUserCritics={setUserCritics}
               isModify={isModify}
               setIsModify={setIsModify}
               isGoldNugget={isGoldNugget}
@@ -469,17 +468,12 @@ CriticAdvicesComponent.propTypes = {
   page: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),
-  setUserCritics: PropTypes.func,
-  setNewCriticError: PropTypes.func,
-  setNewCriticInfo: PropTypes.func,
-  setNewCriticSuccess: PropTypes.func,
+  setData: PropTypes.func,
   infos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
   chosenUser: PropTypes.object,
-  countCriticsAndGold: PropTypes.func,
   haveMoreCritics: PropTypes.bool,
   isLast: PropTypes.bool,
-  setAdvicesReceived: PropTypes.func,
 };
 
 export default React.memo(CriticAdvicesComponent);

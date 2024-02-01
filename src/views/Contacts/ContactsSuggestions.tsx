@@ -1,172 +1,146 @@
 // Import des libs externes
-import {
-  Typography,
-  Divider,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Button,
-  Box,
-} from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Stack, Typography, Divider, Skeleton } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import apiBaseUrl from '@utils/request/config';
-import FriendRequestBtn from '@utils/FriendRequestBtn';
+import { Item } from '@utils/components/styledComponent';
+import SuggestionsCard from './SuggestionsCard';
+
+// Import des requêtes
+import { getUsersSuggestions } from '@utils/request/users/getUsersSuggestions';
+
+// Import des hooks
+import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
+import { useCardsToShow } from '@hooks/useCardsToShow';
 
 const ContactsSuggestions = ({
-  user,
+  page,
   friendsList,
   followedList,
   getFriendsRequests,
   getFriends,
   getFollowed,
-  isLast,
 }) => {
-  const navigate = useNavigate();
+  const [usersSuggestion, setUsersSuggestion] = useState([]); // Les utilisateurs suggérés
+  const [areUsersLoading, setAreUsersLoading] = useState(true); // Etat de chargement des utilisateurs suggérés
+  const [hasMore, setHasMore] = useState(true); // Il reste ou non des utilisateurs à récupérer
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
+  const scrollContainerRef = useRef(null);
+  const suggestionsPageRef = useRef(1);
+  const firstRender = useRef(true);
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+  /* Calcule les cards à afficher selon la largeur du viewport.
+    width: 95px, gap: 6px, 3 cards en plus pour la marge
+  */
+  const cardsToShow = useCardsToShow(95, 6, 3);
+
+  const loadUsers = async () => {
+    try {
+      if (!hasMore) return;
+
+      setAreUsersLoading(true); // Début du chargement des utilisateurs
+      const response = await getUsersSuggestions(
+        cardsToShow,
+        suggestionsPageRef.current,
+      );
+
+      suggestionsPageRef.current++; // Incrémentation de la page
+
+      if (response.data.hasMore) {
+        setUsersSuggestion(prevUsers => [...prevUsers, ...response.data.users]);
+      } else {
+        setHasMore(false); // Fin des données d'utilisateurs
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des utilisateurs', error);
+    } finally {
+      setAreUsersLoading(false);
+    }
   };
 
+  // Hook personnalisé de détection du scroll horizontal
+  const [isFetching] = useHorizontalScroll(
+    loadUsers,
+    250,
+    scrollContainerRef.current,
+    hasMore,
+  );
+
+  useEffect(() => {
+    if (firstRender.current && cardsToShow && hasMore) {
+      firstRender.current = false;
+      loadUsers();
+    }
+  }, [cardsToShow, hasMore]);
+
   return (
-    <>
-      <Card
-        sx={{
-          height: '100%',
-          width: 95,
-          flexShrink: 0,
-          boxShadow: 'none',
-          position: 'relative',
-        }}
+    <Item overflow="hidden">
+      <Stack direction="row" height="25px" alignItems="center" padding="0 13px">
+        <Typography variant="body2" component="p" fontWeight="bold">
+          {'Personnes suggérées'}
+        </Typography>
+      </Stack>
+      <Divider />
+      <Stack
+        ref={scrollContainerRef}
+        direction="row"
+        padding="6px 6px 0 6px"
+        columnGap="6px"
+        sx={{ overflowX: 'scroll' }}
       >
-        <CardActionArea
-          sx={{ height: '95px' }}
-          onClick={() => {
-            navigate(`/profil/${user.id}`);
-          }}
-        >
-          <CardMedia
-            component="img"
-            height="100%"
-            image={
-              user.file_path
-                ? `${apiBaseUrl}/Uploads/${user.file_path}`
-                : `http://127.0.0.1:5173/images/default_profil_pic.png`
-            }
-            alt={`Photo de profil de ${user.first_name} ${user.last_name}`}
-            sx={{
-              borderRadius: '10px',
-              boxShadow:
-                '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
-            }}
-          />
-        </CardActionArea>
-        <CardContent
-          sx={{
-            height: '23px',
-            width: '100%',
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Typography
-            gutterBottom
-            component="h4"
-            margin="0"
-            paddingLeft="8px"
-            maxWidth="100%"
-            overflow="hidden"
-            whiteSpace="nowrap"
-            textOverflow="ellipsis"
-            sx={{ fontSize: '1em' }}
-          >
-            {`${user.first_name} ${user.last_name}`}
-          </Typography>
-        </CardContent>
-        <CardActions
-          sx={{ padding: '0', justifyContent: 'center', marginBottom: '6px' }}
-        >
-          <Button
-            size="small"
-            variant="contained"
-            sx={{
-              width: '72px',
-              height: '20px',
-              textTransform: 'initial',
-              fontWeight: 'normal',
-              fontSize: '0.9em',
-              padding: '0',
-            }}
-            onClick={e => handleClick(e)}
-          >
-            {'Ajouter'}
-          </Button>
-          <FriendRequestBtn
-            anchorEl={anchorEl}
-            setAnchorEl={setAnchorEl}
-            receiverId={user.id}
-            friendsList={friendsList}
-            followedList={followedList}
-            getFriendsRequests={getFriendsRequests}
-            getFriends={getFriends}
-            getFollowed={getFollowed}
-          />
-        </CardActions>
-        <Box
-          width="23px"
-          height="23px"
-          position="absolute"
-          top="3px"
-          right="3px"
-          borderRadius="50%"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          sx={{ backgroundColor: 'rgba(244, 244, 244, 0.65)' }}
-        >
-          <img
-            src="/images/gold_right_top_outlined.svg"
-            alt=""
-            style={{
-              position: 'relative',
-              top: '0.2px',
-            }}
-          />
-          <Typography
-            variant="body2"
-            fontWeight="bold"
-            position="absolute"
-            color="#052525"
-          >
-            {`${user.count_common_gold_nuggets}`}
-          </Typography>
-        </Box>
-      </Card>
-      {!isLast ? (
-        <Divider variant="middle" flexItem orientation="vertical" />
-      ) : null}
-    </>
+        {usersSuggestion &&
+          usersSuggestion.map((user, index) => {
+            return (
+              <SuggestionsCard
+                key={user.id}
+                page={page}
+                user={user}
+                friendsList={friendsList}
+                followedList={followedList}
+                getFriendsRequests={getFriendsRequests}
+                getFriends={getFriends}
+                getFollowed={getFollowed}
+                isLast={usersSuggestion.length - 1 !== index ? false : true}
+              />
+            );
+          })}
+        {(isFetching || areUsersLoading) &&
+          [...Array(cardsToShow)].map((_, i) => (
+            <Stack key={i} height="144px" alignItems="center">
+              <Skeleton
+                variant="rounded"
+                width={95}
+                height={95}
+                animation="wave"
+              />
+              <Skeleton
+                variant="text"
+                width={80}
+                sx={{ fontSize: '0.95em', marginTop: '4px' }}
+                animation="wave"
+              />
+              <Skeleton
+                variant="text"
+                width={70}
+                height={27}
+                sx={{ marginTop: '-4px' }}
+                animation="wave"
+              />
+            </Stack>
+          ))}
+      </Stack>
+    </Item>
   );
 };
 
 ContactsSuggestions.propTypes = {
-  user: PropTypes.object.isRequired,
-  friendsList: PropTypes.array.isRequired,
-  followedList: PropTypes.array.isRequired,
+  page: PropTypes.string.isRequired,
+  friendsList: PropTypes.array,
+  followedList: PropTypes.array,
   getFriendsRequests: PropTypes.func,
   getFriends: PropTypes.func,
-  getFollowed: PropTypes.func.isRequired,
-  isLast: PropTypes.bool.isRequired,
+  getFollowed: PropTypes.func,
 };
 
 export default ContactsSuggestions;

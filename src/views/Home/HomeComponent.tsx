@@ -1,34 +1,36 @@
 // Import des libs externes
 import { Container, Stack } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Import des composants internes
-import Header from '@utils/Header';
-import { Item } from '@utils/styledComponent';
-import SearchBar from '@utils/SearchBar';
-import ContactsComponent from '@views/Contacts/ContactsComponent';
-import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
+import Header from '@utils/components/Header';
+import SearchBar from '@utils/components/SearchBar';
+import { Item } from '@utils/components/styledComponent';
+import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
+import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
+import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
+import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 // Import des requêtes
 import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
-import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
+import useVerticalScroll from '@hooks/useVerticalScroll';
 
 const Home = () => {
   const { displayType, chosenMovie } = useData();
 
-  const [userInfos, setUserInfos] = useState(
-    // L'utilisateur connecté
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
+  // L'utilisateur connecté
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
-  const [criticsPage, setCriticsPage] = useState(1); // Page de critiques incrémentée à chaque fois que l'utilisateur scroll en bas de page
-  const [loadingMore, setLoadingMore] = useState(true); // Booléen : charger de nouvelles critiques
-  const [haveMoreCritics, setHaveMoreCritics] = useState(true);
+  const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
+
+  const firstRender = useRef(true);
+
   // const [alertSeverity, setAlertSeverity] = useState({
   //   state: null,
   //   message: null,
@@ -42,74 +44,68 @@ const Home = () => {
     4) les critiques anciennes d'amis
     5) les critiques récentes des suivis
     6) les critiques anciennes des suivis
+    7) les critiques de l'utilisateur connecté
   */
-  const getCritics = async () => {
-    setLoadingMore(true); // Critiques en cours de chargement
+
+  const getCritics = async page => {
+    console.log('recup des critiques');
 
     const critics = await getAllCriticsOfAcquaintances(
-      userInfos.id,
+      loggedUserInfos.id,
       displayType,
-      criticsPage,
+      page,
     );
 
     const newCritics = critics
       .map(critic => ({
         ...critic,
         // Convertir la date en un format comparable
-        timestamp: new Date(critic.created_at).getTime(),
-        // Attribuer une pondération basée sur le type de relation
+        timestamp: new Date(critic.critic_date).getTime(),
+        // Ordre d'affichage basé sur le type de relation
         order:
           critic.relation_type === 'close_friend'
-            ? 3
+            ? 3 // Critiques des amis proches en premier
             : critic.relation_type === 'friend'
-            ? 2
-            : 1,
+            ? 2 // Critiques des amis en deuxième
+            : critic.relation_type === 'followed'
+            ? 1 // Critiques des suivis en troisième
+            : 0, // Critiques de l'utilisateur connecté
       }))
+
       .sort((a, b) => {
         // On trie d'abord selon la relation, puis par date
         return b.order - a.order || b.timestamp - a.timestamp;
       });
-
-    if (!critics.length) {
-      setHaveMoreCritics(false);
-    }
 
     setCriticsOfAcquaintances(existingCritics => [
       ...existingCritics,
       ...newCritics,
     ]);
 
-    // 1000 ms de delay pour permettre de voir le loader de chargement
-    setTimeout(() => {
-      setLoadingMore(false); // Critiques chargées
-    }, 1000);
+    setIsDataFetched(true);
+
+    // Return un booléen true si des données supplémentaires existent, sinon false
+    return critics.length >= 5;
   };
 
-  // Détecte le scroll en bas de page pour récupérer d'autres critiques
+  const { observerRef, loading, hasMore } = useVerticalScroll(
+    firstRender,
+    getCritics,
+    displayType,
+    setCriticsOfAcquaintances,
+    setIsDataFetched,
+  );
+
+  // Détecte le premier rendu du composant
   useEffect(() => {
-    if (!haveMoreCritics) return;
-
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop !==
-          document.documentElement.offsetHeight ||
-        loadingMore
-      )
-        return;
-      setCriticsPage(currentCount => currentCount + 1); // Récupérer une nouvelle page de critiques
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadingMore]);
-
-  useEffect(() => {
-    getCritics();
-  }, [displayType, criticsPage]);
+    if (firstRender.current) {
+      firstRender.current = false;
+    }
+  }, []);
 
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Container
         maxWidth="xl"
         sx={{
@@ -122,43 +118,51 @@ const Home = () => {
           <SearchBar
             Item={Item}
             page={'contacts'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
           />
-          <ContactsComponent page={'home'} />
+          <ContactsSuggestions
+            page={'home'}
+            friendsList={null}
+            followedList={null}
+            getFriendsRequests={null}
+            getFriends={null}
+            getFollowed={null}
+          />
           <Item
             customheight="calc(100% - 6px)"
             customwidth="100%"
             margintop="6px"
             overflow="hidden"
           >
-            <ProfilSuggestedNotes
+            <SuggestedGoldNuggets
               page={'home'}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
-              userInfos={userInfos}
+              loggedUserInfos={loggedUserInfos}
             />
           </Item>
           <SearchBar
             Item={Item}
             page={'home'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
             showPicModal={null}
           />
           {chosenMovie !== null ? (
             <CriticAdvicesComponent
+              page={'home'}
               type={'new-critic'}
               chosenMovie={chosenMovie}
-              setUserCritics={setCriticsOfAcquaintances}
+              setData={setCriticsOfAcquaintances}
               setGoldenMovies={setGoldenMovies}
+              loggedUserInfos={loggedUserInfos}
+              chosenUser={null}
               infos={null}
               haveMoreCritics={null}
               isLast={null}
-              // chosenUser={chosenUser}
-              // countCriticsAndGold={countCriticsAndGold}
             />
           ) : null}
           {criticsOfAcquaintances.length ? (
@@ -166,21 +170,24 @@ const Home = () => {
               return (
                 <CriticAdvicesComponent
                   key={index}
+                  page={'home'}
                   type={'old-critic'}
-                  setUserCritics={setCriticsOfAcquaintances}
+                  setData={setCriticsOfAcquaintances}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}
                   infos={critic}
+                  loggedUserInfos={loggedUserInfos}
                   chosenUser={null}
-                  countCriticsAndGold={null}
-                  haveMoreCritics={haveMoreCritics}
+                  haveMoreCritics={hasMore}
                   isLast={criticsOfAcquaintances.length - 1 === index}
                 />
               );
             })
-          ) : (
+          ) : !criticsOfAcquaintances.length && isDataFetched ? (
             <NoCriticAdvice page={'home'} />
-          )}
+          ) : null}
+          {loading && <SkeletonCard />}
+          {hasMore && <div ref={observerRef}></div>}
         </Stack>
       </Container>
     </>

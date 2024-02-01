@@ -5,9 +5,9 @@ import { useSpring } from 'react-spring';
 import { useState, useEffect, useRef } from 'react';
 
 // Import des composants internes
-import Header from '@utils/Header';
-import { Item } from '@utils/styledComponent';
-import SearchBar from '@utils/SearchBar';
+import Header from '@utils/components/Header';
+import { Item } from '@utils/components/styledComponent';
+import SearchBar from '@utils/components/SearchBar';
 import SwipeFilter from '@views/Swipe/SwipeFilter';
 import SwipeCard from '@views/Swipe/SwipeCard';
 import LastCard from './LastCard';
@@ -34,7 +34,7 @@ const SwipeComponent = ({
   moviesStatusUpdated,
   setMoviesStatusUpdated,
 }) => {
-  const [userInfos, setUserInfos] = useState(
+  const [loggedUserInfos, setLoggedUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
 
@@ -241,7 +241,10 @@ const SwipeComponent = ({
 
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header
+        loggedUserInfos={loggedUserInfos}
+        setLoggedUserInfos={setLoggedUserInfos}
+      />
       <Container
         maxWidth="xl"
         sx={{
@@ -254,7 +257,7 @@ const SwipeComponent = ({
           <SearchBar
             Item={Item}
             page={'swipe'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
           />

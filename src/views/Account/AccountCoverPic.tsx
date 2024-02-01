@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 // Import des variables d'environnement
 import apiBaseUrl from '@utils/request/config';
 
-const AccountCoverPic = ({ setShowPicModal, userInfos }) => {
+const AccountCoverPic = ({ setShowPicModal, loggedUserInfos }) => {
   return (
     <Stack direction="column">
       <Card
@@ -28,10 +28,11 @@ const AccountCoverPic = ({ setShowPicModal, userInfos }) => {
       >
         <CardMedia
           image={
-            !userInfos.coverPics.length
+            !loggedUserInfos.coverPics.length
               ? 'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
               : `${apiBaseUrl}/uploads/${
-                  userInfos.coverPics.find(pic => pic.isActive === 1).filePath
+                  loggedUserInfos.coverPics.find(pic => pic.isActive === 1)
+                    .filePath
                 }`
           }
           sx={{
@@ -94,7 +95,7 @@ const AccountCoverPic = ({ setShowPicModal, userInfos }) => {
 
 AccountCoverPic.propTypes = {
   setShowPicModal: PropTypes.func.isRequired,
-  userInfos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
 };
 
 export default AccountCoverPic;

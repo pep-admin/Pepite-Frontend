@@ -19,5 +19,5 @@ export function convertDate(timestamp) {
   const month = months[date.getMonth()]; // Obtient le mois (0-11, donc nécessite un tableau pour la conversion)
   const year = date.getFullYear(); // Obtient l'année
 
-  return `Le ${day} ${month} ${year}`; // Formatte la date
+  return `${day} ${month} ${year}`; // Formatte la date
 }

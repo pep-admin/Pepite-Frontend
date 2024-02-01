@@ -179,33 +179,48 @@ export const FollowedIcon = createSvgIcon(
   'FollowedIcon',
 );
 
-// Etoiles customisées orange foncé
-export const DarkOrangeRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#ff7b00',
-  },
-});
+const createCustomRating = color =>
+  styled(Rating)({
+    '.MuiRating-iconFilled': {
+      color: color,
+    },
+  });
 
-// Etoiles customisées orange
-export const OrangeRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#F29E50',
-  },
-});
+export const DarkOrangeRating = createCustomRating('#ff7b00');
+export const OrangeRating = createCustomRating('#F29E50');
+export const YellowRating = createCustomRating('#FFDA1B');
+export const TurquoiseRating = createCustomRating('#24A5A5');
 
-// Etoiles customisées jaune
-export const YellowRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#FFDA1B',
-  },
-});
-
-// Etoiles customisées turquoise
-export const TurquoiseRating = styled(Rating)({
-  '.MuiRating-iconFilled': {
-    color: '#24A5A5',
-  },
-});
+// SVG étoile de brillance du logo pépite
+export const ShineIcon = createSvgIcon(
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+  >
+    <rect width="20" height="20" fill="url(#pattern0)" />
+    <defs>
+      <pattern
+        id="pattern0"
+        patternContentUnits="objectBoundingBox"
+        width="1"
+        height="1"
+      >
+        <use xlinkHref="#image0_1262_5" transform="scale(0.0227273)" />
+      </pattern>
+      <image
+        id="image0_1262_5"
+        width="44"
+        height="44"
+        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpUUrDnYQcchQnSyIijhKKxbBQmkrtOpg8tI/aNKQpLg4Cq4FB38Wqw4uzro6uAqC4A+Is4OToouUeF9SaBHjhcf7OO+ew3v3AUKzylSzZxJQNctIJ2JiLr8qBl4hwIcgQuiXmKknM4tZeNbXPfVS3UV5lnffnzWgFEwG+ETieaYbFvEG8eympXPeJw6zsqQQnxNPGHRB4keuyy6/cS45LPDMsJFNx4nDxGKpi+UuZmVDJZ4hjiiqRvlCzmWF8xZntVpn7XvyF4YK2kqG67RGkcASkkhBhIw6KqjCQpR2jRQTaTqPefhHHH+KXDK5KmDkWEANKiTHD/4Hv2drFqen3KRQDOh9se2PMSCwC7Qatv19bNutE8D/DFxpHX+tCcx9kt7oaJEjYHAbuLjuaPIecLkDDD/pkiE5kp+WUCwC72f0TXlg6BboW3Pn1j7H6QOQpVkt3wAHh8B4ibLXPd4d7J7bvz3t+f0A6SVycF1X/sMAAAAGYktHRAAAAEUAXO3P6YsAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfoAgEIOhG1tah5AAACwUlEQVRYw92ZzW9MYRjFf+9Ma+qrnVBKqPhKiUhDhB0LhI2FxMLWxo41IbGxkbD0FwgbViT+ArGQiIiFFSE2vko/JGhnOj+bp0kr7Wj1jrnXSWZz782955573uc57zOQIdSkrlL3qrfV42qvWiKPUCvqTvWu+lR9re5RK1k9I+s37wDWAWuBTcBmYBAo55XwEqAKbAe64/75JKx2BsleoC/IAxwElqkdefPvsvDrc2diPHxdyY3CUQU6Q91ds9hkZVbPKmXo3VVBuHOW8xeBatim7VYoqd3qAfWns6Om7s7CFlkovBRYAxwCKk3K3bFQudxOdSvqxuhokzbHD3XHYlUuLYJsCuX6gHvzuFcXcBboaUuJU7vUfvWW88dPdUDtagfZDep5te7C8Fjt+2cVQ12irlfPxepfKCYjHPWqnWGtlhDtiEW2Tr3yF8pORz3i55aIo+VWEF0T/ruvNlw8GuqQOrgQtVMTouXoWtXoYtuAO9Fms0QNOAK8B4aB0ZRSfV6Eg2Q5jleB1ZFrrwMD0xJYK/AVOAm8BT4DAg1gMqXUmEE4wksl4uHUbxC4BPQ36WCZLxXgCXANeAeMAmPAN6CWUmpMEe6JXcJW4FS8aXcommgPfgCPg/xbYCilNJrC6L3AYeAEcHqOxNUONIA3wEPgKvAln7vZZpvGlJLqBPAMGIlPkUdL1FJKFnPRFa6sFalxFK41/3/hp7DxsrABvpBbpGmz4OXqPnVsnoRvqGvbNmcr1DYfIKU0HrXzFXDhD5dfjtZfp50o3Kgq2uZEtNMzc1z2APgSrTYXs+GS2qMeVSdmUXi/ujQ349ZQuQYMAS9/Oz0RaauRG8LTQswwcDMWlnH8eRyfzBXhlFItsusQ8DGUBXgEfF9UAmuRwlOffyTK3FjY4EVW6k4NmrNEHfgAfAJWhHczJdyKdt3Sv25/AQulQDJl6QHIAAAAAElFTkSuQmCC"
+      />
+    </defs>
+  </svg>,
+  'ShineIcon',
+);
 
 // SVG commentaire
 export const MessageIcon = createSvgIcon(

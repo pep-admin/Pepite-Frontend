@@ -5,41 +5,31 @@ import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import Header from '@utils/Header';
-import { Item } from '@utils/styledComponent';
-import SearchBar from '@utils/SearchBar';
-import ContactsSuggestions from './ContactsSuggestions';
-import MainItemList from '@utils/MainItemList';
+import Header from '@utils/components/Header';
+import { Item } from '@utils/components/styledComponent';
+import SearchBar from '@utils/components/SearchBar';
+import MainItemList from '@utils/components/MainItemList';
+import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
 
 // Import des requêtes
-import { getTenUsers } from '@utils/request/users/getTenUsers';
 import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
 import { getFriendsList } from '@utils/request/friendship/getFriendsList';
 import { getFollowedList } from '@utils/request/followed/getFollowedList';
 
-const ContactsComponent = ({ page }) => {
+const ContactsComponent = () => {
   const { id } = useParams();
 
   // Utilisateur connecté
-  const [userInfos, setUserInfos] = useState(
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
-  const [usersSuggestion, setUsersSuggestion] = useState([]);
-  const [friendRequestList, setFriendRequestList] = useState([]);
-  const [friendsList, setFriendsList] = useState([]);
-  const [followedList, setFollowedList] = useState([]);
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
-  // Récupération de dix utilisateurs pour les suggestions
-  const getUsers = async () => {
-    const users = await getTenUsers();
-    setUsersSuggestion(users);
-  };
+  // Pour la page contacts
+  const [friendRequestList, setFriendRequestList] = useState([]); // Liste des demandes d'amitié
+  const [friendsList, setFriendsList] = useState([]); // Liste des amis
+  const [followedList, setFollowedList] = useState([]); // Liste des suivis
 
   // Récupération des demandes d'amis
   const getFriendsRequests = async () => {
     const askList = await getFriendRequestList();
-    console.log(askList);
-
     setFriendRequestList(askList);
   };
 
@@ -56,54 +46,14 @@ const ContactsComponent = ({ page }) => {
   };
 
   useEffect(() => {
-    getUsers();
     getFriendsRequests();
     getFriends();
     getFollowed();
   }, []);
 
-  if (page === 'home' || page === 'list')
-    return (
-      <Item overflow="hidden">
-        <Stack
-          direction="row"
-          height="25px"
-          alignItems="center"
-          padding="0 13px"
-        >
-          <Typography variant="body2" component="p" fontWeight="bold">
-            {'Personnes suggérées'}
-          </Typography>
-        </Stack>
-        <Divider />
-        <Stack
-          direction="row"
-          padding="6px 6px 0 6px"
-          columnGap="6px"
-          sx={{ overflowX: 'scroll' }}
-        >
-          {usersSuggestion &&
-            usersSuggestion.map((user, index) => {
-              return (
-                <ContactsSuggestions
-                  key={user.id}
-                  user={user}
-                  friendsList={friendsList}
-                  followedList={followedList}
-                  getFriendsRequests={getFriendsRequests}
-                  getFriends={getFriends}
-                  getFollowed={getFollowed}
-                  isLast={usersSuggestion.length - 1 !== index ? false : true}
-                />
-              );
-            })}
-        </Stack>
-      </Item>
-    );
-
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Container
         maxWidth="xl"
         sx={{
@@ -116,47 +66,18 @@ const ContactsComponent = ({ page }) => {
           <SearchBar
             Item={Item}
             page={'contacts'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
           />
-          <Item overflow="hidden">
-            <Stack
-              direction="row"
-              height="25px"
-              alignItems="center"
-              padding="0 13px"
-            >
-              <Typography variant="body2" component="p" fontWeight="bold">
-                {'Personnes suggérées'}
-              </Typography>
-            </Stack>
-            <Divider />
-            <Stack
-              direction="row"
-              padding="6px 6px 0 6px"
-              columnGap="6px"
-              sx={{ maxHeight: '188px', overflowY: 'scroll' }}
-            >
-              {usersSuggestion &&
-                usersSuggestion.map((user, index) => {
-                  return (
-                    <ContactsSuggestions
-                      key={user.id}
-                      user={user}
-                      friendsList={friendsList}
-                      followedList={followedList}
-                      getFriendsRequests={getFriendsRequests}
-                      getFriends={getFriends}
-                      getFollowed={getFollowed}
-                      isLast={
-                        usersSuggestion.length - 1 !== index ? false : true
-                      }
-                    />
-                  );
-                })}
-            </Stack>
-          </Item>
+          <ContactsSuggestions
+            page={'contacts'}
+            friendsList={friendsList}
+            followedList={followedList}
+            getFriendsRequests={getFriendsRequests}
+            getFriends={getFriends}
+            getFollowed={getFollowed}
+          />
           {/* Demandes d'amis */}
           <Item overflow="hidden" maxheight="250px">
             <Stack

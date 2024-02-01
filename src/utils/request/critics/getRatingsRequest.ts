@@ -1,11 +1,12 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const getRatingsRequest = async movieId => {
+export const getRatingsRequest = async (movieId, type) => {
   try {
     const response = await axios.get(
       `${apiBaseUrl}/critics/average_rating/${movieId}`,
       {
+        params: { type: type },
         withCredentials: true,
       },
     );

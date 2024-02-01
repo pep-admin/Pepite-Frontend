@@ -3,8 +3,8 @@ import { Container, Stack, Typography, Divider } from '@mui/material';
 import { useState } from 'react';
 
 // Import des composants internes
-import Header from '@utils/Header';
-import { Item } from '@utils/styledComponent';
+import Header from '@utils/components/Header';
+import { Item } from '@utils/components/styledComponent';
 import AccountPersonalInfos from './AccountPersonalInfos';
 import AccountDisplaySettings from './AccountDisplaySettings';
 import AccountSecuritySettings from './AccountSecuritySettings';
@@ -15,7 +15,7 @@ import AccountCoverPic from './AccountCoverPic';
 import AccountUpdatePassword from './AccountUpdatePassword';
 
 const AccountComponent = () => {
-  const [userInfos, setUserInfos] = useState(
+  const [loggedUserInfos, setLoggedUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
   const [showPicModal, setShowPicModal] = useState({
@@ -26,7 +26,7 @@ const AccountComponent = () => {
 
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Container
         sx={{ minHeight: 'calc(100vh - 60px)', height: 'auto', padding: '6px' }}
       >
@@ -34,15 +34,15 @@ const AccountComponent = () => {
           <AccountUpdatePic
             showPicModal={showPicModal}
             setShowPicModal={setShowPicModal}
-            userInfos={userInfos}
-            setUserInfos={setUserInfos}
+            loggedUserInfos={loggedUserInfos}
+            setLoggedUserInfos={setLoggedUserInfos}
           />
         ) : null}
         {showPasswordModal ? (
           <AccountUpdatePassword
             showPasswordModal={showPasswordModal}
             setShowPasswordModal={setShowPasswordModal}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
           />
         ) : null}
         <Stack direction="column" spacing={1} height="100%">
@@ -71,7 +71,7 @@ const AccountComponent = () => {
             <Divider />
             <AccountPersonalInfos
               setShowPicModal={setShowPicModal}
-              userInfos={userInfos}
+              loggedUserInfos={loggedUserInfos}
             />
           </Item>
           <Item>
@@ -88,7 +88,7 @@ const AccountComponent = () => {
             <Divider />
             <AccountCoverPic
               setShowPicModal={setShowPicModal}
-              userInfos={userInfos}
+              loggedUserInfos={loggedUserInfos}
             />
           </Item>
           <Item>

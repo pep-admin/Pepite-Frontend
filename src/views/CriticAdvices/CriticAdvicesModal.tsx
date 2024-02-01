@@ -53,6 +53,9 @@ const CriticAdvicesModal = ({
   showPoster,
   setShowPoster,
   infos,
+  loggedUserInfos,
+  criticUserInfos,
+  chosenUser,
   from,
 }) => {
   const { displayType } = useData();
@@ -104,6 +107,8 @@ const CriticAdvicesModal = ({
 
   const getGoldNuggetUsersInfos = async userIds => {
     try {
+      console.log('recup infos user');
+
       const userInfosPromises = userIds.map(userId => getUser(userId));
       const usersInfos = await Promise.all(userInfosPromises);
       setGoldNuggetUserInfos(usersInfos);
@@ -137,10 +142,6 @@ const CriticAdvicesModal = ({
 
     // Récupère la bande annonce (si existante) du film choisi
     fetchTrailerUrl();
-  }, [infos]);
-
-  useEffect(() => {
-    console.log('les infos', infos);
   }, [infos]);
 
   return (
@@ -187,42 +188,40 @@ const CriticAdvicesModal = ({
                 objectFit: 'contain',
               }}
             />
-            {(page === 'home' || page === 'list') && showUserInfos ? (
+            {showUserInfos ? (
               <ModalPosterContent
+                page={page}
+                from={from}
                 infos={infos}
+                loggedUserInfos={loggedUserInfos}
+                chosenUser={chosenUser}
+                criticUserInfos={criticUserInfos}
                 goldNuggetUserInfos={goldNuggetUserInfos}
                 relationshipStatus={relationshipStatus}
                 setShowUserInfos={setShowUserInfos}
               />
-            ) : (page === 'home' || page === 'list') && !showUserInfos ? (
+            ) : (
               <Stack
                 position="absolute"
                 top="0"
                 left="0"
-                height="54px"
+                height="auto"
                 width="100%"
-                padding="6px"
               >
-                <Stack
-                  width="100%"
-                  flexGrow="1"
-                  alignItems="center"
-                  padding="30px 0"
-                >
-                  <Box height="57.4px"></Box>
+                <Stack width="100%" alignItems="center">
                   <VisibilityIcon
                     fontSize="large"
                     sx={{
                       color: '#fff',
-                      marginBottom: '15px',
+                      marginTop: '83.96px',
                       cursor: 'pointer',
-                      opacity: '0.25',
+                      opacity: '0.3',
                     }}
                     onClick={() => setShowUserInfos(true)}
                   />
                 </Stack>
               </Stack>
-            ) : null}
+            )}
           </Stack>
         ) : showVideo && videoId !== null ? (
           <YouTube
@@ -286,6 +285,9 @@ CriticAdvicesModal.propTypes = {
   showPoster: PropTypes.bool.isRequired,
   setShowPoster: PropTypes.func.isRequired,
   infos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
+  criticUserInfos: PropTypes.object,
+  chosenUser: PropTypes.object,
   from: PropTypes.string.isRequired,
   page: PropTypes.string,
 };

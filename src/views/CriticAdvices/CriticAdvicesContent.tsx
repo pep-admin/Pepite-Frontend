@@ -3,8 +3,9 @@ import { Stack, Typography, CardContent } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { YellowRating } from '@utils/styledComponent';
-import IsNew from '@utils/IsNew';
+import { YellowRating } from '@utils/components/styledComponent';
+import IsNew from '@utils/components/IsNew';
+import { useMemo } from 'react';
 
 const CriticAdvicesContent = ({
   type,
@@ -13,16 +14,46 @@ const CriticAdvicesContent = ({
   setDisplayOverview,
   infos,
 }) => {
-  let originalScore;
+  // Information sur la critique : Film ou série
+  const movieOrSeries = useMemo(() => {
+    if (chosenMovie) return 'release_date' in chosenMovie ? 'Film' : 'Série';
+    if (infos) return 'release_date' in infos ? 'Film' : 'Série';
+    return null;
+  }, [chosenMovie, infos]);
 
-  if (type === 'new-critic' || type === 'new-advice')
-    originalScore = chosenMovie.vote_average;
-  else {
-    originalScore = infos.vote_average;
-  }
+  // Informations sur les genres du film ou série
+  const genres = useMemo(() => {
+    const item = chosenMovie || infos;
+    return item ? item.genres.map(genre => genre.name).join(', ') : '';
+  }, [chosenMovie, infos]);
 
-  const scoreOutOfFive = originalScore / 2;
-  const roundedScore = parseFloat(scoreOutOfFive.toFixed(1));
+  // Informations sur l'année de sortie du film ou du premier épisode de la série
+  const releaseYear = useMemo(() => {
+    const date =
+      (chosenMovie || infos)?.release_date ||
+      (chosenMovie || infos)?.first_air_date;
+    return date ? date.split('-')[0] : '';
+  }, [chosenMovie, infos]);
+
+  // Informations sur le titre du film ou de la série
+  const title = useMemo(() => {
+    if (chosenMovie && (type === 'new-critic' || type === 'new-advice'))
+      return chosenMovie.title || chosenMovie.name;
+    if (infos && (type === 'old-critic' || type === 'old-advice'))
+      return infos.title || infos.name;
+    return '';
+  }, [chosenMovie, infos, type]);
+
+  // Note du film ou de la série
+  const originalScore = useMemo(() => {
+    if (type === 'new-critic' || type === 'new-advice') {
+      return chosenMovie ? chosenMovie.vote_average / 2 : 0;
+    }
+    return infos ? infos.vote_average / 2 : 0;
+  }, [type, chosenMovie, infos]);
+
+  // Arrondi à un chiffre après la virgule
+  const roundedScore = parseFloat(originalScore.toFixed(1));
 
   return (
     <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
@@ -42,32 +73,10 @@ const CriticAdvicesContent = ({
                 textAlign="left"
                 color="primary.dark"
                 sx={{
-                  maxWidth: '160px',
+                  maxWidth: '190px',
                 }}
               >
-                {
-                  // Si l'utilisateur compte noter un film
-                  chosenMovie !== null &&
-                  'release_date' in chosenMovie &&
-                  (type === 'new-critic' || type === 'new-advice')
-                    ? `${chosenMovie.title}`
-                    : // Si l'utilisateur a déjà noté un film
-                    infos !== null &&
-                      'release_date' in infos &&
-                      (type === 'old-critic' || type === 'old-advice')
-                    ? `${infos.title}`
-                    : // Si l'utilisateur compte noter une série
-                    chosenMovie !== null &&
-                      'first_air_date' in chosenMovie &&
-                      (type === 'new-critic' || type === 'new-advice')
-                    ? `${chosenMovie.name}`
-                    : // Si l'utilisateur a déjà noté une série
-                    infos !== null &&
-                      'first_air_date' in infos &&
-                      (type === 'old-critic' || type === 'old-advice')
-                    ? `${infos.name}`
-                    : null
-                }
+                {title}
               </Typography>
               {type === 'old-critic' || type === 'old-advice' ? (
                 <IsNew from={'critic'} created_at={infos.created_at} />
@@ -95,27 +104,7 @@ const CriticAdvicesContent = ({
               {'Type :'}
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
-              {
-                // Si l'utilisateur choisit un film
-                (chosenMovie !== null &&
-                  'release_date' in chosenMovie &&
-                  (type === 'new-critic' || type === 'new-advice')) ||
-                // Si la critique est une critique || un conseil de film
-                (infos !== null &&
-                  'release_date' in infos &&
-                  (type === 'old-critic' || type === 'old-advice'))
-                  ? 'Film'
-                  : // Si l'utilisateur choisit une série
-                  (chosenMovie !== null &&
-                      'first_air_date' in chosenMovie &&
-                      (type === 'new-critic' || type === 'new-advice')) ||
-                    // Si la critique est une critique de série
-                    (infos !== null &&
-                      'first_air_date' in infos &&
-                      (type === 'old-critic' || type === 'old-advice'))
-                  ? 'Série'
-                  : null
-              }
+              {movieOrSeries}
             </Typography>
           </Stack>
           <Stack direction="row">
@@ -134,10 +123,7 @@ const CriticAdvicesContent = ({
               marginLeft="5px"
               align="left"
             >
-              {chosenMovie !== null &&
-              (type === 'new-critic' || type === 'new-advice')
-                ? chosenMovie.genres.map(genre => genre.name).join(', ')
-                : infos.genres.map(genre => genre.name).join(', ')}
+              {genres}
             </Typography>
           </Stack>
           <Stack direction="row">
@@ -150,29 +136,7 @@ const CriticAdvicesContent = ({
               {'Année :'}
             </Typography>
             <Typography variant="body2" component="p" marginLeft="5px">
-              {
-                // Si l'utilisateur choisit un film
-                chosenMovie !== null &&
-                'release_date' in chosenMovie &&
-                (type === 'new-critic' || type === 'new-advice')
-                  ? chosenMovie.release_date.split('-')[0]
-                  : // Si l'utilisateur choisit une série
-                  chosenMovie !== null &&
-                    'first_air_date' in chosenMovie &&
-                    (type === 'new-critic' || type === 'new-advice')
-                  ? chosenMovie.first_air_date.split('-')[0]
-                  : // Si la critique est une critique de film
-                  infos !== null &&
-                    'release_date' in infos &&
-                    (type === 'old-critic' || type === 'old-advice')
-                  ? infos.release_date.split('-')[0]
-                  : // Si la critique est une critique de série
-                  infos !== null &&
-                    'first_air_date' in infos &&
-                    (type === 'old-critic' || type === 'old-advice')
-                  ? infos.first_air_date.split('-')[0]
-                  : null
-              }
+              {releaseYear}
             </Typography>
           </Stack>
           <Stack direction="row">

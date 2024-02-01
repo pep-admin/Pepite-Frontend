@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 // Import des composants internes
-import CustomAlert from '@utils/CustomAlert';
-import IsNew from '@utils/IsNew';
+import CustomAlert from '@utils/components/CustomAlert';
+import IsNew from '@utils/components/IsNew';
 
 // Import des variables d'environnement
 import apiBaseUrl from '@utils/request/config';
@@ -25,10 +25,10 @@ import { removeFriendRequest } from '@utils/request/friendship/removeFriendReque
 import { unfollowSomeone } from '@utils/request/followed/unfollowSomeone';
 import { declineFriendship } from '@utils/request/friendship/declineFriendship';
 import { OrangeRating, YellowRating } from './styledComponent';
-import { convertRating } from './functions/convertRating';
-import { removeWantedMovieRequest } from './request/list/removeWantedMovieRequest';
-import { removeWatchedMovieRequest } from './request/list/removeWatchedMovieRequest';
-import { addWatchedMovieRequest } from './request/list/addWatchedMovieRequest';
+import { convertRating } from '../functions/convertRating';
+import { removeWantedMovieRequest } from '../request/list/removeWantedMovieRequest';
+import { removeWatchedMovieRequest } from '../request/list/removeWatchedMovieRequest';
+import { addWatchedMovieRequest } from '../request/list/addWatchedMovieRequest';
 import AcquaintancesMenu from './AcquaintancesMenu';
 
 const MainItemList = ({
@@ -41,12 +41,14 @@ const MainItemList = ({
 }) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
   const [showMutualFriends, setShowMutualFriends] = useState(null);
+  const [showOtherRatings, setShowOtherRatings] = useState(null);
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
   const [showRemoveFollowedModal, setShowRemoveFollowedModal] = useState(false);
   const [showRemoveWantedMovie, setShowRemoveWantedMovie] = useState(false);
   const [showRemoveWatchedMovie, setShowRemoveWatchedMovie] = useState(false);
 
   const openMutualFriends = Boolean(showMutualFriends);
+  const openOtherRatings = Boolean(showOtherRatings);
 
   const isCloseRef = useRef(false);
 
@@ -131,7 +133,7 @@ const MainItemList = ({
       showRemoveWantedMovie ||
       showRemoveWatchedMovie ? (
         <CustomAlert
-          type="warning"
+          alertType="warning"
           message={
             showRemoveFriendModal ? (
               <span>
@@ -318,10 +320,42 @@ const MainItemList = ({
                   align="left"
                   height="14.22px"
                   flexBasis="100%"
+                  color={
+                    data.friends_and_followed_critics.length
+                      ? 'inherit'
+                      : '#B9B9B9'
+                  }
                 >
                   <>
-                    {'noté par'}
-                    <span style={{ fontWeight: 'bold' }}> 3 connaissances</span>
+                    {data.friends_and_followed_critics.length ? (
+                      <>
+                        {'Noté par '}
+                        <span
+                          style={{ fontWeight: 'bold' }}
+                          onClick={e => {
+                            setShowOtherRatings(e.currentTarget);
+                          }}
+                        >
+                          {`${
+                            data.friends_and_followed_critics.length
+                          } connaissance${
+                            data.friends_and_followed_critics.length > 1
+                              ? 's'
+                              : ''
+                          }`}
+                        </span>
+                        <AcquaintancesMenu
+                          page={'list'}
+                          open={openOtherRatings}
+                          anchorEl={showOtherRatings}
+                          setAnchorEl={setShowOtherRatings}
+                          infos={data.friends_and_followed_critics}
+                          ratings={data.friends_and_followed_critics}
+                        />
+                      </>
+                    ) : (
+                      'Noté par aucune connaissance'
+                    )}
                   </>
                 </Typography>
               </Stack>
@@ -354,8 +388,6 @@ const MainItemList = ({
                   anchorEl={showMutualFriends}
                   setAnchorEl={setShowMutualFriends}
                   infos={list}
-                  // chosenRelationship={chosenRelationship}
-                  // ratings={relationsRatings}
                 />
               </>
             )}

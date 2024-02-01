@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import des composants internes
-import Header from '@utils/Header';
-import ProfilSuggestedNotes from '@views/Profil/ProfilSuggestedNotes';
-import { Item } from '@utils/styledComponent';
-import SearchBar from '@utils/SearchBar';
-import MainItemList from '@utils/MainItemList';
+import Header from '@utils/components/Header';
+import ProfilSuggestedNotes from '@views/Profil/SuggestedGoldNuggets';
+import { Item } from '@utils/components/styledComponent';
+import SearchBar from '@utils/components/SearchBar';
+import MainItemList from '@utils/components/MainItemList';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -16,16 +16,14 @@ import { useData } from '@hooks/DataContext';
 // Import des requêtes
 import { getWantedMoviesRequest } from '@utils/request/list/getWantedMoviesRequest';
 import { getWatchedMoviesRequest } from '@utils/request/list/getWatchedMoviesRequest';
-import { getAllCriticsOfUser } from '@utils/request/critics/getCritics';
+import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 
 const ListComponent = () => {
   const { id } = useParams();
   const { displayType } = useData();
 
-  const [userInfos, setUserInfos] = useState(
-    // L'utilisateur connecté
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [wantedMovies, setWantedMovies] = useState([]); // Les films que l'utilisateur a choisi de voir
   const [watchedMovies, setWatchedMovies] = useState([]); // Les films que l'utilisateur a déjà vu
@@ -42,7 +40,7 @@ const ListComponent = () => {
   };
 
   const getRatedMovies = async () => {
-    const rated = await getAllCriticsOfUser(id, displayType);
+    const rated = await getCriticsOfUser(id, displayType, 1);
     console.log('les films notés', rated);
     setRatedMovies(rated);
   };
@@ -55,7 +53,7 @@ const ListComponent = () => {
 
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Container
         maxWidth="xl"
         sx={{
@@ -68,7 +66,7 @@ const ListComponent = () => {
           <SearchBar
             Item={Item}
             page={'contacts'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
           />
@@ -82,7 +80,7 @@ const ListComponent = () => {
               page={'list'}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
-              userInfos={userInfos}
+              loggedUserInfos={loggedUserInfos}
             />
           </Item>
           <Item overflow="hidden" maxheight="250px">
@@ -122,7 +120,7 @@ const ListComponent = () => {
                       key={movie.id}
                       type={'wanted-movies'}
                       data={movie}
-                      list={null}
+                      list={wantedMovies}
                       getRequest={getWantedMovies}
                       getRequest2={getWatchedMovies}
                       isLast={index === wantedMovies.length - 1}
@@ -183,7 +181,7 @@ const ListComponent = () => {
                       key={movie.id}
                       type={'watched-movies'}
                       data={movie}
-                      list={null}
+                      list={watchedMovies}
                       getRequest={getWatchedMovies}
                       getRequest2={null}
                       isLast={index === watchedMovies.length - 1}
@@ -244,7 +242,7 @@ const ListComponent = () => {
                       key={movie.id}
                       type={'rated-movies'}
                       data={movie}
-                      list={null}
+                      list={ratedMovies}
                       getRequest={getWatchedMovies}
                       getRequest2={null}
                       isLast={index === ratedMovies.length - 1}

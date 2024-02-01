@@ -6,6 +6,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   const overview = data.overview;
   const poster_path = data.poster_path;
   const vote_average = parseFloat(data.vote_average);
+  const friends_and_followed_critics = data.friends_and_followed_critics;
+
   let id;
 
   if (displayType === 'movie') {
@@ -20,6 +22,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let title;
   let wanted_date = null;
   let watched_date = null;
+  // let friends_and_followed_critics = null;
 
   // Dans le cas où on veut parser les infos pour un FILM qui n'a pas été noté par les utilisateurs
   if (
@@ -32,6 +35,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     title = data.title; // titre du film
     wanted_date = data.wanted_date;
     watched_date = data.watched_date;
+    // friends_and_followed_critics = data.friends_and_followed_critics;
 
     return {
       genres,
@@ -45,6 +49,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       vote_average,
       wanted_date,
       watched_date,
+      friends_and_followed_critics,
     };
   }
 
@@ -64,6 +69,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     name = data.name; // nom de la série
     wanted_date = data.wanted_date;
     watched_date = data.watched_date;
+    // friends_and_followed_critics = data.friends_and_followed_critics;
 
     return {
       genres,
@@ -77,6 +83,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       vote_average,
       wanted_date,
       watched_date,
+      friends_and_followed_critics,
     };
   }
 
@@ -84,9 +91,12 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let rating = null;
   let text = null;
   let critic_id = null;
+  let advice_id = null;
   let is_gold_nugget = 0;
   let is_turnip = 0;
-  let created_at = null;
+  let critic_date = null;
+  let advice_date = null;
+  let user_id = null;
   let sender_id = null;
   let relation_type = null;
 
@@ -100,16 +110,17 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     title = data.title;
     rating = data.rating; // la note choisie par l'utilisateur
     text = data.text; // le texte de la critique
-    critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
     is_turnip = Number(data.is_turnip);
     relation_type = data.relation_type;
 
     if (requestType === 'critic') {
-      created_at = data.critic_date;
-      sender_id = data.user_id;
+      critic_id = Number(data.id);
+      critic_date = data.critic_date;
+      user_id = data.user_id;
     } else {
-      created_at = data.advice_date;
+      advice_id = Number(data.id);
+      advice_date = data.advice_date;
       sender_id = data.sender_id;
     }
 
@@ -126,11 +137,15 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       rating,
       text,
       critic_id,
+      advice_id,
       is_gold_nugget,
       is_turnip,
-      created_at,
+      critic_date,
+      advice_date,
+      user_id,
       sender_id,
       relation_type,
+      friends_and_followed_critics,
     };
   }
 
@@ -144,16 +159,17 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     name = data.name;
     rating = data.rating;
     text = data.text;
-    critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
     is_turnip = Number(data.is_turnip);
     relation_type = data.relation_type;
 
     if (requestType === 'critic') {
-      created_at = data.critic_date;
-      sender_id = data.user_id;
+      critic_id = Number(data.id);
+      critic_date = data.critic_date;
+      user_id = data.user_id;
     } else {
-      created_at = data.advice_date;
+      advice_id = Number(data.id);
+      advice_date = data.advice_date;
       sender_id = data.sender_id;
     }
 
@@ -170,11 +186,15 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       rating,
       text,
       critic_id,
+      advice_id,
       is_gold_nugget,
       is_turnip,
-      created_at,
+      critic_date,
+      advice_date,
+      user_id,
       sender_id,
       relation_type,
+      friends_and_followed_critics,
     };
   }
 };

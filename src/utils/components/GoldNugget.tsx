@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { GoldNuggetIcon } from './styledComponent';
+import { GoldNuggetIcon } from './GoldNuggetIcon';
 import { useSpring, animated } from 'react-spring';
 import PropTypes from 'prop-types';
 

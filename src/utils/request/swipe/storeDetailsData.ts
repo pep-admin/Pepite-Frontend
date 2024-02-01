@@ -3,6 +3,8 @@ import apiBaseUrl from '../config';
 
 export const storeDetailsData = async (movieDetail, type) => {
   try {
+    console.log('les détails', movieDetail);
+
     const id = movieDetail.current.id;
     const genres = movieDetail.current.genres;
     const production_countries = movieDetail.current.production_countries;

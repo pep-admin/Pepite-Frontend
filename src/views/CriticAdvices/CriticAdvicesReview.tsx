@@ -3,7 +3,6 @@ import {
   Stack,
   Box,
   Typography,
-  Avatar,
   FormControl,
   InputLabel,
   OutlinedInput,
@@ -18,9 +17,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 
 // Import des composants internes
 import CriticAdvicesReviewModal from './CriticAdvicesReviewModal';
-
-// Import des variables d'environnements
-import apiBaseUrl from '@utils/request/config';
+import UserAvatar from '@utils/components/UserAvatar';
 
 const CriticAdvicesReview = ({
   type,
@@ -34,7 +31,7 @@ const CriticAdvicesReview = ({
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
 
   // Utilisateur connecté
-  const userInfos = JSON.parse(localStorage.getItem('user_infos'));
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   useEffect(() => {
     if (isModify) {
@@ -104,8 +101,6 @@ const CriticAdvicesReview = ({
     );
   }
 
-  if (type === 'old-critic' && infos.text === '' && !isModify) return;
-
   return (
     <>
       {showReviewModal ? (
@@ -154,32 +149,22 @@ const CriticAdvicesReview = ({
         >
           <FullscreenIcon />
         </Box>
-        <Avatar
-          variant="square"
-          alt={`Photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
-          src={
-            // Si l'utilisateur qui a posté la critique ou le conseil a défini une photo de profil
-            (type === 'old-critic' || type === 'old-advice') &&
-            criticUserInfos.profilPics?.length
-              ? `${apiBaseUrl}/uploads/${
-                  criticUserInfos.profilPics.find(pic => pic.isActive === 1)
-                    .filePath
-                }`
-              : // Si nouvelle critique ou nouveau conseil et que l'utilisateur connecté a défini une photo de profil
-              (type === 'new-critic' || type === 'new-advice') &&
-                userInfos.profilPics?.length
-              ? `${apiBaseUrl}/uploads/${
-                  userInfos.profilPics.find(pic => pic.isActive === 1).filePath
-                }`
-              : // Si l'utilisateur qui a posté la critique || le conseil n'a pas défini de photo de profil
-                'http://127.0.0.1:5173/images/default_profil_pic.png'
-          }
-          sx={{
-            width: 60,
-            height: 70,
-            filter: 'grayscale(1)',
-          }}
-        />
+        {Object.keys(criticUserInfos).length !== 0 && (
+          <UserAvatar
+            variant={'square'}
+            userInfos={
+              type === 'old-critic' || type === 'old-advice'
+                ? criticUserInfos
+                : loggedUserInfos
+            }
+            picWidth={60}
+            picHeight={70}
+            isOutlined={false}
+            outlineWidth={null}
+            relationType={null}
+            sx={{ filter: 'grayscale(1)' }}
+          />
+        )}
         <Box
           height={
             type === 'new-critic' || type === 'new-advice' || isModify

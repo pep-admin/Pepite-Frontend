@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
-import { OrangeRating } from '@utils/styledComponent';
-import { YellowRating } from '@utils/styledComponent';
-import { TurquoiseRating } from '@utils/styledComponent';
+import { OrangeRating } from '@utils/components/styledComponent';
+import { YellowRating } from '@utils/components/styledComponent';
+import { TurquoiseRating } from '@utils/components/styledComponent';
 
 // Fonction qui divise la note par 2 et arrondit au dizième
 import { convertRating } from '@utils/functions/convertRating';

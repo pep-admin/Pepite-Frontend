@@ -1,8 +1,11 @@
 // Import des libs externes
-import { Stack, Typography, Divider, Avatar, TextField } from '@mui/material';
-import { MessageIcon } from '@utils/styledComponent';
+import { Stack, Typography, Divider, TextField } from '@mui/material';
+import { MessageIcon } from '@utils/components/styledComponent';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+
+// Import des composants internes
+import UserAvatar from '@utils/components/UserAvatar';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -10,7 +13,7 @@ import { convertDate } from '@utils/functions/convertDate';
 
 // Import des icônes
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
-import ModifyOrDelete from '@utils/ModifyOrDelete';
+import ModifyOrDelete from '@utils/components/ModifyOrDelete';
 import EditIcon from '@mui/icons-material/Edit';
 
 // Import des requêtes internes
@@ -19,9 +22,6 @@ import { getCommentsLikesNumber } from '@utils/request/comments/getCommentsLikes
 import { checkLikeStatusComment } from '@utils/request/comments/checkLikeStatusComment';
 import { removeCommentLike } from '@utils/request/comments/removeCommentLike';
 import { modifyComment } from '@utils/request/comments/modifyComment';
-
-// Import des variables d'environnement
-import apiBaseUrl from '@utils/request/config';
 import { getUser } from '@utils/request/users/getUser';
 
 interface Picture {
@@ -44,7 +44,7 @@ interface User {
   rank: string;
 }
 
-const CommentsContent = ({ comment, setInfos, getComments, userInfos }) => {
+const CommentsContent = ({ comment, setData, getComments, userInfos }) => {
   const { displayType } = useData();
 
   const [isModify, setIsModify] = useState(false);
@@ -113,24 +113,18 @@ const CommentsContent = ({ comment, setInfos, getComments, userInfos }) => {
         margin="5px 0"
       >
         <Stack direction="row" alignItems="center">
-          <Avatar
-            alt={`Photo de profil de ${commentUserInfos?.first_name} ${commentUserInfos?.last_name}`}
-            src={
-              // Si l'utilisateur qui a posté un commentaire a défini une photo de profil
-              commentUserInfos?.profilPics.length
-                ? `${apiBaseUrl}/uploads/${commentUserInfos?.profilPics.find(
-                    pic => pic.isActive === 1,
-                  ).filePath}`
-                : // Si l'utilisateur n'a pas défini de photo de profil
-                  'http://127.0.0.1:5173/images/default_profil_pic.png'
-            }
-            sx={{
-              width: 50,
-              height: 50,
-              boxShadow: 'inset 0px 0px 0px 3px #fff',
-              borderRadius: 0,
-            }}
-          />
+          {commentUserInfos && (
+            <UserAvatar
+              variant={'square'}
+              userInfos={commentUserInfos}
+              picWidth={50}
+              picHeight={50}
+              isOutlined={false}
+              outlineWidth={null}
+              relationType={null}
+              sx={{ borderRadius: '0' }}
+            />
+          )}
           <MessageIcon
             sx={{
               fontSize: '1.2em',
@@ -161,7 +155,7 @@ const CommentsContent = ({ comment, setInfos, getComments, userInfos }) => {
                 <ModifyOrDelete
                   parent={'comment'}
                   infos={comment}
-                  setInfos={setInfos}
+                  setData={setData}
                   isModify={isModify}
                   setIsModify={setIsModify}
                 />
@@ -238,7 +232,7 @@ const CommentsContent = ({ comment, setInfos, getComments, userInfos }) => {
 
 CommentsContent.propTypes = {
   comment: PropTypes.object.isRequired,
-  setInfos: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
   getComments: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,
 };

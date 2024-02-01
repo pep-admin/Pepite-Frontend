@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 // Import des variables d'environnement
-import apiBaseUrl from './request/config';
+import apiBaseUrl from '../request/config';
 
 // Import des icônes
 import PersonIcon from '@mui/icons-material/Person';

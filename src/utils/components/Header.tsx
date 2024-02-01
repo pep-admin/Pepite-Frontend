@@ -9,7 +9,6 @@ import {
   MenuItem,
   Tooltip,
   Toolbar,
-  Avatar,
   Badge,
   ToggleButton,
   ToggleButtonGroup,
@@ -32,16 +31,14 @@ import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-// Import des variables d'environnements
-import apiBaseUrl from '@utils/request/config';
-
 // Import des requêtes
-import { handleLogout } from './request/authRequest';
+import { handleLogout } from '../request/authRequest';
+import UserAvatar from './UserAvatar';
 
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = ({ userInfos }) => {
+const Header = ({ loggedUserInfos }) => {
   const { displayType, setDisplayType } = useData();
   const userId = localStorage.getItem('user_id');
 
@@ -98,14 +95,13 @@ const Header = ({ userInfos }) => {
         <Typography
           variant="h1"
           color={'#fff'}
-          fontSize={'2em'}
+          fontSize={'2.3em'}
           sx={{
-            position: 'relative',
-            bottom: '2px',
-            textShadow: '#00000059 1px 4px 3px',
+            letterSpacing: '-3.5px',
+            textShadow: '#02455C -3px 2.75px 0',
           }}
         >
-          {'PÉPITE.'}
+          {'pépite.'}
         </Typography>
         <ToggleButtonGroup
           color="primary"
@@ -255,20 +251,15 @@ const Header = ({ userInfos }) => {
                   },
                 }}
               >
-                <Avatar
-                  alt={`Photo de profil de ${userInfos.first_name}`}
-                  src={
-                    !userInfos.profilPics.length
-                      ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
-                      : `${apiBaseUrl}/uploads/${
-                          userInfos.profilPics.find(pic => pic.isActive === 1)
-                            .filePath
-                        }`
-                  }
-                  sx={{
-                    height: '45px',
-                    width: '45px',
-                  }}
+                <UserAvatar
+                  variant={'circular'}
+                  userInfos={loggedUserInfos}
+                  picWidth={45}
+                  picHeight={45}
+                  isOutlined={false}
+                  outlineWidth={null}
+                  relationType={null}
+                  sx={null}
                 />
               </Badge>
             </IconButton>
@@ -341,7 +332,7 @@ const Header = ({ userInfos }) => {
 };
 
 Header.propTypes = {
-  userInfos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
   setUserInfos: PropTypes.func,
 };
 

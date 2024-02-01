@@ -7,7 +7,7 @@ import FontFaceObserver from 'fontfaceobserver';
  * Charge les polices de caractères spécifiées et affiche le contenu de l'élément root une fois le chargement terminé.
  */
 function loadFontAndShowContent() {
-  const font1 = new FontFaceObserver('Sirin Stencil');
+  const font1 = new FontFaceObserver('League Spartan');
   const font2 = new FontFaceObserver('Pragati Narrow');
   const font3 = new FontFaceObserver('Square Peg');
 

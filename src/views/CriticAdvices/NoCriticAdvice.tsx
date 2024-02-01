@@ -3,10 +3,10 @@ import { Stack, Typography, Divider, List, ListItem } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 
 // Import des icônes
-import { NoCriticSvg } from '@utils/styledComponent';
+import { NoCriticSvg } from '@utils/components/styledComponent';
 
 const NoCriticAdvice = ({ page }) => {
   return (
@@ -152,7 +152,7 @@ const NoCriticAdvice = ({ page }) => {
                       color: '#5C5C5C',
                     }}
                   >
-                    {'Selon le nombre de critiques postées'}
+                    {'En troisième position'}
                   </Typography>
                 </ListItem>
               </List>

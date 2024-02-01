@@ -15,15 +15,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import { TurnipIcon } from '@utils/styledComponent';
+import { TurnipIcon } from '@utils/components/styledComponent';
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 import { ratings } from '@utils/data/ratings';
-import ModifyOrDelete from '@utils/ModifyOrDelete';
+import ModifyOrDelete from '@utils/components/ModifyOrDelete';
 import { formatRating } from '@utils/functions/formatRating';
-import ColoredRating from '@utils/ColoredRating';
+import ColoredRating from '@utils/components/ColoredRating';
 
 const CriticAdvicesHeader = ({
   page,
@@ -106,7 +106,7 @@ const CriticAdvicesHeader = ({
       );
 
       // Si l'utilisateur voit la critique d'une de ses connaissances
-    } else if (type === 'old-critic' && infos.sender_id !== user_infos.id) {
+    } else if (type === 'old-critic' && infos.user_id !== user_infos.id) {
       const color =
         (page === 'profil' && chosenUser?.relation_type === 'close_friend') ||
         (page === 'home' && infos?.relation_type === 'close_friend')
@@ -136,7 +136,7 @@ const CriticAdvicesHeader = ({
       );
 
       // Si l'utilisateur voit une de ses anciennes critiques
-    } else if (type === 'old-critic' && infos.sender_id === user_infos.id) {
+    } else if (type === 'old-critic' && infos.user_id === user_infos.id) {
       return <span style={{ fontWeight: 'bold' }}>{'Vous avez noté'}</span>;
 
       // Si l'utilisateur voit le conseil de quelqu'un d'autre

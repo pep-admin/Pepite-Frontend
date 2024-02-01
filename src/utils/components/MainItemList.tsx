@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 // Import des composants internes
-import CustomAlert from '@utils/CustomAlert';
-import IsNew from '@utils/IsNew';
+import CustomAlert from '@utils/components/CustomAlert';
+import IsNew from '@utils/components/IsNew';
 
 // Import des variables d'environnement
 import apiBaseUrl from '@utils/request/config';
@@ -25,10 +25,10 @@ import { removeFriendRequest } from '@utils/request/friendship/removeFriendReque
 import { unfollowSomeone } from '@utils/request/followed/unfollowSomeone';
 import { declineFriendship } from '@utils/request/friendship/declineFriendship';
 import { OrangeRating, YellowRating } from './styledComponent';
-import { convertRating } from './functions/convertRating';
-import { removeWantedMovieRequest } from './request/list/removeWantedMovieRequest';
-import { removeWatchedMovieRequest } from './request/list/removeWatchedMovieRequest';
-import { addWatchedMovieRequest } from './request/list/addWatchedMovieRequest';
+import { convertRating } from '../functions/convertRating';
+import { removeWantedMovieRequest } from '../request/list/removeWantedMovieRequest';
+import { removeWatchedMovieRequest } from '../request/list/removeWatchedMovieRequest';
+import { addWatchedMovieRequest } from '../request/list/addWatchedMovieRequest';
 import AcquaintancesMenu from './AcquaintancesMenu';
 
 const MainItemList = ({

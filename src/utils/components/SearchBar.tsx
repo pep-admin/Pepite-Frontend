@@ -8,9 +8,9 @@ import {
   ImageList,
   ImageListItem,
 } from '@mui/material';
-import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -22,9 +22,9 @@ import { MagnifyingGlassIcon } from './styledComponent';
 import {
   searchMoviesSeries,
   searchUsers,
-} from './request/search/searchMoviesSeries';
-import { getMovieDetails } from './request/getMovieDetails';
-import { storeDetailsData } from './request/swipe/storeDetailsData';
+} from '../request/search/searchMoviesSeries';
+import { getMovieDetails } from '../request/getMovieDetails';
+import { storeDetailsData } from '../request/swipe/storeDetailsData';
 
 // Import des composants internes
 import SearchResults from './SearchResults';
@@ -32,7 +32,7 @@ import SearchResults from './SearchResults';
 const SearchBar = ({
   Item,
   page,
-  userInfos,
+  loggedUserInfos,
   chosenUser,
   handlePoster,
   showPicModal,
@@ -162,7 +162,7 @@ const SearchBar = ({
               overflow="hidden"
               textOverflow="ellipsis"
             >
-              {`${userInfos.first_name} ${userInfos.last_name}`}
+              {`${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`}
             </Typography>
           </Box>
         ) : null}
@@ -175,32 +175,32 @@ const SearchBar = ({
               ? `${error.message}`
               : // Si page de profil de l'utilisateur connecté et type choisi FILMS
               (page === 'profil' || page === 'home') &&
-                userInfos?.id === parseInt(id, 10) &&
+                loggedUserInfos?.id === parseInt(id, 10) &&
                 displayType === 'movie'
               ? 'Notez un film !'
               : // Si page de profil de l'utilisateur connecté et type choisi SERIES
               (page === 'profil' || page === 'home') &&
-                userInfos?.id === parseInt(id, 10) &&
+                loggedUserInfos?.id === parseInt(id, 10) &&
                 displayType === 'tv'
               ? 'Notez une série !'
               : // Si page de profil de l'utilisateur connecté et type choisi TOUS
               (page === 'profil' || page === 'home') &&
-                userInfos?.id === parseInt(id, 10) &&
+                loggedUserInfos?.id === parseInt(id, 10) &&
                 displayType === 'all'
               ? 'Notez un film ou une série !'
               : // Si page de profil d'un autre utilisateur et type choisi FILMS
               (page === 'profil' || page === 'home') &&
-                userInfos?.id !== parseInt(id, 10) &&
+                loggedUserInfos?.id !== parseInt(id, 10) &&
                 displayType === 'movie'
               ? `Conseillez un film à ${chosenUser?.first_name} !`
               : // Si page de profil d'un autre utilisateur et type choisi SERIES
               (page === 'profil' || page === 'home') &&
-                userInfos?.id !== parseInt(id, 10) &&
+                loggedUserInfos?.id !== parseInt(id, 10) &&
                 displayType === 'tv'
               ? `Conseillez une série à ${chosenUser?.first_name} !`
               : // Si page de profil d'un autre utilisateur et type choisi SERIES
               (page === 'profil' || page === 'home') &&
-                userInfos?.id !== parseInt(id, 10) &&
+                loggedUserInfos?.id !== parseInt(id, 10) &&
                 displayType === 'all'
               ? `Conseillez un film ou une série à ${chosenUser?.first_name} !`
               : // Si choix de poster dans les paramètres
@@ -348,7 +348,7 @@ SearchBar.propTypes = {
   page: PropTypes.string.isRequired,
   handlePoster: PropTypes.func,
   showPicModal: PropTypes.object,
-  userInfos: PropTypes.object,
+  loggedUserInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
 };
 

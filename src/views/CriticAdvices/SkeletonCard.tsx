@@ -2,7 +2,7 @@
 import { Stack, Box, Divider, Card, Skeleton } from '@mui/material';
 
 // Import des composants customisés
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 
 // Import des composants internes
 import CriticAdvicesContentSkeleton from './CriticAdvicesContentSkeleton';

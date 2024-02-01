@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 import SuggestionsCard from './SuggestionsCard';
 
 // Import des requêtes

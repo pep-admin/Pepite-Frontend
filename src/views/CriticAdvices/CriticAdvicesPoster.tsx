@@ -3,7 +3,7 @@ import { Box, CardActionArea, CardMedia } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { TurnipIcon } from '@utils/styledComponent';
+import { TurnipIcon } from '@utils/components/styledComponent';
 
 const CriticAdvicesPoster = ({
   chosenMovie,

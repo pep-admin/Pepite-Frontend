@@ -3,9 +3,9 @@ import { Container, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
 // Import des composants internes
-import Header from '@utils/Header';
-import SearchBar from '@utils/SearchBar';
-import { Item } from '@utils/styledComponent';
+import Header from '@utils/components/Header';
+import SearchBar from '@utils/components/SearchBar';
+import { Item } from '@utils/components/styledComponent';
 import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
 import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
@@ -23,9 +23,8 @@ const Home = () => {
   const { displayType, chosenMovie } = useData();
 
   // L'utilisateur connecté
-  const [userInfos, setUserInfos] = useState(
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
   const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
@@ -52,7 +51,7 @@ const Home = () => {
     console.log('recup des critiques');
 
     const critics = await getAllCriticsOfAcquaintances(
-      userInfos.id,
+      loggedUserInfos.id,
       displayType,
       page,
     );
@@ -61,7 +60,7 @@ const Home = () => {
       .map(critic => ({
         ...critic,
         // Convertir la date en un format comparable
-        timestamp: new Date(critic.created_at).getTime(),
+        timestamp: new Date(critic.critic_date).getTime(),
         // Ordre d'affichage basé sur le type de relation
         order:
           critic.relation_type === 'close_friend'
@@ -106,7 +105,7 @@ const Home = () => {
 
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Container
         maxWidth="xl"
         sx={{
@@ -119,7 +118,7 @@ const Home = () => {
           <SearchBar
             Item={Item}
             page={'contacts'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
           />
@@ -141,13 +140,13 @@ const Home = () => {
               page={'home'}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
-              userInfos={userInfos}
+              loggedUserInfos={loggedUserInfos}
             />
           </Item>
           <SearchBar
             Item={Item}
             page={'home'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
             showPicModal={null}
@@ -158,8 +157,8 @@ const Home = () => {
               type={'new-critic'}
               chosenMovie={chosenMovie}
               setData={setCriticsOfAcquaintances}
-              // setAdvicesReceived={null}
               setGoldenMovies={setGoldenMovies}
+              loggedUserInfos={loggedUserInfos}
               chosenUser={null}
               infos={null}
               haveMoreCritics={null}
@@ -174,11 +173,10 @@ const Home = () => {
                   page={'home'}
                   type={'old-critic'}
                   setData={setCriticsOfAcquaintances}
-                  // setUserCritics={setCriticsOfAcquaintances}
-                  // setAdvicesReceived={null}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}
                   infos={critic}
+                  loggedUserInfos={loggedUserInfos}
                   chosenUser={null}
                   haveMoreCritics={hasMore}
                   isLast={criticsOfAcquaintances.length - 1 === index}

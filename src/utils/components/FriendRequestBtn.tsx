@@ -10,13 +10,13 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Import des requêtes
-import { requestNewFriend } from './request/friendship/requestNewFriend';
-import { checkFriendshipStatus } from './request/friendship/checkFriendshipStatus';
+import { requestNewFriend } from '../request/friendship/requestNewFriend';
+import { checkFriendshipStatus } from '../request/friendship/checkFriendshipStatus';
 import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
-import { checkFollowedStatus } from './request/followed/checkFollowedStatus';
-import { followSomeone } from './request/followed/followSomeone';
-import { unfollowSomeone } from './request/followed/unfollowSomeone';
-import { cancelFriendShip } from './request/friendship/cancelFriendship';
+import { checkFollowedStatus } from '../request/followed/checkFollowedStatus';
+import { followSomeone } from '../request/followed/followSomeone';
+import { unfollowSomeone } from '../request/followed/unfollowSomeone';
+import { cancelFriendShip } from '../request/friendship/cancelFriendship';
 
 const FriendRequestBtn = ({
   page,

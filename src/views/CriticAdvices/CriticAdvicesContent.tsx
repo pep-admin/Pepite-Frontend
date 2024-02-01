@@ -3,8 +3,8 @@ import { Stack, Typography, CardContent } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
-import { YellowRating } from '@utils/styledComponent';
-import IsNew from '@utils/IsNew';
+import { YellowRating } from '@utils/components/styledComponent';
+import IsNew from '@utils/components/IsNew';
 import { useMemo } from 'react';
 
 const CriticAdvicesContent = ({

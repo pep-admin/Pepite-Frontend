@@ -21,15 +21,16 @@ import { modifyUserName } from '@utils/request/users/modifyUsername';
 
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
+// import UserAvatar from '@utils/components/UserAvatar';
 
-const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
+const AccountPersonalInfos = ({ setShowPicModal, loggedUserInfos }) => {
   const [handleFirstName, setHandleFirstName] = useState({
     modify: false,
-    value: userInfos.first_name,
+    value: loggedUserInfos.first_name,
   });
   const [handleLastName, setHandleLastName] = useState({
     modify: false,
-    value: userInfos.last_name,
+    value: loggedUserInfos.last_name,
   });
   const [showFirstValidate, setShowFirstValidate] = useState(false);
   const [showLastValidate, setShowLastValidate] = useState(false);
@@ -41,18 +42,21 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
         handleFirstName.value,
         handleLastName.value,
       );
-      const userInfos = JSON.parse(localStorage.getItem('user_infos'));
+      const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
       if (nameType === 'first_name') {
-        userInfos.first_name = handleFirstName.value;
-        localStorage.setItem('user_infos', JSON.stringify(userInfos));
+        loggedUserInfos.first_name = handleFirstName.value;
+        localStorage.setItem('user_infos', JSON.stringify(loggedUserInfos));
         setShowFirstValidate(false);
-        setHandleFirstName({ modify: false, value: userInfos.first_name });
+        setHandleFirstName({
+          modify: false,
+          value: loggedUserInfos.first_name,
+        });
       } else if (nameType === 'last_name') {
-        userInfos.last_name = handleLastName.value;
-        localStorage.setItem('user_infos', JSON.stringify(userInfos));
+        loggedUserInfos.last_name = handleLastName.value;
+        localStorage.setItem('user_infos', JSON.stringify(loggedUserInfos));
         setShowLastValidate(false);
-        setHandleLastName({ modify: false, value: userInfos.last_name });
+        setHandleLastName({ modify: false, value: loggedUserInfos.last_name });
       }
     } catch (_) {
       console.log("impossible de modifier les informations de l'utilisateur");
@@ -70,13 +74,24 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
         padding="6px 10px"
         flexBasis="25%"
       >
+        {/* <UserAvatar
+          variant={'circular'}
+          userInfos={loggedUserInfos}
+          picWidth={100}
+          picHeight={100}
+          isOutlined={false}
+          outlineWidth={null}
+          relationType={null}
+          sx={null}
+        /> */}
         <Avatar
-          alt={`Photo de profil de ${userInfos.first_name}`}
+          alt={`Photo de profil de ${loggedUserInfos.first_name}`}
           src={
-            !userInfos.profilPics.length
+            !loggedUserInfos.profilPics.length
               ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
               : `${apiBaseUrl}/uploads/${
-                  userInfos.profilPics.find(pic => pic.isActive === 1).filePath
+                  loggedUserInfos.profilPics.find(pic => pic.isActive === 1)
+                    .filePath
                 }`
           }
           sx={{
@@ -120,7 +135,7 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
           </Typography>
           {!handleFirstName.modify ? (
             <Typography component="span" fontSize="1em">
-              {`${userInfos.first_name}`}
+              {`${loggedUserInfos.first_name}`}
             </Typography>
           ) : (
             <Input
@@ -181,7 +196,7 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
           </Typography>
           {!handleLastName.modify ? (
             <Typography component="span" fontSize="1em">
-              {`${userInfos.last_name}`}
+              {`${loggedUserInfos.last_name}`}
             </Typography>
           ) : (
             <Input
@@ -239,7 +254,7 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
         >
           {'Email : '}
           <Typography component="span" fontSize="1em">
-            {`${userInfos.email}`}
+            {`${loggedUserInfos.email}`}
           </Typography>
         </Typography>
         <Typography
@@ -250,7 +265,7 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
         >
           {'Rang : '}
           <Typography component="span" fontSize="1em">
-            {`${userInfos.rank}`}
+            {`${loggedUserInfos.rank}`}
           </Typography>
         </Typography>
         <LinearProgress
@@ -269,7 +284,7 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
         >
           {'Membre depuis : '}
           <Typography fontSize="1em" component="span">
-            {`${convertDate(userInfos.create_datetime)}`}
+            {`${convertDate(loggedUserInfos.create_datetime)}`}
           </Typography>
         </Typography>
       </Stack>
@@ -279,7 +294,7 @@ const AccountPersonalInfos = ({ setShowPicModal, userInfos }) => {
 
 AccountPersonalInfos.propTypes = {
   setShowPicModal: PropTypes.func.isRequired,
-  userInfos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
 };
 
 export default AccountPersonalInfos;

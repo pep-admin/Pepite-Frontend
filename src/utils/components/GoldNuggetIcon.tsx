@@ -1,7 +1,13 @@
 // Import des libs externes
 import PropTypes from 'prop-types';
 
-export const GoldNuggetIcon = ({ width, height, strokeWidth, isShadowed }) => {
+export const GoldNuggetIcon = ({
+  width,
+  height,
+  strokeWidth,
+  isShadowed,
+  sx,
+}) => {
   const iconWidth = width || '79px';
   const iconHeight = height || '75px';
 
@@ -15,6 +21,7 @@ export const GoldNuggetIcon = ({ width, height, strokeWidth, isShadowed }) => {
       xmlnsXlink="http://www.w3.org/1999/xlink"
       style={{
         overflow: 'visible',
+        ...sx,
       }}
     >
       <defs>
@@ -6384,6 +6391,7 @@ GoldNuggetIcon.propTypes = {
   height: PropTypes.string.isRequired,
   strokeWidth: PropTypes.string.isRequired,
   isShadowed: PropTypes.bool.isRequired,
+  sx: PropTypes.object,
 };
 
 export default GoldNuggetIcon;

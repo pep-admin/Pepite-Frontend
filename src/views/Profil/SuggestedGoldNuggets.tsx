@@ -25,7 +25,7 @@ const SuggestedGoldNuggets = ({
   // userCritics,
   goldenMovies,
   setGoldenMovies,
-  userInfos,
+  loggedUserInfos,
   chosenUser,
 }) => {
   const [showGoldenMovie, setShowGoldenMovie] = useState(false);
@@ -63,7 +63,7 @@ const SuggestedGoldNuggets = ({
           ? () =>
               getGoldNuggetsFromAcquaintances(
                 displayType,
-                userInfos.id,
+                loggedUserInfos.id,
                 cardsToShow,
                 goldNuggetsPageRef.current,
               )
@@ -80,7 +80,6 @@ const SuggestedGoldNuggets = ({
       setGoldenMovies(prev => [...prev, ...data.goldenMovies]);
 
       if (!data.hasMore) {
-        console.log('plus rien à récupérer');
         hasMoreDataRef.current = false;
       }
 
@@ -119,7 +118,7 @@ const SuggestedGoldNuggets = ({
       goldNuggetsPageRef.current = 1;
       loadGoldNuggets();
     }
-  }, [displayType]);
+  }, [displayType, id]);
 
   return (
     <>
@@ -129,6 +128,8 @@ const SuggestedGoldNuggets = ({
           showPoster={showGoldenMovie}
           setShowPoster={setShowGoldenMovie}
           infos={goldenMovieInfos}
+          loggedUserInfos={loggedUserInfos} // Les infos de l'utilisateur connecté
+          chosenUser={chosenUser} // Les infos de l'utilisateur visité
           from={'suggested'}
         />
       ) : null}
@@ -201,7 +202,7 @@ const SuggestedGoldNuggets = ({
           {!goldenMovies.length && !areGoldNuggetsLoading && (
             <ProfilNoGold
               page={page}
-              userInfos={userInfos}
+              loggedUserInfos={loggedUserInfos}
               chosenUser={chosenUser}
             />
           )}
@@ -214,7 +215,7 @@ const SuggestedGoldNuggets = ({
 SuggestedGoldNuggets.propTypes = {
   goldenMovies: PropTypes.array.isRequired,
   setGoldenMovies: PropTypes.func.isRequired,
-  userInfos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
   page: PropTypes.string.isRequired,
   // userCritics: PropTypes.array.isRequired,

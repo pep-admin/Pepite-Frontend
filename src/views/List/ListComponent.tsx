@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import des composants internes
-import Header from '@utils/Header';
+import Header from '@utils/components/Header';
 import ProfilSuggestedNotes from '@views/Profil/SuggestedGoldNuggets';
-import { Item } from '@utils/styledComponent';
-import SearchBar from '@utils/SearchBar';
-import MainItemList from '@utils/MainItemList';
+import { Item } from '@utils/components/styledComponent';
+import SearchBar from '@utils/components/SearchBar';
+import MainItemList from '@utils/components/MainItemList';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -22,10 +22,8 @@ const ListComponent = () => {
   const { id } = useParams();
   const { displayType } = useData();
 
-  const [userInfos, setUserInfos] = useState(
-    // L'utilisateur connecté
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [wantedMovies, setWantedMovies] = useState([]); // Les films que l'utilisateur a choisi de voir
   const [watchedMovies, setWatchedMovies] = useState([]); // Les films que l'utilisateur a déjà vu
@@ -55,7 +53,7 @@ const ListComponent = () => {
 
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Container
         maxWidth="xl"
         sx={{
@@ -68,7 +66,7 @@ const ListComponent = () => {
           <SearchBar
             Item={Item}
             page={'contacts'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
           />
@@ -82,7 +80,7 @@ const ListComponent = () => {
               page={'list'}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
-              userInfos={userInfos}
+              loggedUserInfos={loggedUserInfos}
             />
           </Item>
           <Item overflow="hidden" maxheight="250px">

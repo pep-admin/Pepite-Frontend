@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 
 // Import des composants internes
 import apiBaseUrl from '@utils/request/config';
-import FriendRequestBtn from '@utils/FriendRequestBtn';
+import FriendRequestBtn from '@utils/components/FriendRequestBtn';
 
 const SuggestionsCard = ({
   page,

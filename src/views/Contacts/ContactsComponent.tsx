@@ -5,10 +5,10 @@ import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import Header from '@utils/Header';
-import { Item } from '@utils/styledComponent';
-import SearchBar from '@utils/SearchBar';
-import MainItemList from '@utils/MainItemList';
+import Header from '@utils/components/Header';
+import { Item } from '@utils/components/styledComponent';
+import SearchBar from '@utils/components/SearchBar';
+import MainItemList from '@utils/components/MainItemList';
 import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
 
 // Import des requêtes
@@ -20,9 +20,7 @@ const ContactsComponent = () => {
   const { id } = useParams();
 
   // Utilisateur connecté
-  const [userInfos, setUserInfos] = useState(
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   // Pour la page contacts
   const [friendRequestList, setFriendRequestList] = useState([]); // Liste des demandes d'amitié
@@ -55,7 +53,7 @@ const ContactsComponent = () => {
 
   return (
     <>
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Container
         maxWidth="xl"
         sx={{
@@ -68,7 +66,7 @@ const ContactsComponent = () => {
           <SearchBar
             Item={Item}
             page={'contacts'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
           />

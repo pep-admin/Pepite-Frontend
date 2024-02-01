@@ -1,21 +1,21 @@
 // Import des libs externes
-import { Stack, Typography, Divider, AvatarGroup, Avatar } from '@mui/material';
+import { Stack, Typography, Divider } from '@mui/material';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+
+// Import des composants internes
+import UserAvatar from '@utils/components/UserAvatar';
+import ModalAcquaintancesInfos from './ModalAcquaintancesInfos';
 
 // Import des icônes
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { OrangeRating } from '@utils/styledComponent';
+import { OrangeRating } from '@utils/components/styledComponent';
 import StarIcon from '@mui/icons-material/Star';
-
-// Import des variables d'environnement
-import apiBaseUrl from '@utils/request/config';
+import InfoTwoToneIcon from '@mui/icons-material/InfoTwoTone';
 
 // Import des fonctions utilitaires
 import { formatRating } from '@utils/functions/formatRating';
-import { useEffect, useState } from 'react';
-
-// Import des composants internes
-import AcquaintancesMenu from '@utils/AcquaintancesMenu';
+import { convertDate } from '@utils/functions/convertDate';
 
 // Import des requêtes
 import { getRatingsRequest } from '@utils/request/critics/getRatingsRequest';
@@ -24,79 +24,31 @@ import { getRatingsRequest } from '@utils/request/critics/getRatingsRequest';
 import { useData } from '@hooks/DataContext';
 
 const ModalPosterContent = ({
+  page,
+  from,
   infos,
+  loggedUserInfos,
+  criticUserInfos,
+  chosenUser,
   goldNuggetUserInfos,
   setShowUserInfos,
   relationshipStatus,
 }) => {
   const [relationsRatings, setRelationsRatings] = useState(null);
-  const [showRatingsDetails, setShowRatingsDetails] = useState(null);
-  const [chosenRelationship, setChosenRelationShip] = useState('close_friend');
+  const [showMovieInfos, setShowMovieInfos] = useState(false);
 
   const { displayType } = useData();
 
-  const openRelationsRatings = Boolean(showRatingsDetails);
-
-  // Trie les relations : 1) amis proches, 2) amis, 3) suivis
-  const sortedGoldNuggetUserInfos = [...goldNuggetUserInfos].sort((a, b) => {
-    const relationTypeA = relationshipStatus[a.id]?.relation_type || 'unknown';
-    const relationTypeB = relationshipStatus[b.id]?.relation_type || 'unknown';
-
-    const priorityMap = {
-      close_friend: 1,
-      friend: 2,
-      followed: 3,
-      unknown: 4,
-    };
-
-    return priorityMap[relationTypeA] - priorityMap[relationTypeB];
-  });
-
-  // Ajoute le type de relation pour chaque utilisateur qui a la pépite en commun
-  const sortedAndMappedGoldNuggetUserInfos = sortedGoldNuggetUserInfos.map(
-    userInfo => {
-      const relationType =
-        relationshipStatus[userInfo.id]?.relation_type || 'unknown';
-      return {
-        ...userInfo,
-        relation_type: relationType,
-      };
-    },
-  );
-
-  // Compte le nombre de relations qui ont noté la pépite
-  const countRelationshipTypes = () => {
-    let closeFriendCount = 0;
-    let friendCount = 0;
-    let followedCount = 0;
-
-    goldNuggetUserInfos.forEach(userInfo => {
-      const relationType = relationshipStatus[userInfo.id]?.relation_type;
-      if (relationType === 'close_friend') {
-        closeFriendCount++;
-      } else if (relationType === 'friend') {
-        friendCount++;
-      } else if (relationType === 'followed') {
-        followedCount++;
-      }
-    });
-
-    return { closeFriendCount, friendCount, followedCount };
-  };
-
-  const { closeFriendCount, friendCount, followedCount } =
-    countRelationshipTypes();
-
   const getRatings = async movieId => {
     const averageRating = await getRatingsRequest(movieId, displayType);
-    console.log('les notes');
-
     setRelationsRatings(averageRating);
   };
 
   useEffect(() => {
+    if (from === 'critic') return;
+
     getRatings(infos.movie_id);
-  }, [infos]);
+  }, [infos, from]);
 
   return (
     <Stack
@@ -106,8 +58,11 @@ const ModalPosterContent = ({
       height="100%"
       width="100%"
       bgcolor="rgba(0, 0, 0, 0.67)"
-      padding="6px 15px"
+      padding="6px 20px"
       alignItems="center"
+      sx={{
+        overflowY: 'scroll',
+      }}
     >
       <Typography
         variant="h2"
@@ -119,6 +74,10 @@ const ModalPosterContent = ({
         marginBottom="7px"
         sx={{
           letterSpacing: '-3.5px',
+          visibility:
+            infos.is_gold_nugget === 1 || from === 'suggested'
+              ? 'visible'
+              : 'hidden',
         }}
       >
         {'pépite.'}
@@ -128,162 +87,145 @@ const ModalPosterContent = ({
           width: '75px',
           borderBottomWidth: 'medium',
           borderColor: '#fff',
+          visibility:
+            infos.is_gold_nugget === 1 || from === 'suggested'
+              ? 'visible'
+              : 'hidden',
         }}
       />
-      <Stack width="100%" flexGrow="1" alignItems="center" padding="30px 0">
+      <Stack
+        width="100%"
+        flexGrow="1"
+        alignItems="center"
+        padding="10px 0"
+        justifyContent="flex-start"
+      >
         <VisibilityOffIcon
           fontSize="large"
           sx={{
             color: '#fff',
-            marginBottom: '15px',
+            marginBottom: '10px',
             cursor: 'pointer',
+            order: '1',
           }}
           onClick={() => setShowUserInfos(false)}
         />
-        <AvatarGroup max={4}>
-          {sortedAndMappedGoldNuggetUserInfos?.map((userInfo, index) => {
-            return (
-              <Avatar
-                key={index}
-                alt={`Photo de profil de ${userInfo.first_name}`}
-                src={
-                  userInfo.profilPics.length
-                    ? `${apiBaseUrl}/uploads/${
-                        userInfo.profilPics.find(pic => pic.isActive === 1)
-                          .filePath
-                      }`
-                    : 'http://127.0.0.1:5173/images/default_profil_pic.png'
+        {
+          // Si la modale affichée vient de la page de profil ou directement des critiques
+          !showMovieInfos && (page === 'profil' || from === 'critic') ? (
+            <>
+              <UserAvatar
+                variant={'circular'}
+                userInfos={
+                  loggedUserInfos.id === infos.user_id
+                    ? loggedUserInfos
+                    : chosenUser?.id === (infos.user_id || infos.sender_id)
+                    ? chosenUser
+                    : criticUserInfos
                 }
-                sx={{
-                  width: goldNuggetUserInfos.length > 1 ? 70 : 90,
-                  height: goldNuggetUserInfos.length > 1 ? 70 : 90,
-                  border: 'none !important',
-                  outlineWidth:
-                    goldNuggetUserInfos.length > 1 ? '2.5px' : '3.5px',
-                  outlineStyle: 'solid',
-                  outlineColor:
-                    userInfo.relation_type === 'close_friend'
-                      ? '#ff7b00'
-                      : userInfo.relation_type === 'friend'
-                      ? '#F29E50'
-                      : '#24A5A5',
-                  marginBottom: '15px',
-                }}
+                picWidth={90}
+                picHeight={90}
+                isOutlined={true}
+                outlineWidth={'3.5px'}
+                relationType={
+                  loggedUserInfos.id === infos.user_id
+                    ? 'self'
+                    : page === 'profil'
+                    ? chosenUser.relation_type
+                    : criticUserInfos.relation_type
+                }
+                sx={{ order: '2', marginBottom: '15px' }}
               />
-            );
-          })}
-        </AvatarGroup>
-        {closeFriendCount > 0 && (
-          <>
-            <Typography
-              align="center"
-              sx={{ color: '#fff', fontSize: '1.05em' }}
-              onClick={e => {
-                setChosenRelationShip('close_friend');
-                setShowRatingsDetails(e.currentTarget);
-              }}
-            >
-              {closeFriendCount > 0 && (
-                <>
-                  <span
-                    style={{
-                      color: '#ff7b00',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {`${closeFriendCount} ami${
-                      closeFriendCount > 1 ? 's' : ''
-                    } proche${closeFriendCount > 1 ? 's' : ''}`}
-                  </span>
-                  {closeFriendCount > 1 ? ' ont noté' : ' a noté'}
-                </>
-              )}
-            </Typography>
-            <AcquaintancesMenu
-              page={'poster'}
-              open={openRelationsRatings}
-              anchorEl={showRatingsDetails}
-              setAnchorEl={setShowRatingsDetails}
-              infos={sortedAndMappedGoldNuggetUserInfos}
-              chosenRelationship={chosenRelationship}
-              ratings={relationsRatings}
+              <Typography fontSize="1em" color="#fff" order="2">
+                {loggedUserInfos.id === (infos.user_id || infos.sender_id) ? (
+                  `Vous avez noté le ${convertDate(infos.critic_date)}`
+                ) : (
+                  <>
+                    <span
+                      style={{
+                        color:
+                          (page === 'profil' &&
+                            chosenUser?.relation_type === 'close_friend') ||
+                          (page === 'home' &&
+                            criticUserInfos?.relation_type === 'close_friend')
+                            ? '#ff7b00'
+                            : (page === 'profil' &&
+                                chosenUser?.relation_type === 'friend') ||
+                              (page === 'home' &&
+                                criticUserInfos?.relation_type === 'friend')
+                            ? '#F29E50'
+                            : '#24A5A5',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {page === 'profil'
+                        ? `${chosenUser.first_name} ${chosenUser.last_name}`
+                        : `${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
+                    </span>
+                    {` a noté le ${convertDate(infos.critic_date)}`}
+                  </>
+                )}
+              </Typography>
+            </>
+          ) : // Si la modale affichée vient de la page home, on affichera toutes les connaissances qui ont noté le film
+          !showMovieInfos && (page === 'home' || page === 'list') ? (
+            <ModalAcquaintancesInfos
+              goldNuggetUserInfos={goldNuggetUserInfos}
+              relationshipStatus={relationshipStatus}
+              relationsRatings={relationsRatings}
             />
-          </>
-        )}
-        {friendCount > 0 && (
-          <>
-            <Typography
-              align="center"
-              sx={{ color: '#fff', fontSize: '1.05em' }}
-              onClick={e => {
-                setChosenRelationShip('friend');
-                setShowRatingsDetails(e.currentTarget);
-              }}
-            >
-              {friendCount > 0 && (
-                <>
-                  <span style={{ color: '#F29E50', fontWeight: 'bold' }}>
-                    {`${friendCount} ami${friendCount > 1 ? 's' : ''}`}
-                  </span>
-                  {friendCount > 1 ? ' ont noté' : ' a noté'}
-                </>
-              )}
-            </Typography>
-            <AcquaintancesMenu
-              page={'poster'}
-              open={openRelationsRatings}
-              anchorEl={showRatingsDetails}
-              setAnchorEl={setShowRatingsDetails}
-              infos={sortedAndMappedGoldNuggetUserInfos}
-              chosenRelationship={chosenRelationship}
-              ratings={relationsRatings}
-            />
-          </>
-        )}
-        {followedCount > 0 && (
-          <>
-            <Typography
-              align="center"
-              sx={{ color: '#fff', fontSize: '1.05em' }}
-              onClick={e => {
-                setChosenRelationShip('followed');
-                setShowRatingsDetails(e.currentTarget);
-              }}
-            >
-              {followedCount > 0 && (
-                <>
-                  <span style={{ color: '#24A5A5', fontWeight: 'bold' }}>
-                    {`${followedCount} suivi${followedCount > 1 ? 's' : ''}`}
-                  </span>
-                  {followedCount > 1 ? ' ont noté' : ' a noté'}
-                </>
-              )}
-            </Typography>
-            <AcquaintancesMenu
-              page={'poster'}
-              open={openRelationsRatings}
-              anchorEl={showRatingsDetails}
-              setAnchorEl={setShowRatingsDetails}
-              infos={sortedAndMappedGoldNuggetUserInfos}
-              chosenRelationship={chosenRelationship}
-              ratings={relationsRatings}
-            />
-          </>
-        )}
-        <Typography
-          color="primary"
-          align="center"
-          fontSize="1.8em"
-          fontWeight="bold"
+          ) : (
+            <Stack order="8">
+              <Typography
+                align="justify"
+                variant="body2"
+                color="#fff"
+                marginTop="10px"
+              >
+                {`${infos?.overview}`}
+              </Typography>
+            </Stack>
+          )
+        }
+        <Stack
+          direction="row"
+          alignItems="center"
+          columnGap="10px"
+          maxWidth="200px"
+          order="6"
         >
-          {infos?.title ? `${infos.title}` : `${infos.name}`}
-        </Typography>
-        {relationsRatings?.average_rating && (
-          <Stack direction="row" alignItems="center">
+          <Typography
+            color="primary"
+            align="center"
+            fontSize="1.5em"
+            fontWeight="bold"
+            display="flex"
+            alignItems="center"
+            lineHeight="33px"
+            position="relative"
+          >
+            {infos?.title ? `${infos.title}` : `${infos.name}`}
+            <InfoTwoToneIcon
+              sx={{
+                color: '#ffcd00',
+                position: 'absolute',
+                right: '-34px',
+              }}
+              onClick={() => {
+                setShowMovieInfos(!showMovieInfos);
+              }}
+            />
+          </Typography>
+        </Stack>
+        {(relationsRatings?.average_rating || infos?.rating) && (
+          <Stack direction="row" alignItems="center" order="7">
             <OrangeRating
               name="half-rating-read"
-              value={parseFloat(relationsRatings.average_rating)}
+              value={parseFloat(
+                page === 'profil' || from === 'critic'
+                  ? infos.rating
+                  : relationsRatings.average_rating,
+              )}
               precision={0.1}
               readOnly
               emptyIcon={
@@ -292,7 +234,11 @@ const ModalPosterContent = ({
               sx={{ marginRight: '10px', fontSize: '1.3em' }}
             />
             <Typography fontSize="1.3em" color="secondary" fontWeight="bold">
-              {`${formatRating(relationsRatings.average_rating)} / 5`}
+              {`${formatRating(
+                page === 'profil' || from === 'critic'
+                  ? infos.rating
+                  : relationsRatings.average_rating,
+              )} / 5`}
             </Typography>
           </Stack>
         )}
@@ -302,7 +248,12 @@ const ModalPosterContent = ({
 };
 
 ModalPosterContent.propTypes = {
+  page: PropTypes.string.isRequired,
+  from: PropTypes.string.isRequired,
   infos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
+  chosenUser: PropTypes.object,
+  criticUserInfos: PropTypes.object,
   goldNuggetUserInfos: PropTypes.array.isRequired,
   setShowUserInfos: PropTypes.func.isRequired,
   relationshipStatus: PropTypes.object.isRequired,

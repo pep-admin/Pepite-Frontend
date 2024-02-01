@@ -1,7 +1,10 @@
 // Import des libs externes
-import { Modal, Stack, Box, Avatar, Typography, Divider } from '@mui/material';
+import { Modal, Stack, Box, Typography, Divider } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+
+// Import des composants internes
+import UserAvatar from '@utils/components/UserAvatar';
 
 // Import des icônes
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -9,11 +12,8 @@ import CloseIcon from '@mui/icons-material/Close';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { OrangeRating } from '@utils/styledComponent';
+import { OrangeRating } from '@utils/components/styledComponent';
 import { formatRating } from '@utils/functions/formatRating';
-
-// Import des variables d'environnements
-import apiBaseUrl from '@utils/request/config';
 
 const CriticAdvicesReviewModal = ({
   showReviewModal,
@@ -26,7 +26,7 @@ const CriticAdvicesReviewModal = ({
   criticUserInfos,
 }) => {
   const { displayType, chosenMovie } = useData();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <Modal
@@ -51,27 +51,15 @@ const CriticAdvicesReviewModal = ({
         }}
       >
         <Stack direction="row">
-          <Avatar
-            variant="square"
-            alt={`Photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
-            src={
-              // Si l'utilisateur qui a posté la critique || le conseil a défini une photo de profil
-              criticUserInfos.profilPics?.length
-                ? `${apiBaseUrl}/uploads/${
-                    criticUserInfos.profilPics.find(pic => pic.isActive === 1)
-                      .filePath
-                  }`
-                : // Si l'utilisateur qui a posté la critique || le conseil n'a pas défini de photo de profil
-                  'http://127.0.0.1:5173/images/default_profil_pic.png'
-            }
-            sx={{
-              width: 100,
-              height: 100,
-              borderRadius: '50%',
-              order: 1,
-              cursor: 'pointer',
-            }}
-            onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
+          <UserAvatar
+            variant={'circular'}
+            userInfos={criticUserInfos}
+            picWidth={100}
+            picHeight={100}
+            isOutlined={false}
+            outlineWidth={null}
+            relationType={null}
+            sx={{ order: '1' }}
           />
           <Box
             height="30px"

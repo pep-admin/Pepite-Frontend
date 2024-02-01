@@ -1,6 +1,6 @@
 // Import des libs externes
 import { Stack, Typography, Divider } from '@mui/material';
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 

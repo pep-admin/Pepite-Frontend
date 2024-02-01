@@ -15,17 +15,17 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import du composant customisé
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
 import { updatePassword } from '@utils/request/users/updatePassword';
-import CustomAlert from '@utils/CustomAlert';
+import CustomAlert from '@utils/components/CustomAlert';
 
 const AccountUpdatePassword = ({
   showPasswordModal,
   setShowPasswordModal,
-  userInfos,
+  loggedUserInfos,
 }) => {
   const [onSuccess, setOnSuccess] = useState(null);
 
@@ -86,17 +86,17 @@ const AccountUpdatePassword = ({
       >
         {onSuccess ? (
           <CustomAlert
-            type={'success'}
+            alertType={'success'}
             message={'Votre mot de passe a bien été modifié.'}
-            setOnSuccess={setOnSuccess}
-            setShowModal={setShowPasswordModal}
+            // setOnSuccess={setOnSuccess}
+            // setShowModal={setShowPasswordModal}
           />
         ) : onSuccess === false ? (
           <CustomAlert
-            type={'error'}
+            alertType={'error'}
             message={'Erreur dans la modification du mot de passe.'}
-            setOnSuccess={setOnSuccess}
-            setShowModal={setShowPasswordModal}
+            // setOnSuccess={setOnSuccess}
+            // setShowModal={setShowPasswordModal}
           />
         ) : (
           <>
@@ -121,7 +121,7 @@ const AccountUpdatePassword = ({
               <input
                 type="text"
                 name="username" // Remplacez par le nom d'utilisateur ou l'email de l'utilisateur
-                value={`${userInfos.first_name} ${userInfos.last_name}`}
+                value={`${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`}
                 autoComplete="new-password"
                 readOnly
                 style={{ display: 'none' }}
@@ -259,7 +259,7 @@ const AccountUpdatePassword = ({
 AccountUpdatePassword.propTypes = {
   showPasswordModal: PropTypes.bool.isRequired,
   setShowPasswordModal: PropTypes.func.isRequired,
-  userInfos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
 };
 
 export default AccountUpdatePassword;

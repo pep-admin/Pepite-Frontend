@@ -19,7 +19,7 @@ import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 import { useEffect, useState } from 'react';
 import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
 
-const ProfilDetails = ({ criticsAndAdvices, userInfos, chosenUser }) => {
+const ProfilDetails = ({ criticsAndAdvices, loggedUserInfos, chosenUser }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -142,12 +142,14 @@ const ProfilDetails = ({ criticsAndAdvices, userInfos, chosenUser }) => {
                 marginRight="2.5px"
                 fontWeight="bold"
                 onClick={() =>
-                  userInfos.id === parseInt(id, 10)
-                    ? navigate(`/list/${userInfos.id}`)
+                  loggedUserInfos.id === parseInt(id, 10)
+                    ? navigate(`/list/${loggedUserInfos.id}`)
                     : navigate(`/list/${chosenUser.id}`)
                 }
               >
-                {userInfos.id === parseInt(id, 10) ? 'Ma liste' : 'Sa liste'}
+                {loggedUserInfos.id === parseInt(id, 10)
+                  ? 'Ma liste'
+                  : 'Sa liste'}
               </Typography>
             </ListItemButton>
           </ListItem>
@@ -189,7 +191,7 @@ const ProfilDetails = ({ criticsAndAdvices, userInfos, chosenUser }) => {
 
 ProfilDetails.propTypes = {
   criticsAndAdvices: PropTypes.array.isRequired,
-  userInfos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
 };
 

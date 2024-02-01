@@ -1,10 +1,5 @@
 // Import des libs externes
-import {
-  Stack,
-  Typography,
-  // Avatar,
-  TextField,
-} from '@mui/material';
+import { Stack, Typography, TextField } from '@mui/material';
 import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
@@ -12,7 +7,7 @@ import PropTypes from 'prop-types';
 import { addComment } from '@utils/request/comments/addComment';
 
 // Import des icônes
-import { MessageIcon } from '@utils/styledComponent';
+import { MessageIcon } from '@utils/components/styledComponent';
 import SendIcon from '@mui/icons-material/Send';
 
 // Import du contexte

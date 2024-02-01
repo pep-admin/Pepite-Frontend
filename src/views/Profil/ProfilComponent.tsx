@@ -5,22 +5,21 @@ import {
   Container,
   Stack,
   Box,
-  Avatar,
   Typography,
 } from '@mui/material';
-import Header from '@utils/Header';
+import Header from '@utils/components/Header';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import des composants internes
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 import ProfilDetails from '@views/Profil/ProfilDetails';
 import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
-import SearchBar from '@utils/SearchBar';
+import SearchBar from '@utils/components/SearchBar';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 import AccountUpdatePic from '@views/Account/AccountUpdatePic';
-import FriendRequestBtn from '@utils/FriendRequestBtn';
+import FriendRequestBtn from '@utils/components/FriendRequestBtn';
 import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 // Import des icônes
@@ -41,6 +40,7 @@ import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
 
 // Import du hook de scroll vertical infini
 import useVerticalScroll from '@hooks/useVerticalScroll';
+import UserAvatar from '@utils/components/UserAvatar';
 
 interface Picture {
   id: number;
@@ -67,7 +67,7 @@ const ProfilComponent = () => {
   const { displayType, chosenMovie } = useData();
 
   // Utilisateur connecté
-  const [userInfos, setUserInfos] = useState(
+  const [loggedUserInfos, setLoggedUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
   // Utilisateur externe
@@ -106,7 +106,6 @@ const ProfilComponent = () => {
           // Si les critiques reçues sont inférieures à 3
           hasMoreCritics = false;
         }
-        // setUserCritics(criticsData);
 
         const advicesData = await getAdvicesReceived(id, displayType, page);
         if (advicesData.length < 3) {
@@ -142,7 +141,7 @@ const ProfilComponent = () => {
 
   // Récupération des informations de l'utilisateur si le profil est différent de l'utilisateur connecté
   useEffect(() => {
-    const loggedInUserId = userInfos.id;
+    const loggedInUserId = loggedUserInfos.id;
     const profileUserId = parseInt(id, 10);
 
     // Si l'id de l'utilisateur dans l'URL est différent de celui de l'utilisateur connecté
@@ -150,7 +149,7 @@ const ProfilComponent = () => {
       // Fetch les informations de cet utilisateur
       fetchChosenUser(profileUserId);
     }
-  }, [id, userInfos]);
+  }, [id, loggedUserInfos]);
 
   // Réinitialisation lors du changement de type (films ou séries)
   useEffect(() => {
@@ -159,8 +158,8 @@ const ProfilComponent = () => {
       firstRender.current = false;
       // Réinitialisation
     } else {
-      // setUserCritics([]);
-      // setAdvicesReceived([]);
+      setCriticsAndAdvices([]);
+      getCriticsAndAdvices(1);
     }
   }, [displayType, id]);
 
@@ -183,11 +182,11 @@ const ProfilComponent = () => {
         <AccountUpdatePic
           showPicModal={modifyCoverPic}
           setShowPicModal={setModifyCoverPic}
-          userInfos={userInfos}
-          setUserInfos={setUserInfos}
+          loggedUserInfos={loggedUserInfos}
+          setLoggedUserInfos={setLoggedUserInfos}
         />
       ) : null}
-      <Header userInfos={userInfos} setUserInfos={setUserInfos} />
+      <Header loggedUserInfos={loggedUserInfos} />
       <Card
         sx={{
           height: '30vh',
@@ -199,12 +198,15 @@ const ProfilComponent = () => {
         <CardMedia
           image={
             // Si profil de l'utilisateur connecté et qu'il a choisi une photo de couverture
-            userInfos.id === parseInt(id, 10) && userInfos.coverPics.length
+            loggedUserInfos.id === parseInt(id, 10) &&
+            loggedUserInfos.coverPics.length
               ? `${apiBaseUrl}/uploads/${
-                  userInfos.coverPics.find(pic => pic.isActive === 1).filePath
+                  loggedUserInfos.coverPics.find(pic => pic.isActive === 1)
+                    .filePath
                 }`
               : // Si profil d'un autre utilisateur et qu'il a choisi une photo de couverture
-              userInfos.id !== parseInt(id, 10) && chosenUser?.coverPics.length
+              loggedUserInfos.id !== parseInt(id, 10) &&
+                chosenUser?.coverPics.length
               ? `${apiBaseUrl}/uploads/${
                   chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
                 }`
@@ -229,7 +231,7 @@ const ProfilComponent = () => {
         >
           {
             // Si profil de l'utilisateur connecté, on permet de changer la photo de couverture
-            userInfos.id === parseInt(id, 10) ? (
+            loggedUserInfos.id === parseInt(id, 10) ? (
               <AddPhotoAlternateTwoToneIcon
                 fontSize="medium"
                 sx={{
@@ -265,13 +267,13 @@ const ProfilComponent = () => {
               textShadow: '#00000040 1px 2px 2px',
             }}
           >
-            {userInfos.id === parseInt(id, 10)
-              ? `${userInfos.first_name} ${userInfos.last_name}`
+            {loggedUserInfos.id === parseInt(id, 10)
+              ? `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`
               : chosenUser
               ? `${chosenUser.first_name} ${chosenUser.last_name}`
               : null}
           </Typography>
-          {userInfos.id !== parseInt(id, 10) ? (
+          {loggedUserInfos.id !== parseInt(id, 10) ? (
             <>
               <PersonAddAlt1TwoToneIcon
                 sx={{
@@ -311,31 +313,22 @@ const ProfilComponent = () => {
             top="-66px"
             left="0"
           >
-            <Avatar
-              alt={`Photo de profil de ${userInfos.first_name}`}
-              src={
-                // Si l'utilisateur affiché est celui connecté et qu'il a défini une photo de profil
-                userInfos.id === parseInt(id, 10) && userInfos.profilPics.length
-                  ? `${apiBaseUrl}/uploads/${
-                      userInfos.profilPics.find(pic => pic.isActive === 1)
-                        .filePath
-                    }`
-                  : // Si l'utilisateur affiché est un autre que celui connecté et qu'il a défini une photo de profil
-                  userInfos.id !== parseInt(id, 10) &&
-                    chosenUser?.profilPics.length
-                  ? `${apiBaseUrl}/uploads/${
-                      chosenUser.profilPics.find(pic => pic.isActive === 1)
-                        .filePath
-                    }`
-                  : // Si l'utilisateur n'a pas défini de photo de profil
-                    'http://127.0.0.1:5173/images/default_profil_pic.png'
-              }
-              sx={{
-                width: 90,
-                height: 90,
-                outline: '3.5px solid #fff',
-              }}
-            />
+            {chosenUser && (
+              <UserAvatar
+                variant={'circular'}
+                userInfos={
+                  loggedUserInfos.id === parseInt(id, 10)
+                    ? loggedUserInfos
+                    : chosenUser
+                }
+                picWidth={90}
+                picHeight={90}
+                isOutlined={true}
+                outlineWidth={'3.5px'}
+                relationType={'self'}
+                sx={null}
+              />
+            )}
           </Box>
           <Stack
             direction="column"
@@ -366,8 +359,8 @@ const ProfilComponent = () => {
                     marginBottom: '2px',
                   }}
                 >
-                  {userInfos.id === parseInt(id, 10)
-                    ? `${userInfos.rank}`
+                  {loggedUserInfos.id === parseInt(id, 10)
+                    ? `${loggedUserInfos.rank}`
                     : `${chosenUser?.rank}`}
                 </Typography>
               </Box>
@@ -382,7 +375,7 @@ const ProfilComponent = () => {
                 <ProfilDetails
                   criticsAndAdvices={criticsAndAdvices}
                   // userCritics={userCritics}
-                  userInfos={userInfos}
+                  loggedUserInfos={loggedUserInfos}
                   chosenUser={chosenUser}
                 />
               </Item>
@@ -399,14 +392,14 @@ const ProfilComponent = () => {
                 goldenMovies={goldenMovies}
                 setGoldenMovies={setGoldenMovies}
                 chosenUser={chosenUser}
-                userInfos={userInfos}
+                loggedUserInfos={loggedUserInfos}
               />
             </Item>
           </Stack>
           <SearchBar
             Item={Item}
             page={'profil'}
-            userInfos={userInfos}
+            loggedUserInfos={loggedUserInfos}
             chosenUser={chosenUser}
             handlePoster={null}
           />
@@ -414,14 +407,14 @@ const ProfilComponent = () => {
             <CriticAdvicesComponent
               page={'profil'}
               type={
-                userInfos.id === parseInt(id, 10) ? 'new-critic' : 'new-advice'
+                loggedUserInfos.id === parseInt(id, 10)
+                  ? 'new-critic'
+                  : 'new-advice'
               }
               chosenMovie={chosenMovie}
-              // criticsAndAdvices={criticsAndAdvices}
               setData={setCriticsAndAdvices}
-              // setUserCritics={setUserCritics}
-              // setAdvicesReceived={setAdvicesReceived}
               setGoldenMovies={setGoldenMovies}
+              loggedUserInfos={loggedUserInfos}
               infos={null}
               chosenUser={chosenUser}
             />
@@ -433,12 +426,10 @@ const ProfilComponent = () => {
                   key={`${infos.type}-${infos.id}`}
                   page={'profil'}
                   type={infos.critic_id ? 'old-critic' : 'old-advice'}
-                  // criticsAndAdvices={criticsAndAdvices}
                   setData={setCriticsAndAdvices}
-                  // setUserCritics={setUserCritics}
-                  // setAdvicesReceived={setAdvicesReceived}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}
+                  loggedUserInfos={loggedUserInfos}
                   infos={infos}
                   chosenUser={chosenUser}
                 />

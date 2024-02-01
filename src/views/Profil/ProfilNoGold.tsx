@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
+const ProfilNoGold = ({ page, loggedUserInfos, chosenUser }) => {
   const { id } = useParams();
   const { displayType } = useData();
 
@@ -30,14 +30,14 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
       />
       <Stack direction="column" spacing={1} marginTop="10px" padding="0 5px">
         <Typography fontSize="1em" component="h4" align="center">
-          {userInfos.id === parseInt(id, 10) && page === 'profil'
+          {loggedUserInfos.id === parseInt(id, 10) && page === 'profil'
             ? `Vous n'avez encore aucune pépite.`
-            : userInfos.id != parseInt(id, 10) && page === 'profil'
+            : loggedUserInfos.id != parseInt(id, 10) && page === 'profil'
             ? `${chosenUser?.first_name} n'a encore aucune pépite.`
             : "Vos contacts n'ont encore partagé aucune pépite."}
         </Typography>
         <Typography variant="body2" component="p" align="center">
-          {userInfos.id === parseInt(id, 10) && page === 'profil' ? (
+          {loggedUserInfos.id === parseInt(id, 10) && page === 'profil' ? (
             <>
               <span style={{ fontWeight: 'bold' }}>
                 {'Publiez une critique '}
@@ -46,7 +46,7 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
                 ? "d'un de vos films préférés !"
                 : "d'une de vos séries préférées !"}
             </>
-          ) : userInfos.id !== parseInt(id, 10) && page === 'profil' ? (
+          ) : loggedUserInfos.id !== parseInt(id, 10) && page === 'profil' ? (
             <>
               {"N'hésitez pas à "}
               <span style={{ fontWeight: 'bold' }}>
@@ -62,7 +62,7 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
             </>
           )}
         </Typography>
-        {userInfos.id === parseInt(id, 10) &&
+        {loggedUserInfos.id === parseInt(id, 10) &&
         displayType === 'movie' &&
         page === 'profil' ? (
           <Typography variant="body2" component="p" align="center">
@@ -71,7 +71,7 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
               le profil de vos amis !
             </>
           </Typography>
-        ) : userInfos.id === parseInt(id, 10) &&
+        ) : loggedUserInfos.id === parseInt(id, 10) &&
           displayType === 'tv' &&
           page === 'profil' ? (
           <Typography variant="body2" component="p" align="center">
@@ -87,7 +87,7 @@ const ProfilNoGold = ({ page, userInfos, chosenUser }) => {
 };
 
 ProfilNoGold.propTypes = {
-  userInfos: PropTypes.object.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
   page: PropTypes.string,
 };

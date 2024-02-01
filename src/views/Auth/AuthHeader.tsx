@@ -1,43 +1,68 @@
 // Import de libs externes
 import { Stack, Typography, Box } from '@mui/material';
-// import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Import d'un fichier CSS pour éviter la surcharge de balises style dans le head
 import '../../styles/animations.css';
 
 // Import des icônes
-// import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { ShineIcon } from '@utils/components/styledComponent';
+
+let iconIdCounter = 0;
 
 const AuthHeader = () => {
-  // const logoRef = useRef(null);
-  // const [shine, setShine] = useState([]);
+  const [icons, setIcons] = useState([]); // Les étoiles qui brillent
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     const animationClass = `animatedCircle animatedCircle${Math.floor(
-  //       Math.random() * 11,
-  //     )}`;
+  // Génère une position X en empêchant l'apparition de l'étoile ailleurs que sur les pépites
+  const generateRandomX = (
+    boxWidth,
+    iconWidth,
+    excludeRange,
+    allowedValues,
+  ) => {
+    let x = Math.random() * (boxWidth - iconWidth);
+    if (x > excludeRange[0] && x < excludeRange[1]) {
+      const randomIndex = Math.floor(Math.random() * allowedValues.length);
+      x = allowedValues[randomIndex];
+    }
 
-  //     const newShine = {
-  //       size: `${0.75 + Math.random() * 0.4}em`,
-  //       left: `${Math.random() * 100}%`,
-  //       bottom: '0%',
-  //       color: `rgba(255, ${Math.random() * (255 - 150) + 150}, 0, ${
-  //         Math.random() + 0.4
-  //       })`,
-  //       animationClass,
-  //       id: Math.random(),
-  //       createdAt: Date.now(),
-  //     };
-  //     setShine(prevShine =>
-  //       prevShine
-  //         .filter(shineItem => Date.now() - shineItem.createdAt < 10000)
-  //         .concat(newShine),
-  //     );
-  //   }, 2000);
+    return x;
+  };
 
-  //   return () => clearInterval(intervalId);
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const excludeRange = [5, 32]; // La plage de valeurs à exclure sur l'axe des x
+      const allowedValues = [0, 3, 35, 40, 53]; // Valeurs autorisées si la position est dans la plage exclue
+
+      // Dimensions de la Box
+      const boxWidth = 64;
+      const boxHeight = 29;
+
+      // Taille de l'icône
+      const iconWidth = 18;
+      const iconHeight = 18;
+
+      // Génère des positions aléatoires au niveau des pépites de l'image
+      const newIcon = {
+        id: iconIdCounter++,
+        x: generateRandomX(boxWidth, iconWidth, excludeRange, allowedValues),
+        y: Math.random() * (boxHeight - iconHeight),
+      };
+
+      setIcons(prevIcons => {
+        // Limite de 10 icônes dans le DOM
+        const maxIcons = 10;
+
+        // Si 10 icônes sont présentes dans le DOM, on retire la première
+        const iconsToUpdate =
+          prevIcons.length >= maxIcons ? prevIcons.slice(1) : prevIcons;
+
+        return [...iconsToUpdate, newIcon];
+      });
+    }, 1300); // Ajout d'une nouvelle icône toutes les 1.5 secondes
+
+    return () => clearInterval(interval);
+  }, [icons.length]);
 
   return (
     <Stack
@@ -48,26 +73,33 @@ const AuthHeader = () => {
       alignItems="center"
     >
       <Box
-        // ref={logoRef}
         position="relative"
+        height="100px"
+        marginBottom="10px"
+        display="flex"
+        justifyContent="center"
         sx={{
-          filter: 'contrast(1.09) brightness(0.9)',
+          filter: 'contrast(0.9)',
         }}
       >
-        <img src="/images/pepite_logo.svg" alt="cornet de pop corns" />
-        {/* {shine.map(shineItem => (
-          <AutoAwesomeIcon
-            key={shineItem.id}
-            style={{
-              fontSize: shineItem.size,
-              left: shineItem.left,
-              bottom: shineItem.bottom,
-              color: shineItem.color,
-              position: 'absolute',
-            }}
-            className={shineItem.animationClass}
-          />
-        ))} */}
+        <img src="/images/logo_pepite_svg.svg" alt="cornet de pop corns" />
+        <Box position="absolute" bottom="0" height="29px" width="64px">
+          {icons.map(icon => (
+            <ShineIcon
+              key={icon.id}
+              className="animatedShine" // Classe pour l'animation
+              style={{
+                left: `${icon.x}px`, // Utiliser la position x aléatoire
+                top: `${icon.y}px`, // Utiliser la position y aléatoire
+              }}
+              sx={{
+                position: 'absolute',
+                height: '18px',
+                width: '18px',
+              }}
+            />
+          ))}
+        </Box>
       </Box>
       <Typography
         variant="h1"

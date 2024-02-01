@@ -20,10 +20,10 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useData } from '@hooks/DataContext';
 
 // Import des requêtes internes
-import { deleteCritic } from './request/critics/deleteCritic';
-import { deleteComment } from './request/comments/deleteComment';
-import { getAllCriticComments } from './request/comments/getComments';
-import { getCriticsOfUser } from './request/critics/getCritics';
+import { deleteCritic } from '../request/critics/deleteCritic';
+import { deleteComment } from '../request/comments/deleteComment';
+import { getAllCriticComments } from '../request/comments/getComments';
+import { getCriticsOfUser } from '../request/critics/getCritics';
 
 const ModifyOrDelete = ({ parent, infos, setData, isModify, setIsModify }) => {
   const { displayType } = useData();

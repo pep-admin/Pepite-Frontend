@@ -94,7 +94,9 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let advice_id = null;
   let is_gold_nugget = 0;
   let is_turnip = 0;
-  let created_at = null;
+  let critic_date = null;
+  let advice_date = null;
+  let user_id = null;
   let sender_id = null;
   let relation_type = null;
 
@@ -108,18 +110,17 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     title = data.title;
     rating = data.rating; // la note choisie par l'utilisateur
     text = data.text; // le texte de la critique
-    // critic_id = Number(data.id);
     is_gold_nugget = Number(data.is_gold_nugget);
     is_turnip = Number(data.is_turnip);
     relation_type = data.relation_type;
 
     if (requestType === 'critic') {
       critic_id = Number(data.id);
-      created_at = data.critic_date;
-      sender_id = data.user_id;
+      critic_date = data.critic_date;
+      user_id = data.user_id;
     } else {
       advice_id = Number(data.id);
-      created_at = data.advice_date;
+      advice_date = data.advice_date;
       sender_id = data.sender_id;
     }
 
@@ -139,7 +140,9 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       advice_id,
       is_gold_nugget,
       is_turnip,
-      created_at,
+      critic_date,
+      advice_date,
+      user_id,
       sender_id,
       relation_type,
       friends_and_followed_critics,
@@ -162,11 +165,11 @@ export const parseDatabaseData = (data, displayType, requestType) => {
 
     if (requestType === 'critic') {
       critic_id = Number(data.id);
-      created_at = data.critic_date;
-      sender_id = data.user_id;
+      critic_date = data.critic_date;
+      user_id = data.user_id;
     } else {
       advice_id = Number(data.id);
-      created_at = data.advice_date;
+      advice_date = data.advice_date;
       sender_id = data.sender_id;
     }
 
@@ -186,7 +189,9 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       advice_id,
       is_gold_nugget,
       is_turnip,
-      created_at,
+      critic_date,
+      advice_date,
+      user_id,
       sender_id,
       relation_type,
       friends_and_followed_critics,

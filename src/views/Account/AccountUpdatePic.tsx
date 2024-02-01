@@ -3,7 +3,6 @@ import {
   Modal,
   Stack,
   Typography,
-  Avatar,
   ToggleButtonGroup,
   ToggleButton,
   Button,
@@ -13,29 +12,32 @@ import {
   Card,
   CardMedia,
 } from '@mui/material';
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
+// Import des composants internes
+import UserAvatar from '@utils/components/UserAvatar';
+
 // Import des variables d'environnements
 import apiBaseUrl from '@utils/request/config';
-import SearchBar from '@utils/SearchBar';
+import SearchBar from '@utils/components/SearchBar';
 
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
 
-// Import de la requête pour envoyer le fichier image
+// Import des requêtes
 import { uploadUserPic } from '@utils/request/uploads/uploadUserPic';
 import { getUser } from '@utils/request/users/getUser';
-import CustomAlert from '@utils/CustomAlert';
+import CustomAlert from '@utils/components/CustomAlert';
 import { recoverOldPic } from '@utils/request/uploads/recoverOldPic';
 import { uploadPoster } from '@utils/request/uploads/uploadPoster';
 
 const AccountUpdatePic = ({
   showPicModal,
   setShowPicModal,
-  userInfos,
-  setUserInfos,
+  loggedUserInfos,
+  setLoggedUserInfos,
 }) => {
   const [alignment, setAlignment] = useState('picture'); // Téléchargement par photo ou recherche de poster
   const [onSuccess, setOnSuccess] = useState({ state: null, message: null });
@@ -47,10 +49,9 @@ const AccountUpdatePic = ({
 
       await uploadUserPic(newFile, picType);
 
-      const newData = await getUser(userInfos.id);
-      console.log(newData);
+      const newData = await getUser(loggedUserInfos.id);
 
-      setUserInfos(newData);
+      setLoggedUserInfos(newData);
       setOnSuccess({
         state: true,
         message: `Photo de ${picType} ajoutée avec succès !`,
@@ -64,8 +65,8 @@ const AccountUpdatePic = ({
   const handleOldPic = async (imgId, picType) => {
     try {
       await recoverOldPic(imgId, picType);
-      const newData = await getUser(userInfos.id);
-      setUserInfos(newData);
+      const newData = await getUser(loggedUserInfos.id);
+      setLoggedUserInfos(newData);
 
       setOnSuccess({
         state: true,
@@ -83,8 +84,8 @@ const AccountUpdatePic = ({
   const handlePoster = async (posterPath, picType) => {
     try {
       await uploadPoster(posterPath, picType);
-      const newData = await getUser(userInfos.id);
-      setUserInfos(newData);
+      const newData = await getUser(loggedUserInfos.id);
+      setLoggedUserInfos(newData);
 
       setOnSuccess({
         state: true,
@@ -177,21 +178,15 @@ const AccountUpdatePic = ({
         </Stack>
         <Stack direction="column" alignItems="center" margin="12px 0 0 0">
           {showPicModal.type === 'profil' ? (
-            <Avatar
-              alt={`Photo de profil de ${userInfos.first_name}`}
-              src={
-                !userInfos.profilPics.length
-                  ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
-                  : `${apiBaseUrl}/uploads/${
-                      userInfos.profilPics.find(pic => pic.isActive === 1)
-                        .filePath
-                    }`
-              }
-              sx={{
-                width: 125,
-                height: 125,
-                cursor: 'pointer',
-              }}
+            <UserAvatar
+              variant={'circular'}
+              userInfos={loggedUserInfos}
+              picWidth={125}
+              picHeight={125}
+              isOutlined={false}
+              outlineWidth={null}
+              relationType={null}
+              sx={null}
             />
           ) : (
             <Card
@@ -207,11 +202,12 @@ const AccountUpdatePic = ({
             >
               <CardMedia
                 image={
-                  !userInfos.coverPics.length
+                  !loggedUserInfos.coverPics.length
                     ? 'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
                     : `${apiBaseUrl}/uploads/${
-                        userInfos.coverPics.find(pic => pic.isActive === 1)
-                          .filePath
+                        loggedUserInfos.coverPics.find(
+                          pic => pic.isActive === 1,
+                        ).filePath
                       }`
                 }
                 sx={{
@@ -248,7 +244,8 @@ const AccountUpdatePic = ({
                   {'Importer une photo'}
                 </Button>
               </label>
-              {showPicModal.type === 'profil' && userInfos.profilPics.length ? (
+              {showPicModal.type === 'profil' &&
+              loggedUserInfos.profilPics.length ? (
                 <ImageList
                   sx={{
                     width: '90%',
@@ -259,7 +256,7 @@ const AccountUpdatePic = ({
                   cols={3}
                   rowHeight={100}
                 >
-                  {userInfos.profilPics.map(pic => {
+                  {loggedUserInfos.profilPics.map(pic => {
                     return (
                       <ImageListItem
                         key={pic.id}
@@ -267,7 +264,7 @@ const AccountUpdatePic = ({
                       >
                         <img
                           src={`${apiBaseUrl}/uploads/${pic.filePath}`}
-                          alt={`Photo de profil de ${userInfos.first_name}`}
+                          alt={`Photo de profil de ${loggedUserInfos.first_name}`}
                           loading="lazy"
                         />
                       </ImageListItem>
@@ -275,7 +272,7 @@ const AccountUpdatePic = ({
                   })}
                 </ImageList>
               ) : showPicModal.type === 'couverture' &&
-                userInfos.coverPics.length ? (
+                loggedUserInfos.coverPics.length ? (
                 <ImageList
                   sx={{
                     width: '90%',
@@ -286,7 +283,7 @@ const AccountUpdatePic = ({
                   cols={3}
                   rowHeight={100}
                 >
-                  {userInfos.coverPics.map(pic => {
+                  {loggedUserInfos.coverPics.map(pic => {
                     return (
                       <ImageListItem
                         key={pic.id}
@@ -294,7 +291,7 @@ const AccountUpdatePic = ({
                       >
                         <img
                           src={`${apiBaseUrl}/uploads/${pic.filePath}`}
-                          alt={`Photo de couverture de ${userInfos.first_name}`}
+                          alt={`Photo de couverture de ${loggedUserInfos.first_name}`}
                           loading="lazy"
                         />
                       </ImageListItem>
@@ -311,6 +308,7 @@ const AccountUpdatePic = ({
               <SearchBar
                 Item={Item}
                 page={'params'}
+                loggedUserInfos={loggedUserInfos}
                 handlePoster={handlePoster}
                 showPicModal={showPicModal}
               />
@@ -325,8 +323,8 @@ const AccountUpdatePic = ({
 AccountUpdatePic.propTypes = {
   showPicModal: PropTypes.object.isRequired,
   setShowPicModal: PropTypes.func.isRequired,
-  userInfos: PropTypes.object.isRequired,
-  setUserInfos: PropTypes.func.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
+  setLoggedUserInfos: PropTypes.func.isRequired,
 };
 
 export default AccountUpdatePic;

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useData } from '@hooks/DataContext';
 
 // Import des composants customisés
-import { Item } from '@utils/styledComponent';
+import { Item } from '@utils/components/styledComponent';
 
 // Import des composants internes
 import CriticAdvicesHeader from './CriticAdvicesHeader';
@@ -16,7 +16,7 @@ import CriticAdvicesReview from './CriticAdvicesReview';
 import CriticAdvicesFooter from './CriticAdvicesFooter';
 import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
-import CustomAlert from '@utils/CustomAlert';
+import CustomAlert from '@utils/components/CustomAlert';
 import CriticAdvicesPoster from './CriticAdvicesPoster';
 // import GoldNugget from '@utils/GoldNugget';
 
@@ -44,6 +44,7 @@ const CriticAdvicesComponent = ({
   setData,
   setGoldenMovies,
   infos,
+  loggedUserInfos,
   chosenUser,
   haveMoreCritics,
   isLast,
@@ -104,11 +105,6 @@ const CriticAdvicesComponent = ({
         : await getAdvicesReceived(id, displayType, 1);
 
     setData(newData);
-    // if (type === 'critic') {
-    //   setUserCritics(newData);
-    // } else {
-    //   setAdvicesReceived(newData);
-    // }
 
     const response = await getAllGoldNuggetsOfUser(
       displayType,
@@ -119,7 +115,6 @@ const CriticAdvicesComponent = ({
 
     setGoldenMovies(response.data.goldenMovies);
 
-    // countCriticsAndGold();
     setIsModify(false);
 
     setChosenMovieId(null);
@@ -226,8 +221,8 @@ const CriticAdvicesComponent = ({
     }
   };
 
-  const getCriticUserInfos = async () => {
-    const userInfos = await getUser(infos.sender_id);
+  const getCriticUserInfos = async id => {
+    const userInfos = await getUser(id);
     setCriticUserInfos(userInfos);
   };
 
@@ -239,8 +234,10 @@ const CriticAdvicesComponent = ({
   }, [isModify]);
 
   useEffect(() => {
-    if (type === 'old-critic' || type === 'old-advice') {
-      getCriticUserInfos();
+    if (type === 'old-critic') {
+      getCriticUserInfos(infos.user_id);
+    } else if (type === 'old-advice') {
+      getCriticUserInfos(infos.sender_id);
     }
   }, []);
 
@@ -248,9 +245,13 @@ const CriticAdvicesComponent = ({
     <>
       {showPoster ? (
         <CriticAdvicesModal
+          page={page}
           showPoster={showPoster}
           setShowPoster={setShowPoster}
           infos={infos}
+          loggedUserInfos={loggedUserInfos}
+          criticUserInfos={criticUserInfos}
+          chosenUser={chosenUser}
           from={'critic'}
         />
       ) : null}
@@ -277,7 +278,6 @@ const CriticAdvicesComponent = ({
               setNewRating={setNewRating}
               infos={infos}
               setData={setData}
-              // setUserCritics={setUserCritics}
               isModify={isModify}
               setIsModify={setIsModify}
               isGoldNugget={isGoldNugget}
@@ -302,7 +302,11 @@ const CriticAdvicesComponent = ({
                   padding="0 10px"
                   sx={{ fontSize: '0.8em', color: '#989898' }}
                 >
-                  {`${convertDate(infos.created_at)}`}
+                  {`le ${convertDate(
+                    type === 'old-critic'
+                      ? infos.critic_date
+                      : infos.advice_date,
+                  )}`}
                 </Typography>
                 <Divider sx={{ flexGrow: '1' }} />
               </Stack>
@@ -413,8 +417,6 @@ const CriticAdvicesComponent = ({
                           type === 'new-critic' ? 'critic' : 'advice',
                         );
                       } else if (newRating !== null && infos && isModify) {
-                        console.log('update');
-
                         updateReview(
                           null,
                           type === 'old-critic' ? 'critic' : 'advice',
@@ -471,6 +473,7 @@ CriticAdvicesComponent.propTypes = {
   setData: PropTypes.func,
   infos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
   haveMoreCritics: PropTypes.bool,
   isLast: PropTypes.bool,

@@ -11,7 +11,7 @@ import {
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import { YellowRating } from '@utils/styledComponent';
+import { YellowRating } from '@utils/components/styledComponent';
 import StarIcon from '@mui/icons-material/Star';
 import { useData } from '@hooks/DataContext';
 import { convertRating } from '@utils/functions/convertRating';

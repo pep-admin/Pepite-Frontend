@@ -405,6 +405,7 @@ const ProfilComponent = () => {
                   : 'new-advice'
               }
               chosenMovie={chosenMovie}
+              data={criticsAndAdvices}
               setData={setCriticsAndAdvices}
               setGoldenMovies={setGoldenMovies}
               loggedUserInfos={loggedUserInfos}
@@ -419,6 +420,7 @@ const ProfilComponent = () => {
                   key={`${infos.type}-${infos.id}`}
                   page={'profil'}
                   type={infos.critic_id ? 'old-critic' : 'old-advice'}
+                  data={criticsAndAdvices}
                   setData={setCriticsAndAdvices}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}

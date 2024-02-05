@@ -199,8 +199,7 @@ const CriticAdvicesHeader = ({
             (page === 'profil' && chosenUser?.relation_type === 'friend') ||
             (page === 'home' && infos?.relation_type === 'friend') ||
             user_infos.id === parseInt(id, 10)
-              ? // (type === 'new-critic' || type === 'new-advice' || isModify) ?
-                '#F29E50'
+              ? '#F29E50'
               : (page === 'profil' &&
                   chosenUser?.relation_type === 'close_friend') ||
                 (page === 'home' && infos?.relation_type === 'close_friend')
@@ -282,7 +281,7 @@ const CriticAdvicesHeader = ({
                   <Typography
                     fontSize="1em"
                     component="p"
-                    fontFamily="Sirin Stencil"
+                    fontFamily="League Spartan"
                     sx={{ color: '#fff' }}
                     onClick={() => {
                       setIsGoldNugget(false);
@@ -350,7 +349,7 @@ const CriticAdvicesHeader = ({
                   <Typography
                     fontSize="1em"
                     component="p"
-                    fontFamily="Sirin Stencil"
+                    fontFamily="League Spartan"
                     sx={{ color: '#fff', lineHeight: '15px' }}
                     onClick={() => {
                       setIsGoldNugget(!isGoldNugget);
@@ -393,8 +392,9 @@ const CriticAdvicesHeader = ({
               setChosenMovie(null);
             }}
           />
-        ) : user_infos.id === infos.sender_id ? (
+        ) : user_infos.id === infos.user_id ? (
           <ModifyOrDelete
+            page={page}
             parent={'critic'}
             infos={infos}
             setData={setData}

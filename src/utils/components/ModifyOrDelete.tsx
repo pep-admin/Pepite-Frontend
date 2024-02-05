@@ -24,8 +24,16 @@ import { deleteCritic } from '../request/critics/deleteCritic';
 import { deleteComment } from '../request/comments/deleteComment';
 import { getAllCriticComments } from '../request/comments/getComments';
 import { getCriticsOfUser } from '../request/critics/getCritics';
+import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 
-const ModifyOrDelete = ({ parent, infos, setData, isModify, setIsModify }) => {
+const ModifyOrDelete = ({
+  page,
+  parent,
+  infos,
+  setData,
+  isModify,
+  setIsModify,
+}) => {
   const { displayType } = useData();
 
   // Menu des outils pour modifier / supprimer
@@ -38,10 +46,24 @@ const ModifyOrDelete = ({ parent, infos, setData, isModify, setIsModify }) => {
   const handleCriticTools = async tool => {
     const userId = localStorage.getItem('user_id');
 
+    // TO DO : faire apparaitre une modale
     if (tool === 'delete' && parent === 'critic') {
-      // TO DO: faire apparaître une modale
+      let newCriticsData;
+
       await deleteCritic(infos.critic_id, displayType);
-      const newCriticsData = await getCriticsOfUser(userId, displayType, 1);
+
+      if (page === 'home') {
+        newCriticsData = await getAllCriticsOfAcquaintances(
+          userId,
+          displayType,
+          1,
+        );
+      } else if (page === 'profil') {
+        newCriticsData = await getCriticsOfUser(userId, displayType, 1);
+      } else {
+        return;
+      }
+
       setData(newCriticsData);
     } else if (tool === 'delete' && parent === 'comment') {
       await deleteComment(infos.id, displayType);
@@ -128,6 +150,7 @@ const ModifyOrDelete = ({ parent, infos, setData, isModify, setIsModify }) => {
 };
 
 ModifyOrDelete.propTypes = {
+  page: PropTypes.string.isRequired,
   infos: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   setData: PropTypes.func,
   isModify: PropTypes.bool.isRequired,

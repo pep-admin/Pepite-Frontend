@@ -1,5 +1,14 @@
 // Import des libs externes
-import { Stack, Box, Typography, Divider, Menu } from '@mui/material';
+import {
+  Stack,
+  Box,
+  Typography,
+  Divider,
+  Menu,
+  ListItemIcon,
+  MenuItem,
+  Snackbar,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -33,8 +42,10 @@ import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest
 import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
+import QuickMenu from '@utils/components/QuickMenu';
 
 const CriticAdvicesFooter = ({
+  data,
   infos,
   displayComments,
   setDisplayComments,
@@ -42,27 +53,38 @@ const CriticAdvicesFooter = ({
 }) => {
   const { displayType } = useData();
 
-  // Id de l'utilisateur du local storage
-  const userId = localStorage.getItem('user_id');
+  // L'utilisateur connecté
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
-  const [commentsNumber, setCommentsNumber] = useState(0);
-  const [likesNumber, setLikesNumber] = useState(0);
-  const [goldNumber, setGoldNumber] = useState(0);
-  const [hasLiked, setHasLiked] = useState(false);
-  const [isGold, setIsGold] = useState(false);
-  const [particles, setParticles] = useState([]);
-  const [userMovieStatus, setUserMovieStatus] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [commentsNumber, setCommentsNumber] = useState(0); // Le nombre de commentaires d'une critique
+  const [likesNumber, setLikesNumber] = useState(0); // Le nombre de likes d'une critique
+  const [goldNumber, setGoldNumber] = useState(0); // Le nombre de pépites "likes" d'une critique
+  const [hasLiked, setHasLiked] = useState(false); // L'utilisateur connecté a t'il déjà liké cette critique
+  const [isGold, setIsGold] = useState(false); // L'utilisateur connecté a t'il déjà mis une pépite "like" pour cette critique
+  const [particles, setParticles] = useState([]); // TODO: faire un composant des particules
+  const [userMovieStatus, setUserMovieStatus] = useState(null); // Film non vu, à voir, film vu, film noté
+  const [anchorSeenMenu, setAnchorSeenMenu] = useState(null); // Le menu qui permet de mettre un film non vu, à voir, vu
+  const [anchorNoteMenu, setAnchorNoteMenu] = useState(null); // Le menu qui permet de noter rapidement un film
+  const [isQuicklyRated, setIsQuicklyRated] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  // Gestion du menu de choix "à voir", "vu"
-  const openSeenMenu = Boolean(anchorEl);
+  const openSeenMenu = Boolean(anchorSeenMenu); // Gestion du menu de choix "à voir", "vu"
+  const openNoteMenu = Boolean(anchorNoteMenu); // Gestion du menu de notation rapide
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+  const handleClickSeenMenu = event => {
+    setAnchorSeenMenu(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCloseSeenMenu = () => {
+    setAnchorSeenMenu(null);
+  };
+
+  const handleClickNoteMenu = event => {
+    setAnchorNoteMenu(event.currentTarget);
+  };
+
+  const handleCloseNoteMenu = () => {
+    setAnchorNoteMenu(null);
   };
 
   // Compte le nombre de commentaires par critique
@@ -104,28 +126,28 @@ const CriticAdvicesFooter = ({
   // Ajoute le film à la liste des films souhaités
   const addWantedMovie = async () => {
     await addWantedMovieRequest(infos.id, displayType);
-    handleClose();
+    handleCloseSeenMenu();
     getUserMovieStatus();
   };
 
   // Retire le film de la liste des films souhaités
   const removeWantedMovie = async () => {
     await removeWantedMovieRequest(infos.id, displayType);
-    handleClose();
+    handleCloseSeenMenu();
     getUserMovieStatus();
   };
 
   // Ajoute le film à la liste des films déjà vus (à noter)
   const addWatchedMovie = async () => {
     await addWatchedMovieRequest(infos.id, displayType);
-    handleClose();
+    handleCloseSeenMenu();
     getUserMovieStatus();
   };
 
   // Retire le film de la liste des films déjà vus
   const removeWatchedMovie = async () => {
     await removeWatchedMovieRequest(infos.id, displayType);
-    handleClose();
+    handleCloseSeenMenu();
     getUserMovieStatus();
   };
 
@@ -199,7 +221,7 @@ const CriticAdvicesFooter = ({
 
   useEffect(() => {
     getUserMovieStatus();
-  }, []);
+  }, [isQuicklyRated, data]);
 
   return (
     <>
@@ -259,17 +281,6 @@ const CriticAdvicesFooter = ({
                 color: isGold ? '#F29E50' : 'inherit',
               }}
             />
-            {/* <img
-              src="/images/gold_footer.svg"
-              alt=""
-              style={{
-                position: 'relative',
-                bottom: '1px',
-                filter: !isGold
-                  ? 'grayscale(1) contrast(0.9) brightness(1.08)'
-                  : 'none',
-              }}
-            /> */}
             <Particles particles={particles} />
           </Box>
           <Typography component="p" fontSize="1em" fontWeight="bold">
@@ -277,14 +288,14 @@ const CriticAdvicesFooter = ({
           </Typography>
         </Box>
         {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
-        {infos.sender_id !== parseInt(userId, 10) ? (
+        {infos.sender_id !== parseInt(loggedUserInfos.id, 10) ? (
           <>
             <Box
               height="100%"
               display="flex"
               alignItems="center"
               position="relative"
-              onClick={handleClick}
+              onClick={handleClickSeenMenu}
             >
               {userMovieStatus?.isRated || userMovieStatus?.isWatched ? (
                 <Stack
@@ -318,9 +329,9 @@ const CriticAdvicesFooter = ({
               )}
             </Box>
             <Menu
-              anchorEl={anchorEl}
+              anchorEl={anchorSeenMenu}
               open={openSeenMenu}
-              onClose={handleClose}
+              onClose={handleCloseSeenMenu}
               anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'center',
@@ -335,51 +346,58 @@ const CriticAdvicesFooter = ({
                 },
               }}
               elevation={3}
+              autoFocus={false}
             >
-              <Stack>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  columnGap="5px"
-                  sx={{
-                    opacity:
-                      userMovieStatus?.isRated || userMovieStatus?.isWatched
-                        ? '0.3'
-                        : '1',
-                  }}
-                  onClick={
-                    !userMovieStatus?.isWanted &&
-                    !userMovieStatus?.isRated &&
-                    !userMovieStatus?.isWatched
-                      ? addWantedMovie
-                      : userMovieStatus?.isWanted &&
-                        !userMovieStatus?.isRated &&
-                        !userMovieStatus?.isWatched
-                      ? removeWantedMovie
-                      : null
-                  }
-                >
+              <MenuItem
+                sx={{
+                  height: '25px',
+                  padding: '0',
+                  minHeight: 'auto !important',
+                  columnGap: '7px',
+                  opacity:
+                    userMovieStatus?.isRated || userMovieStatus?.isWatched
+                      ? '0.3'
+                      : '1',
+                }}
+                onClick={
+                  !userMovieStatus?.isWanted &&
+                  !userMovieStatus?.isRated &&
+                  !userMovieStatus?.isWatched
+                    ? addWantedMovie
+                    : userMovieStatus?.isWanted &&
+                      !userMovieStatus?.isRated &&
+                      !userMovieStatus?.isWatched
+                    ? removeWantedMovie
+                    : null
+                }
+              >
+                <ListItemIcon sx={{ minWidth: 'auto !important' }}>
                   <LibraryAddCheckTwoToneIcon
                     fontSize="small"
                     color={userMovieStatus?.isWanted ? 'primary' : 'inherit'}
                   />
-                  <Typography variant="body2" fontWeight="bold">
-                    {'À voir'}
-                  </Typography>
-                </Stack>
-                <Divider sx={{ margin: '8px' }} />
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  columnGap="5px"
-                  onClick={
-                    !userMovieStatus?.isWatched && !userMovieStatus?.isRated
-                      ? addWatchedMovie
-                      : userMovieStatus?.isWatched && !userMovieStatus?.isRated
-                      ? removeWatchedMovie
-                      : null
-                  }
-                >
+                </ListItemIcon>
+                <Typography fontSize="0.8em" lineHeight="normal">
+                  {'À voir'}
+                </Typography>
+              </MenuItem>
+              <Divider sx={{ margin: '8px' }} />
+              <MenuItem
+                sx={{
+                  height: '25px',
+                  padding: '0',
+                  minHeight: 'auto !important',
+                  columnGap: '7px',
+                }}
+                onClick={
+                  !userMovieStatus?.isWatched && !userMovieStatus?.isRated
+                    ? addWatchedMovie
+                    : userMovieStatus?.isWatched && !userMovieStatus?.isRated
+                    ? removeWatchedMovie
+                    : null
+                }
+              >
+                <ListItemIcon sx={{ minWidth: 'auto !important' }}>
                   <VisibilityTwoToneIcon
                     fontSize="small"
                     color={
@@ -388,11 +406,11 @@ const CriticAdvicesFooter = ({
                         : 'inherit'
                     }
                   />
-                  <Typography variant="body2" fontWeight="bold">
-                    {'Vu'}
-                  </Typography>
-                </Stack>
-              </Stack>
+                </ListItemIcon>
+                <Typography fontSize="0.8em" lineHeight="normal">
+                  {'Vu'}
+                </Typography>
+              </MenuItem>
             </Menu>
             <Box
               height="100%"
@@ -400,6 +418,7 @@ const CriticAdvicesFooter = ({
               alignItems="center"
               columnGap="5px"
               color={userMovieStatus?.isRated ? '#F29E50' : 'inherit'}
+              onClick={handleClickNoteMenu}
             >
               <Stack direction="row" columnGap="5px" alignItems="center">
                 <StarTwoToneIcon fontSize="small" />
@@ -408,14 +427,31 @@ const CriticAdvicesFooter = ({
                 </Typography>
               </Stack>
             </Box>
+            {openNoteMenu && (
+              <QuickMenu
+                infos={infos}
+                handleCloseNoteMenu={handleCloseNoteMenu}
+                anchorNoteMenu={anchorNoteMenu}
+                openNoteMenu={openNoteMenu}
+                setIsQuicklyRated={setIsQuicklyRated}
+                setOpenSnackbar={setOpenSnackbar}
+              />
+            )}
           </>
         ) : null}
       </Stack>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2500}
+        onClose={() => setOpenSnackbar(false)}
+        message={`Nouvelle notation pour ${infos.title} ajoutée.`}
+      />
     </>
   );
 };
 
 CriticAdvicesFooter.propTypes = {
+  data: PropTypes.array.isRequired,
   infos: PropTypes.object.isRequired,
   displayComments: PropTypes.bool.isRequired,
   setDisplayComments: PropTypes.func.isRequired,

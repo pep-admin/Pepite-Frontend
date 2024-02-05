@@ -41,6 +41,7 @@ const CriticAdvicesComponent = ({
   page,
   type,
   chosenMovie,
+  data,
   setData,
   setGoldenMovies,
   infos,
@@ -235,11 +236,12 @@ const CriticAdvicesComponent = ({
 
   useEffect(() => {
     if (type === 'old-critic') {
+      // console.log(`récupération des informations de l'utilisateur ${infos.user_id} pour la critique ${infos.title}`);
       getCriticUserInfos(infos.user_id);
     } else if (type === 'old-advice') {
       getCriticUserInfos(infos.sender_id);
     }
-  }, []);
+  }, [data]);
 
   return (
     <>
@@ -436,6 +438,7 @@ const CriticAdvicesComponent = ({
           </Stack>
           {type === 'old-critic' || type === 'old-advice' ? (
             <CriticAdvicesFooter
+              data={data}
               infos={infos}
               displayComments={displayComments}
               setDisplayComments={setDisplayComments}
@@ -467,6 +470,7 @@ const CriticAdvicesComponent = ({
 };
 
 CriticAdvicesComponent.propTypes = {
+  data: PropTypes.array.isRequired,
   page: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),

@@ -31,8 +31,8 @@ const AuthHeader = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const excludeRange = [5, 32]; // La plage de valeurs à exclure sur l'axe des x
-      const allowedValues = [0, 3, 35, 40, 53]; // Valeurs autorisées si la position est dans la plage exclue
+      const excludeRange = [5, 33]; // La plage de valeurs à exclure sur l'axe des x
+      const allowedValues = [-2, 0, 3, 35, 40, 53]; // Valeurs autorisées si la position est dans la plage exclue
 
       // Dimensions de la Box
       const boxWidth = 64;

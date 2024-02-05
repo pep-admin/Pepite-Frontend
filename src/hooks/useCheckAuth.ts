@@ -1,42 +1,30 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '@utils/request/users/getUser';
+import axios from 'axios'; // Assumant que vous utilisez Axios pour les requêtes HTTP
+import apiBaseUrl from '@utils/request/config';
 
 const useCheckAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Ajoutez un état pour suivre le chargement
   const navigate = useNavigate();
 
-  const checkUser = async userId => {
-    try {
-      const userData = await getUser(userId); // Récupération des informations de l'utilisateur
-      localStorage.setItem('user_infos', JSON.stringify(userData)); // Stockage dans le local storage
-      setIsAuthenticated(true);
-      setIsLoading(false);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        navigate('/login');
-      } else {
-        console.error(
-          "Erreur lors de la vérification de l'authentification:",
-          error,
-        );
-      }
-    }
-  };
-
   useEffect(() => {
-    const userId = localStorage.getItem('user_id');
-    // Si l'id de l'utilisateur est absent du local storage, redirection vers /login
-    if (!userId) {
-      navigate('/login');
-      return;
-    }
+    const verifyAuth = async () => {
+      try {
+        await axios.get(`${apiBaseUrl}/auth/verify`, { withCredentials: true });
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.log('redirection login');
+        navigate('/login');
+      } finally {
+        setIsLoading(false); // Assurez-vous de mettre isLoading sur false une fois que la requête est terminée
+      }
+    };
 
-    checkUser(userId);
+    verifyAuth();
   }, [navigate]);
 
-  return { isAuthenticated, isLoading };
+  return { isAuthenticated, isLoading }; // Retournez les deux états
 };
 
 export default useCheckAuth;

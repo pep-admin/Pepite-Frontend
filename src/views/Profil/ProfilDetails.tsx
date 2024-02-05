@@ -2,7 +2,6 @@
 import {
   Stack,
   Typography,
-  LinearProgress,
   List,
   ListItem,
   ListItemButton,
@@ -12,12 +11,16 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+// Import des composants internes
+import { Item } from '@utils/components/styledComponent';
+
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 import { useEffect, useState } from 'react';
 import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
+import ProfilRank from './ProfilRank';
 
 const ProfilDetails = ({ criticsAndAdvices, loggedUserInfos, chosenUser }) => {
   const { id } = useParams();
@@ -38,17 +41,15 @@ const ProfilDetails = ({ criticsAndAdvices, loggedUserInfos, chosenUser }) => {
   }, [id, criticsAndAdvices]);
 
   return (
-    <>
-      <Stack direction="column" alignItems="center">
-        <LinearProgress
-          color="success"
-          variant="determinate"
-          value={30}
-          sx={{
-            width: '100%',
-          }}
-        />
-      </Stack>
+    <Item
+      customheight="calc(100% - 6px)"
+      customwidth="100px"
+      padding="7px"
+      display="flex"
+      flexdirection="column"
+      margintop="6px"
+    >
+      <ProfilRank loggedUserInfos={loggedUserInfos} chosenUser={chosenUser} />
       <Stack flexGrow={1}>
         <List
           sx={{
@@ -185,7 +186,7 @@ const ProfilDetails = ({ criticsAndAdvices, loggedUserInfos, chosenUser }) => {
           </ListItem>
         </List>
       </Stack>
-    </>
+    </Item>
   );
 };
 

@@ -36,6 +36,7 @@ const LoginFormContainer = () => {
         },
       });
 
+      // TO DO : faire péter user_id
       localStorage.setItem('user_id', JSON.stringify(response.data.id));
       localStorage.setItem('user_infos', JSON.stringify(response.data));
 

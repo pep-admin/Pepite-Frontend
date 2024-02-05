@@ -2,7 +2,6 @@
 import { Container, Stack, Typography, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 // Import des composants internes
 import Header from '@utils/components/Header';
@@ -259,10 +258,6 @@ const ContactsComponent = () => {
       </Container>
     </>
   );
-};
-
-ContactsComponent.propTypes = {
-  page: PropTypes.string.isRequired,
 };
 
 export default ContactsComponent;

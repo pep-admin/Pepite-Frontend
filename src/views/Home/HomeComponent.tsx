@@ -18,9 +18,12 @@ import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriti
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 import useVerticalScroll from '@hooks/useVerticalScroll';
+import { useParams } from 'react-router-dom';
 
 const Home = () => {
   const { displayType, chosenMovie } = useData();
+
+  const { id } = useParams();
 
   // L'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
@@ -89,6 +92,7 @@ const Home = () => {
   };
 
   const { observerRef, loading, hasMore } = useVerticalScroll(
+    id,
     firstRender,
     getCritics,
     displayType,

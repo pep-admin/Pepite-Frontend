@@ -190,7 +190,7 @@ const ModalAcquaintancesInfos = ({
 
 ModalAcquaintancesInfos.propTypes = {
   goldNuggetUserInfos: PropTypes.array.isRequired,
-  relationshipStatus: PropTypes.object.isRequired,
+  relationshipStatus: PropTypes.number.isRequired,
   relationsRatings: PropTypes.number,
 };
 

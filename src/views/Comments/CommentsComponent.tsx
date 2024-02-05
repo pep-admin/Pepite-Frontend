@@ -14,7 +14,7 @@ import { getAllCriticComments } from '@utils/request/comments/getComments';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-const CommentsComponent = ({ criticId, comments, setComments }) => {
+const CommentsComponent = ({ page, criticId, comments, setComments }) => {
   const { displayType } = useData();
 
   // Infos de l'utilisateur connecté
@@ -55,6 +55,7 @@ const CommentsComponent = ({ criticId, comments, setComments }) => {
             return (
               <CommentsContent
                 key={comment.id}
+                page={page}
                 comment={comment}
                 setData={setComments}
                 getComments={getComments}
@@ -68,6 +69,7 @@ const CommentsComponent = ({ criticId, comments, setComments }) => {
 };
 
 CommentsComponent.propTypes = {
+  page: PropTypes.string.isRequired,
   criticId: PropTypes.number.isRequired,
   comments: PropTypes.array.isRequired,
   setComments: PropTypes.func.isRequired,

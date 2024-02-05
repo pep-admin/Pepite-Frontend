@@ -1,29 +1,18 @@
 // Import des libs externes
-import {
-  Stack,
-  Box,
-  Typography,
-  Divider,
-  Menu,
-  MenuItem,
-  Fade,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { Stack, Box, Typography } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import { TurnipIcon } from '@utils/components/styledComponent';
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { ratings } from '@utils/data/ratings';
 import ModifyOrDelete from '@utils/components/ModifyOrDelete';
 import { formatRating } from '@utils/functions/formatRating';
 import ColoredRating from '@utils/components/ColoredRating';
+import RatingMenu from '@utils/components/RatingMenu';
 
 const CriticAdvicesHeader = ({
   page,
@@ -53,9 +42,6 @@ const CriticAdvicesHeader = ({
 
   // Infos de l'utilisateur connecté
   const user_infos = JSON.parse(localStorage.getItem('user_infos'));
-
-  // Menu des étoiles pour noter une nouvelle critique
-  const openRatings = Boolean(displayRatings);
 
   const handleRatingsMenu = useCallback(
     event => {
@@ -235,28 +221,14 @@ const CriticAdvicesHeader = ({
                 ? `${formatRating(infos.rating)}`
                 : newRating}
             </Box>
-            <Menu
-              id="basic-menu"
-              anchorEl={displayRatings}
-              open={openRatings}
-              onClose={() => closeMenu()}
-              TransitionComponent={Fade}
-              sx={{
-                marginTop: '5px',
-              }}
-              slotProps={{
-                paper: {
-                  sx: {
-                    maxHeight: '150px',
-                  },
-                },
-              }}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-                sx: {
-                  padding: '0',
-                },
-              }}
+            <RatingMenu
+              utility={'new-post'}
+              infos={infos}
+              setIsQuicklyRated={null}
+              setOpenSnackbar={null}
+              anchorQuickNoteMenu={displayRatings}
+              setAnchorQuickNoteMenu={setDisplayRatings}
+              handleCloseNoteMenu={closeMenu}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'center',
@@ -265,105 +237,12 @@ const CriticAdvicesHeader = ({
                 vertical: 'top',
                 horizontal: 'center',
               }}
-            >
-              <Stack>
-                <Stack
-                  direction="row"
-                  height="33.04px"
-                  alignItems="center"
-                  gap="20px"
-                  padding="5px 15px"
-                  sx={{
-                    backgroundColor: isTurnip ? '#c5739d' : '#a09f9f',
-                  }}
-                >
-                  <TurnipIcon sx={{ height: '25px' }} />
-                  <Typography
-                    fontSize="1em"
-                    component="p"
-                    fontFamily="League Spartan"
-                    sx={{ color: '#fff' }}
-                    onClick={() => {
-                      setIsGoldNugget(false);
-                      setIsTurnip(!isTurnip);
-                    }}
-                  >
-                    {'Navet !'}
-                  </Typography>
-                </Stack>
-                {ratings.map(rating => {
-                  return (
-                    <React.Fragment key={rating.number}>
-                      <MenuItem
-                        key={rating.number}
-                        onClick={() => {
-                          setNewRating(rating.number);
-                          setDisplayRatings(null);
-                        }}
-                        sx={{
-                          minHeight: 'auto',
-                          columnGap: '7px',
-                          padding: '5px 11px',
-                        }}
-                      >
-                        <ListItemIcon sx={{ minWidth: 'auto' }}>
-                          <ColoredRating
-                            color="#F29E50"
-                            value={rating.number}
-                            precision={0.5}
-                            readOnly
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          primaryTypographyProps={{
-                            sx: {
-                              fontSize: '0.8em',
-                            },
-                          }}
-                        >
-                          {rating.value}
-                        </ListItemText>
-                      </MenuItem>
-                      <Divider sx={{ margin: '0 !important' }} />
-                    </React.Fragment>
-                  );
-                })}
-                <Stack
-                  direction="row"
-                  height="33.04px"
-                  alignItems="center"
-                  gap="20px"
-                  padding="5px 15px"
-                  sx={{
-                    backgroundColor: isGoldNugget ? '#dda979' : '#a09f9f',
-                  }}
-                >
-                  <img
-                    src="/images/gold_rating.svg"
-                    alt=""
-                    style={{
-                      position: 'relative',
-                      top: '0.2px',
-                    }}
-                  />
-                  <Typography
-                    fontSize="1em"
-                    component="p"
-                    fontFamily="League Spartan"
-                    sx={{ color: '#fff', lineHeight: '15px' }}
-                    onClick={() => {
-                      setIsGoldNugget(!isGoldNugget);
-                      setIsTurnip(false);
-                      // if (isGoldNugget) {
-                      //   setIsNuggetAnimEnded(false);
-                      // }
-                    }}
-                  >
-                    {'Pépite !'}
-                  </Typography>
-                </Stack>
-              </Stack>
-            </Menu>
+              setNewRating={setNewRating}
+              isGoldNugget={isGoldNugget}
+              setIsGoldNugget={setIsGoldNugget}
+              isTurnip={isTurnip}
+              setIsTurnip={setIsTurnip}
+            />
           </>
         ) : null}
         <Typography variant="body2" component="p" fontWeight="bold">

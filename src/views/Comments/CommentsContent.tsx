@@ -44,7 +44,13 @@ interface User {
   rank: string;
 }
 
-const CommentsContent = ({ comment, setData, getComments, userInfos }) => {
+const CommentsContent = ({
+  page,
+  comment,
+  setData,
+  getComments,
+  userInfos,
+}) => {
   const { displayType } = useData();
 
   const [isModify, setIsModify] = useState(false);
@@ -153,6 +159,7 @@ const CommentsContent = ({ comment, setData, getComments, userInfos }) => {
               </Typography>
               {userInfos.id === comment.user_id ? (
                 <ModifyOrDelete
+                  page={page}
                   parent={'comment'}
                   infos={comment}
                   setData={setData}
@@ -231,6 +238,7 @@ const CommentsContent = ({ comment, setData, getComments, userInfos }) => {
 };
 
 CommentsContent.propTypes = {
+  page: PropTypes.string.isRequired,
   comment: PropTypes.object.isRequired,
   setData: PropTypes.func.isRequired,
   getComments: PropTypes.func.isRequired,

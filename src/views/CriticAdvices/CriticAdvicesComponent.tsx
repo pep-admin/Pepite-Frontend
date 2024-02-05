@@ -453,6 +453,7 @@ const CriticAdvicesComponent = ({
       ) : null} */}
       {displayComments ? (
         <CommentsComponent
+          page={page}
           criticId={infos.critic_id}
           comments={comments}
           setComments={setComments}

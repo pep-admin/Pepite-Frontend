@@ -232,7 +232,7 @@ RatingMenu.propTypes = {
   isTurnip: PropTypes.bool.isRequired,
   infos: PropTypes.object.isRequired,
   setIsQuicklyRated: PropTypes.func,
-  setOpenSnackbar: PropTypes.func.isRequired,
+  setOpenSnackbar: PropTypes.func,
   anchorQuickNoteMenu: PropTypes.object,
   setAnchorQuickNoteMenu: PropTypes.func.isRequired,
   handleCloseNoteMenu: PropTypes.func.isRequired,

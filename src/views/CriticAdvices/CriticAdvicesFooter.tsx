@@ -12,16 +12,8 @@ import {
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-// Import des requêtes internes
-import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
-import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
-import { addLike } from '@utils/request/critics/addLike';
-import { removeLike } from '@utils/request/critics/removeLike';
-import { getCommentsNumber } from '@utils/request/comments/getCommentsNumber';
-
 // Import des icônes
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import QueueTwoToneIcon from '@mui/icons-material/QueueTwoTone';
 import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
 import LibraryAddCheckTwoToneIcon from '@mui/icons-material/LibraryAddCheckTwoTone';
@@ -37,12 +29,16 @@ import { checkGoldStatus } from '@utils/request/goldNugget/checkGoldStatus';
 
 // Import des composants internes
 import Particles from '@utils/anims/Particles';
+import QuickMenu from '@utils/components/QuickMenu';
+import LikesFooter from './LikesFooter';
+
+// Import des requêtes internes
+import { getCommentsNumber } from '@utils/request/comments/getCommentsNumber';
 import { getUserMovieStatusRequest } from '@utils/request/list/getUserMovieStatusRequest';
 import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
 import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
-import QuickMenu from '@utils/components/QuickMenu';
 
 const CriticAdvicesFooter = ({
   data,
@@ -57,9 +53,7 @@ const CriticAdvicesFooter = ({
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   const [commentsNumber, setCommentsNumber] = useState(0); // Le nombre de commentaires d'une critique
-  const [likesNumber, setLikesNumber] = useState(0); // Le nombre de likes d'une critique
   const [goldNumber, setGoldNumber] = useState(0); // Le nombre de pépites "likes" d'une critique
-  const [hasLiked, setHasLiked] = useState(false); // L'utilisateur connecté a t'il déjà liké cette critique
   const [isGold, setIsGold] = useState(false); // L'utilisateur connecté a t'il déjà mis une pépite "like" pour cette critique
   const [particles, setParticles] = useState([]); // TODO: faire un composant des particules
   const [userMovieStatus, setUserMovieStatus] = useState(null); // Film non vu, à voir, film vu, film noté
@@ -94,21 +88,9 @@ const CriticAdvicesFooter = ({
   };
 
   // Compte le nombre de likes par critique
-  const fetchLikesNumber = async () => {
-    const response = await getLikesNumber(infos.critic_id, displayType);
-    setLikesNumber(response);
-  };
-
-  // Compte le nombre de likes par critique
   const fetchGoldNumber = async () => {
     const response = await getGoldNumber(infos.critic_id, displayType);
     setGoldNumber(response);
-  };
-
-  // Vérifie si l'utilisateur a déjà liké des critiques
-  const checkUserLikeStatus = async () => {
-    const response = await checkLikeStatus(infos.critic_id, displayType);
-    setHasLiked(response);
   };
 
   // Vérifie si l'utilisateur a déjà liké des critiques
@@ -151,22 +133,6 @@ const CriticAdvicesFooter = ({
     getUserMovieStatus();
   };
 
-  // Gérer le clic sur l'icône de like
-  const toggleLike = async () => {
-    setHasLiked(!hasLiked);
-    try {
-      if (hasLiked) {
-        removeLike(infos.critic_id, displayType);
-      } else {
-        addLike(infos.critic_id, displayType);
-      }
-      fetchLikesNumber();
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du like', error);
-      setHasLiked(hasLiked); // Revenir en arrière si l'action échoue
-    }
-  };
-
   // Gérer le clic sur l'icône de pépite
   const toggleGold = async () => {
     setIsGold(!isGold);
@@ -204,11 +170,6 @@ const CriticAdvicesFooter = ({
       setIsGold(isGold); // Revenir en arrière si l'action échoue
     }
   };
-
-  useEffect(() => {
-    fetchLikesNumber();
-    checkUserLikeStatus();
-  }, [hasLiked]);
 
   useEffect(() => {
     fetchCommentsNumber();
@@ -252,17 +213,7 @@ const CriticAdvicesFooter = ({
             {commentsNumber}
           </Typography>
         </Box>
-        <Box height="100%" display="flex" alignItems="center" columnGap="5px">
-          <ThumbUpTwoToneIcon
-            fontSize="small"
-            color={hasLiked ? 'success' : 'inherit'}
-            sx={{ position: 'relative', bottom: '1px' }}
-            onClick={toggleLike}
-          />
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {likesNumber}
-          </Typography>
-        </Box>
+        <LikesFooter infos={infos} />
         <Box height="100%" display="flex" alignItems="center" columnGap="5px">
           <Box
             display="flex"
@@ -288,7 +239,7 @@ const CriticAdvicesFooter = ({
           </Typography>
         </Box>
         {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
-        {infos.sender_id !== parseInt(loggedUserInfos.id, 10) ? (
+        {infos.user_id !== parseInt(loggedUserInfos.id, 10) ? (
           <>
             <Box
               height="100%"

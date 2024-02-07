@@ -6,6 +6,7 @@ import {
   Stack,
   Box,
   Typography,
+  Modal,
 } from '@mui/material';
 import Header from '@utils/components/Header';
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -66,7 +67,7 @@ interface User {
 
 const ProfilComponent = () => {
   const { id } = useParams();
-  const { displayType, chosenMovie } = useData();
+  const { displayType, chosenMovie, setChosenMovie } = useData();
 
   // Utilisateur connecté
   const [loggedUserInfos, setLoggedUserInfos] = useState(
@@ -182,14 +183,42 @@ const ProfilComponent = () => {
         :
         null
       } */}
-      {modifyCoverPic.state ? (
+      {modifyCoverPic.state && (
         <AccountUpdatePic
           showPicModal={modifyCoverPic}
           setShowPicModal={setModifyCoverPic}
           loggedUserInfos={loggedUserInfos}
           setLoggedUserInfos={setLoggedUserInfos}
         />
-      ) : null}
+      )}
+      <Modal
+        open={chosenMovie !== null}
+        onClose={() => setChosenMovie(null)}
+        aria-labelledby={
+          loggedUserInfos.id === parseInt(id, 10)
+            ? 'Nouvelle critique'
+            : 'Nouveau conseil'
+        }
+        aria-describedby="modal-modal-description"
+      >
+        <Stack height="100vh" padding="0 6px" justifyContent="center">
+          <CriticAdvicesComponent
+            page={'profil'}
+            type={
+              loggedUserInfos.id === parseInt(id, 10)
+                ? 'new-critic'
+                : 'new-advice'
+            }
+            chosenMovie={chosenMovie}
+            data={criticsAndAdvices}
+            setData={setCriticsAndAdvices}
+            setGoldenMovies={setGoldenMovies}
+            loggedUserInfos={loggedUserInfos}
+            infos={null}
+            chosenUser={chosenUser}
+          />
+        </Stack>
+      </Modal>
       <Header loggedUserInfos={loggedUserInfos} />
       <Card
         sx={{
@@ -396,7 +425,7 @@ const ProfilComponent = () => {
             chosenUser={chosenUser}
             handlePoster={null}
           />
-          {chosenMovie !== null ? (
+          {/* {chosenMovie !== null ? (
             <CriticAdvicesComponent
               page={'profil'}
               type={
@@ -412,7 +441,7 @@ const ProfilComponent = () => {
               infos={null}
               chosenUser={chosenUser}
             />
-          ) : null}
+          ) : null} */}
           {criticsAndAdvices.length ? (
             criticsAndAdvices.map(infos => {
               return (

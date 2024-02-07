@@ -82,7 +82,11 @@ const AuthHeader = () => {
           filter: 'contrast(0.9)',
         }}
       >
-        <img src="/images/logo_pepite_svg.svg" alt="cornet de pop corns" />
+        <img
+          src="/images/logo_pepite_svg.svg"
+          alt="cornet de pop corns"
+          style={{ filter: 'grayscale(0.5)' }}
+        />
         <Box position="absolute" bottom="0" height="29px" width="64px">
           {icons.map(icon => (
             <ShineIcon

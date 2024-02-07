@@ -28,6 +28,9 @@ const CriticAdvicesReviewModal = ({
   const { displayType, chosenMovie } = useData();
   // const navigate = useNavigate();
 
+  // Utilisateur connecté
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+
   return (
     <Modal
       open={showReviewModal}
@@ -53,7 +56,14 @@ const CriticAdvicesReviewModal = ({
         <Stack direction="row">
           <UserAvatar
             variant={'circular'}
-            userInfos={criticUserInfos}
+            userInfos={
+              type === 'new-critic' || type === 'new-advice'
+                ? loggedUserInfos
+                : criticUserInfos?.id &&
+                  criticUserInfos?.id !== loggedUserInfos.id
+                ? criticUserInfos
+                : loggedUserInfos
+            }
             picWidth={100}
             picHeight={100}
             isOutlined={false}

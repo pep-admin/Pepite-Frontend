@@ -41,7 +41,7 @@ const CriticAdvicesHeader = ({
   const navigate = useNavigate();
 
   // Infos de l'utilisateur connecté
-  const user_infos = JSON.parse(localStorage.getItem('user_infos'));
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   const handleRatingsMenu = useCallback(
     event => {
@@ -65,6 +65,29 @@ const CriticAdvicesHeader = ({
     }
   }, [infos, isModify]);
 
+  const findGoodColor = page => {
+    let userInfos;
+
+    if (page === 'profil' && loggedUserInfos.id !== parseInt(id, 10)) {
+      userInfos = chosenUser;
+    } else if (page === 'profil' && loggedUserInfos.id === parseInt(id, 10)) {
+      userInfos = criticUserInfos;
+    } else {
+      userInfos = infos;
+    }
+
+    switch (userInfos?.relation_type) {
+      case 'close_friend':
+        return '#ff7b00';
+      case 'friend':
+        return '#F29E50';
+      case 'followed':
+        return '#24A5A5';
+      default:
+        return 'inherit';
+    }
+  };
+
   // Génère le contenu du header selon plusieurs conditions
   const generateContent = () => {
     // Si l'utilisateur veut poster une nouvelle critique
@@ -79,10 +102,7 @@ const CriticAdvicesHeader = ({
           <span
             style={{
               fontWeight: 'bold',
-              color:
-                chosenUser?.relation_type === 'close_friend'
-                  ? '#ff7b00'
-                  : '#F29E50',
+              color: findGoodColor(page),
             }}
             onClick={() => navigate(`/profil/${chosenUser.id}`)}
           >
@@ -92,17 +112,11 @@ const CriticAdvicesHeader = ({
       );
 
       // Si l'utilisateur voit la critique d'une de ses connaissances
-    } else if (type === 'old-critic' && infos.user_id !== user_infos.id) {
-      const color =
-        (page === 'profil' && chosenUser?.relation_type === 'close_friend') ||
-        (page === 'home' && infos?.relation_type === 'close_friend')
-          ? '#ff7b00'
-          : '#F29E50';
-
+    } else if (type === 'old-critic' && infos.user_id !== loggedUserInfos.id) {
       return (
         <>
           <span
-            style={{ fontWeight: 'bold', color }}
+            style={{ fontWeight: 'bold', color: findGoodColor(page) }}
             onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
           >
             {criticUserInfos.first_name} {criticUserInfos.last_name}
@@ -115,31 +129,28 @@ const CriticAdvicesHeader = ({
     } else if (
       page === 'profil' &&
       type === 'old-advice' &&
-      infos.sender_id === user_infos.id
+      infos.sender_id === loggedUserInfos.id
     ) {
       return (
         <span style={{ fontWeight: 'bold' }}>{'Vous avez conseillé'}</span>
       );
 
       // Si l'utilisateur voit une de ses anciennes critiques
-    } else if (type === 'old-critic' && infos.user_id === user_infos.id) {
+    } else if (type === 'old-critic' && infos.user_id === loggedUserInfos.id) {
       return <span style={{ fontWeight: 'bold' }}>{'Vous avez noté'}</span>;
 
       // Si l'utilisateur voit le conseil de quelqu'un d'autre
     } else if (
       page === 'profil' &&
       type === 'old-advice' &&
-      infos.sender_id !== user_infos.id
+      infos.sender_id !== loggedUserInfos.id
     ) {
       return (
         <>
           <span
             style={{
               fontWeight: 'bold',
-              color:
-                chosenUser?.relation_type === 'close_friend'
-                  ? '#ff7b00'
-                  : '#F29E50',
+              color: findGoodColor(page),
             }}
             onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
           >
@@ -184,7 +195,7 @@ const CriticAdvicesHeader = ({
           color={
             (page === 'profil' && chosenUser?.relation_type === 'friend') ||
             (page === 'home' && infos?.relation_type === 'friend') ||
-            user_infos.id === parseInt(id, 10)
+            loggedUserInfos.id === parseInt(id, 10)
               ? '#F29E50'
               : (page === 'profil' &&
                   chosenUser?.relation_type === 'close_friend') ||
@@ -271,7 +282,8 @@ const CriticAdvicesHeader = ({
               setChosenMovie(null);
             }}
           />
-        ) : user_infos.id === infos.user_id ? (
+        ) : loggedUserInfos.id === infos.user_id ||
+          loggedUserInfos.id === infos.sender_id ? (
           <ModifyOrDelete
             page={page}
             parent={'critic'}

@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Container, Stack } from '@mui/material';
+import { Container, Modal, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
 // Import des composants internes
@@ -21,7 +21,7 @@ import useVerticalScroll from '@hooks/useVerticalScroll';
 import { useParams } from 'react-router-dom';
 
 const Home = () => {
-  const { displayType, chosenMovie } = useData();
+  const { displayType, chosenMovie, setChosenMovie } = useData();
 
   const { id } = useParams();
 
@@ -159,21 +159,32 @@ const Home = () => {
             handlePoster={null}
             showPicModal={null}
           />
-          {chosenMovie !== null ? (
-            <CriticAdvicesComponent
-              page={'home'}
-              type={'new-critic'}
-              chosenMovie={chosenMovie}
-              data={criticsOfAcquaintances}
-              setData={setCriticsOfAcquaintances}
-              setGoldenMovies={setGoldenMovies}
-              loggedUserInfos={loggedUserInfos}
-              chosenUser={null}
-              infos={null}
-              haveMoreCritics={null}
-              isLast={null}
-            />
-          ) : null}
+          <Modal
+            open={chosenMovie !== null}
+            onClose={() => setChosenMovie(null)}
+            aria-labelledby={
+              loggedUserInfos.id === parseInt(id, 10)
+                ? 'Nouvelle critique'
+                : 'Nouveau conseil'
+            }
+            aria-describedby="modal-modal-description"
+          >
+            <Stack height="100vh" padding="0 6px" justifyContent="center">
+              <CriticAdvicesComponent
+                page={'home'}
+                type={'new-critic'}
+                chosenMovie={chosenMovie}
+                data={criticsOfAcquaintances}
+                setData={setCriticsOfAcquaintances}
+                setGoldenMovies={setGoldenMovies}
+                loggedUserInfos={loggedUserInfos}
+                chosenUser={null}
+                infos={null}
+                haveMoreCritics={null}
+                isLast={null}
+              />
+            </Stack>
+          </Modal>
           {criticsOfAcquaintances.length ? (
             criticsOfAcquaintances.map((critic, index) => {
               return (

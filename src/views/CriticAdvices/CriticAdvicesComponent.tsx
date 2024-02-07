@@ -107,14 +107,16 @@ const CriticAdvicesComponent = ({
 
     setData(newData);
 
-    const response = await getAllGoldNuggetsOfUser(
-      displayType,
-      userId,
-      cardsToShow,
-      1,
-    );
+    if (page === 'profil') {
+      const response = await getAllGoldNuggetsOfUser(
+        displayType,
+        userId,
+        cardsToShow,
+        1,
+      );
 
-    setGoldenMovies(response.data.goldenMovies);
+      setGoldenMovies(response.data.goldenMovies);
+    }
 
     setIsModify(false);
 
@@ -358,7 +360,7 @@ const CriticAdvicesComponent = ({
                     : '7px'
                 }
                 sx={{
-                  maxHeight: displayOverwiew ? '60px' : '0px',
+                  maxHeight: displayOverwiew ? '100px' : '0px',
                   overflowY: 'scroll',
                   transition: 'max-height 0.5s ease-in-out',
                 }}

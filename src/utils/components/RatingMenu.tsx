@@ -230,7 +230,7 @@ RatingMenu.propTypes = {
   setIsGoldNugget: PropTypes.func.isRequired,
   setIsTurnip: PropTypes.func.isRequired,
   isTurnip: PropTypes.bool.isRequired,
-  infos: PropTypes.object.isRequired,
+  infos: PropTypes.object,
   setIsQuicklyRated: PropTypes.func,
   setOpenSnackbar: PropTypes.func,
   anchorQuickNoteMenu: PropTypes.object,

@@ -15,7 +15,7 @@
   }
 }
   
-/* Style de base pour les cercles animés */
+/* Style de base pour les étoiles de brillance de la page login / register */
 .animatedShine {
   animation: 3s linear forwards;
   transform-origin: center;
@@ -80,9 +80,10 @@
 
 .particles {
   position: absolute;
-  animation-duration: 1.5s;
+  animation-duration: 'inherit';
   animation-fill-mode: forwards;
   animation-timing-function: ease-out;
+  opacity: 0;
 }
 
 .animatedParticles0 {
@@ -123,4 +124,92 @@
 
 .animatedParticles9 {
   animation-name: particle9;
+}
+
+@keyframes thumbs-up {
+  0% {
+    transform: rotate(0deg) scale(1) translateX(0px) translateY(0px);
+  }
+  10% {
+    transform: rotate(-3deg) scale(1) translateX(0px) translateY(0px);
+  }
+  20% {
+    transform: rotate(-6deg) scale(1) translateX(0px) translateY(0px); 
+  }
+  30% {
+    transform: rotate(-24deg) scale(1.05) translateX(-0.5px) translateY(-1px);
+  }
+  40% {
+    transform: rotate(-40deg) scale(1.15) translateX(-1px) translateY(-3px);
+  }
+  50% {
+    transform: rotate(-65deg) scale(1.4) translateX(-2px) translateY(-5px);
+  }
+  60% {
+    transform: rotate(-40deg) scale(1.15) translateX(-1px) translateY(-3px);
+  }
+  70% {
+    transform: rotate(-24deg) scale(1.05) translateX(-0.5px) translateY(-1px);
+  }
+  80% {
+    transform: rotate(-10deg) scale(1) translateX(0px) translateY(0px);
+  }
+  90% {
+    transform: rotate(15deg) scale(1) translateX(0px) translateY(0px);
+  }
+  100% {
+    transform: rotate(0deg) scale(1) translateX(0px) translateY(0px);
+  }
+}
+
+.like-anim {
+  animation-name: thumbs-up;
+  animation-duration: 0.7s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+  transform-origin: center;
+}
+
+@keyframes diamond-bounce {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  10% {
+    transform: translateY(-0.5px) scale(1);
+  }
+  20% {
+    transform: translateY(-1px) scale(1);
+  }
+  30% {
+    transform: translateY(-2px) scale(1);
+  }
+  40% {
+    transform: translateY(-3px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.05);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.1);
+  }
+  70% {
+    transform: translateY(-5px) scale(1.2);
+  }
+  80% {
+    transform: translateY(-2px) scale(1.2);
+  }
+  90% {
+    transform: translateY(5px) scale(1.1);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.gold-anim {
+  animation-name: diamond-bounce;
+  animation-duration: 0.35s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+  transform-origin: center;
 }

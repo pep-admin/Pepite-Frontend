@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useSpring, animated, config } from 'react-spring';
+import { animated } from 'react-spring';
 import { Stack, Typography } from '@mui/material';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import PropTypes from 'prop-types';
@@ -9,17 +9,20 @@ import { removeLike } from '@utils/request/critics/removeLike';
 import { addLike } from '@utils/request/critics/addLike';
 import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
 import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
+import { useVerticalAnimation } from '@hooks/useVerticalAnimation';
+import Particles from '@utils/anims/Particles';
 
 const LikesFooter = ({ infos }) => {
   const { displayType } = useData();
+
   const [likeInfo, setLikeInfo] = useState({ likesNumber: 0, hasLiked: false });
+  const [likeAnim, setLikeAnim] = useState(false);
 
   const initialYposition = useRef(0);
 
-  const [style, animate] = useSpring(() => ({
-    transform: `translateY(${initialYposition.current}px)`,
-    config: config.gentle,
-  }));
+  const { style, toggleAnimation } = useVerticalAnimation(
+    initialYposition.current,
+  );
 
   const fetchLikesNumber = useCallback(async () => {
     const response = await getLikesNumber(infos.critic_id, displayType);
@@ -47,7 +50,6 @@ const LikesFooter = ({ infos }) => {
     }));
 
     let newPosition;
-    console.log('ancienne position =>', initialYposition.current);
 
     if (isLiking) {
       newPosition = initialYposition.current - 21.61;
@@ -57,16 +59,16 @@ const LikesFooter = ({ infos }) => {
 
     initialYposition.current = newPosition;
 
-    animate.start({
-      transform: `translateY(${newPosition.toString()}px)`,
-    });
+    toggleAnimation(newPosition);
 
     if (isLiking) {
+      setLikeAnim(true);
       await addLike(infos.critic_id, displayType);
     } else {
+      setLikeAnim(false);
       await removeLike(infos.critic_id, displayType);
     }
-  }, [likeInfo.hasLiked, infos.critic_id, displayType, animate]);
+  }, [likeInfo.hasLiked, infos.critic_id, displayType]);
 
   // Récupère le nombre initial de likes et vérifie le statut de like de l'utilisateur
   useEffect(() => {
@@ -84,27 +86,36 @@ const LikesFooter = ({ infos }) => {
       height="100%"
       alignItems="center"
       columnGap="5px"
-      overflow="hidden"
+      // overflow="hidden"
     >
+      {likeAnim && <Particles from={'like'} />}
       <ThumbUpTwoToneIcon
         fontSize="small"
         color={likeInfo.hasLiked ? 'success' : 'inherit'}
         sx={{ position: 'relative', bottom: '1px', cursor: 'pointer' }}
         onClick={toggleLike}
+        className={likeAnim ? 'like-anim' : ''}
       />
-      <animated.div style={{ transform: style.transform }}>
-        <Stack width="10px">
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {likesMinusOne}
-          </Typography>
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {likes}
-          </Typography>
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {likesPlusOne}
-          </Typography>
-        </Stack>
-      </animated.div>
+      <Stack
+        width="10px"
+        height="21.61px"
+        justifyContent="center"
+        overflow="hidden"
+      >
+        <animated.div style={{ transform: style.transform }}>
+          <Stack width="10px">
+            <Typography component="p" fontSize="1em" fontWeight="bold">
+              {likesMinusOne}
+            </Typography>
+            <Typography component="p" fontSize="1em" fontWeight="bold">
+              {likes}
+            </Typography>
+            <Typography component="p" fontSize="1em" fontWeight="bold">
+              {likesPlusOne}
+            </Typography>
+          </Stack>
+        </animated.div>
+      </Stack>
     </Stack>
   );
 };
@@ -113,4 +124,4 @@ LikesFooter.propTypes = {
   infos: PropTypes.object.isRequired,
 };
 
-export default React.memo(LikesFooter);
+export default LikesFooter;

@@ -18,17 +18,11 @@ import QueueTwoToneIcon from '@mui/icons-material/QueueTwoTone';
 import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
 import LibraryAddCheckTwoToneIcon from '@mui/icons-material/LibraryAddCheckTwoTone';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
-import DiamondTwoToneIcon from '@mui/icons-material/DiamondTwoTone';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import { removeGold } from '@utils/request/goldNugget/removeGold';
-import { addGold } from '@utils/request/goldNugget/addGold';
-import { getGoldNumber } from '@utils/request/goldNugget/getGoldNumber';
-import { checkGoldStatus } from '@utils/request/goldNugget/checkGoldStatus';
 
 // Import des composants internes
-import Particles from '@utils/anims/Particles';
 import QuickMenu from '@utils/components/QuickMenu';
 import LikesFooter from './LikesFooter';
 
@@ -39,6 +33,7 @@ import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest
 import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
+import GoldFooter from './GoldFooter';
 
 const CriticAdvicesFooter = ({
   data,
@@ -53,9 +48,6 @@ const CriticAdvicesFooter = ({
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   const [commentsNumber, setCommentsNumber] = useState(0); // Le nombre de commentaires d'une critique
-  const [goldNumber, setGoldNumber] = useState(0); // Le nombre de pépites "likes" d'une critique
-  const [isGold, setIsGold] = useState(false); // L'utilisateur connecté a t'il déjà mis une pépite "like" pour cette critique
-  const [particles, setParticles] = useState([]); // TODO: faire un composant des particules
   const [userMovieStatus, setUserMovieStatus] = useState(null); // Film non vu, à voir, film vu, film noté
   const [anchorSeenMenu, setAnchorSeenMenu] = useState(null); // Le menu qui permet de mettre un film non vu, à voir, vu
   const [anchorNoteMenu, setAnchorNoteMenu] = useState(null); // Le menu qui permet de noter rapidement un film
@@ -85,18 +77,6 @@ const CriticAdvicesFooter = ({
   const fetchCommentsNumber = async () => {
     const response = await getCommentsNumber(infos.critic_id, displayType);
     setCommentsNumber(response);
-  };
-
-  // Compte le nombre de likes par critique
-  const fetchGoldNumber = async () => {
-    const response = await getGoldNumber(infos.critic_id, displayType);
-    setGoldNumber(response);
-  };
-
-  // Vérifie si l'utilisateur a déjà liké des critiques
-  const checkUserGoldStatus = async () => {
-    const response = await checkGoldStatus(infos.critic_id, displayType);
-    setIsGold(response);
   };
 
   // Vérifie si l'utilisateur souhaite voir le film, l'a déjà vu, ou l'a déjà noté
@@ -133,52 +113,9 @@ const CriticAdvicesFooter = ({
     getUserMovieStatus();
   };
 
-  // Gérer le clic sur l'icône de pépite
-  const toggleGold = async () => {
-    setIsGold(!isGold);
-    try {
-      if (isGold) {
-        removeGold(infos.critic_id, displayType);
-      } else {
-        addGold(infos.critic_id, displayType);
-
-        const newParticles = [];
-
-        // Génère une explosion de 10 particules lors du clic sur la pépite footer
-        for (let i = 0; i < 10; i++) {
-          const animationClass = `particles animatedParticles${i}`;
-
-          newParticles.push({
-            id: i,
-            color: `hsl(${30 + Math.random() * 10}, ${
-              70 + Math.random() * 30
-            }%, ${50 + Math.random() * 20}%)`, // Couleur orange aléatoire
-            size: 0.2 + Math.random() * 0.25,
-            animationClass: animationClass,
-          });
-        }
-        setParticles(newParticles);
-
-        // Nettoyage après animation
-        setTimeout(() => {
-          setParticles([]);
-        }, 1500);
-      }
-      fetchGoldNumber();
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du like', error);
-      setIsGold(isGold); // Revenir en arrière si l'action échoue
-    }
-  };
-
   useEffect(() => {
     fetchCommentsNumber();
   }, [comments]);
-
-  useEffect(() => {
-    fetchGoldNumber();
-    checkUserGoldStatus();
-  }, [isGold]);
 
   useEffect(() => {
     getUserMovieStatus();
@@ -214,30 +151,7 @@ const CriticAdvicesFooter = ({
           </Typography>
         </Box>
         <LikesFooter infos={infos} />
-        <Box height="100%" display="flex" alignItems="center" columnGap="5px">
-          <Box
-            display="flex"
-            alignItems="center"
-            sx={{
-              position: 'relative',
-              cursor: 'pointer',
-            }}
-            onClick={toggleGold}
-          >
-            <DiamondTwoToneIcon
-              fontSize="small"
-              sx={{
-                position: 'relative',
-                top: '1px',
-                color: isGold ? '#F29E50' : 'inherit',
-              }}
-            />
-            <Particles particles={particles} />
-          </Box>
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {goldNumber}
-          </Typography>
-        </Box>
+        <GoldFooter infos={infos} />
         {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
         {infos.user_id !== parseInt(loggedUserInfos.id, 10) ? (
           <>

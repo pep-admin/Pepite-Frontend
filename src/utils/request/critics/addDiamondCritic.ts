@@ -1,10 +1,10 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const addGold = async (criticId: number, type: string) => {
+export const addDiamondCritic = async (criticId: number, type: string) => {
   try {
     await axios.post(
-      `${apiBaseUrl}/critics_gold/${criticId}/add`,
+      `${apiBaseUrl}/critics_diamonds/${criticId}/add`,
       { type: type },
       { withCredentials: true },
     );

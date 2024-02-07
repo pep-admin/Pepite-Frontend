@@ -1,7 +1,7 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const checkLikeStatus = async (criticId, type) => {
+export const checkLikeCriticStatus = async (criticId, type) => {
   try {
     const response = await axios.get(
       `${apiBaseUrl}/critics_likes/${criticId}/check_like`,

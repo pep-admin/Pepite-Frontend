@@ -14,11 +14,15 @@ import DiamondTwoToneIcon from '@mui/icons-material/DiamondTwoTone';
 import { useData } from '@hooks/DataContext';
 
 // Import des requêtes
-import { removeGold } from '@utils/request/goldNugget/removeGold';
-import { addGold } from '@utils/request/goldNugget/addGold';
-import { getGoldNumber } from '@utils/request/goldNugget/getGoldNumber';
-import { checkGoldStatus } from '@utils/request/goldNugget/checkGoldStatus';
+import { removeDiamondCritic } from '@utils/request/critics/removeDiamondCritic';
+import { addDiamondCritic } from '@utils/request/critics/addDiamondCritic';
+import { getDiamondsCriticNumber } from '@utils/request/critics/getDiamondsCriticNumber';
+import { checkDiamondCriticStatus } from '@utils/request/critics/checkDiamondCriticStatus';
 import { useVerticalAnimation } from '@hooks/useVerticalAnimation';
+import { addDiamondAdvice } from '@utils/request/advices/addDiamondAdvice';
+import { removeDiamondAdvice } from '@utils/request/advices/removeDiamondAdvice';
+import { checkDiamondAdviceStatus } from '@utils/request/advices/checkDiamondAdviceStatus';
+import { getDiamondsAdviceNumber } from '@utils/request/advices/getDiamondsAdviceNumber';
 
 const GoldFooter = ({ infos }) => {
   const { displayType } = useData();
@@ -36,7 +40,13 @@ const GoldFooter = ({ infos }) => {
   );
 
   const fetchGoldNumber = useCallback(async () => {
-    const response = await getGoldNumber(infos.critic_id, displayType);
+    let response;
+
+    if ('critic_id' in infos) {
+      response = await getDiamondsCriticNumber(infos.critic_id, displayType);
+    } else if ('advice_id' in infos) {
+      response = await getDiamondsAdviceNumber(infos.advice_id, displayType);
+    }
 
     setGoldInfo(prev => ({
       ...prev,
@@ -45,7 +55,13 @@ const GoldFooter = ({ infos }) => {
   }, [infos.critic_id, displayType]);
 
   const checkUserGoldStatus = async () => {
-    const response = await checkGoldStatus(infos.critic_id, displayType);
+    let response;
+
+    if ('critic_id' in infos) {
+      response = await checkDiamondCriticStatus(infos.critic_id, displayType);
+    } else if ('advice_id' in infos) {
+      response = await checkDiamondAdviceStatus(infos.advice_id, displayType);
+    }
 
     setGoldInfo(prev => ({
       ...prev,
@@ -75,10 +91,20 @@ const GoldFooter = ({ infos }) => {
 
     if (isGolden) {
       setGoldAnim(true);
-      await addGold(infos.critic_id, displayType);
+
+      if ('critic_id' in infos) {
+        await addDiamondCritic(infos.critic_id, displayType);
+      } else if ('advice_id' in infos) {
+        await addDiamondAdvice(infos.advice_id, displayType);
+      }
     } else {
       setGoldAnim(false);
-      await removeGold(infos.critic_id, displayType);
+
+      if ('critic_id' in infos) {
+        await removeDiamondCritic(infos.critic_id, displayType);
+      } else if ('advice_id' in infos) {
+        await removeDiamondAdvice(infos.advice_id, displayType);
+      }
     }
   }, [goldInfo.hasBeenGold, infos.critic_id, displayType]);
 

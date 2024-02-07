@@ -14,11 +14,14 @@ const ProfilRank = ({ loggedUserInfos, chosenUser }) => {
       <MilitaryTechTwoToneIcon sx={{ color: '#8324A5' }} />
       <Typography
         component="h4"
-        variant="body2"
         sx={{
           color: '#8324A5',
-          fontWeight: 'bold',
-          marginBottom: '2px',
+          margin: '4px 0 6px 0',
+          fontFamily: 'League Spartan',
+          fontSize: '0.85em',
+          fontWeight: '700',
+          letterSpacing: '-0.2px',
+          lineHeight: 'normal',
         }}
       >
         {loggedUserInfos.id === parseInt(id, 10)

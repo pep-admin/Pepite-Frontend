@@ -142,8 +142,10 @@ const SuggestedGoldNuggets = ({
           padding="0 10px"
         >
           <Typography variant="body2" component="p" fontWeight={600}>
-            {page === 'profil'
+            {page === 'profil' && loggedUserInfos.id === parseInt(id, 10)
               ? 'Vos dernières pépites'
+              : page === 'profil' && loggedUserInfos.id !== parseInt(id, 10)
+              ? 'Ses dernières pépites'
               : 'Dernières pépites de vos contacts'}
           </Typography>
           <Typography variant="body2" component="p" fontWeight="bold">

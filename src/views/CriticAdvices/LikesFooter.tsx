@@ -1,16 +1,20 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { animated } from 'react-spring';
 import { Stack, Typography } from '@mui/material';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import PropTypes from 'prop-types';
 
 import { useData } from '@hooks/DataContext';
-import { removeLike } from '@utils/request/critics/removeLike';
-import { addLike } from '@utils/request/critics/addLike';
-import { getLikesNumber } from '@utils/request/critics/getLikesNumber';
-import { checkLikeStatus } from '@utils/request/critics/checkLikesStatus';
+import { removeLikeCritic } from '@utils/request/critics/removeLikeCritic';
+import { addLikeCritic } from '@utils/request/critics/addLikeCritic';
+import { getCriticLikesNumber } from '@utils/request/critics/getCriticLikesNumber';
+import { checkLikeCriticStatus } from '@utils/request/critics/checkLikeCriticStatus';
 import { useVerticalAnimation } from '@hooks/useVerticalAnimation';
 import Particles from '@utils/anims/Particles';
+import { addLikeAdvice } from '@utils/request/advices/addLikeAdvice';
+import { checkLikeAdviceStatus } from '@utils/request/advices/checkLikeAdviceStatus';
+import { getAdviceLikesNumber } from '@utils/request/advices/getAdviceLikesNumber';
+import { removeLikeAdvice } from '@utils/request/advices/removeLikeAdvice';
 
 const LikesFooter = ({ infos }) => {
   const { displayType } = useData();
@@ -25,7 +29,13 @@ const LikesFooter = ({ infos }) => {
   );
 
   const fetchLikesNumber = useCallback(async () => {
-    const response = await getLikesNumber(infos.critic_id, displayType);
+    let response;
+
+    if ('critic_id' in infos) {
+      response = await getCriticLikesNumber(infos.critic_id, displayType);
+    } else if ('advice_id' in infos) {
+      response = await getAdviceLikesNumber(infos.advice_id, displayType);
+    } else return;
 
     setLikeInfo(prev => ({
       ...prev,
@@ -34,7 +44,13 @@ const LikesFooter = ({ infos }) => {
   }, [infos.critic_id, displayType]);
 
   const checkUserLikeStatus = async () => {
-    const response = await checkLikeStatus(infos.critic_id, displayType);
+    let response;
+
+    if ('critic_id' in infos) {
+      response = await checkLikeCriticStatus(infos.critic_id, displayType);
+    } else if ('advice_id' in infos) {
+      response = await checkLikeAdviceStatus(infos.advice_id, displayType);
+    } else return;
 
     setLikeInfo(prev => ({
       ...prev,
@@ -63,10 +79,20 @@ const LikesFooter = ({ infos }) => {
 
     if (isLiking) {
       setLikeAnim(true);
-      await addLike(infos.critic_id, displayType);
+
+      if ('critic_id' in infos) {
+        await addLikeCritic(infos.critic_id, displayType);
+      } else if ('advice_id' in infos) {
+        await addLikeAdvice(infos.advice_id, displayType);
+      } else return;
     } else {
       setLikeAnim(false);
-      await removeLike(infos.critic_id, displayType);
+
+      if ('critic_id' in infos) {
+        await removeLikeCritic(infos.critic_id, displayType);
+      } else if ('advice_id' in infos) {
+        await removeLikeAdvice(infos.advice_id, displayType);
+      } else return;
     }
   }, [likeInfo.hasLiked, infos.critic_id, displayType]);
 

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-// Comptage des pépites footer
-export const getGoldNumber = async (criticId, type) => {
+// Comptage des diamants d'une critique
+export const getDiamondsCriticNumber = async (criticId, type) => {
   try {
     const response = await axios.get(
-      `${apiBaseUrl}/critics_gold/${criticId}/gold`,
+      `${apiBaseUrl}/critics_diamonds/${criticId}/diamond`,
       {
         params: { type: type },
         withCredentials: true,

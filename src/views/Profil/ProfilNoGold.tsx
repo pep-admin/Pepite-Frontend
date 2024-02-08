@@ -25,7 +25,7 @@ const ProfilNoGold = ({ page, loggedUserInfos, chosenUser }) => {
         style={{
           position: 'relative',
           top: '0.2px',
-          filter: 'grayscale(1) brightness(0.95)',
+          filter: 'grayscale(0.2) brightness(0.95)',
         }}
       />
       <Stack direction="column" spacing={1} marginTop="10px" padding="0 5px">
@@ -50,7 +50,9 @@ const ProfilNoGold = ({ page, loggedUserInfos, chosenUser }) => {
             <>
               {"N'hésitez pas à "}
               <span style={{ fontWeight: 'bold' }}>
-                {'lui conseiller un film !'}
+                {`lui conseiller ${
+                  displayType === 'movie' ? 'un film' : 'une série'
+                } !`}
               </span>
             </>
           ) : (

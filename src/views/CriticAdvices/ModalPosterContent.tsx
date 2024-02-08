@@ -39,15 +39,19 @@ const ModalPosterContent = ({
 
   const { displayType } = useData();
 
-  const getRatings = async movieId => {
-    const averageRating = await getRatingsRequest(movieId, displayType);
+  const getRatings = async id => {
+    const averageRating = await getRatingsRequest(id, displayType);
     setRelationsRatings(averageRating);
   };
 
   useEffect(() => {
     if (from === 'critic') return;
 
-    getRatings(infos.movie_id);
+    if (displayType === 'movie') {
+      getRatings(infos.movie_id);
+    } else {
+      getRatings(infos.serie_id);
+    }
   }, [infos, from]);
 
   return (
@@ -256,7 +260,7 @@ ModalPosterContent.propTypes = {
   criticUserInfos: PropTypes.object,
   goldNuggetUserInfos: PropTypes.array.isRequired,
   setShowUserInfos: PropTypes.func.isRequired,
-  relationshipStatus: PropTypes.object.isRequired,
+  relationshipStatus: PropTypes.object,
 };
 
 export default ModalPosterContent;

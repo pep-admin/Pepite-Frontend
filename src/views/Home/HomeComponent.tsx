@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Container, Stack } from '@mui/material';
+import { Container, Modal, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
 // Import des composants internes
@@ -18,9 +18,12 @@ import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriti
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 import useVerticalScroll from '@hooks/useVerticalScroll';
+import { useParams } from 'react-router-dom';
 
 const Home = () => {
-  const { displayType, chosenMovie } = useData();
+  const { displayType, chosenMovie, setChosenMovie } = useData();
+
+  const { id } = useParams();
 
   // L'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
@@ -56,30 +59,30 @@ const Home = () => {
       page,
     );
 
-    const newCritics = critics
-      .map(critic => ({
-        ...critic,
-        // Convertir la date en un format comparable
-        timestamp: new Date(critic.critic_date).getTime(),
-        // Ordre d'affichage basé sur le type de relation
-        order:
-          critic.relation_type === 'close_friend'
-            ? 3 // Critiques des amis proches en premier
-            : critic.relation_type === 'friend'
-            ? 2 // Critiques des amis en deuxième
-            : critic.relation_type === 'followed'
-            ? 1 // Critiques des suivis en troisième
-            : 0, // Critiques de l'utilisateur connecté
-      }))
+    // const newCritics = critics
+    //   .map(critic => ({
+    //     ...critic,
+    //     // Convertir la date en un format comparable
+    //     timestamp: new Date(critic.critic_date).getTime(),
+    //     // Ordre d'affichage basé sur le type de relation
+    //     order:
+    //       critic.relation_type === 'close_friend'
+    //         ? 3 // Critiques des amis proches en premier
+    //         : critic.relation_type === 'friend'
+    //         ? 2 // Critiques des amis en deuxième
+    //         : critic.relation_type === 'followed'
+    //         ? 1 // Critiques des suivis en troisième
+    //         : 0, // Critiques de l'utilisateur connecté
+    //   }))
 
-      .sort((a, b) => {
-        // On trie d'abord selon la relation, puis par date
-        return b.order - a.order || b.timestamp - a.timestamp;
-      });
+    //   .sort((a, b) => {
+    //     // On trie d'abord selon la relation, puis par date
+    //     return b.order - a.order || b.timestamp - a.timestamp;
+    //   });
 
     setCriticsOfAcquaintances(existingCritics => [
       ...existingCritics,
-      ...newCritics,
+      ...critics,
     ]);
 
     setIsDataFetched(true);
@@ -89,6 +92,7 @@ const Home = () => {
   };
 
   const { observerRef, loading, hasMore } = useVerticalScroll(
+    id,
     firstRender,
     getCritics,
     displayType,
@@ -102,6 +106,10 @@ const Home = () => {
       firstRender.current = false;
     }
   }, []);
+
+  useEffect(() => {
+    console.log('les critiques', criticsOfAcquaintances);
+  }, [criticsOfAcquaintances]);
 
   return (
     <>
@@ -151,20 +159,32 @@ const Home = () => {
             handlePoster={null}
             showPicModal={null}
           />
-          {chosenMovie !== null ? (
-            <CriticAdvicesComponent
-              page={'home'}
-              type={'new-critic'}
-              chosenMovie={chosenMovie}
-              setData={setCriticsOfAcquaintances}
-              setGoldenMovies={setGoldenMovies}
-              loggedUserInfos={loggedUserInfos}
-              chosenUser={null}
-              infos={null}
-              haveMoreCritics={null}
-              isLast={null}
-            />
-          ) : null}
+          <Modal
+            open={chosenMovie !== null}
+            onClose={() => setChosenMovie(null)}
+            aria-labelledby={
+              loggedUserInfos.id === parseInt(id, 10)
+                ? 'Nouvelle critique'
+                : 'Nouveau conseil'
+            }
+            aria-describedby="modal-modal-description"
+          >
+            <Stack height="100vh" padding="0 6px" justifyContent="center">
+              <CriticAdvicesComponent
+                page={'home'}
+                type={'new-critic'}
+                chosenMovie={chosenMovie}
+                data={criticsOfAcquaintances}
+                setData={setCriticsOfAcquaintances}
+                setGoldenMovies={setGoldenMovies}
+                loggedUserInfos={loggedUserInfos}
+                chosenUser={null}
+                infos={null}
+                haveMoreCritics={null}
+                isLast={null}
+              />
+            </Stack>
+          </Modal>
           {criticsOfAcquaintances.length ? (
             criticsOfAcquaintances.map((critic, index) => {
               return (
@@ -172,6 +192,7 @@ const Home = () => {
                   key={index}
                   page={'home'}
                   type={'old-critic'}
+                  data={criticsOfAcquaintances}
                   setData={setCriticsOfAcquaintances}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}

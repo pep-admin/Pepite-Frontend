@@ -1,10 +1,10 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const checkGoldStatus = async (criticId, type) => {
+export const checkDiamondAdviceStatus = async (adviceId, type) => {
   try {
     const response = await axios.get(
-      `${apiBaseUrl}/critics_gold/${criticId}/check_gold`,
+      `${apiBaseUrl}/advices_diamonds/${adviceId}/check_diamond`,
       { params: { type: type }, withCredentials: true },
     );
 

@@ -1,5 +1,7 @@
 // Si récupération des détails des films depuis la DB, on parse les infos
 export const parseDatabaseData = (data, displayType, requestType) => {
+  const loggedUserId = JSON.parse(localStorage.getItem('user_infos'));
+
   // Informations générales
   const genres = JSON.parse(data.genres);
   const production_countries = JSON.parse(data.production_countries);
@@ -88,6 +90,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   }
 
   // Critique && conseils
+  let type = null;
   let rating = null;
   let text = null;
   let critic_id = null;
@@ -112,41 +115,63 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text; // le texte de la critique
     is_gold_nugget = Number(data.is_gold_nugget);
     is_turnip = Number(data.is_turnip);
-    relation_type = data.relation_type;
+    relation_type = data.user_id === loggedUserId ? 'self' : data.relation_type;
 
     if (requestType === 'critic') {
+      type = 'critic';
       critic_id = Number(data.id);
       critic_date = data.critic_date;
       user_id = data.user_id;
+
+      return {
+        critic_date,
+        critic_id,
+        friends_and_followed_critics,
+        genres,
+        id,
+        is_gold_nugget,
+        is_turnip,
+        overview,
+        poster_path,
+        production_countries,
+        rating,
+        relation_type,
+        release_date,
+        release_dates,
+        text,
+        title,
+        type,
+        user_id,
+        vote_average,
+      };
     } else {
+      type = 'advice';
       advice_id = Number(data.id);
       advice_date = data.advice_date;
       sender_id = data.sender_id;
-    }
 
-    return {
-      genres,
-      production_countries,
-      id,
-      overview,
-      poster_path,
-      release_date,
-      release_dates,
-      title,
-      vote_average,
-      rating,
-      text,
-      critic_id,
-      advice_id,
-      is_gold_nugget,
-      is_turnip,
-      critic_date,
-      advice_date,
-      user_id,
-      sender_id,
-      relation_type,
-      friends_and_followed_critics,
-    };
+      return {
+        advice_date,
+        advice_id,
+        // friends_and_followed_critics
+        genres,
+        id,
+        is_gold_nugget,
+        is_turnip,
+        overview,
+        poster_path,
+        production_countries,
+        rating,
+        relation_type,
+        release_date,
+        release_dates,
+        sender_id,
+        text,
+        title,
+        type,
+        vote_average,
+      };
+    }
   }
 
   // Dans le cas où on veut parser des infos pour une SERIE qui a été noté par les utilisateurs ( critiques et conseils )
@@ -161,40 +186,61 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     text = data.text;
     is_gold_nugget = Number(data.is_gold_nugget);
     is_turnip = Number(data.is_turnip);
-    relation_type = data.relation_type;
+    relation_type = data.user_id === loggedUserId ? 'self' : data.relation_type;
 
     if (requestType === 'critic') {
+      type = 'critic';
       critic_id = Number(data.id);
       critic_date = data.critic_date;
       user_id = data.user_id;
+
+      return {
+        content_ratings,
+        critic_date,
+        critic_id,
+        friends_and_followed_critics,
+        genres,
+        id,
+        is_gold_nugget,
+        is_turnip,
+        overview,
+        poster_path,
+        production_countries,
+        rating,
+        relation_type,
+        first_air_date,
+        text,
+        name,
+        type,
+        user_id,
+        vote_average,
+      };
     } else {
+      type = 'advice';
       advice_id = Number(data.id);
       advice_date = data.advice_date;
       sender_id = data.sender_id;
-    }
 
-    return {
-      genres,
-      production_countries,
-      id,
-      overview,
-      poster_path,
-      first_air_date,
-      content_ratings,
-      name,
-      vote_average,
-      rating,
-      text,
-      critic_id,
-      advice_id,
-      is_gold_nugget,
-      is_turnip,
-      critic_date,
-      advice_date,
-      user_id,
-      sender_id,
-      relation_type,
-      friends_and_followed_critics,
-    };
+      return {
+        advice_date,
+        advice_id,
+        content_ratings,
+        // friends_and_followed_critics
+        genres,
+        id,
+        is_gold_nugget,
+        is_turnip,
+        overview,
+        poster_path,
+        production_countries,
+        rating,
+        relation_type,
+        sender_id,
+        text,
+        name,
+        type,
+        vote_average,
+      };
+    }
   }
 };

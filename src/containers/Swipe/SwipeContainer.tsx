@@ -12,11 +12,8 @@ import {
 } from '@utils/functions/findInfos';
 import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 import { getMovieDetails } from '@utils/request/getMovieDetails';
-import useCheckAuth from '@hooks/useCheckAuth';
 
 const SwipeContainer = () => {
-  const { isAuthenticated, isLoading } = useCheckAuth();
-
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]);
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
@@ -191,20 +188,6 @@ const SwipeContainer = () => {
         alt: findCertificationFr(displayType, movieDetail).alt,
       });
   }, [movieDetail]);
-
-  // useEffect(() => {
-  //   console.log('récupération des films', movies);
-  // }, [movies]);
-
-  // Si le statut d'authentification est en cours de chargement, affichez un indicateur de chargement
-  if (isLoading) {
-    return null;
-  }
-
-  // Si l'utilisateur n'est pas authentifié, ne rien rendre (ou rendre un composant spécifique)
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <SwipeComponent

@@ -2,6 +2,7 @@
 import { Stack, Box, Typography, Divider, Card, Button } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -26,7 +27,6 @@ import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
-import { useParams } from 'react-router-dom';
 import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
 import { getUser } from '@utils/request/users/getUser';
 import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
@@ -35,12 +35,15 @@ import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCritic
 
 // Import des fonctions utiles
 import { convertDate } from '@utils/functions/convertDate';
+
+// Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShow } from '@hooks/useCardsToShow';
 
 const CriticAdvicesComponent = ({
   page,
   type,
   chosenMovie,
+  data,
   setData,
   setGoldenMovies,
   infos,
@@ -106,14 +109,16 @@ const CriticAdvicesComponent = ({
 
     setData(newData);
 
-    const response = await getAllGoldNuggetsOfUser(
-      displayType,
-      userId,
-      cardsToShow,
-      1,
-    );
+    if (page === 'profil') {
+      const response = await getAllGoldNuggetsOfUser(
+        displayType,
+        userId,
+        cardsToShow,
+        1,
+      );
 
-    setGoldenMovies(response.data.goldenMovies);
+      setGoldenMovies(response.data.goldenMovies);
+    }
 
     setIsModify(false);
 
@@ -235,11 +240,12 @@ const CriticAdvicesComponent = ({
 
   useEffect(() => {
     if (type === 'old-critic') {
+      // console.log(`récupération des informations de l'utilisateur ${infos.user_id} pour la critique ${infos.title}`);
       getCriticUserInfos(infos.user_id);
     } else if (type === 'old-advice') {
       getCriticUserInfos(infos.sender_id);
     }
-  }, []);
+  }, [data]);
 
   return (
     <>
@@ -356,7 +362,7 @@ const CriticAdvicesComponent = ({
                     : '7px'
                 }
                 sx={{
-                  maxHeight: displayOverwiew ? '60px' : '0px',
+                  maxHeight: displayOverwiew ? '100px' : '0px',
                   overflowY: 'scroll',
                   transition: 'max-height 0.5s ease-in-out',
                 }}
@@ -436,6 +442,7 @@ const CriticAdvicesComponent = ({
           </Stack>
           {type === 'old-critic' || type === 'old-advice' ? (
             <CriticAdvicesFooter
+              data={data}
               infos={infos}
               displayComments={displayComments}
               setDisplayComments={setDisplayComments}
@@ -450,7 +457,9 @@ const CriticAdvicesComponent = ({
       ) : null} */}
       {displayComments ? (
         <CommentsComponent
+          page={page}
           criticId={infos.critic_id}
+          adviceId={infos.advice_id}
           comments={comments}
           setComments={setComments}
         />
@@ -467,6 +476,7 @@ const CriticAdvicesComponent = ({
 };
 
 CriticAdvicesComponent.propTypes = {
+  data: PropTypes.array.isRequired,
   page: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),

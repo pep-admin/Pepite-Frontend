@@ -79,7 +79,12 @@ const CriticAdvicesContent = ({
                 {title}
               </Typography>
               {type === 'old-critic' || type === 'old-advice' ? (
-                <IsNew from={'critic'} created_at={infos.created_at} />
+                <IsNew
+                  from={'critic'}
+                  created_at={
+                    type == 'old-critic' ? infos.critic_date : infos.advice_date
+                  }
+                />
               ) : null}
             </Stack>
             <Stack direction="row" columnGap="5px">

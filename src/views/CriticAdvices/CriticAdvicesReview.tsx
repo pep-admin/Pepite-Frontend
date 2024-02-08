@@ -18,6 +18,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 // Import des composants internes
 import CriticAdvicesReviewModal from './CriticAdvicesReviewModal';
 import UserAvatar from '@utils/components/UserAvatar';
+import { useParams } from 'react-router-dom';
 
 const CriticAdvicesReview = ({
   type,
@@ -28,6 +29,8 @@ const CriticAdvicesReview = ({
   newRating,
   criticUserInfos,
 }) => {
+  const { id } = useParams();
+
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
 
   // Utilisateur connecté
@@ -52,12 +55,22 @@ const CriticAdvicesReview = ({
           htmlFor="custom-outlined-input"
           sx={{ fontStyle: 'italic', overflow: 'visible' }}
         >
-          {'Votre critique'}
+          {loggedUserInfos.id === parseInt(id, 10)
+            ? 'Votre critique'
+            : 'Votre conseil'}
         </InputLabel>
         <OutlinedInput
           id="custom-outlined-input"
-          label={'Votre critique'}
-          placeholder={'Vous pouvez rédiger une nouvelle critique'}
+          label={
+            loggedUserInfos.id === parseInt(id, 10)
+              ? 'Votre critique'
+              : 'Votre conseil'
+          }
+          placeholder={`Vous pouvez rédiger ${
+            loggedUserInfos.id === parseInt(id, 10)
+              ? 'une nouvelle critique'
+              : 'un nouveau conseil'
+          }`}
           value={newCriticText}
           multiline
           minRows={'4'}
@@ -77,7 +90,6 @@ const CriticAdvicesReview = ({
             sx: {
               height: '100% !important',
               padding: '0',
-              borderRadius: '10px 0 0 10px',
             },
           }}
           onChange={e => setNewCriticText(e.target.value)}
@@ -149,22 +161,23 @@ const CriticAdvicesReview = ({
         >
           <FullscreenIcon />
         </Box>
-        {Object.keys(criticUserInfos).length !== 0 && (
-          <UserAvatar
-            variant={'square'}
-            userInfos={
-              type === 'old-critic' || type === 'old-advice'
-                ? criticUserInfos
-                : loggedUserInfos
-            }
-            picWidth={60}
-            picHeight={70}
-            isOutlined={false}
-            outlineWidth={null}
-            relationType={null}
-            sx={{ filter: 'grayscale(1)' }}
-          />
-        )}
+        <UserAvatar
+          variant={'square'}
+          userInfos={
+            type === 'new-critic' || type === 'new-advice'
+              ? loggedUserInfos
+              : criticUserInfos?.id &&
+                criticUserInfos?.id !== loggedUserInfos.id
+              ? criticUserInfos
+              : loggedUserInfos
+          }
+          picWidth={60}
+          picHeight={70}
+          isOutlined={false}
+          outlineWidth={null}
+          relationType={null}
+          sx={{ filter: 'grayscale(1)' }}
+        />
         <Box
           height={
             type === 'new-critic' || type === 'new-advice' || isModify

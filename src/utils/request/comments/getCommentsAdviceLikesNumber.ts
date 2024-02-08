@@ -1,10 +1,10 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const getLikesNumber = async (criticId, type) => {
+export const getCommentsAdviceLikesNumber = async (commentId, type) => {
   try {
     const response = await axios.get(
-      `${apiBaseUrl}/critics_likes/${criticId}/likes`,
+      `${apiBaseUrl}/advices_comments/${commentId}/likes`,
       {
         params: { type: type },
         withCredentials: true,

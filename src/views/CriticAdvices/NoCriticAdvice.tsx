@@ -5,9 +5,6 @@ import PropTypes from 'prop-types';
 // Import des composants customisés
 import { Item } from '@utils/components/styledComponent';
 
-// Import des icônes
-import { NoCriticSvg } from '@utils/components/styledComponent';
-
 const NoCriticAdvice = ({ page }) => {
   return (
     <Item margintop="6px" minheight="175.8px">
@@ -20,16 +17,7 @@ const NoCriticAdvice = ({ page }) => {
         </Stack>
         <Stack height="180px" padding="10px 8px">
           <Stack direction="row" height="100%">
-            <Stack
-              height="100%"
-              width="35%"
-              bgcolor="#EFEFEF"
-              borderRadius="10px"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <NoCriticSvg sx={{ fontSize: '4.8em' }} />
-            </Stack>
+            <img src="/images/logo_pepite_svg.svg" alt="cornet de pop corns" />
             <Stack direction="column" flexGrow="1">
               <Typography
                 component="p"

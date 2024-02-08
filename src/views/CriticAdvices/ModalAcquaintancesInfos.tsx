@@ -191,7 +191,7 @@ const ModalAcquaintancesInfos = ({
 ModalAcquaintancesInfos.propTypes = {
   goldNuggetUserInfos: PropTypes.array.isRequired,
   relationshipStatus: PropTypes.object.isRequired,
-  relationsRatings: PropTypes.number,
+  relationsRatings: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
 };
 
 export default ModalAcquaintancesInfos;

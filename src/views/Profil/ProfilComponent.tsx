@@ -6,6 +6,7 @@ import {
   Stack,
   Box,
   Typography,
+  Modal,
 } from '@mui/material';
 import Header from '@utils/components/Header';
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -24,8 +25,9 @@ import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
 
 // Import des icônes
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
-import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
 import PersonAddAlt1TwoToneIcon from '@mui/icons-material/PersonAddAlt1TwoTone';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -60,29 +62,28 @@ interface User {
   last_login_date: string;
   profilPics: Picture[];
   rank: string;
+  relation_type: string;
 }
 
 const ProfilComponent = () => {
   const { id } = useParams();
-  const { displayType, chosenMovie } = useData();
+  const { displayType, chosenMovie, setChosenMovie } = useData();
 
   // Utilisateur connecté
   const [loggedUserInfos, setLoggedUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
   // Utilisateur externe
-  const [chosenUser, setChosenUser] = useState<User | null>(null);
-
-  // const [userCritics, setUserCritics] = useState([]); // Toutes les critiques de l'utilisateur du profil
-  // const [advicesReceived, setAdvicesReceived] = useState([]); // Tous les conseils reçus par l'utilisateur du profil
-  const [criticsAndAdvices, setCriticsAndAdvices] = useState([]);
+  const [chosenUser, setChosenUser] = useState<User | null>(null); // Les informations de l'utilisateur autre que celui connecté
+  const [isChosenUserLoaded, setIsChosenUserLoaded] = useState(false); // Etat de chargement des informations de l'utilisateur extérieur
+  const [criticsAndAdvices, setCriticsAndAdvices] = useState([]); // Les critiques et les conseils de l'utilisateur du profil
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
   const [modifyCoverPic, setModifyCoverPic] = useState({
     state: false,
     type: null,
-  });
-  const [anchorProfilBtn, setAnchorProfilBtn] = useState(null);
-  const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
+  }); // Booléen pour ouvrir ou non la fenêtre de modification de photo de couverture
+  const [anchorProfilBtn, setAnchorProfilBtn] = useState(null); // Booléen pour ouvrir le Menu de demande en ami
+  const [isDataFetched, setIsDataFetched] = useState(false); // Si les critiques et conseils ont été récupérés
 
   const firstRender = useRef(true);
 
@@ -90,22 +91,31 @@ const ProfilComponent = () => {
 
   // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
   const fetchChosenUser = async user_id => {
+    setIsChosenUserLoaded(false);
     const user = await getUser(user_id);
     setChosenUser(user);
+    setIsChosenUserLoaded(true);
   };
 
   // Récupère les critiques et conseils de l'utilisateur du profil
   const getCriticsAndAdvices = useCallback(
     async page => {
       try {
+        console.log('APPEL !!!');
+
+        setIsDataFetched(false);
+
         let hasMoreCritics = true;
         let hasMoreAdvices = true;
 
         const criticsData = await getCriticsOfUser(id, displayType, page);
         if (criticsData.length < 3) {
+          console.log('plus de critiques à récupérer');
+
           // Si les critiques reçues sont inférieures à 3
           hasMoreCritics = false;
         }
+        console.log('les critiques', criticsData);
 
         const advicesData = await getAdvicesReceived(id, displayType, page);
         if (advicesData.length < 3) {
@@ -128,6 +138,7 @@ const ProfilComponent = () => {
   );
 
   const { observerRef, loading, hasMore } = useVerticalScroll(
+    id,
     firstRender,
     getCriticsAndAdvices,
     displayType,
@@ -135,9 +146,9 @@ const ProfilComponent = () => {
     setIsDataFetched,
   );
 
-  useEffect(() => {
-    console.log('les critiques et conseils', criticsAndAdvices);
-  }, [criticsAndAdvices]);
+  // useEffect(() => {
+  //   console.log('les critiques et conseils', criticsAndAdvices);
+  // }, [criticsAndAdvices]);
 
   // Récupération des informations de l'utilisateur si le profil est différent de l'utilisateur connecté
   useEffect(() => {
@@ -154,14 +165,8 @@ const ProfilComponent = () => {
   // Réinitialisation lors du changement de type (films ou séries)
   useEffect(() => {
     // Premier rendu
-    if (firstRender.current) {
-      firstRender.current = false;
-      // Réinitialisation
-    } else {
-      setCriticsAndAdvices([]);
-      getCriticsAndAdvices(1);
-    }
-  }, [displayType, id]);
+    if (firstRender.current) firstRender.current = false;
+  }, []);
 
   const handleClick = event => {
     setAnchorProfilBtn(event.currentTarget);
@@ -178,14 +183,42 @@ const ProfilComponent = () => {
         :
         null
       } */}
-      {modifyCoverPic.state ? (
+      {modifyCoverPic.state && (
         <AccountUpdatePic
           showPicModal={modifyCoverPic}
           setShowPicModal={setModifyCoverPic}
           loggedUserInfos={loggedUserInfos}
           setLoggedUserInfos={setLoggedUserInfos}
         />
-      ) : null}
+      )}
+      <Modal
+        open={chosenMovie !== null}
+        onClose={() => setChosenMovie(null)}
+        aria-labelledby={
+          loggedUserInfos.id === parseInt(id, 10)
+            ? 'Nouvelle critique'
+            : 'Nouveau conseil'
+        }
+        aria-describedby="modal-modal-description"
+      >
+        <Stack height="100vh" padding="0 6px" justifyContent="center">
+          <CriticAdvicesComponent
+            page={'profil'}
+            type={
+              loggedUserInfos.id === parseInt(id, 10)
+                ? 'new-critic'
+                : 'new-advice'
+            }
+            chosenMovie={chosenMovie}
+            data={criticsAndAdvices}
+            setData={setCriticsAndAdvices}
+            setGoldenMovies={setGoldenMovies}
+            loggedUserInfos={loggedUserInfos}
+            infos={null}
+            chosenUser={chosenUser}
+          />
+        </Stack>
+      </Modal>
       <Header loggedUserInfos={loggedUserInfos} />
       <Card
         sx={{
@@ -248,52 +281,96 @@ const ProfilComponent = () => {
             ) : null
           }
         </Box>
-        <Box
+        <Stack
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="flex-end"
           position="absolute"
           bottom="0"
           right="0"
-          width="calc(100% - 108px)"
-          display="flex"
-          alignItems="center"
-          columnGap="5px"
+          width="100%"
+          padding="0 9.5px"
+          marginBottom="6px"
         >
-          <Typography
-            component="h2"
-            sx={{
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: '1.4em',
-              padding: '0 6px 0 16px',
-              textShadow: '#00000040 1px 2px 2px',
-            }}
-          >
-            {loggedUserInfos.id === parseInt(id, 10)
-              ? `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`
-              : chosenUser
-              ? `${chosenUser.first_name} ${chosenUser.last_name}`
-              : null}
-          </Typography>
-          {loggedUserInfos.id !== parseInt(id, 10) ? (
-            <>
-              <PersonAddAlt1TwoToneIcon
-                sx={{
-                  fontSize: '23.5px',
-                  color: '#0e6666',
-                  position: 'relative',
-                  bottom: '1.1px',
-                  cursor: 'pointer',
-                }}
-                onClick={e => handleClick(e)}
-              />
-              <FriendRequestBtn
-                page={'profil'}
-                anchorProfilBtn={anchorProfilBtn}
-                setAnchorProfilBtn={setAnchorProfilBtn}
-                receiverId={id}
-              />
-            </>
-          ) : null}
-        </Box>
+          {(loggedUserInfos.id === parseInt(id, 10) || isChosenUserLoaded) && (
+            <UserAvatar
+              variant={'rounded'}
+              userInfos={
+                loggedUserInfos.id === parseInt(id, 10)
+                  ? loggedUserInfos
+                  : chosenUser
+              }
+              picWidth={90}
+              picHeight={90}
+              isOutlined={false}
+              outlineWidth={null}
+              relationType={null}
+              sx={{ border: '3.5px solid #fff' }}
+            />
+          )}
+
+          <Stack direction="row" alignItems="center" columnGap="5px">
+            <Typography
+              component="h2"
+              sx={{
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: '1.4em',
+                padding: '0 6px 0 16px',
+                textShadow: '#00000040 1px 2px 2px',
+              }}
+            >
+              {loggedUserInfos.id === parseInt(id, 10)
+                ? `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`
+                : isChosenUserLoaded
+                ? `${chosenUser.first_name} ${chosenUser.last_name}`
+                : null}
+            </Typography>
+            {loggedUserInfos.id !== parseInt(id, 10) && isChosenUserLoaded ? (
+              <>
+                {chosenUser.relation_type === 'close_friend' ? (
+                  <VerifiedIcon
+                    sx={{
+                      color: '#F16C22',
+                      fontSize: '23.5px',
+                    }}
+                    onClick={e => handleClick(e)}
+                  />
+                ) : chosenUser.relation_type === 'friend' ? (
+                  <VerifiedIcon
+                    sx={{
+                      color: '#F29E50',
+                      fontSize: '23.5px',
+                    }}
+                    onClick={e => handleClick(e)}
+                  />
+                ) : chosenUser.relation_type === 'followed' ? (
+                  <BookmarkIcon
+                    sx={{ color: '#24A5A5', fontSize: '22px' }}
+                    onClick={e => handleClick(e)}
+                  />
+                ) : (
+                  <PersonAddAlt1TwoToneIcon
+                    sx={{
+                      fontSize: '23.5px',
+                      color: '#dcdcdc',
+                      position: 'relative',
+                      bottom: '1.1px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={e => handleClick(e)}
+                  />
+                )}
+                <FriendRequestBtn
+                  page={'profil'}
+                  anchorProfilBtn={anchorProfilBtn}
+                  setAnchorProfilBtn={setAnchorProfilBtn}
+                  receiverId={id}
+                />
+              </>
+            ) : null}
+          </Stack>
+        </Stack>
       </Card>
       <Container
         maxWidth="xl"
@@ -312,24 +389,7 @@ const ProfilComponent = () => {
             position="absolute"
             top="-66px"
             left="0"
-          >
-            {chosenUser && (
-              <UserAvatar
-                variant={'circular'}
-                userInfos={
-                  loggedUserInfos.id === parseInt(id, 10)
-                    ? loggedUserInfos
-                    : chosenUser
-                }
-                picWidth={90}
-                picHeight={90}
-                isOutlined={true}
-                outlineWidth={'3.5px'}
-                relationType={'self'}
-                sx={null}
-              />
-            )}
-          </Box>
+          ></Box>
           <Stack
             direction="column"
             height="189px"
@@ -337,48 +397,11 @@ const ProfilComponent = () => {
             flexWrap="wrap"
           >
             <Box height="189px" width="100px">
-              <Box
-                position="relative"
-                height="50px"
-                width="100px"
-                borderRadius="100px 100px 0 0"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                paddingTop="5px"
-                sx={{ background: '#fff' }}
-              >
-                <MilitaryTechTwoToneIcon sx={{ color: '#8324A5' }} />
-                <Typography
-                  component="h4"
-                  variant="body2"
-                  sx={{
-                    color: '#8324A5',
-                    fontWeight: 'bold',
-                    marginBottom: '2px',
-                  }}
-                >
-                  {loggedUserInfos.id === parseInt(id, 10)
-                    ? `${loggedUserInfos.rank}`
-                    : `${chosenUser?.rank}`}
-                </Typography>
-              </Box>
-              <Item
-                customheight="calc(100% - 50px)"
-                customwidth="100px"
-                padding="7px"
-                display="flex"
-                flexdirection="column"
-                borderradius="0 0 10px 10px"
-              >
-                <ProfilDetails
-                  criticsAndAdvices={criticsAndAdvices}
-                  // userCritics={userCritics}
-                  loggedUserInfos={loggedUserInfos}
-                  chosenUser={chosenUser}
-                />
-              </Item>
+              <ProfilDetails
+                criticsAndAdvices={criticsAndAdvices}
+                loggedUserInfos={loggedUserInfos}
+                chosenUser={chosenUser}
+              />
             </Box>
             <Item
               customheight="calc(100% - 6px)"
@@ -388,7 +411,6 @@ const ProfilComponent = () => {
             >
               <SuggestedGoldNuggets
                 page={'profil'}
-                // userCritics={userCritics}
                 goldenMovies={goldenMovies}
                 setGoldenMovies={setGoldenMovies}
                 chosenUser={chosenUser}
@@ -403,7 +425,7 @@ const ProfilComponent = () => {
             chosenUser={chosenUser}
             handlePoster={null}
           />
-          {chosenMovie !== null ? (
+          {/* {chosenMovie !== null ? (
             <CriticAdvicesComponent
               page={'profil'}
               type={
@@ -412,13 +434,14 @@ const ProfilComponent = () => {
                   : 'new-advice'
               }
               chosenMovie={chosenMovie}
+              data={criticsAndAdvices}
               setData={setCriticsAndAdvices}
               setGoldenMovies={setGoldenMovies}
               loggedUserInfos={loggedUserInfos}
               infos={null}
               chosenUser={chosenUser}
             />
-          ) : null}
+          ) : null} */}
           {criticsAndAdvices.length ? (
             criticsAndAdvices.map(infos => {
               return (
@@ -426,6 +449,7 @@ const ProfilComponent = () => {
                   key={`${infos.type}-${infos.id}`}
                   page={'profil'}
                   type={infos.critic_id ? 'old-critic' : 'old-advice'}
+                  data={criticsAndAdvices}
                   setData={setCriticsAndAdvices}
                   setGoldenMovies={setGoldenMovies}
                   chosenMovie={null}

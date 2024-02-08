@@ -1,11 +1,11 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-// Récupération de toutes les critiques d'un utilisateur
-export const getAllCriticComments = async (type, critic_id) => {
+// Récupération de toutes les commentaires d'un conseil
+export const getAllAdviceComments = async (type, advice_id) => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/critics_comments/get`, {
-      params: { type: type, critic_id: critic_id },
+    const response = await axios.get(`${apiBaseUrl}/advices_comments/get`, {
+      params: { type: type, advice_id: advice_id },
       withCredentials: true,
     });
 

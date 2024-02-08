@@ -1,10 +1,10 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-// Suppression d'un like de critique
-export const removeLike = async (critic_id: number, type: string) => {
+// Suppression d'un diamant de critique
+export const removeDiamondCritic = async (critic_id: number, type: string) => {
   try {
-    await axios.delete(`${apiBaseUrl}/critics_likes/${critic_id}/remove`, {
+    await axios.delete(`${apiBaseUrl}/critics_diamonds/${critic_id}/remove`, {
       params: { type: type },
       withCredentials: true,
     });

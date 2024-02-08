@@ -146,10 +146,6 @@ const ProfilComponent = () => {
     setIsDataFetched,
   );
 
-  // useEffect(() => {
-  //   console.log('les critiques et conseils', criticsAndAdvices);
-  // }, [criticsAndAdvices]);
-
   // Récupération des informations de l'utilisateur si le profil est différent de l'utilisateur connecté
   useEffect(() => {
     const loggedInUserId = loggedUserInfos.id;

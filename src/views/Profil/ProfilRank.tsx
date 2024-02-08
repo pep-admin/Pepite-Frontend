@@ -5,9 +5,38 @@ import PropTypes from 'prop-types';
 
 // Import des icônes
 import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
+import { useEffect, useState } from 'react';
+import { getUserRankRequest } from '@utils/request/grades/getUserRankRequest';
 
-const ProfilRank = ({ loggedUserInfos, chosenUser }) => {
+const ProfilRank = ({ criticsNumber }) => {
   const { id } = useParams();
+
+  const [progression, setProgression] = useState(0);
+  const [userRank, setUserRank] = useState("Chercheur d'Or");
+  const [currentGradePoints, setCurrentGradePoints] = useState(0);
+  const [nextGradePoints, setNextGradePoints] = useState(0);
+
+  const getUserRank = async () => {
+    const response = await getUserRankRequest(id);
+    console.log('la réponse', response);
+
+    setProgression(response.progression);
+    setUserRank(response.rank);
+    setCurrentGradePoints(response.currentGradePoints);
+    setNextGradePoints(response.nextGradePoints);
+  };
+
+  useEffect(() => {
+    getUserRank();
+  }, [criticsNumber]);
+
+  // Calcul du pourcentage de progression vers le prochain grade
+  const progressionPercentage =
+    nextGradePoints > currentGradePoints
+      ? ((progression - currentGradePoints) /
+          (nextGradePoints - currentGradePoints)) *
+        100
+      : 0;
 
   return (
     <Stack alignItems="center">
@@ -24,14 +53,12 @@ const ProfilRank = ({ loggedUserInfos, chosenUser }) => {
           lineHeight: 'normal',
         }}
       >
-        {loggedUserInfos.id === parseInt(id, 10)
-          ? `${loggedUserInfos.rank}`
-          : `${chosenUser?.rank}`}
+        {userRank}
       </Typography>
       <LinearProgress
         color="success"
         variant="determinate"
-        value={30}
+        value={progressionPercentage}
         sx={{
           width: '100%',
         }}
@@ -41,8 +68,7 @@ const ProfilRank = ({ loggedUserInfos, chosenUser }) => {
 };
 
 ProfilRank.propTypes = {
-  loggedUserInfos: PropTypes.object.isRequired,
-  chosenUser: PropTypes.object,
+  criticsNumber: PropTypes.number.isRequired,
 };
 
 export default ProfilRank;

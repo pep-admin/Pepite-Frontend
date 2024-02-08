@@ -49,7 +49,11 @@ const ProfilDetails = ({ criticsAndAdvices, loggedUserInfos, chosenUser }) => {
       flexdirection="column"
       margintop="6px"
     >
-      <ProfilRank loggedUserInfos={loggedUserInfos} chosenUser={chosenUser} />
+      <ProfilRank
+        loggedUserInfos={loggedUserInfos}
+        chosenUser={chosenUser}
+        criticsNumber={criticsNumber}
+      />
       <Stack flexGrow={1}>
         <List
           sx={{

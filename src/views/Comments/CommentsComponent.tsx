@@ -8,20 +8,37 @@ import PropTypes from 'prop-types';
 import CommentsInput from './CommentsInput';
 import CommentsContent from './CommentsContent';
 
-// Import des requêtes internes
-import { getAllCriticComments } from '@utils/request/comments/getComments';
-
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-const CommentsComponent = ({ page, criticId, comments, setComments }) => {
+// Import des requêtes internes
+import { getAllCriticComments } from '@utils/request/comments/getAllCriticComments';
+import { getAllAdviceComments } from '@utils/request/comments/getAllAdviceComments';
+
+const CommentsComponent = ({
+  page,
+  criticId,
+  adviceId,
+  comments,
+  setComments,
+}) => {
   const { displayType } = useData();
 
   // Infos de l'utilisateur connecté
   const user_infos = JSON.parse(localStorage.getItem('user_infos'));
 
   const getComments = async () => {
-    const response = await getAllCriticComments(displayType, criticId);
+    let response;
+
+    if (criticId) {
+      response = await getAllCriticComments(displayType, criticId);
+    } else if (adviceId) {
+      response = await getAllAdviceComments(displayType, adviceId);
+      console.log('les commentaires de critique', response.data);
+    } else {
+      return;
+    }
+
     setComments(response.data);
   };
 
@@ -45,6 +62,7 @@ const CommentsComponent = ({ page, criticId, comments, setComments }) => {
       <Stack height="67px">
         <CommentsInput
           criticId={criticId}
+          adviceId={adviceId}
           comments={comments}
           getComments={getComments}
           userInfos={user_infos}
@@ -70,7 +88,8 @@ const CommentsComponent = ({ page, criticId, comments, setComments }) => {
 
 CommentsComponent.propTypes = {
   page: PropTypes.string.isRequired,
-  criticId: PropTypes.number.isRequired,
+  criticId: PropTypes.number,
+  adviceId: PropTypes.number,
   comments: PropTypes.array.isRequired,
   setComments: PropTypes.func.isRequired,
 };

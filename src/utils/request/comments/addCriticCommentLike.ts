@@ -1,7 +1,7 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const addCommentLike = async (commentId, type) => {
+export const addCriticCommentLike = async (commentId, type) => {
   try {
     await axios.post(
       `${apiBaseUrl}/critics_comments/add_like/${commentId}`,

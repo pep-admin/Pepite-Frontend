@@ -3,9 +3,6 @@ import { Stack, Typography, TextField } from '@mui/material';
 import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-// Import des fonctions internes
-import { addComment } from '@utils/request/comments/addComment';
-
 // Import des icônes
 import { MessageIcon } from '@utils/components/styledComponent';
 import SendIcon from '@mui/icons-material/Send';
@@ -13,7 +10,17 @@ import SendIcon from '@mui/icons-material/Send';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-const CommentsInput = ({ criticId, comments, getComments, userInfos }) => {
+// Import des requêtes
+import { addCriticComment } from '@utils/request/comments/addCriticComment';
+import { addAdviceComment } from '@utils/request/comments/addAdviceComment';
+
+const CommentsInput = ({
+  criticId,
+  adviceId,
+  comments,
+  getComments,
+  userInfos,
+}) => {
   const { displayType } = useData();
 
   const [newComment, setNewComment] = useState('');
@@ -21,7 +28,15 @@ const CommentsInput = ({ criticId, comments, getComments, userInfos }) => {
 
   const addNewComment = async () => {
     if (newComment === '') return;
-    await addComment(criticId, displayType, newComment);
+
+    if (criticId) {
+      await addCriticComment(criticId, displayType, newComment);
+    } else if (adviceId) {
+      await addAdviceComment(adviceId, displayType, newComment);
+    } else {
+      return;
+    }
+
     setNewComment(''); // Réinitialise le champ de saisie
     inputRef.current?.blur(); // Retire le focus de l'input
     getComments();
@@ -91,7 +106,8 @@ const CommentsInput = ({ criticId, comments, getComments, userInfos }) => {
 };
 
 CommentsInput.propTypes = {
-  criticId: PropTypes.number.isRequired,
+  criticId: PropTypes.number,
+  adviceId: PropTypes.number,
   comments: PropTypes.array.isRequired,
   getComments: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,

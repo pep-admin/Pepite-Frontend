@@ -21,10 +21,12 @@ import { useData } from '@hooks/DataContext';
 
 // Import des requêtes internes
 import { deleteCritic } from '../request/critics/deleteCritic';
-import { deleteComment } from '../request/comments/deleteComment';
-import { getAllCriticComments } from '../request/comments/getComments';
+import { deleteCriticComment } from '../request/comments/deleteCriticComment';
+import { getAllCriticComments } from '../request/comments/getAllCriticComments';
 import { getCriticsOfUser } from '../request/critics/getCritics';
 import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
+import { deleteAdviceComment } from '@utils/request/comments/deleteAdviceComment';
+import { getAllAdviceComments } from '@utils/request/comments/getAllAdviceComments';
 
 const ModifyOrDelete = ({
   page,
@@ -43,7 +45,7 @@ const ModifyOrDelete = ({
     setDisplayTools(event.currentTarget);
   };
 
-  const handleCriticTools = async tool => {
+  const handleTools = async tool => {
     const userId = localStorage.getItem('user_id');
 
     // TO DO : faire apparaitre une modale
@@ -66,11 +68,22 @@ const ModifyOrDelete = ({
 
       setData(newCriticsData);
     } else if (tool === 'delete' && parent === 'comment') {
-      await deleteComment(infos.id, displayType);
-      const newCommentsData = await getAllCriticComments(
-        displayType,
-        infos.critic_id,
-      );
+      let newCommentsData;
+
+      if ('critic_id' in infos) {
+        await deleteCriticComment(infos.id, displayType);
+        newCommentsData = await getAllCriticComments(
+          displayType,
+          infos.critic_id,
+        );
+      } else if ('advice_id' in infos) {
+        await deleteAdviceComment(infos.id, displayType);
+        newCommentsData = await getAllAdviceComments(
+          displayType,
+          infos.advice_id,
+        );
+      }
+
       setData(newCommentsData.data);
     }
   };
@@ -124,7 +137,7 @@ const ModifyOrDelete = ({
           <Divider />
           <MenuItem
             onClick={() => {
-              handleCriticTools('delete');
+              handleTools('delete');
               setDisplayTools(null);
             }}
             sx={{ padding: '0', minHeight: 'auto' }}

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 // Import des composants internes
 import UserAvatar from '@utils/components/UserAvatar';
+import ModifyOrDelete from '@utils/components/ModifyOrDelete';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -13,16 +14,20 @@ import { convertDate } from '@utils/functions/convertDate';
 
 // Import des icônes
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
-import ModifyOrDelete from '@utils/components/ModifyOrDelete';
 import EditIcon from '@mui/icons-material/Edit';
 
 // Import des requêtes internes
-import { addCommentLike } from '@utils/request/comments/addCommentlike';
-import { getCommentsLikesNumber } from '@utils/request/comments/getCommentsLikesNumber';
-import { checkLikeStatusComment } from '@utils/request/comments/checkLikeStatusComment';
-import { removeCommentLike } from '@utils/request/comments/removeCommentLike';
-import { modifyComment } from '@utils/request/comments/modifyComment';
+import { addCriticCommentLike } from '@utils/request/comments/addCriticCommentlike';
+import { getCommentsCriticLikesNumber } from '@utils/request/comments/getCommentsCriticLikesNumber';
+import { checkCriticCommentLikeStatus } from '@utils/request/comments/checkCriticCommentLikeStatus';
+import { removeCriticCommentLike } from '@utils/request/comments/removeCriticCommentLike';
+import { modifyCriticComment } from '@utils/request/comments/modifyCriticComment';
 import { getUser } from '@utils/request/users/getUser';
+import { addAdviceCommentLike } from '@utils/request/comments/addAdviceCommentLike';
+import { getCommentsAdviceLikesNumber } from '@utils/request/comments/getCommentsAdviceLikesNumber';
+import { checkAdviceCommentLikeStatus } from '@utils/request/comments/checkAdviceCommentLikeStatus';
+import { removeAdviceCommentLike } from '@utils/request/comments/removeAdviceCommentLike';
+import { modifyAdviceComment } from '@utils/request/comments/modifyAdviceComment';
 
 interface Picture {
   id: number;
@@ -66,13 +71,31 @@ const CommentsContent = ({
 
   // Compte le nombre de likes par critique
   const fetchLikesNumber = async () => {
-    const response = await getCommentsLikesNumber(comment.id, displayType);
+    let response;
+
+    if ('critic_id' in comment) {
+      response = await getCommentsCriticLikesNumber(comment.id, displayType);
+    } else if ('advice_id' in comment) {
+      response = await getCommentsAdviceLikesNumber(comment.id, displayType);
+    } else {
+      return;
+    }
+
     setLikesNumber(response);
   };
 
   // Vérifie si l'utilisateur a déjà liké des commentaires
   const checkLikesStatus = async () => {
-    const response = await checkLikeStatusComment(comment.id, displayType);
+    let response;
+
+    if ('critic_id' in comment) {
+      response = await checkCriticCommentLikeStatus(comment.id, displayType);
+    } else if ('advice_id' in comment) {
+      response = await checkAdviceCommentLikeStatus(comment.id, displayType);
+    } else {
+      return;
+    }
+
     setHasLiked(response);
   };
 
@@ -81,9 +104,21 @@ const CommentsContent = ({
     setHasLiked(!hasLiked);
     try {
       if (hasLiked) {
-        removeCommentLike(commentId, displayType);
+        if ('critic_id' in comment) {
+          await removeCriticCommentLike(commentId, displayType);
+        } else if ('advice_id' in comment) {
+          await removeAdviceCommentLike(commentId, displayType);
+        } else {
+          return;
+        }
       } else {
-        addCommentLike(commentId, displayType);
+        if ('critic_id' in comment) {
+          await addCriticCommentLike(commentId, displayType);
+        } else if ('advice_id' in comment) {
+          await addAdviceCommentLike(commentId, displayType);
+        } else {
+          return;
+        }
       }
       fetchLikesNumber();
     } catch (error) {
@@ -94,7 +129,13 @@ const CommentsContent = ({
 
   const updateComment = async commentId => {
     try {
-      await modifyComment(commentId, displayType, commentUpdated);
+      if ('critic_id' in comment) {
+        await modifyCriticComment(commentId, displayType, commentUpdated);
+      } else if ('advice_id' in comment) {
+        await modifyAdviceComment(commentId, displayType, commentUpdated);
+      } else {
+        return;
+      }
       getComments();
       setIsModify(false);
     } catch (error) {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import apiBaseUrl from '../config';
 
-export const checkLikeStatusComment = async (commentId, type) => {
+export const checkCriticCommentLikeStatus = async (commentId, type) => {
   try {
     const response = await axios.get(
       `${apiBaseUrl}/critics_comments/${commentId}/check_like`,

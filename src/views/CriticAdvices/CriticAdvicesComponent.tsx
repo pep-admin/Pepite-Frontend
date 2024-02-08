@@ -2,6 +2,7 @@
 import { Stack, Box, Typography, Divider, Card, Button } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -26,7 +27,6 @@ import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
-import { useParams } from 'react-router-dom';
 import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
 import { getUser } from '@utils/request/users/getUser';
 import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
@@ -35,6 +35,8 @@ import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCritic
 
 // Import des fonctions utiles
 import { convertDate } from '@utils/functions/convertDate';
+
+// Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShow } from '@hooks/useCardsToShow';
 
 const CriticAdvicesComponent = ({
@@ -457,6 +459,7 @@ const CriticAdvicesComponent = ({
         <CommentsComponent
           page={page}
           criticId={infos.critic_id}
+          adviceId={infos.advice_id}
           comments={comments}
           setComments={setComments}
         />

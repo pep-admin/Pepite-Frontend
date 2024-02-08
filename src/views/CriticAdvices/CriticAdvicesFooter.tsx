@@ -25,15 +25,16 @@ import { useData } from '@hooks/DataContext';
 // Import des composants internes
 import QuickMenu from '@utils/components/QuickMenu';
 import LikesFooter from './LikesFooter';
+import GoldFooter from './GoldFooter';
 
 // Import des requêtes internes
-import { getCommentsNumber } from '@utils/request/comments/getCommentsNumber';
+import { getCriticCommentsNumber } from '@utils/request/comments/getCriticCommentsNumber';
 import { getUserMovieStatusRequest } from '@utils/request/list/getUserMovieStatusRequest';
 import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
 import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
-import GoldFooter from './GoldFooter';
+import { getAdviceCommentsNumber } from '@utils/request/comments/getAdviceCommentsNumber';
 
 const CriticAdvicesFooter = ({
   data,
@@ -75,7 +76,17 @@ const CriticAdvicesFooter = ({
 
   // Compte le nombre de commentaires par critique
   const fetchCommentsNumber = async () => {
-    const response = await getCommentsNumber(infos.critic_id, displayType);
+    let response;
+
+    if ('critic_id' in infos) {
+      response = await getCriticCommentsNumber(infos.critic_id, displayType);
+    } else if ('advice_id' in infos) {
+      response = await getAdviceCommentsNumber(infos.advice_id, displayType);
+      console.log('la réponse', response);
+    } else {
+      return;
+    }
+
     setCommentsNumber(response);
   };
 

@@ -34,7 +34,7 @@ const SwipeComponent = ({
   moviesStatusUpdated,
   setMoviesStatusUpdated,
 }) => {
-  const [loggedUserInfos, setLoggedUserInfos] = useState(
+  const [loggedUserInfos] = useState(
     JSON.parse(localStorage.getItem('user_infos')),
   );
 
@@ -156,6 +156,7 @@ const SwipeComponent = ({
     if (currentMovieIndex === 0) {
       prevDisplayTypeRef.current = displayType;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayType, currentMovieIndex]);
 
   useEffect(() => {
@@ -237,13 +238,14 @@ const SwipeComponent = ({
         setCards(initialCards);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentMovieIndex, swipeDirection]);
 
   return (
     <>
       <Header
         loggedUserInfos={loggedUserInfos}
-        setLoggedUserInfos={setLoggedUserInfos}
+        // setLoggedUserInfos={setLoggedUserInfos}
       />
       <Container
         maxWidth="xl"

@@ -3,7 +3,7 @@ name: Frontend CI
 on:
   push:
     branches:
-      - deployed_on_aws
+      - never
 
 env:
   NODE_VERSION: 18.18.0

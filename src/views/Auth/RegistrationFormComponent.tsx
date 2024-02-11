@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 // Import des composants internes
 import AuthHeader from './AuthHeader';
 import '../../styles/autofill.css';
+import { useNavigate } from 'react-router-dom';
 
 function RegistrationFormComponent({ formik, setIsBtnClicked }) {
   // Status de l'autocomplétion de chrome sur les inputs
@@ -21,6 +22,8 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
     firstName: false,
     email: false,
   });
+
+  const navigate = useNavigate();
 
   // Détecte si une animation d'autocomplétion est lancée / arrêtée
   function detectAutoFill(inputName) {
@@ -197,8 +200,10 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
             <Button
               variant="contained"
               color="primary"
-              href="http://127.0.0.1:5173/login"
-              onClick={() => setIsBtnClicked(true)}
+              onClick={() => {
+                setIsBtnClicked(true);
+                navigate('/login');
+              }}
             >
               {'Se connecter'}
             </Button>

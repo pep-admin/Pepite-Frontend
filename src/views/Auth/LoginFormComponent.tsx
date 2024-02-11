@@ -11,8 +11,12 @@ import PropTypes from 'prop-types';
 
 // Import des composants internes
 import AuthHeader from './AuthHeader';
+import { EnvInfo } from '@components/EnvInfo';
+import { useNavigate } from 'react-router-dom';
 
 const LoginFormComponent = ({ formik }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -125,11 +129,12 @@ const LoginFormComponent = ({ formik }) => {
             variant="contained"
             color="secondary"
             sx={{ color: '#ffffff' }}
-            href="http://127.0.0.1:5173/register"
+            onClick={() => navigate('/register')}
           >
             {"S'inscrire"}
           </Button>
         </Box>
+        <EnvInfo />
       </Container>
     </div>
   );

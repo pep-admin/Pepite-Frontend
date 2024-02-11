@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '127.0.0.1',
-    port: 5173
+    port: 5173,
   },
   resolve: {
     alias: {
@@ -18,5 +18,8 @@ export default defineConfig({
       '@hooks': '/src/hooks',
       '@api': '/src/api',
     },
+  },
+  define: {
+    'import.meta.env.VITE_BUILD_DATE': JSON.stringify(new Date().toISOString()),
   },
 });

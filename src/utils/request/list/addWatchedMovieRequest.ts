@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Insertion d'un film dans la liste des déjà vus
 export const addWatchedMovieRequest = async (movieId: number, type: string) => {

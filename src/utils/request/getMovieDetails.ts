@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { parseDatabaseData } from './parseDetails';
-import apiBaseUrl from './config';
+import { apiBaseUrl } from './config';
 
 const isDataFromDatabase = data => {
   return Object.prototype.hasOwnProperty.call(data, 'are_details_completed');

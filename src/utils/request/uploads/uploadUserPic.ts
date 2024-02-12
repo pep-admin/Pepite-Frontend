@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Ajout d'une nouvelle critique
 export const uploadUserPic = async (newFile, picType) => {

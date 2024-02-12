@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import apiBaseUrl from '@utils/request/config';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import FriendRequestBtn from '@utils/components/FriendRequestBtn';
 
 const SuggestionsCard = ({
@@ -51,7 +51,7 @@ const SuggestionsCard = ({
             image={
               user.file_path
                 ? `${apiBaseUrl}/Uploads/${user.file_path}`
-                : `http://127.0.0.1:5173/images/default_profil_pic.png`
+                : `${assetsBaseUrl}/images/default_profil_pic.png`
             }
             alt={`Photo de profil de ${user.first_name} ${user.last_name}`}
             sx={{

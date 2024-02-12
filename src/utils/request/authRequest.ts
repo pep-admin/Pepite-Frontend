@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from './config';
+import { apiBaseUrl } from './config';
 
 // Déconnexion de l'utilisateur
 export const handleLogout = async () => {

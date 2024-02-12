@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Comptage des diamants d'un conseil
 export const getDiamondsAdviceNumber = async (adviceId, type) => {

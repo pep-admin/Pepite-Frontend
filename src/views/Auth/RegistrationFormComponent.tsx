@@ -9,12 +9,16 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 // Import des composants internes
 import AuthHeader from './AuthHeader';
+
 import '../../styles/autofill.css';
 
 function RegistrationFormComponent({ formik, setIsBtnClicked }) {
+  const navigate = useNavigate();
+
   // Status de l'autocomplétion de chrome sur les inputs
   const [isAutoFill, setIsAutoFill] = useState({
     lastName: false,
@@ -197,8 +201,10 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
             <Button
               variant="contained"
               color="primary"
-              href="http://127.0.0.1:5173/login"
-              onClick={() => setIsBtnClicked(true)}
+              onClick={() => {
+                setIsBtnClicked(true);
+                navigate('/login');
+              }}
             >
               {'Se connecter'}
             </Button>

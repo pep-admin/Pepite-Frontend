@@ -50,8 +50,8 @@ const ProfilDetails = ({ criticsAndAdvices, loggedUserInfos, chosenUser }) => {
       margintop="6px"
     >
       <ProfilRank
-        loggedUserInfos={loggedUserInfos}
-        chosenUser={chosenUser}
+        // loggedUserInfos={loggedUserInfos}
+        // chosenUser={chosenUser}
         criticsNumber={criticsNumber}
       />
       <Stack flexGrow={1}>

@@ -8,7 +8,7 @@ import {
   Divider,
 } from '@mui/material';
 import { formatRating } from '@utils/functions/formatRating';
-import apiBaseUrl from '@utils/request/config';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import PropTypes from 'prop-types';
 import ColoredRating from './ColoredRating';
 
@@ -29,7 +29,7 @@ const AcquaintancesMenu = ({
 
   // Url de la photo de profil par défaut
   const getDefaultProfilePicUrl = () =>
-    'http://127.0.0.1:5173/images/default_profil_pic.png';
+    `${assetsBaseUrl}/images/default_profil_pic.png`;
 
   // Fonction qui récupère la photo de profil active de l'utilisateur
   const getProfilePicUrl = user => {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération des informations de progression et de rang d'un utilisateur
 export const getUserRankRequest = async userId => {

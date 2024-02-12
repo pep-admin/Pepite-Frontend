@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Suppression d'un like de commentaire de conseil
 export const removeAdviceCommentLike = async (

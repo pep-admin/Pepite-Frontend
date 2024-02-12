@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Suppression d'un film de la liste des déjà vus
 export const removeWatchedMovieRequest = async (

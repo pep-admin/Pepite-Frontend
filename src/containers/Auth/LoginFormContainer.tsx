@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom';
 
 // Import des composants internes
 import LoginFormComponent from '@views/Auth/LoginFormComponent';
-import apiBaseUrl from '@utils/request/config';
+
+// Import des variables d'environnement
+import { apiBaseUrl } from '@utils/request/config';
 
 // Schéma de vérification Yup
 const validationSchema = Yup.object({

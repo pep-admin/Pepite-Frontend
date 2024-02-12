@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération des pépites des amis, et des suivis
 export const getGoldNuggetsFromAcquaintances = async (

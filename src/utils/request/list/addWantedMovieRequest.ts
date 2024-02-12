@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Insertion d'un film dans la liste des films souhaités
 export const addWantedMovieRequest = async (movieId: number, type: string) => {

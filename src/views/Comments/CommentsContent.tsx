@@ -17,7 +17,7 @@ import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import EditIcon from '@mui/icons-material/Edit';
 
 // Import des requêtes internes
-import { addCriticCommentLike } from '@utils/request/comments/addCriticCommentlike';
+import { addCriticCommentLike } from '@utils/request/comments/addCriticCommentLike';
 import { getCommentsCriticLikesNumber } from '@utils/request/comments/getCommentsCriticLikesNumber';
 import { checkCriticCommentLikeStatus } from '@utils/request/comments/checkCriticCommentLikeStatus';
 import { removeCriticCommentLike } from '@utils/request/comments/removeCriticCommentLike';

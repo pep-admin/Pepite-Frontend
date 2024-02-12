@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import RegisterFormComponent from '@views/Auth/RegistrationFormComponent';
 import { useNavigate } from 'react-router-dom';
-import apiBaseUrl from '@utils/request/config';
+
+// Import des variables d'environnement
+import { apiBaseUrl } from '@utils/request/config';
 
 // Schéma de vérification Yup
 const validationSchema = Yup.object({

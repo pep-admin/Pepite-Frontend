@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Suppression d'un diamant de conseil
 export const removeDiamondAdvice = async (advice_id: number, type: string) => {

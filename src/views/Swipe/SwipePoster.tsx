@@ -32,6 +32,9 @@ import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovi
 import { addUnwantedMovieRequest } from '@utils/request/list/addUnwantedMovieRequest';
 import { recoverUnwantedMovieRequest } from '@utils/request/list/recoverUnwantedMovieRequest';
 
+// Import des variables d'environnement
+import { assetsBaseUrl } from '@utils/request/config';
+
 const SwipePoster = ({
   movies,
   loading,
@@ -197,7 +200,7 @@ const SwipePoster = ({
                   image={
                     movies[index].poster_path !== null
                       ? `https://image.tmdb.org/t/p/w500/${movies[index].poster_path}`
-                      : 'http://127.0.0.1:5173/images/no_poster.jpg'
+                      : `${assetsBaseUrl}/images/no_poster.jpg`
                   }
                   sx={{
                     height: '100%',

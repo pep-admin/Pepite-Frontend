@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération de toutes les commentaires d'une critique
 export const getAllCriticComments = async (type, critic_id) => {

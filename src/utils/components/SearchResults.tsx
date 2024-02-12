@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 // Import des variables d'environnement
-import apiBaseUrl from '../request/config';
+import { apiBaseUrl, assetsBaseUrl } from '../request/config';
 
 // Import des icônes
 import PersonIcon from '@mui/icons-material/Person';
@@ -47,10 +47,10 @@ const SearchResults = ({ result, handleChoice, setDisplayResults }) => {
                 ? `https://image.tmdb.org/t/p/w500/${result.poster_path}`
                 : // Si le film / série n'a pas de poster
                 result.type !== 'user' && !result.poster_path
-                ? 'http://127.0.0.1:5173/images/no_poster.jpg'
+                ? `${assetsBaseUrl}/images/no_poster.jpg`
                 : // Si l'utilisateur n'a pas de photo de profil
                 result.type === 'user' && !result.file_path
-                ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+                ? `${assetsBaseUrl}/images/default_profil_pic.png`
                 : // Si l'utilisateur a une photo de profil
                   `${apiBaseUrl}/Uploads/${result.file_path}`
             }

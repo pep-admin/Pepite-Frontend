@@ -1,6 +1,6 @@
 import { findIsoCountry } from '@utils/functions/findInfos';
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération de 20 films pour le swipe
 export const fetchTwentyMovies = async (

@@ -33,7 +33,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useData } from '@hooks/DataContext';
 
 // Import des variables d'environnements
-import apiBaseUrl from '@utils/request/config';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 
 // Import des requêtes
 import { getUser } from '@utils/request/users/getUser';
@@ -240,7 +240,7 @@ const ProfilComponent = () => {
                   chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
                 }`
               : // Si l'utilisateur n'a pas choisi de photo de couverture
-                'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
+                `${assetsBaseUrl}/images/default_cover_pic_pietro_jeng.jpg`
           }
           sx={{
             height: '100%',

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { parseDatabaseData } from '../parseDetails';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération des conseils reçus d'un utilisateur
 export const getAdvicesReceived = async (userId, type, page) => {

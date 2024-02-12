@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Assumant que vous utilisez Axios pour les requêtes HTTP
-import apiBaseUrl from '@utils/request/config';
+import { apiBaseUrl } from '@utils/request/config';
 
 const useCheckAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

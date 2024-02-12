@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Annulation d'un film souhaité
 export const removeWantedMovieRequest = async (

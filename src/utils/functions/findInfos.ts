@@ -1,4 +1,5 @@
 import { countriesList } from '@utils/data/countries';
+import { assetsBaseUrl } from '@utils/request/config';
 
 // Recherche du pays choisi par l'utilisateur
 export function findIsoCountry(country) {
@@ -77,77 +78,77 @@ export function findCertificationFr(type, movieDetail) {
     // Votre logique de traitement, par exemple:
     switch (certification) {
       case '':
-        imgUrl = 'http://127.0.0.1:5173/images/no_certification.svg';
+        imgUrl = `${assetsBaseUrl}/images/no_certification.svg`;
         alt = 'Non défini';
         break;
 
       case 'TP':
-        imgUrl = 'http://127.0.0.1:5173/images/TP.svg';
+        imgUrl = `${assetsBaseUrl}/images/TP.svg`;
         alt = 'Tous publics';
         break;
 
       case 'TV-Y7':
-        imgUrl = 'http://127.0.0.1:5173/images/TP.svg';
+        imgUrl = `${assetsBaseUrl}/images/TP.svg`;
         alt = 'Tous publics';
         break;
 
       case '10':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_10.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_10.svg`;
         alt = 'Déconseillé aux moins de 10 ans';
         break;
 
       case 'TV-PG':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_10.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_10.svg`;
         alt = 'Déconseillé aux moins de 10 ans';
         break;
 
       case '12':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_12.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_12.svg`;
         alt = 'Déconseillé aux moins de 12 ans';
         break;
 
       case '16':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_16.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_16.svg`;
         alt = 'Déconseillé aux moins de 16 ans';
         break;
 
       case '18':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_18.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_18.svg`;
         alt = 'Déconseillé aux moins de 18 ans';
         break;
 
       case 'G':
-        imgUrl = 'http://127.0.0.1:5173/images/TP.svg';
+        imgUrl = `${assetsBaseUrl}/images/TP.svg`;
         alt = 'Tous publics';
         break;
 
       case 'PG':
-        imgUrl = 'http://127.0.0.1:5173/images/TP.svg';
+        imgUrl = `${assetsBaseUrl}/images/TP.svg`;
         alt = 'Tous publics';
         break;
 
       case 'PG-13':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_12.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_12.svg`;
         alt = 'Déconseillé aux moins de 12 ans';
         break;
 
       case 'TV-14':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_12.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_12.svg`;
         alt = 'Déconseillé aux moins de 12 ans';
         break;
 
       case 'R':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_16.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_16.svg`;
         alt = 'Déconseillé aux moins de 16 ans';
         break;
 
       case 'TV-MA':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_16.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_16.svg`;
         alt = 'Déconseillé aux moins de 16 ans';
         break;
 
       case 'NC-17':
-        imgUrl = 'http://127.0.0.1:5173/images/moins_18.svg';
+        imgUrl = `${assetsBaseUrl}/images/moins_18.svg`;
         alt = 'Déconseillé aux moins de 18 ans';
         break;
 
@@ -156,8 +157,7 @@ export function findCertificationFr(type, movieDetail) {
     }
     return { imgUrl, alt };
   } else {
-    console.log('Aucune certification trouvée');
-    const imgUrl = 'http://127.0.0.1:5173/images/no_certification.svg';
+    const imgUrl = `${assetsBaseUrl}/images/no_certification.svg`;
     const alt = 'Non défini';
 
     return { imgUrl, alt };

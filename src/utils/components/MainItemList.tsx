@@ -8,7 +8,7 @@ import CustomAlert from '@utils/components/CustomAlert';
 import IsNew from '@utils/components/IsNew';
 
 // Import des variables d'environnement
-import apiBaseUrl from '@utils/request/config';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -225,7 +225,7 @@ const MainItemList = ({
                 data.file_path
                 ? `${apiBaseUrl}/uploads/${data.file_path}`
                 : // Si l'utilisateur n'a pas défini de photo de profil
-                  'http://127.0.0.1:5173/images/default_profil_pic.png'
+                  `${assetsBaseUrl}/images/default_profil_pic.png`
             }
             sx={{
               width: 50,

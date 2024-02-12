@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Suppression d'une personne de la liste d'amis
 export const cancelFriendShip = async receiverId => {

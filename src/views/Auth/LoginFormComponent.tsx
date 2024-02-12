@@ -8,11 +8,14 @@ import {
   Grid,
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 // Import des composants internes
 import AuthHeader from './AuthHeader';
 
 const LoginFormComponent = ({ formik }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -125,7 +128,7 @@ const LoginFormComponent = ({ formik }) => {
             variant="contained"
             color="secondary"
             sx={{ color: '#ffffff' }}
-            href="http://127.0.0.1:5173/register"
+            onClick={() => navigate('/register')}
           >
             {"S'inscrire"}
           </Button>

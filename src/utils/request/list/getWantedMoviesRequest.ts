@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { parseDatabaseData } from '../parseDetails';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération de toutes films / séries souhaitées d'un utilisateur
 export const getWantedMoviesRequest = async (userId, type) => {

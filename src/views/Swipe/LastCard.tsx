@@ -16,6 +16,9 @@ import { useSpring, animated as a } from 'react-spring';
 import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
 import SwipeRightIcon from '@mui/icons-material/SwipeRight';
 
+// Import des variables d'environnement
+import { assetsBaseUrl } from '@utils/request/config';
+
 interface Movie {
   adult: boolean;
   backdrop_path: string;
@@ -187,8 +190,8 @@ const LastCard = forwardRef<LastCardHandle, LastCardProps>(
                   }
                   image={
                     type === 'no-movies-anymore'
-                      ? `http://127.0.0.1:5173/images/no_more_movies.jpg`
-                      : 'http://127.0.0.1:5173/images/no_movies.jpg'
+                      ? `${assetsBaseUrl}/images/no_more_movies.jpg`
+                      : `${assetsBaseUrl}/images/no_movies.jpg`
                   }
                   sx={{
                     height: '100%',

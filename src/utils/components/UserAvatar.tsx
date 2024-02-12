@@ -1,5 +1,5 @@
 import { Avatar } from '@mui/material';
-import apiBaseUrl from '@utils/request/config';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import PropTypes from 'prop-types';
 
 const UserAvatar = ({
@@ -21,7 +21,7 @@ const UserAvatar = ({
         ?.filePath;
       return `${apiBaseUrl}/uploads/${findActivePic}`;
     } else {
-      return 'http://127.0.0.1:5173/images/default_profil_pic.png';
+      return `${assetsBaseUrl}/images/default_profil_pic.png`;
     }
   };
 

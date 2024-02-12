@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Suppression d'une critique
 export const deleteCriticComment = async (comment_id: number, type: string) => {

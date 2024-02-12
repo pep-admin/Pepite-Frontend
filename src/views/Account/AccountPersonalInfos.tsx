@@ -20,7 +20,7 @@ import { convertDate } from '@utils/functions/convertDate';
 import { modifyUserName } from '@utils/request/users/modifyUsername';
 
 // Import des variables d'environnements
-import apiBaseUrl from '@utils/request/config';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 // import UserAvatar from '@utils/components/UserAvatar';
 
 const AccountPersonalInfos = ({ setShowPicModal, loggedUserInfos }) => {
@@ -88,7 +88,7 @@ const AccountPersonalInfos = ({ setShowPicModal, loggedUserInfos }) => {
           alt={`Photo de profil de ${loggedUserInfos.first_name}`}
           src={
             !loggedUserInfos.profilPics.length
-              ? 'http://127.0.0.1:5173/images/default_profil_pic.png'
+              ? `${assetsBaseUrl}/images/default_profil_pic.png`
               : `${apiBaseUrl}/uploads/${
                   loggedUserInfos.profilPics.find(pic => pic.isActive === 1)
                     .filePath

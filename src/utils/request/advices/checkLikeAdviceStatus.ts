@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 export const checkLikeAdviceStatus = async (adviceId, type) => {
   try {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 export const checkDiamondAdviceStatus = async (adviceId, type) => {
   try {

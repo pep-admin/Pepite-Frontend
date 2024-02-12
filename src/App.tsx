@@ -9,8 +9,8 @@ import { DataProvider } from '@hooks/DataContext';
 
 // Import des composants
 import PrivateRoute from './PrivateRoute';
-import Film from '@views/Film';
-import About from '@views/About';
+// import Film from '@views/Film';
+import About from '@views/About/About';
 import RegisterFormContainer from './containers/Auth/RegisterFormContainer';
 import LoginFormContainer from './containers/Auth/LoginFormContainer';
 import SwipeContainer from './containers/Swipe/SwipeContainer';
@@ -99,7 +99,7 @@ export function App() {
                   </PrivateRoute>
                 }
               />
-              <Route path="/film/:id" element={<Film />} />
+              {/* <Route path="/film/:id" element={<Film />} /> */}
             </Routes>
           </BrowserRouter>
         </DataProvider>

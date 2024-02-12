@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération de toutes les commentaires d'un conseil
 export const getAllAdviceComments = async (type, advice_id) => {

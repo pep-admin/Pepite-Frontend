@@ -18,10 +18,10 @@ import PropTypes from 'prop-types';
 
 // Import des composants internes
 import UserAvatar from '@utils/components/UserAvatar';
+import SearchBar from '@utils/components/SearchBar';
 
 // Import des variables d'environnements
-import apiBaseUrl from '@utils/request/config';
-import SearchBar from '@utils/components/SearchBar';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
@@ -203,7 +203,7 @@ const AccountUpdatePic = ({
               <CardMedia
                 image={
                   !loggedUserInfos.coverPics.length
-                    ? 'http://127.0.0.1:5173/images/default_cover_pic_pietro_jeng.jpg'
+                    ? `${assetsBaseUrl}/images/default_cover_pic_pietro_jeng.jpg`
                     : `${apiBaseUrl}/uploads/${
                         loggedUserInfos.coverPics.find(
                           pic => pic.isActive === 1,

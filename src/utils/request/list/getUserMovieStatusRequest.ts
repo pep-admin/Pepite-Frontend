@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Vérifie si l'utilisateur souhaite voir le film, l'a déjà vu, ou l'a déjà noté
 export const getUserMovieStatusRequest = async (movieId, type) => {

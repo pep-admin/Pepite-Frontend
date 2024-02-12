@@ -1,5 +1,5 @@
 import axios from 'axios';
-import apiBaseUrl from '../config';
+import { apiBaseUrl } from '../config';
 
 // Récupération de toutes les critiques d'un utilisateur
 export const getVideo = async (type, movieId) => {

@@ -3,7 +3,7 @@ import { formatDateTime } from '@utils/dates/formatDate';
 
 import { getBuildDate } from '@utils/dates/getBuildDate';
 
-export function EnvInfo() {
+export function FrontEndEnvInfo() {
   const mode = import.meta.env.MODE;
   const isDevelopment = mode === 'development';
 

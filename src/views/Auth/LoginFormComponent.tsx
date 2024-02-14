@@ -11,8 +11,8 @@ import PropTypes from 'prop-types';
 
 // Import des composants internes
 import AuthHeader from './AuthHeader';
-import { EnvInfo } from '@components/EnvInfo';
 import { useNavigate } from 'react-router-dom';
+import { AboutDialog } from '@components/Dialogs';
 
 const LoginFormComponent = ({ formik }) => {
   const navigate = useNavigate();
@@ -134,7 +134,7 @@ const LoginFormComponent = ({ formik }) => {
             {"S'inscrire"}
           </Button>
         </Box>
-        <EnvInfo />
+        <AboutDialog />
       </Container>
     </div>
   );

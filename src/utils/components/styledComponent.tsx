@@ -143,17 +143,20 @@ export const FollowedIcon = createSvgIcon(
   'FollowedIcon',
 );
 
-const createCustomRating = color =>
+const createCustomRating = (color, emptyColor )=>
   styled(Rating)({
     '.MuiRating-iconFilled': {
       color: color,
     },
+    '.MuiRating-iconEmpty': {
+      color: emptyColor, 
+    },
   });
 
-export const DarkOrangeRating = createCustomRating('#ff7b00');
-export const OrangeRating = createCustomRating('#F29E50');
-export const YellowRating = createCustomRating('#FFDA1B');
-export const TurquoiseRating = createCustomRating('#24A5A5');
+export const DarkOrangeRating = createCustomRating('#ff7b00', '#E1E1E1');
+export const OrangeRating = createCustomRating('#F29E50', '#E1E1E1');
+export const YellowRating = createCustomRating('#FFDA1B', '#E1E1E1');
+export const TurquoiseRating = createCustomRating('#24A5A5', '#E1E1E1');
 
 // SVG étoile de brillance du logo pépite
 export const ShineIcon = createSvgIcon(

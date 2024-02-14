@@ -118,18 +118,18 @@ const Home = () => {
         maxWidth="xl"
         sx={{
           padding: '6px',
-          backgroundColor: '#F4F4F4',
+          backgroundColor: '#101010',
           minHeight: 'calc(100vh - 60px)',
         }}
       >
         <Stack direction="column" spacing={1}>
-          <SearchBar
+          {/* <SearchBar
             Item={Item}
             page={'contacts'}
             loggedUserInfos={loggedUserInfos}
             chosenUser={null}
             handlePoster={null}
-          />
+          /> */}
           <ContactsSuggestions
             page={'home'}
             friendsList={null}

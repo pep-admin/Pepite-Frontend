@@ -1,15 +1,20 @@
-// Libs externes
+// Import des libs externes
 import { useState, useEffect, useCallback } from 'react';
 
-// Imports internes
-import SwipeComponent from '@views/Swipe/SwipeComponent';
-import { fetchTwentyMovies } from '@utils/request/swipe/getMoviesSwipe';
+// Import des composants internes
+import SwipeComponent2 from '@views/Swipe/SwipeComponent2';
+
+// Import du contexte
 import { useData } from '@hooks/DataContext';
 
+// Import des fonctions utilitaires
 import {
   findCertificationFr,
   findIsoCountry,
 } from '@utils/functions/findInfos';
+
+// Import des requêtes
+import { fetchTwentyMovies } from '@utils/request/swipe/getMoviesSwipe';
 import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 import { getMovieDetails } from '@utils/request/getMovieDetails';
 
@@ -21,7 +26,7 @@ const SwipeContainer = () => {
   const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
-  const [swipeDirection, setSwipeDirection] = useState<string | null>(null); // Gauche ou droite
+  const [swipeAction, setSwipeAction] = useState({direction: null, from: null}); // Gauche ou droite
   const [countryChosen, setCountryChosen] = useState('États-Unis');
   const [isoCountry, setIsoCountry] = useState('US');
   const [genreChosen, setGenreChosen] = useState({ name: null, id: null });
@@ -87,7 +92,6 @@ const SwipeContainer = () => {
   const fetchMovieDetails = async movieId => {
     try {
       const details = await getMovieDetails(displayType, movieId);
-      console.log(details);
 
       return details;
     } catch (err) {
@@ -144,12 +148,13 @@ const SwipeContainer = () => {
     loadMoviesDetails();
   }, [movies, currentMovieIndex]);
 
+  // Si l'utilisateur change de film à série, ou filtre le swipe : RESET
   useEffect(() => {
     setLoading({ movies: true, details: true });
     setMovies([]); // Réinitialisation des données liées aux films/séries
     setMoviePage(1); // Réinitialisation à la page à 1
     setCurrentMovieIndex(0); // Réinitialisation l'index courant à 0
-    setSwipeDirection(null);
+    setSwipeAction({direction: null, from: null});
     getMovies(1, countryChosen, genreChosen.id); // Recharger les films/séries
   }, [displayType, countryChosen, genreChosen.id]);
 
@@ -157,7 +162,7 @@ const SwipeContainer = () => {
   useEffect(() => {
     const thresholdReload = 3;
     if (
-      swipeDirection === 'right' &&
+      swipeAction.direction === 'right' &&
       movies.length !== 0 &&
       movies.length - currentMovieIndex <= thresholdReload &&
       hasMoreMovies
@@ -167,7 +172,7 @@ const SwipeContainer = () => {
       setMoviePage(newPage);
       getMovies(newPage, countryChosen, genreChosen.id);
     }
-  }, [swipeDirection, movies.length, currentMovieIndex]);
+  }, [swipeAction.direction, movies.length, currentMovieIndex]);
 
   useEffect(() => {
     if (Object.keys(movieDetail).length !== 0) {
@@ -190,7 +195,7 @@ const SwipeContainer = () => {
   }, [movieDetail]);
 
   return (
-    <SwipeComponent
+    <SwipeComponent2
       movies={movies}
       movieDetail={movieDetail}
       nextMovieDetail={nextMovieDetail}
@@ -198,8 +203,8 @@ const SwipeContainer = () => {
       loading={loading}
       currentMovieIndex={currentMovieIndex}
       setCurrentMovieIndex={setCurrentMovieIndex}
-      swipeDirection={swipeDirection}
-      setSwipeDirection={setSwipeDirection}
+      swipeAction={swipeAction}
+      setSwipeAction={setSwipeAction}
       countryChosen={countryChosen}
       setCountryChosen={setCountryChosen}
       isoCountry={isoCountry}

@@ -43,7 +43,7 @@ interface LastCardProps {
   movies: Array<Movie>;
   currentMovieIndex: number;
   setCurrentMovieIndex: (prevIndex) => number;
-  setSwipeDirection: (direction: string) => void;
+  setSwipeAction: any;
   displayType: string;
   countryChosen: string;
 }
@@ -58,7 +58,7 @@ const LastCard = forwardRef<LastCardHandle, LastCardProps>(
       Item,
       type,
       movies,
-      setSwipeDirection,
+      setSwipeAction,
       currentMovieIndex,
       setCurrentMovieIndex,
       displayType,
@@ -166,7 +166,7 @@ const LastCard = forwardRef<LastCardHandle, LastCardProps>(
                   }}
                   onClick={() => {
                     if (type === 'no-movies-anymore') {
-                      setSwipeDirection('left');
+                      setSwipeAction({direction: 'left', from: 'normal'});
                       if (currentMovieIndex === -1) {
                         setCurrentMovieIndex(movies.length - 1);
                       }

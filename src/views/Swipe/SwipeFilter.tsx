@@ -22,7 +22,7 @@ import {
   continents,
   countriesList,
 } from '@utils/data/countries';
-import { genreMovieList, genreSerieList } from '@utils/data/genres';
+import { shortGenresMovieList, shortGenresSerieList } from '@utils/data/shortGenres';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -74,7 +74,7 @@ const SwipeFilter = ({
 
   // ***** Filtre selon le genre ***** //
   const [genreFilter, setGenreFilter] = useState(null);
-  const [movieOrSerie, setMovieOrSerie] = useState(genreMovieList);
+  const [movieOrSerie, setMovieOrSerie] = useState(shortGenresMovieList);
 
   const openGenre = Boolean(genreFilter);
   const handleGenreClick = event => {
@@ -96,9 +96,9 @@ const SwipeFilter = ({
 
   useEffect(() => {
     if (displayType === 'movie') {
-      setMovieOrSerie(genreMovieList);
+      setMovieOrSerie(shortGenresMovieList);
     } else if (displayType === 'tv') {
-      setMovieOrSerie(genreSerieList);
+      setMovieOrSerie(shortGenresSerieList);
     }
   }, [displayType]);
 

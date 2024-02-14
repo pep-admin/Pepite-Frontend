@@ -20,8 +20,6 @@ export const getMovieDetails = async (displayType: string, movieId: number) => {
     { withCredentials: true },
   );
 
-  console.log('la réponse', response.data);
-
   // On vérifie d'où proviennent les données et on parse en conséquence
   let parsedData;
 

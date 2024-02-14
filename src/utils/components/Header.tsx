@@ -14,6 +14,7 @@ import {
   ToggleButtonGroup,
   ListItemIcon,
   Divider,
+  Stack,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -34,12 +35,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 // Import des requêtes
 import { handleLogout } from '../request/authRequest';
 import UserAvatar from './UserAvatar';
+import { MagnifyingGlassIcon } from './styledComponent';
 
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = ({ loggedUserInfos }) => {
-  const { displayType, setDisplayType } = useData();
+  // const { displayType, setDisplayType } = useData();
   const userId = localStorage.getItem('user_id');
 
   const navigate = useNavigate();
@@ -80,30 +82,20 @@ const Header = ({ loggedUserInfos }) => {
   }
 
   return (
-    <AppBar position="static" sx={{ height: '60px', justifyContent: 'center' }}>
+    <AppBar position="static" sx={{ height: '50px', justifyContent: 'center' }}>
       <Toolbar
         disableGutters
         sx={{
-          height: '60px',
+          height: '50px',
           width: '100%',
           position: 'fixed',
           zIndex: '100',
           padding: '0 3%',
-          backgroundColor: '#0E6666',
+          backgroundColor: '#101010',
+          justifyContent: 'space-between'
         }}
       >
-        <Typography
-          variant="h1"
-          color={'#fff'}
-          fontSize={'2.3em'}
-          sx={{
-            letterSpacing: '-3.5px',
-            textShadow: '#02455C -3px 2.75px 0',
-          }}
-        >
-          {'pépite.'}
-        </Typography>
-        <ToggleButtonGroup
+        {/* <ToggleButtonGroup
           color="primary"
           value={alignment}
           exclusive
@@ -151,8 +143,8 @@ const Header = ({ loggedUserInfos }) => {
           >
             {'Séries'}
           </ToggleButton>
-        </ToggleButtonGroup>
-        <Box
+        </ToggleButtonGroup> */}
+        <Stack
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
@@ -164,7 +156,7 @@ const Header = ({ loggedUserInfos }) => {
             aria-controls="menu-nav-appbar"
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
-            sx={{ color: '#052525', paddingRight: '15px' }}
+            sx={{ color: '#fff', padding: '0'}}
           >
             <MenuIcon />
           </IconButton>
@@ -237,8 +229,24 @@ const Header = ({ loggedUserInfos }) => {
               ),
             ])}
           </Menu>
-        </Box>
-        <Box sx={{ flexGrow: 0 }}>
+        </Stack>
+        <Stack>
+          <Typography
+            variant="h1"
+            color={'#fff'}
+            fontSize={'2.3em'}
+            sx={{
+              letterSpacing: '-3.5px',
+              textShadow: '#6a6a6a -2px 2px 0',
+            }}
+          >
+            {'pépite.'}
+          </Typography>
+        </Stack>
+        <Stack>
+          <MagnifyingGlassIcon />
+        </Stack>
+        {/* <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Badge
@@ -325,7 +333,7 @@ const Header = ({ loggedUserInfos }) => {
               ),
             ])}
           </Menu>
-        </Box>
+        </Box> */}
       </Toolbar>
     </AppBar>
   );

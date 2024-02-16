@@ -72,6 +72,7 @@ const SuggestionsCard = ({
           }}
         >
           <Typography
+            variant='body2'
             gutterBottom
             component="h4"
             margin="0"
@@ -80,7 +81,7 @@ const SuggestionsCard = ({
             overflow="hidden"
             whiteSpace="nowrap"
             textOverflow="ellipsis"
-            sx={{ fontSize: '1em' }}
+            fontWeight='400'
           >
             {`${user.first_name} ${user.last_name}`}
           </Typography>

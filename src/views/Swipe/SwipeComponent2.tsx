@@ -241,7 +241,7 @@ const SwipeComponent2 = ({
 
 
   useEffect(() => {
-    // On bloque le swipe si l'utilisateur a cliqué sur un des boutons de choix
+    // On bloque si l'utilisateur a cliqué sur un des boutons de choix
     if(!swipeAction?.direction || swipeAction?.from === 'choice') return;
 
     if (swipeAction.direction === 'right') {

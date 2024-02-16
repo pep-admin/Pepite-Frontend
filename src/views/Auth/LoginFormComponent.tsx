@@ -17,20 +17,19 @@ const LoginFormComponent = ({ formik }) => {
   const navigate = useNavigate();
 
   return (
-    <div
-      style={{
-        backgroundColor: '#0E6666',
-        width: '100vw',
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+    <Box
+      width={'100vw'}
+      minHeight={'100vh'}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        bgcolor: 'form.main',
       }}
     >
       <Container
         maxWidth="xs"
         sx={{
-          backgroundColor: '#0E6666',
           height: '90%',
           textAlign: 'center',
           padding: '0 10%',
@@ -40,14 +39,14 @@ const LoginFormComponent = ({ formik }) => {
         <AuthHeader />
         <Box
           sx={{
-            backgroundColor: '#094B4B',
+            backgroundColor: '#034040',
             borderRadius: '20px',
-            padding: '30px 12% 17px 12%',
+            padding: '20px 10% 10px 10%',
             marginBottom: '20px',
           }}
         >
           <form onSubmit={formik.handleSubmit}>
-            <Grid container spacing={3}>
+            <Grid container rowGap='20px'>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -80,9 +79,13 @@ const LoginFormComponent = ({ formik }) => {
                 <Button
                   type="submit"
                   variant="contained"
-                  color="primary"
                   fullWidth
-                  sx={{ color: '#ffffff' }}
+                  sx={{ 
+                    background: 'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)', 
+                    color: '#ffffff',
+                    lineHeight: 'normal',
+                    padding: '2px 0 0 0'
+                  }}
                 >
                   {'Se connecter'}
                 </Button>
@@ -109,16 +112,16 @@ const LoginFormComponent = ({ formik }) => {
         </Box>
         <Box
           sx={{
-            backgroundColor: '#094B4B',
+            backgroundColor: '#034040',
             borderRadius: '20px',
-            padding: '20px 12% 25px 12%',
+            padding: '13px 10% 20px 10%',
           }}
         >
           <Typography
             variant="body1"
-            gutterBottom
             sx={{
               color: '#8E8E8E',
+              marginBottom: '11px'
             }}
           >
             {"Vous n'avez pas de compte ?"}
@@ -126,15 +129,20 @@ const LoginFormComponent = ({ formik }) => {
           <Button
             type="submit"
             variant="contained"
-            color="secondary"
-            sx={{ color: '#ffffff' }}
+            sx={{ 
+              width: '75%',
+              backgroundColor: '#24A5A5', 
+              color: '#ffffff',
+              lineHeight: 'normal',
+              padding: '2px 0 0 0'
+            }}
             onClick={() => navigate('/register')}
           >
             {"S'inscrire"}
           </Button>
         </Box>
       </Container>
-    </div>
+    </Box>
   );
 };
 

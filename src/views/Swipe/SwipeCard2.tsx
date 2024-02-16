@@ -20,7 +20,7 @@ import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 // Import des variables d'environnements
 import { assetsBaseUrl } from '@utils/request/config';
 
-const SwipeCard = ({
+const SwipeCard2 = ({
   id,
   movies,
   movieDetail,
@@ -169,7 +169,7 @@ const SwipeCard = ({
   );
 };
 
-SwipeCard.propTypes = {
+SwipeCard2.propTypes = {
   id: PropTypes.string.isRequired,
   movies: PropTypes.array.isRequired,
   movieDetail: PropTypes.object.isRequired,
@@ -186,4 +186,4 @@ SwipeCard.propTypes = {
   // certification: PropTypes.object.isRequired,
 };
 
-export default SwipeCard;
+export default SwipeCard2;

@@ -30,9 +30,9 @@ const theme = createTheme({
       contrastText: '#FEFEFE',
     },
     form: {
-      main: '#0E6666',
+      main: '#034A4A',
       light: '#24A5A5',
-      dark: '#094B4B',
+      dark: '#034040',
       // contrastText: '#242105', TODO
     },
     success: {

@@ -77,7 +77,7 @@ const ContactsSuggestions = ({
   return (
     <Item overflow="hidden">
       <Stack direction="row" height="25px" alignItems="center" padding="0 13px">
-        <Typography variant="body2" component="p" fontWeight="bold">
+        <Typography variant="body2" component="p" fontWeight="600">
           {'Personnes suggérées'}
         </Typography>
       </Stack>

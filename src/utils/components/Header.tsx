@@ -40,7 +40,7 @@ import { MagnifyingGlassIcon } from './styledComponent';
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = ({ loggedUserInfos }) => {
+const Header = ({ page, loggedUserInfos }) => {
   // const { displayType, setDisplayType } = useData();
   const userId = localStorage.getItem('user_id');
 
@@ -82,7 +82,14 @@ const Header = ({ loggedUserInfos }) => {
   }
 
   return (
-    <AppBar position="static" sx={{ height: '50px', justifyContent: 'center' }}>
+    <AppBar 
+      position={page === 'swipe' ? 'absolute' : 'static'} 
+      sx={{ 
+        height: '50px', 
+        justifyContent: 'center', 
+        backgroundColor: 'rgba(1, 18, 18, 0.9)',
+      }}
+    >
       <Toolbar
         disableGutters
         sx={{
@@ -90,8 +97,7 @@ const Header = ({ loggedUserInfos }) => {
           width: '100%',
           position: 'fixed',
           zIndex: '100',
-          padding: '0 3%',
-          backgroundColor: '#101010',
+          padding: '0 6%',
           justifyContent: 'space-between'
         }}
       >

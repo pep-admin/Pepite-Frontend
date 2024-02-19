@@ -84,7 +84,7 @@ export const americanCountryCodes = [
   'JM', // Jamaïque
   'KN', // Saint-Christophe-et-Niévès
   'LC', // Sainte-Lucie
-  'VC', // Saint-Vincent-et-les-Grenadines
+  // 'VC', // Saint-Vincent-et-les-Grenadines
   'TT', // Trinité-et-Tobago
 
   // Amérique du Sud
@@ -104,11 +104,11 @@ export const americanCountryCodes = [
   // Autres territoires en Amérique
   'BM', // Bermudes
   'GL', // Groenland
-  'PM', // Saint-Pierre-et-Miquelon
-  'FK', // Îles Malouines
-  'GF', // Guyane française
-  'GS', // Géorgie du Sud et les îles Sandwich du Sud
-  'AQ', // Antarctique (certaines parties sont revendiquées par des pays d'Amérique du Sud)
+  // 'PM', // Saint-Pierre-et-Miquelon
+  // 'FK', // Îles Malouines
+  // 'GF', // Guyane française
+  // 'GS', // Géorgie du Sud et les îles Sandwich du Sud
+  // 'AQ', // Antarctique (certaines parties sont revendiquées par des pays d'Amérique du Sud)
 ];
 
 export const asianCountryCodes = [
@@ -716,11 +716,11 @@ export const countriesList = [
     english_name: 'Guyana',
     native_name: 'Guyana',
   },
-  {
-    iso_3166_1: 'GF',
-    english_name: 'French Guiana',
-    native_name: 'Guyane française',
-  },
+  // {
+  //   iso_3166_1: 'GF',
+  //   english_name: 'French Guiana',
+  //   native_name: 'Guyane française',
+  // },
   {
     iso_3166_1: 'HT',
     english_name: 'Haiti',
@@ -1251,11 +1251,11 @@ export const countriesList = [
     english_name: 'San Marino',
     native_name: 'Saint-Marin',
   },
-  {
-    iso_3166_1: 'PM',
-    english_name: 'St. Pierre and Miquelon',
-    native_name: 'Saint-Pierre-et-Miquelon',
-  },
+  // {
+  //   iso_3166_1: 'PM',
+  //   english_name: 'St. Pierre and Miquelon',
+  //   native_name: 'Saint-Pierre-et-Miquelon',
+  // },
   {
     iso_3166_1: 'SH',
     english_name: 'St. Helena',

@@ -27,8 +27,8 @@ const SwipeContainer = () => {
   const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
   const [swipeAction, setSwipeAction] = useState({direction: null, from: null}); // Gauche ou droite
-  const [countryChosen, setCountryChosen] = useState('États-Unis');
-  const [isoCountry, setIsoCountry] = useState('US');
+  const [countryChosen, setCountryChosen] = useState({name: 'États-Unis', code: 'US'});
+  // const [isoCountry, setIsoCountry] = useState('US');
   const [genreChosen, setGenreChosen] = useState({ name: null, id: null });
   const [certification, setCertification] = useState({
     imgUrl: null,
@@ -36,6 +36,7 @@ const SwipeContainer = () => {
   });
   const [loading, setLoading] = useState({ movies: true, details: true }); // Premier chargement
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
+  const [isFilterValidated, setFilterValidation] = useState(false);
 
   const { displayType } = useData();
 
@@ -156,7 +157,7 @@ const SwipeContainer = () => {
     setCurrentMovieIndex(0); // Réinitialisation l'index courant à 0
     setSwipeAction({direction: null, from: null});
     getMovies(1, countryChosen, genreChosen.id); // Recharger les films/séries
-  }, [displayType, countryChosen, genreChosen.id]);
+  }, [isFilterValidated]);
 
   // Ajoute 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
@@ -180,11 +181,11 @@ const SwipeContainer = () => {
     }
   }, [movieDetail]);
 
-  useEffect(() => {
-    if (countryChosen !== '') {
-      setIsoCountry(findIsoCountry(countryChosen));
-    }
-  }, [countryChosen]);
+  // useEffect(() => {
+  //   if (countryChosen !== '') {
+  //     setIsoCountry(findIsoCountry(countryChosen));
+  //   }
+  // }, [countryChosen]);
 
   useEffect(() => {
     if (Object.keys(movieDetail).length)
@@ -207,7 +208,7 @@ const SwipeContainer = () => {
       setSwipeAction={setSwipeAction}
       countryChosen={countryChosen}
       setCountryChosen={setCountryChosen}
-      isoCountry={isoCountry}
+      // isoCountry={isoCountry}
       hasMoreMovies={hasMoreMovies}
       genreChosen={genreChosen}
       setGenreChosen={setGenreChosen}

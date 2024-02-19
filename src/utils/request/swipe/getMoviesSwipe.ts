@@ -6,14 +6,14 @@ import { apiBaseUrl } from '../config';
 export const fetchTwentyMovies = async (
   moviePage: number,
   displayType: string,
-  countryChosen: string,
+  countryChosen,
   genreChosen: null | number,
 ) => {
   let countryString;
   let genreString;
 
-  if (countryChosen !== '')
-    countryString = `&with_origin_country=${findIsoCountry(countryChosen)}`;
+  if (countryChosen.name !== '')
+    countryString = `&with_origin_country=${findIsoCountry(countryChosen.name)}`;
   else countryString = '';
 
   if (genreChosen !== null) genreString = `&with_genres=${genreChosen}`;

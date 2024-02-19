@@ -186,22 +186,12 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
                   </Button>
                 </Grid>
               </Grid>
-              <Box sx={{ marginTop: '13px' }}>
+              <Box sx={{ marginTop: '10px' }}>
                 {formik.status && formik.status.state === 'error' ? (
                   <Typography variant="body1" color="error.main">
                     {formik.status.message}
                   </Typography>
                 ) : null}
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: '#8E8E8E',
-                    cursor: 'pointer',
-                    '&:hover': { color: '#24A5A5' },
-                  }}
-                >
-                  {'Mot de passe oublié ?'}
-                </Typography>
               </Box>
             </form>
           </Box>

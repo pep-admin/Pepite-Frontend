@@ -15,8 +15,8 @@ const btnSize = {
 }
 
 const bgGradient = {
-  filter: 'linear-gradient(to bottom right, rgba(42, 42, 42, 1), rgba(0, 0, 0, 0.73))',
-  others: 'linear-gradient(to bottom right, rgba(42, 42, 42, 1), rgba(32, 32, 32, 0))'
+  filter: 'linear-gradient(to bottom right, rgba(4, 50, 50, 1) 0%, rgba(1, 18, 18, 0.7) 75%)',
+  others: 'linear-gradient(to bottom right, rgba(4, 50, 50, 1) 0%, rgba(1, 18, 18, 0) 75%)'
 }
 
 const hoverColors = {
@@ -56,5 +56,5 @@ export const CustomButton = styled(Button, {
       getGradientColor(choice, isunwanted, iswanted, iswatched),
   color: '#fff',
   borderRadius: '50%',
-  boxShadow: 'inset 4.5px 4px 4px rgba(241, 220, 165, 0.25) !important',
+  boxShadow: 'inset 4.5px 4px 4px rgba(31, 170, 179, 0.25) !important',
 }));

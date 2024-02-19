@@ -3,6 +3,7 @@ import {
   Alert,
   Stack,
   Badge,
+  SwipeableDrawer,
 } from '@mui/material';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -19,6 +20,7 @@ import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 
 // Import des variables d'environnements
 import { assetsBaseUrl } from '@utils/request/config';
+import SwipeFilter2 from './SwipeFilter2';
 
 const SwipeCard2 = ({
   id,
@@ -34,16 +36,29 @@ const SwipeCard2 = ({
   moviesStatusUpdated,
   setMoviesStatusUpdated,
   swipeToTheRight,
+  countryChosen,
+  setCountryChosen,
+  genreChosen
 }) => {
   const AnimatedCard = a(Stack);
 
   const [showMovieInfos, setShowMovieInfos] = useState(false);
+  const [areFiltersOpen, setAreFiltersOpen] = useState(false);
+
+  const toggleFilters = (open) => (event) => {
+    // Ignorez les événements qui ont été déclenchés par des éléments non souhaités
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setAreFiltersOpen(open);
+  };
 
   return (
     <AnimatedCard
       id={id}
       style={cardProps}
-      sx={{ position: 'absolute', height: 'calc(100vh - 50px)', width: '100vw', boxShadow: 'none' }}
+      sx={{ position: 'absolute', height: '100vh', width: '100vw', boxShadow: 'none' }}
     >
       {error.error !== null ? (
         <Alert
@@ -66,11 +81,11 @@ const SwipeCard2 = ({
             sx={{
               height: '100%',
               backgroundImage: `linear-gradient(
-                to bottom,
+                to top,
                 ${!showMovieInfos ? 
-                  'rgba(0,0,0,0) 0%, rgba(0,0,0,1) 90%'
+                  'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 1) 20%, rgba(1, 18, 18, 0.6) 50%, rgba(1, 18, 18, 0) 100%'
                   :
-                  'rgba(0,0,0,0.3) 0%, rgba(0,0,0,1) 80%'
+                  'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 0.97) 30%, rgba(1, 18, 18, 0.5) 85%, rgba(1, 18, 18, 0) 100%'
                 }
               ), url(${
                 movies[index].poster_path !== null
@@ -82,7 +97,7 @@ const SwipeCard2 = ({
               padding: '0 6%',
             }}
           >
-            <Stack position='absolute' top='20px' right='3%'>
+            <Stack position='absolute' top='75px' right='6%'>
               <Badge 
                 badgeContent={0} 
                 showZero 
@@ -94,10 +109,33 @@ const SwipeCard2 = ({
                   }
                 }}
               >
-                <CustomButton btntype={'filter'}>
+                <CustomButton btntype={'filter'} onClick={toggleFilters(true)}>
                   <TuneOutlinedIcon fontSize='medium' />
                 </CustomButton>
               </Badge>
+              {areFiltersOpen &&
+                <SwipeableDrawer
+                  anchor='left' // Pour ouvrir le tiroir du côté gauche
+                  open={areFiltersOpen} // Contrôlé par l'état isDrawerOpen
+                  onClose={toggleFilters(false)} // Appelé lorsque l'utilisateur demande la fermeture
+                  onOpen={toggleFilters(true)} // Appelé lorsque l'utilisateur demande l'ouverture
+                  sx={{
+                    '& .MuiDrawer-paper': {
+                      height: 'calc(100% - 50px)',
+                      width: '35vw',
+                      bgcolor: '#101010',
+                      top: 'auto',
+                      bottom: '0',
+                    },
+                  }}
+                >
+                  <SwipeFilter2 
+                    countryChosen={countryChosen} 
+                    setCountryChosen={setCountryChosen} 
+                    genreChosen={genreChosen} 
+                  />
+                </SwipeableDrawer>
+              }
             </Stack>
             <Stack 
               direction='row' 

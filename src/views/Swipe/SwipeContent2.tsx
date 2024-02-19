@@ -127,9 +127,6 @@ const SwipeContent2 = ({
                 lineHeight='0.9'
                 position='relative'
                 top='5px'
-                sx={{
-                  WebkitTextStroke: '1px black'
-                }}
                 onClick={() => setShowMovieInfos(!showMovieInfos)}
               > 
                 {

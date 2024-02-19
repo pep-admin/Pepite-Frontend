@@ -24,7 +24,6 @@ const SwipeComponent2 = ({
   setSwipeAction,
   countryChosen,
   setCountryChosen,
-  isoCountry,
   hasMoreMovies,
   genreChosen,
   setGenreChosen,
@@ -261,6 +260,7 @@ const SwipeComponent2 = ({
   return (
     <>
       <Header
+        page={'swipe'}
         loggedUserInfos={loggedUserInfos}
       />
       <Container
@@ -268,7 +268,7 @@ const SwipeComponent2 = ({
         sx={{
           padding: '0',
           backgroundColor: '#101010',
-          height: 'calc(100vh - 50px)',
+          height: '100vh',
           width: '100vw'
         }}
       >
@@ -291,10 +291,12 @@ const SwipeComponent2 = ({
               setCurrentMovieIndex={setCurrentMovieIndex}
               setSwipeAction={setSwipeAction}
               cardProps={card.cardProps}
-              // certification={certification}
               moviesStatusUpdated={moviesStatusUpdated}
               setMoviesStatusUpdated={setMoviesStatusUpdated}
               swipeToTheRight={swipeToTheRight}
+              countryChosen={countryChosen}
+              setCountryChosen={setCountryChosen}
+              genreChosen={genreChosen}
             />
           ))}
           {!hasMoreMovies && movies.length > 0 ? (
@@ -334,7 +336,6 @@ SwipeComponent2.propTypes = {
   setMoviesStatusUpdated: PropTypes.func.isRequired,
   movieDetail: PropTypes.object.isRequired,
   nextMovieDetail: PropTypes.object.isRequired,
-  // generalRatings: PropTypes.number.isRequired,
   error: PropTypes.shape({
     message: PropTypes.string,
     error: PropTypes.object,
@@ -347,8 +348,7 @@ SwipeComponent2.propTypes = {
   setCurrentMovieIndex: PropTypes.func.isRequired,
   swipeAction: PropTypes.object.isRequired,
   setSwipeAction: PropTypes.func.isRequired,
-  isoCountry: PropTypes.string.isRequired,
-  countryChosen: PropTypes.string.isRequired,
+  countryChosen: PropTypes.object.isRequired,
   setCountryChosen: PropTypes.func.isRequired,
   hasMoreMovies: PropTypes.bool.isRequired,
   genreChosen: PropTypes.object.isRequired,

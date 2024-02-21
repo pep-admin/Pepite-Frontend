@@ -9,6 +9,9 @@ import {
   continents, countriesList,
   // countriesList,
 } from '@utils/data/countries';
+import { shortGenresMovieList } from '@utils/data/shortGenres';
+import { ratings } from '@utils/data/ratings';
+import ColoredRating from '@utils/components/ColoredRating';
 
 const typeMenu = ['Tous', 'Films', 'Séries'];
 
@@ -18,8 +21,8 @@ const FilterMenu = ({
   openMenu, 
   filter, 
   setFilter, 
-  countryChosen, 
-  setCountryChosen, 
+  state, 
+  setState, 
 }) => {
 
   const { displayType } = useData();
@@ -38,15 +41,19 @@ const FilterMenu = ({
             key={type}
             sx={{ 
               bgcolor: 
-                (displayType === 'movie' && type === 'Films')
-                || (displayType === 'tv' && type === 'Séries') ?
+                (state === 'movie' && type === 'Films')
+                || (state === 'tv' && type === 'Séries') ?
                   '#E7AE1A'
                 : 'inherit',
               color: 
-                (displayType === 'movie' && type === 'Films')
-                || (displayType === 'tv' && type === 'Séries') ?
+                (state === 'movie' && type === 'Films')
+                || (state === 'tv' && type === 'Séries') ?
                   '#111111'
                 : 'inherit'
+            }}
+            onClick={() => {
+              setState(type === 'Films' ? 'movie' : type === 'Séries' ? 'tv' : 'all');
+              setFilter(null);
             }}
           >
             {type}
@@ -95,13 +102,82 @@ const FilterMenu = ({
       
         return menuItem; // Pour le dernier élément, retourner seulement le MenuItem
       });
+    } else if(filterName === 'genre') {
+      return shortGenresMovieList.map((genre, index) => {
+        const menuItem = (
+          <MenuItem 
+            key={genre.id}
+            sx={{
+              '&:hover': {
+                bgcolor: state.name === genre.name ? '#E7AE1A' : 'inherit', // Couleur de fond par défaut
+                color: state.name === genre.name ? '#111111' : 'inherit', // Couleur du texte par défaut
+              },
+              bgcolor: state.name === genre.name ? '#E7AE1A' : 'inherit', // Couleur de fond par défaut
+              color: state.name === genre.name ? '#111111' : 'inherit', // Couleur du texte par défaut
+            }}
+            onClick={() => {
+              // setMenuAnchor(e.currentTarget);
+              setState({name: genre.name, id: genre.id});
+              setFilter(null);
+            }}
+          >
+            {genre.name}
+          </MenuItem>
+        );
+      
+        // Conditionnellement ajouter un Divider sauf pour le dernier élément
+        if (index !== shortGenresMovieList.length - 1) {
+          const divider = <Divider key={`divider-${index}`} sx={{ borderColor: '#4c4c4c', margin: '0 !important' }} />;
+          return [menuItem, divider];
+        }
+      
+        return menuItem; 
+      });
+    } else if(filterName === 'rating') {
+      return ratings.map((rating, index) => {
+        const menuItem = (
+          <MenuItem 
+            key={rating.number}
+            sx={{
+              '&:hover': {
+                bgcolor: state.number === rating.number ? '#E7AE1A' : 'inherit', // Couleur de fond par défaut
+                color: state.number === rating.number ? '#111111' : 'inherit', // Couleur du texte par défaut
+              },
+              columnGap: '5px',
+              bgcolor: state.number === rating.number ? '#E7AE1A' : 'inherit', // Couleur de fond par défaut
+              color: state.number === rating.number ? '#111111' : 'inherit', // Couleur du texte par défaut
+            }}
+            onClick={() => {
+              // setMenuAnchor(e.currentTarget);
+              setState({number: rating.number, value: rating.value});
+            }}
+          >
+            <ColoredRating 
+              color={state.number === rating.number ? '#111111' : 'secondary'} 
+              emptyColor={state.number === rating.number ? '#fff' : '#bababa'}
+              value={rating.number} 
+              readOnly={true} 
+              precision={0.5} 
+            />
+            {rating.value}
+          </MenuItem>
+        );
+      
+        // Conditionnellement ajouter un Divider sauf pour le dernier élément
+        if (index !== ratings.length - 1) {
+          const divider = <Divider key={`divider-${index}`} sx={{ borderColor: '#4c4c4c', margin: '0 !important' }} />;
+          return [menuItem, divider];
+        }
+      
+        return menuItem; 
+      });
     }
   }
 
   useEffect(() => {
-    console.log('continent', continentChosen);
+    console.log('genre', state);
     
-  }, [continentChosen])
+  }, [state])
 
   // Récupère les noms des pays selon leurs continents et codes ISO
   const getCountries = () => {
@@ -124,13 +200,17 @@ const FilterMenu = ({
         sx={{
           padding: '6px 10px',
           '&:hover': {
-            bgcolor: countryChosen.code === country.iso_3166_1 ? '#E7AE1A' : 'primary',
-            color: countryChosen.code === country.iso_3166_1 ? '#101010' : '#bdbdbd',
+            bgcolor: state.code === country.iso_3166_1 ? '#E7AE1A' : 'primary',
+            color: state.code === country.iso_3166_1 ? '#101010' : '#bdbdbd',
           },
-          bgcolor: countryChosen.code === country.iso_3166_1 ? '#E7AE1A' : 'primary',
-          color: countryChosen.code === country.iso_3166_1 ? '#101010' : '#bdbdbd',
+          bgcolor: state.code === country.iso_3166_1 ? '#E7AE1A' : 'primary',
+          color: state.code === country.iso_3166_1 ? '#101010' : '#bdbdbd',
         }}
-        onClick={() => setCountryChosen({name: country.native_name, code: country.iso_3166_1})}
+        onClick={() => {
+          setState({name: country.native_name, code: country.iso_3166_1});
+          setFilter({anchor: null, continents: filter.continents});
+          setMenuAnchor(null);
+        }}
       >
         <img
           src={`https://flagsapi.com/${country.iso_3166_1}/flat/16.png`}
@@ -163,6 +243,7 @@ const FilterMenu = ({
         }}
         sx={{
           '& .MuiMenu-paper': {
+            maxHeight: '45vh',
             bgcolor: '#111111',
             color: '#bfbfbf',
             borderRadius: '0'

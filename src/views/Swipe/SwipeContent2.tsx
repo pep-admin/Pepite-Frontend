@@ -31,16 +31,33 @@ const SwipeContent2 = ({
   moviesStatusUpdated, 
   setMoviesStatusUpdated, 
   swipeToTheRight,
+  swipeType
 }) => {
+  console.log(movieDetail);
+  
 
-  const { displayType } = useData();
+  const getTitle = (movie) => {
+    console.log(movie);
+    
+    if (movie && movie.id === movies[index].id) {
+      if('title' in movie) {
+        return movie.title;
+      }
+      if('name' in movie) {
+        return movie.name;
+      }
+    }
+  }
+
+  const currentTitle = getTitle(movieDetail.current);
+  const nextTitle = getTitle(movieDetail.next);
 
   // Fonction pour obtenir les genres raccourcis du film
   const getGenres = movie => {
     if (movie && movie.id === movies[index].id) {
       let shortGenres;
 
-      if(displayType === 'movie') {
+      if(swipeType === 'movie') {
         shortGenres = shortGenresMovieList;
       } else {
         shortGenres = shortGenresSerieList;
@@ -70,7 +87,7 @@ const SwipeContent2 = ({
 
   // Détermine la date à utiliser si l'utilisateur a choisi films ou séries
   const date =
-    displayType === 'movie'
+    swipeType === 'movie'
       ? movies[index].release_date
       : movies[index].first_air_date;
 
@@ -116,7 +133,7 @@ const SwipeContent2 = ({
                   WebkitTextStroke: '1px black',
                 }}
               >
-                {`${movies[index].title}`}
+                {currentTitle || nextTitle}
               </Typography>
               <Typography 
                 component='p' 

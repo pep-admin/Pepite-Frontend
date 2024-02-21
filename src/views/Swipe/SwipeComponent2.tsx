@@ -27,9 +27,13 @@ const SwipeComponent2 = ({
   hasMoreMovies,
   genreChosen,
   setGenreChosen,
-  certification,
   moviesStatusUpdated,
   setMoviesStatusUpdated,
+  ratingChosen,
+  setRatingChosen,
+  setIsFilterValidated,
+  swipeType,
+  setSwipeType
 }) => {
 
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
@@ -297,6 +301,12 @@ const SwipeComponent2 = ({
               countryChosen={countryChosen}
               setCountryChosen={setCountryChosen}
               genreChosen={genreChosen}
+              setGenreChosen={setGenreChosen}
+              ratingChosen={ratingChosen}
+              setRatingChosen={setRatingChosen}
+              setIsFilterValidated={setIsFilterValidated}
+              swipeType={swipeType}
+              setSwipeType={setSwipeType}
             />
           ))}
           {!hasMoreMovies && movies.length > 0 ? (
@@ -353,7 +363,6 @@ SwipeComponent2.propTypes = {
   hasMoreMovies: PropTypes.bool.isRequired,
   genreChosen: PropTypes.object.isRequired,
   setGenreChosen: PropTypes.func.isRequired,
-  certification: PropTypes.object.isRequired,
 };
 
 export default React.memo(SwipeComponent2);

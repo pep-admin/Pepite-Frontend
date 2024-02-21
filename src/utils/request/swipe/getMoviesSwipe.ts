@@ -5,7 +5,7 @@ import { apiBaseUrl } from '../config';
 // Récupération de 20 films pour le swipe
 export const fetchTwentyMovies = async (
   moviePage: number,
-  displayType: string,
+  swipeType: string,
   countryChosen,
   genreChosen: null | number,
 ) => {
@@ -20,7 +20,7 @@ export const fetchTwentyMovies = async (
   else genreString = '';
 
   const response = await axios.get(
-    `${apiBaseUrl}/movies/all?page=${moviePage}&type=${displayType}${countryString}${genreString}`,
+    `${apiBaseUrl}/movies/all?page=${moviePage}&type=${swipeType}${countryString}${genreString}`,
     { withCredentials: true },
   );
 

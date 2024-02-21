@@ -38,7 +38,13 @@ const SwipeCard2 = ({
   swipeToTheRight,
   countryChosen,
   setCountryChosen,
-  genreChosen
+  genreChosen,
+  setGenreChosen,
+  ratingChosen,
+  setRatingChosen,
+  setIsFilterValidated,
+  swipeType,
+  setSwipeType
 }) => {
   const AnimatedCard = a(Stack);
 
@@ -46,7 +52,7 @@ const SwipeCard2 = ({
   const [areFiltersOpen, setAreFiltersOpen] = useState(false);
 
   const toggleFilters = (open) => (event) => {
-    // Ignorez les événements qui ont été déclenchés par des éléments non souhaités
+    // Ignorer les événements qui ont été déclenchés par des éléments non souhaités
     if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
@@ -115,10 +121,10 @@ const SwipeCard2 = ({
               </Badge>
               {areFiltersOpen &&
                 <SwipeableDrawer
-                  anchor='left' // Pour ouvrir le tiroir du côté gauche
-                  open={areFiltersOpen} // Contrôlé par l'état isDrawerOpen
-                  onClose={toggleFilters(false)} // Appelé lorsque l'utilisateur demande la fermeture
-                  onOpen={toggleFilters(true)} // Appelé lorsque l'utilisateur demande l'ouverture
+                  anchor='left' 
+                  open={areFiltersOpen} 
+                  onClose={toggleFilters(false)} 
+                  onOpen={toggleFilters(true)}
                   sx={{
                     '& .MuiDrawer-paper': {
                       height: 'calc(100% - 50px)',
@@ -130,9 +136,16 @@ const SwipeCard2 = ({
                   }}
                 >
                   <SwipeFilter2 
+                    swipeType={swipeType}
+                    setSwipeType={setSwipeType}
                     countryChosen={countryChosen} 
                     setCountryChosen={setCountryChosen} 
                     genreChosen={genreChosen} 
+                    setGenreChosen={setGenreChosen}
+                    ratingChosen={ratingChosen}
+                    setRatingChosen={setRatingChosen}
+                    setIsFilterValidated={setIsFilterValidated}
+                    setAreFiltersOpen={setAreFiltersOpen}
                   />
                 </SwipeableDrawer>
               }
@@ -198,6 +211,7 @@ const SwipeCard2 = ({
               currentMovieIndex={currentMovieIndex}
               setCurrentMovieIndex={setCurrentMovieIndex}
               swipeToTheRight={swipeToTheRight}
+              swipeType={swipeType}
             />
             
           </Stack>

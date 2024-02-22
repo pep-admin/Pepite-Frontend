@@ -83,7 +83,7 @@ const Header = ({ page, loggedUserInfos }) => {
 
   return (
     <AppBar 
-      position={page === 'swipe' ? 'absolute' : 'static'} 
+      position={page === 'swipe' ? 'absolute' : page === 'home' ? 'fixed' : 'static'} 
       sx={{ 
         height: '50px', 
         justifyContent: 'center', 

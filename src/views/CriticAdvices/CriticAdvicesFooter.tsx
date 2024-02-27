@@ -35,6 +35,7 @@ import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieR
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
 import { getAdviceCommentsNumber } from '@utils/request/comments/getAdviceCommentsNumber';
+import GradientBtn from './GradientBtn';
 
 const CriticAdvicesFooter = ({
   data,
@@ -137,35 +138,40 @@ const CriticAdvicesFooter = ({
       <Divider />
       <Stack
         direction="row"
-        spacing={5}
+        justifyContent='space-between'
         height="30px"
         padding="0 15px"
         flexGrow="1"
       >
-        <Box
-          height="100%"
-          display="flex"
-          alignItems="center"
-          columnGap="5px"
-          onClick={() => setDisplayComments(!displayComments)}
-        >
-          <ChatTwoToneIcon
-            fontSize="small"
-            sx={{
-              position: 'relative',
-              top: '1px',
-              color: displayComments ? '#24a5a5' : 'inherit',
-            }}
-          />
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {commentsNumber}
-          </Typography>
-        </Box>
-        <LikesFooter infos={infos} />
-        <GoldFooter infos={infos} />
+        <Stack direction='row' columnGap='25px'>
+          <Box
+            height="100%"
+            display="flex"
+            alignItems="center"
+            columnGap="5px"
+            onClick={() => setDisplayComments(!displayComments)}
+          >
+            <ChatTwoToneIcon
+              fontSize="small"
+              sx={{
+                position: 'relative',
+                top: '1px',
+                color: displayComments ? '#24a5a5' : 'inherit',
+              }}
+            />
+            <Typography variant='body1' fontWeight="600">
+              {commentsNumber}
+            </Typography>
+          </Box>
+          <LikesFooter from={'critic'} infos={infos} />
+          <GoldFooter infos={infos} />
+        </Stack>
+        
         {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
         {infos.user_id !== parseInt(loggedUserInfos.id, 10) ? (
           <>
+            {/* <GradientBtn />
+            <GradientBtn /> */}
             <Box
               height="100%"
               display="flex"
@@ -181,7 +187,7 @@ const CriticAdvicesFooter = ({
                   color="#5ac164"
                 >
                   <VisibilityTwoToneIcon fontSize="small" />
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="600">
                     {'Vu'}
                   </Typography>
                 </Stack>
@@ -191,14 +197,14 @@ const CriticAdvicesFooter = ({
                     fontSize="small"
                     color="primary"
                   />
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="600">
                     {'À voir'}
                   </Typography>
                 </Stack>
               ) : (
                 <Stack direction="row" columnGap="5px" alignItems="center">
                   <QueueTwoToneIcon fontSize="small" />
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="600">
                     {'Non vu'}
                   </Typography>
                 </Stack>
@@ -298,7 +304,7 @@ const CriticAdvicesFooter = ({
             >
               <Stack direction="row" columnGap="5px" alignItems="center">
                 <StarTwoToneIcon fontSize="small" />
-                <Typography variant="body2" fontWeight="bold">
+                <Typography variant="body2" fontWeight="600">
                   {userMovieStatus?.isRated ? 'Noté' : 'Noter'}
                 </Typography>
               </Stack>

@@ -24,6 +24,7 @@ const theme = createTheme({
     primary: {
       main: '#fff',
       dark: '#0E6666',
+      light: '#24A5A5'
     },
     secondary: {
       main: '#E7AE1A',
@@ -103,7 +104,7 @@ const theme = createTheme({
     MuiFilledInput: {
       styleOverrides: {
         root: {
-          height: '30px',
+          // height: '30px',
           borderRadius: '10px',
           '&::before': {
             width: 'calc(100% - 17px)',

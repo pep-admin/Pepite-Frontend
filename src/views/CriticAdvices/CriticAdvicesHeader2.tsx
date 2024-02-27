@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Box, Typography, Avatar } from '@mui/material';
+import { Stack, Box, Typography, Avatar, Divider } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -14,8 +14,10 @@ import { formatRating } from '@utils/functions/formatRating';
 import ColoredRating from '@utils/components/ColoredRating';
 import RatingMenu from '@utils/components/RatingMenu';
 import { apiBaseUrl } from '@utils/request/config';
+import { convertDate } from '@utils/functions/convertDate';
+import UserAvatar from '@utils/components/UserAvatar';
 
-const CriticAdvicesHeader = ({
+const CriticAdvicesHeader2 = ({
   page,
   type,
   ratingsHeaderRef,
@@ -39,7 +41,7 @@ const CriticAdvicesHeader = ({
 
   const { id } = useParams();
 
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
 
   // Infos de l'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
@@ -93,7 +95,7 @@ const CriticAdvicesHeader = ({
   const generateContent = () => {
     // Si l'utilisateur veut poster une nouvelle critique
     if (type === 'new-critic') {
-      return <span style={{ fontWeight: 'bold' }}>{'Nouvelle note'}</span>;
+      return <span style={{ fontWeight: '600' }}>{'Nouvelle note'}</span>;
 
       // Si l'utilisateur veut conseiller un film / une série à un ami
     } else if (type === 'new-advice') {
@@ -102,7 +104,7 @@ const CriticAdvicesHeader = ({
           {'Conseillez à '}
           <span
             style={{
-              fontWeight: 'bold',
+              fontWeight: '600',
               color: findGoodColor(page),
             }}
             onClick={() => navigate(`/profil/${chosenUser.id}`)}
@@ -117,7 +119,7 @@ const CriticAdvicesHeader = ({
       return (
         <>
           <span
-            style={{ fontWeight: 'bold', color: findGoodColor(page) }}
+            style={{ fontWeight: '600', color: findGoodColor(page) }}
             onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
           >
             {criticUserInfos.first_name} {criticUserInfos.last_name}
@@ -133,13 +135,12 @@ const CriticAdvicesHeader = ({
       infos.sender_id === loggedUserInfos.id
     ) {
       return (
-        <span style={{ fontWeight: 'bold' }}>{'Vous avez conseillé'}</span>
+        <span style={{ fontWeight: '600' }}>{'Vous avez conseillé'}</span>
       );
 
       // Si l'utilisateur voit une de ses anciennes critiques
     } else if (type === 'old-critic' && infos.user_id === loggedUserInfos.id) {
-      return <span style={{ fontWeight: 'bold' }}>{'Vous avez noté'}</span>;
-
+      return <span style={{ fontWeight: '600' }}>{'Vous avez noté'}</span>;
       // Si l'utilisateur voit le conseil de quelqu'un d'autre
     } else if (
       page === 'profil' &&
@@ -150,7 +151,7 @@ const CriticAdvicesHeader = ({
         <>
           <span
             style={{
-              fontWeight: 'bold',
+              fontWeight: '600',
               color: findGoodColor(page),
             }}
             onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
@@ -164,120 +165,141 @@ const CriticAdvicesHeader = ({
   };  
 
   return (
+    <>
     <Stack
       direction="row"
-      height="35px"
+      height="48px"
       alignItems="center"
-      justifyContent="space-between"
       padding="0 10px"
       columnGap="10px"
     >
-      <Avatar
-        alt={`photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`} 
-        src={`${apiBaseUrl}/Uploads/${criticUserInfos.profilPics?.find((pic) => pic.isActive === 1).filePath}`} 
-        sx={{
-          height: 40,
-          width: 40,
-          boxShadow: '0px 3px 3.7px rgba(0, 0, 0, 0.30)'
-        }}
-      />
-      <Typography
-        variant="body2"
-        component="p"
-        minWidth="80px"
-        align="left"
-        whiteSpace="nowrap"
-        maxWidth="363px"
-        overflow="hidden"
-        textOverflow="ellipsis"
-      >
-        {generateContent()}
-      </Typography>
-      <Box
-        display="flex"
-        alignItems="center"
-        columnGap="5px"
-        whiteSpace="nowrap"
-      >
-        <ColoredRating
-          readOnly={true}
-          precision={0.5}
-          color={
-            (page === 'profil' && chosenUser?.relation_type === 'friend') ||
-            (page === 'home' && infos?.relation_type === 'friend') ||
-            loggedUserInfos.id === parseInt(id, 10)
-              ? '#F29E50'
-              : (page === 'profil' &&
-                  chosenUser?.relation_type === 'close_friend') ||
-                (page === 'home' && infos?.relation_type === 'close_friend')
-              ? '#ff7b00'
-              : '#24A5A5'
-          }
-          value={
-            type === 'new-critic' || type === 'new-advice' || isModify
-              ? newRating
-              : parseFloat(infos.rating)
-          }
-          sx={{ position: 'relative', bottom: '0.5px' }}
+      {criticUserInfos.profilPics &&
+        <UserAvatar 
+          variant='circle'
+          userInfos={criticUserInfos}
+          picWidth={40}
+          picHeight={40}
+          isOutlined={false}
         />
-        {type === 'new-critic' || type === 'new-advice' || isModify ? (
-          <>
-            <Box
-              ref={ratingsHeaderRef}
-              width="25px"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              sx={{
-                backgroundColor:
-                  newRating === null && !isModify ? '#a09f9f' : '#F29E50',
-                color: newRating === null ? '#fff' : 'inherit',
-                fontWeight: newRating === null ? 'normal' : 'bold',
-              }}
-              onClick={e => handleRatingsMenu(e)}
-            >
-              {newRating === null && !isModify
-                ? '?'
-                : newRating === null && isModify
-                ? `${formatRating(infos.rating)}`
-                : newRating}
-            </Box>
-            <RatingMenu
-              utility={'new-post'}
-              infos={infos}
-              setIsQuicklyRated={null}
-              setOpenSnackbar={null}
-              anchorQuickNoteMenu={displayRatings}
-              setAnchorQuickNoteMenu={setDisplayRatings}
-              handleCloseNoteMenu={closeMenu}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-              setNewRating={setNewRating}
-              isGoldNugget={isGoldNugget}
-              setIsGoldNugget={setIsGoldNugget}
-              isTurnip={isTurnip}
-              setIsTurnip={setIsTurnip}
-            />
-          </>
-        ) : null}
-        <Typography variant="body2" component="p" fontWeight="bold">
-          {((type === 'new-critic' || type === 'new-advice') && !infos) ||
-          isModify
-            ? ' / 5'
-            : `${formatRating(infos.rating)} / 5`}
-        </Typography>
-      </Box>
+      }
+      <Stack alignItems='flex-start'>
+        <Stack direction='row' alignItems='center'>
+          <Typography
+            variant="body2"
+            component="p"
+            minWidth="80px"
+            align="left"
+            whiteSpace="nowrap"
+            maxWidth="363px"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            marginRight='10px'
+            lineHeight='normal'
+          >
+            {generateContent()}
+          </Typography>
+          <ColoredRating
+            readOnly={true}
+            emptyColor='#969696'
+            precision={0.5}
+            color={
+              (page === 'profil' && chosenUser?.relation_type === 'friend') ||
+              (page === 'home' && infos?.relation_type === 'friend') ||
+              loggedUserInfos.id === parseInt(id, 10)
+                ? '#F29E50'
+                : (page === 'profil' &&
+                    chosenUser?.relation_type === 'close_friend') ||
+                  (page === 'home' && infos?.relation_type === 'close_friend')
+                ? '#ff7b00'
+                : '#24A5A5'
+            }
+            value={
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? newRating
+                : parseFloat(infos.rating)
+            }
+            sx={{ position: 'relative', bottom: '0.5px' }}
+          />
+          {type === 'new-critic' || type === 'new-advice' || isModify ? (
+            <>
+              <Box
+                ref={ratingsHeaderRef}
+                width="25px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                  backgroundColor:
+                    newRating === null && !isModify ? '#a09f9f' : '#F29E50',
+                  color: newRating === null ? '#fff' : 'inherit',
+                  fontWeight: newRating === null ? 'normal' : '600',
+                }}
+                onClick={e => handleRatingsMenu(e)}
+              >
+                {newRating === null && !isModify
+                  ? '?'
+                  : newRating === null && isModify
+                  ? `${formatRating(infos.rating)}`
+                  : newRating}
+              </Box>
+              <RatingMenu
+                utility={'new-post'}
+                infos={infos}
+                setIsQuicklyRated={null}
+                setOpenSnackbar={null}
+                anchorQuickNoteMenu={displayRatings}
+                setAnchorQuickNoteMenu={setDisplayRatings}
+                handleCloseNoteMenu={closeMenu}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                setNewRating={setNewRating}
+                isGoldNugget={isGoldNugget}
+                setIsGoldNugget={setIsGoldNugget}
+                isTurnip={isTurnip}
+                setIsTurnip={setIsTurnip}
+              />
+            </>
+          ) : null}
+          <Typography 
+            variant="body2" 
+            component="p" 
+            fontWeight="600"
+            position='relative'
+            top='1px'
+            marginLeft='2px'
+          >
+            {((type === 'new-critic' || type === 'new-advice') && !infos) ||
+            isModify
+              ? ' / 5'
+              : `${formatRating(infos.rating)} / 5`}
+          </Typography>
+        </Stack>
+        { (type === 'old-critic' || type === 'old-advice') &&
+          <Typography
+            fontSize='0.8em'
+            color='#9B9B9B'
+            fontWeight='300'
+          >
+            {`le ${convertDate(
+              type === 'old-critic'
+                ? infos.critic_date
+                : infos.advice_date,
+            )}`}
+          </Typography>
+        }
+        
+      </Stack>
       <Box
-        minWidth="80px"
         display="flex"
         justifyContent="flex-end"
         alignItems="center"
+        flexGrow='1'
       >
         {type === 'new-critic' || type === 'new-advice' ? (
           <ClearIcon
@@ -306,10 +328,12 @@ const CriticAdvicesHeader = ({
         ) : null}
       </Box>
     </Stack>
+    <Divider sx={{ borderColor: '#e9e9e9'}} />
+    </>
   );
 };
 
-CriticAdvicesHeader.propTypes = {
+CriticAdvicesHeader2.propTypes = {
   page: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   ratingsHeaderRef: PropTypes.oneOfType([
@@ -336,4 +360,4 @@ CriticAdvicesHeader.propTypes = {
   criticUserInfos: PropTypes.object.isRequired,
 };
 
-export default React.memo(CriticAdvicesHeader);
+export default React.memo(CriticAdvicesHeader2);

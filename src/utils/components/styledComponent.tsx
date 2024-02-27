@@ -8,7 +8,7 @@ interface ItemProps {
   maxheight?: string | number;
   minheight?: string | number;
   padding?: string | number;
-  margintop?: string | number;
+  marginbottom?: string | number;
   borderradius?: string;
   overflow?: string;
   display?: 'block' | 'flex';
@@ -28,7 +28,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
     maxheight,
     minheight,
     padding,
-    margintop,
+    marginbottom,
     borderradius,
     overflow,
     display,
@@ -42,13 +42,13 @@ const StyledPaper = styled(Paper)<ItemProps>(
     maxHeight: maxheight || 'auto',
     minHeight: minheight || 'auto',
     padding: padding || 'auto',
-    marginTop: margintop || 'auto',
+    marginBottom: marginbottom || 'auto',
     overflow: overflow || 'visible',
     display: display || 'block',
     flexDirection: flexdirection || 'initial', // sera ignoré si display n'est pas "flex"
     alignItems: alignitems || 'initial', // sera ignoré si display n'est pas "flex"
     justifyContent: justifycontent || 'initial', // sera ignoré si display n'est pas "flex"
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fafafa',
     ...theme.typography.body2,
     borderRadius: borderradius || '10px',
     textAlign: 'center',
@@ -91,6 +91,22 @@ export const MagnifyingGlassIcon = createSvgIcon(
     />
   </svg>,
   'MagnifyingGlassIcon',
+);
+
+export const FeatherPenIcon = createSvgIcon(
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_1436_74)">
+    <path d="M13.1901 13.8002L11.973 8.37374C11.9525 8.28083 11.87 8.21509 11.7749 8.21509H9.9999H8.22496C8.12903 8.21509 8.04624 8.28203 8.02646 8.3757L6.80936 14.0912C6.79645 14.1517 6.81215 14.2155 6.85155 14.263C6.87517 14.2908 9.18893 17.1256 9.18893 19.7963C9.18893 19.908 9.27965 19.9992 9.3918 19.9992C9.50373 19.9992 9.59468 19.9081 9.59468 19.7963V14.5791C9.59468 14.5701 9.59053 14.5617 9.58932 14.5534C9.58736 14.5387 9.58577 14.5244 9.58079 14.511C9.57687 14.4999 9.57113 14.4908 9.56502 14.4816C9.55732 14.4681 9.54955 14.4551 9.53906 14.4436C9.5337 14.4377 9.52728 14.434 9.52162 14.4285C9.51068 14.4195 9.50139 14.408 9.48788 14.4013C9.12832 14.2082 8.90484 13.8398 8.90484 13.4393C8.90484 13.0387 9.12832 12.6703 9.48826 12.4774C9.81929 12.2995 10.1824 12.2995 10.5134 12.4774H10.5138C10.8735 12.6703 11.097 13.0387 11.097 13.4393C11.097 13.8398 10.8735 14.2082 10.5138 14.4013C10.4707 14.4247 10.4417 14.4619 10.4242 14.5042C10.4238 14.5054 10.423 14.5066 10.4223 14.5078C10.4149 14.5268 10.4119 14.5457 10.4108 14.5656C10.41 14.5732 10.4069 14.5791 10.4069 14.5866V19.797C10.4069 19.9087 10.4976 19.9999 10.6097 19.9999C10.7219 19.9999 10.8126 19.9087 10.8126 19.797C10.8126 17.2566 13.1343 13.9964 13.1581 13.9638C13.191 13.9155 13.2032 13.8565 13.1901 13.8002Z" fill="white"/>
+    <path d="M8.14918 7.65765H11.8514C11.9545 7.65765 12.0416 7.58021 12.0527 7.47749L12.8641 0.225593C12.8708 0.168006 12.8526 0.110721 12.8134 0.0677007C12.7749 0.0246802 12.7203 0 12.6624 0H7.33775C7.28009 0 7.22484 0.0246802 7.18643 0.0677007C7.14771 0.110268 7.12952 0.168006 7.13571 0.225593L7.94714 7.47756C7.95884 7.57976 8.04593 7.65765 8.14918 7.65765Z" fill="white"/>
+    </g>
+    <defs>
+    <clipPath id="clip0_1436_74">
+    <rect width="20" height="20" fill="white"/>
+    </clipPath>
+    </defs>
+  </svg>
+  ,
+  'Icône de stylo plume'
 );
 
 // SVG abonnés

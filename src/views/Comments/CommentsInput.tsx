@@ -48,10 +48,10 @@ const CommentsInput = ({
       position="relative"
       borderRadius="10px"
       flexGrow="1"
-      paddingLeft="10px"
+      padding="0 10px"
       alignItems="center"
     >
-      <Stack
+      {/* <Stack
         direction="row"
         width="65px"
         height="100%"
@@ -59,48 +59,55 @@ const CommentsInput = ({
         alignItems="center"
       >
         <MessageIcon sx={{ fontSize: '2.5em' }} />
-      </Stack>
+      </Stack> */}
       <Stack
         direction="column"
         justifyContent="space-between"
-        paddingLeft="8px"
         flexGrow="1"
       >
-        <Typography
-          component="h5"
-          fontWeight="bold"
-          align="left"
-          width="80%"
-          fontSize="1em"
-          paddingLeft="12px"
-        >
-          {`${userInfos.first_name} ${userInfos.last_name}`}
-        </Typography>
-        <TextField
-          id="filled-basic"
-          ref={inputRef}
-          label="Votre commentaire"
-          variant="filled"
-          value={newComment}
-          sx={{
-            width: '80%',
-          }}
-          onChange={e => setNewComment(e.target.value)}
-        />
+        <Stack direction='row' columnGap='5px' margin='6px 0 4px 0'>
+          <Typography
+            variant='body2'
+            fontWeight="600"
+            align="left"
+            marginLeft='5px'
+          >
+            {`${userInfos.first_name} ${userInfos.last_name}`}
+          </Typography>
+        </Stack>
+        <Stack direction='row' marginBottom='6px'>
+          <TextField
+            id="filled-basic"
+            ref={inputRef}
+            label="Votre commentaire"
+            variant="filled"
+            value={newComment}
+            fullWidth
+            sx={{
+             '& .MuiInputBase-root': {
+              borderRadius: '7px 0 0 7px',
+              bgcolor: '#f0f0f0'
+             }
+            }}
+            onChange={e => setNewComment(e.target.value)}
+          />
+          <Stack
+            height="38px"
+            width="40px"
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+              backgroundColor: '#24A5A5',
+              borderRadius: '0 7px 7px 0',
+            }}
+            onClick={() => addNewComment()}
+          >
+            <SendIcon sx={{ color: '#fff' }} />
+          </Stack>
+        </Stack>
+       
       </Stack>
-      <Stack
-        height="100%"
-        width="40px"
-        alignItems="center"
-        justifyContent="center"
-        sx={{
-          backgroundColor: '#24A5A5',
-          borderRadius: comments.length > 0 ? '0' : '0 0 10px 0',
-        }}
-        onClick={() => addNewComment()}
-      >
-        <SendIcon sx={{ color: '#fff' }} />
-      </Stack>
+      
     </Stack>
   );
 };

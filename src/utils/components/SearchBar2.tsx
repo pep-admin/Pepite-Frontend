@@ -2,23 +2,24 @@
 import {
   Box,
   TextField,
-  Typography,
   Menu,
   Fade,
   ImageList,
   ImageListItem,
+  Stack,
 } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Item } from '@utils/components/styledComponent';
 
+// Import des composants internes
+import SearchResults from './SearchResults';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
 // Import des icônes
-import { MagnifyingGlassIcon } from './styledComponent';
+import { FeatherPenIcon } from './styledComponent';
 
 // Import des requêtes internes
 import {
@@ -28,18 +29,15 @@ import {
 import { getMovieDetails } from '../request/getMovieDetails';
 import { storeDetailsData } from '../request/swipe/storeDetailsData';
 
-// Import des composants internes
-import SearchResults from './SearchResults';
-
-const SearchBar = ({
+const SearchBar2 = ({
   page,
   loggedUserInfos,
   chosenUser,
   handlePoster,
   showPicModal,
 }) => {
-  const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } =
-    useData();
+
+  const { displayType, chosenMovieId, setChosenMovieId, setChosenMovie } = useData();
   const { id } = useParams();
 
   const [error, setError] = useState({ message: null, error: null });
@@ -81,6 +79,7 @@ const SearchBar = ({
     }
   };
 
+  // Analyse la recherche de l'utilisateur toutes les 500ms
   useEffect(() => {
     // Fonction débouncing
     const timeoutId = setTimeout(async () => {
@@ -117,56 +116,21 @@ const SearchBar = ({
     }
   }, [chosenMovieId]);
 
-  // useEffect(() => {
-  //   console.log('les résultats', results);
-  // }, [results]);
-
   return (
     <Box
       component="form"
       ref={containerRef}
-      marginTop={page === 'profil' || page === 'home' ? '6px' : '0'}
+      marginTop='6px'
       display={page === 'params' ? 'flex' : 'block'}
       flexDirection={page === 'params' ? 'column' : 'row'}
       alignItems={page === 'params' ? 'center' : 'flex-start'}
     >
-      <Item
+      <Stack
         sx={{
           position: 'relative',
-          height: page === 'params' ? '30px' : '40px',
-          padding:
-            page === 'profil' || page === 'home' || page === 'params'
-              ? '0'
-              : '0 10%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent:
-            page === 'profil' || page === 'home' ? 'initial' : 'center',
-          gap: page === 'profil' || page === 'home' ? '6px' : '20px',
-          maxWidth: page === 'params' ? '250px' : 'auto',
+          height: '37px',
         }}
       >
-        {page === 'profil' || page === 'home' ? (
-          <Box
-            height="100%"
-            width="100px"
-            paddingLeft="7px"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Typography
-              variant="body2"
-              component="h4"
-              fontWeight="bold"
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-            >
-              {`${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`}
-            </Typography>
-          </Box>
-        ) : null}
         <TextField
           id="filled-basic"
           inputRef={searchBarRef}
@@ -178,7 +142,7 @@ const SearchBar = ({
               (page === 'profil' || page === 'home') &&
                 loggedUserInfos?.id === parseInt(id, 10) &&
                 displayType === 'movie'
-              ? 'Notez un film !'
+              ? 'Un nom de film ou de série'
               : // Si page de profil de l'utilisateur connecté et type choisi SERIES
               (page === 'profil' || page === 'home') &&
                 loggedUserInfos?.id === parseInt(id, 10) &&
@@ -217,12 +181,26 @@ const SearchBar = ({
                 'Rechercher un film, une série, une personne'
           }
           variant="filled"
-          size="small"
           sx={{
-            width:
-              page === 'profil' || page === 'home'
-                ? 'calc(100% - 152px)'
-                : '250px',
+            height: '37px',
+            width: 'calc(100% - 40px)',
+            '& .MuiInputBase-root': {
+              borderRadius: '7px 0 0 7px',
+              bgcolor: '#fafafa',
+            },
+            '& .MuiInputLabel-root': {
+              fontWeight: '300'
+            },
+            '& .MuiInputBase-root:hover': {
+              // borderRadius: '10px 0 0 10px',
+              bgcolor: '#fafafa'
+            },
+            '& label.Mui-focused': {
+              color: 'primary.light', // Pour le label lorsque le TextField est focus
+            },
+            '& .MuiFilledInput-underline:after': {
+              borderBottomColor: 'primary.light', // Pour la ligne en dessous du TextField
+            },
           }}
           value={query}
           onChange={e => {
@@ -241,13 +219,13 @@ const SearchBar = ({
           justifyContent="center"
           sx={{
             backgroundColor: '#24A5A5',
-            borderRadius: '0 10px 10px 0',
+            borderRadius: '0 7px 7px 0',
             cursor: 'pointer',
           }}
         >
-          <MagnifyingGlassIcon sx={{ height: '20px', width: '20px' }} />
+          <FeatherPenIcon sx={{ height: '27px', width: '27px' }} />
         </Box>
-      </Item>
+      </Stack>
       {results.length > 0 && page === 'params' ? (
         <Box display="flex" justifyContent="center" alignItems="center">
           <ImageList
@@ -344,8 +322,7 @@ const SearchBar = ({
   );
 };
 
-SearchBar.propTypes = {
-  Item: PropTypes.elementType.isRequired,
+SearchBar2.propTypes = {
   page: PropTypes.string.isRequired,
   handlePoster: PropTypes.func,
   showPicModal: PropTypes.object,
@@ -353,4 +330,4 @@ SearchBar.propTypes = {
   chosenUser: PropTypes.object,
 };
 
-export default SearchBar;
+export default SearchBar2;

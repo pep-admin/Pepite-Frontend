@@ -38,6 +38,8 @@ import { convertDate } from '@utils/functions/convertDate';
 
 // Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShow } from '@hooks/useCardsToShow';
+import CriticAdvicesHeader2 from './CriticAdvicesHeader2';
+import CriticAdvicesReview2 from './CriticAdvicesReview2';
 
 const CriticAdvicesComponent = ({
   page,
@@ -227,7 +229,7 @@ const CriticAdvicesComponent = ({
   };
 
   const getCriticUserInfos = async id => {
-    const userInfos = await getUser(id);
+    const userInfos = await getUser(id);    
     setCriticUserInfos(userInfos);
   };
 
@@ -240,7 +242,6 @@ const CriticAdvicesComponent = ({
 
   useEffect(() => {
     if (type === 'old-critic') {
-      // console.log(`récupération des informations de l'utilisateur ${infos.user_id} pour la critique ${infos.title}`);
       getCriticUserInfos(infos.user_id);
     } else if (type === 'old-advice') {
       getCriticUserInfos(infos.sender_id);
@@ -271,10 +272,10 @@ const CriticAdvicesComponent = ({
           // usage={'overwrite'}
         />
       ) : null}
-      <Item margintop="6px">
+      <Item marginbottom='15px' >
         <Stack height="100%">
           <Stack direction="column" position="relative">
-            <CriticAdvicesHeader
+            <CriticAdvicesHeader2
               page={page}
               type={type}
               ratingsHeaderRef={ratingsHeaderRef}
@@ -288,37 +289,13 @@ const CriticAdvicesComponent = ({
               setIsModify={setIsModify}
               isGoldNugget={isGoldNugget}
               setIsGoldNugget={setIsGoldNugget}
-              // setIsNuggetAnimEnded={setIsNuggetAnimEnded}
               isTurnip={isTurnip}
               setIsTurnip={setIsTurnip}
               chosenUser={chosenUser}
               criticUserInfos={criticUserInfos}
             />
-            {type === 'new-critic' || type === 'new-advice' ? (
-              <Divider />
-            ) : (
-              <Stack
-                direction="row"
-                alignItems="center"
-                width="100%"
-                position="absolute"
-                top="25px"
-              >
-                <Typography
-                  padding="0 10px"
-                  sx={{ fontSize: '0.8em', color: '#989898' }}
-                >
-                  {`le ${convertDate(
-                    type === 'old-critic'
-                      ? infos.critic_date
-                      : infos.advice_date,
-                  )}`}
-                </Typography>
-                <Divider sx={{ flexGrow: '1' }} />
-              </Stack>
-            )}
           </Stack>
-          <Stack padding="10px 8px">
+          <Stack padding="12px 8px">
             <Card
               sx={{
                 height: '100%',
@@ -327,15 +304,10 @@ const CriticAdvicesComponent = ({
                 display: 'flex',
                 flexWrap: 'wrap',
                 overflow: 'visible',
+                bgcolor: '#fafafa'
               }}
             >
-              <Box
-                marginBottom={displayOverwiew ? '7px' : '0'}
-                minHeight="120px"
-                display="flex"
-                flexGrow="1"
-                sx={{ transition: 'margin-bottom 0.5s ease-in-out' }}
-              >
+              <Stack direction='row' width='100%'>
                 <CriticAdvicesPoster
                   chosenMovie={chosenMovie}
                   type={type}
@@ -352,7 +324,7 @@ const CriticAdvicesComponent = ({
                   setDisplayOverview={setDisplayOverview}
                   infos={infos}
                 />
-              </Box>
+              </Stack>
               <Stack
                 direction="row"
                 flexGrow="1"
@@ -383,20 +355,21 @@ const CriticAdvicesComponent = ({
                     : infos.overview}
                 </Typography>
               </Stack>
-              {(type === 'old-critic' || type === 'old-advice') &&
-              infos.text === '' &&
-              !isModify ? null : (
-                <CriticAdvicesReview
-                  type={type}
-                  newCriticText={newCriticText}
-                  setNewCriticText={setNewCriticText}
-                  infos={infos}
-                  isModify={isModify}
-                  newRating={newRating}
-                  // chosenUser={chosenUser}
-                  criticUserInfos={criticUserInfos}
-                />
-              )}
+              {(type === 'new-critic' || type === 'new-advice' || infos.text === '') ? 
+                null 
+                : (
+                  <CriticAdvicesReview2
+                    // type={type}
+                    // newCriticText={newCriticText}
+                    // setNewCriticText={setNewCriticText}
+                    infos={infos}
+                    // chosenMovie={chosenMovie}
+                    // isModify={isModify}
+                    // newRating={newRating}
+                    // chosenUser={chosenUser}
+                    // criticUserInfos={criticUserInfos}
+                  />
+                )}
               {type === 'new-critic' || type === 'new-advice' || isModify ? (
                 <Stack direction="row" flexBasis="100%" justifyContent="center">
                   <Button
@@ -451,10 +424,6 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
-      {/* TODO : optimiser l'animation */}
-      {/* {isGoldNugget && !isNuggetAnimEnded ? (
-        <GoldNugget setIsNuggetAnimEnded={setIsNuggetAnimEnded} />
-      ) : null} */}
       {displayComments ? (
         <CommentsComponent
           page={page}

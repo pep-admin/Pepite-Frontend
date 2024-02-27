@@ -47,19 +47,19 @@ const CommentsComponent = ({
   }, []);
 
   return (
-    <Item margintop="6px">
-      <Stack direction="row" height="25px" alignItems="center" padding="0 10px">
+    <Item marginbottom='15px'>
+      <Stack direction="row" height="25px" alignItems="center" padding="0 15px">
         <Typography
           variant="body2"
           component="p"
-          fontWeight="bold"
+          fontWeight="600"
           lineHeight="10px"
         >
           {'Commentaires'}
         </Typography>
       </Stack>
       <Divider />
-      <Stack height="67px">
+      <Stack>
         <CommentsInput
           criticId={criticId}
           adviceId={adviceId}

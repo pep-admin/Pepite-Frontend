@@ -28,6 +28,8 @@ import { getCommentsAdviceLikesNumber } from '@utils/request/comments/getComment
 import { checkAdviceCommentLikeStatus } from '@utils/request/comments/checkAdviceCommentLikeStatus';
 import { removeAdviceCommentLike } from '@utils/request/comments/removeAdviceCommentLike';
 import { modifyAdviceComment } from '@utils/request/comments/modifyAdviceComment';
+import LikesFooter from '@views/CriticAdvices/LikesFooter';
+import GoldFooter from '@views/CriticAdvices/GoldFooter';
 
 interface Picture {
   id: number;
@@ -59,72 +61,12 @@ const CommentsContent = ({
   const { displayType } = useData();
 
   const [isModify, setIsModify] = useState(false);
-  const [hasLiked, setHasLiked] = useState(false);
-  const [likesNumber, setLikesNumber] = useState(0);
   const [commentUpdated, setCommentUpdated] = useState(comment.text);
   const [commentUserInfos, setCommentUserInfos] = useState<User | null>(null);
 
   const fetchUserInfos = async () => {
     const commentUser = await getUser(comment.user_id);
     setCommentUserInfos(commentUser);
-  };
-
-  // Compte le nombre de likes par critique
-  const fetchLikesNumber = async () => {
-    let response;
-
-    if ('critic_id' in comment) {
-      response = await getCommentsCriticLikesNumber(comment.id, displayType);
-    } else if ('advice_id' in comment) {
-      response = await getCommentsAdviceLikesNumber(comment.id, displayType);
-    } else {
-      return;
-    }
-
-    setLikesNumber(response);
-  };
-
-  // Vérifie si l'utilisateur a déjà liké des commentaires
-  const checkLikesStatus = async () => {
-    let response;
-
-    if ('critic_id' in comment) {
-      response = await checkCriticCommentLikeStatus(comment.id, displayType);
-    } else if ('advice_id' in comment) {
-      response = await checkAdviceCommentLikeStatus(comment.id, displayType);
-    } else {
-      return;
-    }
-
-    setHasLiked(response);
-  };
-
-  // Gérer le clic sur l'icône de like
-  const toggleLike = async commentId => {
-    setHasLiked(!hasLiked);
-    try {
-      if (hasLiked) {
-        if ('critic_id' in comment) {
-          await removeCriticCommentLike(commentId, displayType);
-        } else if ('advice_id' in comment) {
-          await removeAdviceCommentLike(commentId, displayType);
-        } else {
-          return;
-        }
-      } else {
-        if ('critic_id' in comment) {
-          await addCriticCommentLike(commentId, displayType);
-        } else if ('advice_id' in comment) {
-          await addAdviceCommentLike(commentId, displayType);
-        } else {
-          return;
-        }
-      }
-      fetchLikesNumber();
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du like', error);
-      setHasLiked(hasLiked); // Revenir en arrière si l'action échoue
-    }
   };
 
   const updateComment = async commentId => {
@@ -144,10 +86,8 @@ const CommentsContent = ({
   };
 
   useEffect(() => {
-    fetchLikesNumber();
-    checkLikesStatus();
     fetchUserInfos();
-  }, [hasLiked]);
+  }, []);
 
   return (
     <>
@@ -156,48 +96,43 @@ const CommentsContent = ({
         direction="row"
         justifyContent="space-between"
         minHeight="67px"
-        paddingLeft="14px"
+        padding="0 10px"
         margin="5px 0"
       >
-        <Stack direction="row" alignItems="center">
-          {commentUserInfos && (
-            <UserAvatar
-              variant={'square'}
-              userInfos={commentUserInfos}
-              picWidth={50}
-              picHeight={50}
-              isOutlined={false}
-              outlineWidth={null}
-              relationType={null}
-              sx={{ borderRadius: '0' }}
-            />
-          )}
-          <MessageIcon
-            sx={{
-              fontSize: '1.2em',
-              position: 'relative',
-              bottom: '16px',
-              right: '8px',
-            }}
-          />
-        </Stack>
         <Stack direction="column" flexGrow={1}>
           <Stack
-            padding="5px 5px 5px 15px"
+            padding="5px 10px"
             sx={{
               backgroundColor: '#F1F1F1',
-              borderRadius: '10px 0 0 0',
+              borderRadius: '10px 10px 0 0',
             }}
           >
-            <Stack direction="row" justifyContent="space-between">
-              <Typography
-                component="h5"
-                align="left"
-                fontSize="1em"
-                fontWeight="bold"
-              >
-                {`${commentUserInfos?.first_name} ${commentUserInfos?.last_name}`}
-              </Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems='center' marginBottom='5px'>
+              <Stack direction='row' columnGap='10px'>
+                {commentUserInfos && (
+                  <UserAvatar
+                    variant={'circle'}
+                    userInfos={commentUserInfos}
+                    picWidth={35}
+                    picHeight={35}
+                    isOutlined={false}
+                    outlineWidth={null}
+                    relationType={null}
+                  />
+                )}
+                <Stack>
+                  <Typography
+                    variant='body2'
+                    align="left"
+                    fontWeight="600"
+                  >
+                    {`${commentUserInfos?.first_name} ${commentUserInfos?.last_name}`}
+                  </Typography>
+                  <Typography align='left' fontSize='0.8em' color='#9B9B9B'>
+                    {`le ${convertDate(comment.created_date)}`}
+                  </Typography>
+                </Stack>
+              </Stack>
               {userInfos.id === comment.user_id ? (
                 <ModifyOrDelete
                   page={page}
@@ -209,6 +144,7 @@ const CommentsContent = ({
                 />
               ) : null}
             </Stack>
+            <Divider/>
             {isModify ? (
               <Stack direction="row" margin="6px 0">
                 <TextField
@@ -242,7 +178,7 @@ const CommentsContent = ({
                 </Stack>
               </Stack>
             ) : (
-              <Typography component="p" variant="body2" align="left">
+              <Typography variant="body2" align="left" padding='5px 10px'>
                 {`${comment.text}`}
               </Typography>
             )}
@@ -250,27 +186,16 @@ const CommentsContent = ({
           <Stack
             direction="row"
             alignItems="center"
-            height="25px"
-            padding="0 15px"
+            // height="25px"
+            padding="5px 15px"
             columnGap="25px"
             sx={{
-              backgroundColor: '#E4E4E4',
-              borderRadius: '0 0 0 10px',
+              backgroundColor: '#ededed',
+              borderRadius: '0 0 10px 10px',
             }}
           >
-            <Typography variant="body2" component="p" sx={{ color: 'gray' }}>
-              {`${convertDate(comment.created_date)}`}
-            </Typography>
-            <Stack direction="row" alignItems="center" columnGap="5px">
-              <ThumbUpTwoToneIcon
-                color={hasLiked ? 'success' : 'inherit'}
-                sx={{ fontSize: '18px' }}
-                onClick={() => toggleLike(comment.id)}
-              />
-              <Typography variant="body2" component="p" fontWeight="bold">
-                {likesNumber}
-              </Typography>
-            </Stack>
+            <LikesFooter from={'comment'} infos={comment} />
+            <GoldFooter from={'comment'} infos={comment} />
           </Stack>
         </Stack>
       </Stack>

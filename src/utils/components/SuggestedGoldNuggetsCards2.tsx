@@ -1,20 +1,20 @@
-import { Box, Card, CardActionArea, CardContent, CardMedia, Divider, Stack, Typography } from '@mui/material';
-import React from 'react';
-import { YellowRating } from './styledComponent';
+// Import des libs externes
+import { Stack, Typography } from '@mui/material';
+
+// Import des icônes
 import ColoredRating from './ColoredRating';
+
+// Import des fonctions utilitaires
 import { convertRating } from '@utils/functions/convertRating';
-import { useData } from '@hooks/DataContext';
 
 const SuggestedGoldNuggetsCards2 = ({
   page,
   movie,
-  isLast,
   setGoldenMovieInfos,
   setShowGoldenMovie
 }) => {
 
-  const { displayType } = useData();
-
+  // Récupère le nom du film ou de la série
   const getMovieTitle = () => {
     if('title' in movie) {
       return `${movie.title}`;
@@ -50,7 +50,7 @@ const SuggestedGoldNuggetsCards2 = ({
             borderRadius: '7px',
           },
           '& > *': { 
-            position: 'relative',
+            position: 'absolute',
             zIndex: 2,
           },
         }}
@@ -72,6 +72,36 @@ const SuggestedGoldNuggetsCards2 = ({
         >
           {getMovieTitle()}
         </Typography>
+        <Stack 
+          direction='row' 
+          justifyContent='center'
+          alignItems='center'
+          height='20px'
+          width='100%'
+          bottom='0' 
+          bgcolor='rgba(1, 18, 18, 0.49)'
+          sx={{
+            borderRadius: '0 0 7px 7px'
+          }}
+        >
+          <ColoredRating
+            color='#E7AE1A'
+            emptyColor='#fff'
+            value={convertRating(movie.vote_average)}
+            precision={0.1}
+            readOnly={true}
+            sx={{
+              fontSize: '0.8em',
+              alignItems: 'center',
+              left: '-3px',
+              bottom: '0.5px'
+            }}
+          />
+          <Typography fontSize='0.7em' color='secondary' fontWeight='600'>
+            {`${convertRating(movie.vote_average)}`}
+          </Typography>
+        </Stack>
+      
       </Stack>
   );
 };

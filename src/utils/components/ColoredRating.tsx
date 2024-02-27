@@ -20,6 +20,7 @@ const ColoredRating = ({ color, emptyColor, value, readOnly, precision, sx }) =>
       precision={precision}
       emptyIcon={<StarIcon color={emptyColor} fontSize="inherit" />}
       sx={{
+        alignItems: 'center',
         fontSize: '0.9em',
         position: 'relative',
         left: '-4px',

@@ -1,20 +1,25 @@
+// Import des libs externes
+import { Skeleton, Stack } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+// Import des composants internes
+import SuggestedGoldNuggetsCards2 from './SuggestedGoldNuggetsCards2';
+import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
+
+// Import des hooks personnalisés
 import { useData } from '@hooks/DataContext';
 import { useCardsToShow } from '@hooks/useCardsToShow';
 import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
+
+// Import des requêtes
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { getGoldNuggetsFromAcquaintances } from '@utils/request/goldNugget/getGoldNuggetsFromAcquaintances';
-import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import SuggestedGoldNuggetsCards2 from './SuggestedGoldNuggetsCards2';
-import { Stack } from '@mui/material';
-import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
 
 const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMovies}) => {
 
   const { displayType } = useData();
   const { id } = useParams();
-
-
 
   const [showGoldenMovie, setShowGoldenMovie] = useState(false);
   const [goldenMovieInfos, setGoldenMovieInfos] = useState(null);
@@ -98,10 +103,7 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
       goldNuggetsPageRef.current = 1;
       loadGoldNuggets();
     }
-  }, [displayType, id]);
-
-  console.log(goldenMovies);
-  
+  }, [displayType, id]);  
 
   return (
     <>
@@ -118,10 +120,11 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
         )
       }
       <Stack 
-        width='calc(100vw - 5%)'
-        marginLeft='5%'
+      ref={scrollContainerRef}
+        width='calc(100vw - 3%)'
+        marginLeft='3%'
         position='absolute'
-        top='-57px'
+        top='-63px'
         sx={{
           overflowX: 'scroll'
         }}
@@ -129,21 +132,35 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
         <Stack 
           direction='row'
           columnGap='10px'
+          paddingLeft='1%'
         >
-          { goldenMovies &&
+          { goldenMovies && 
             goldenMovies.map((movie, index) => {
               return(
                 <SuggestedGoldNuggetsCards2 
                   key={movie.movie_id}
                   page={page}
                   movie={movie}
-                  isLast={index === goldenMovies.length - 1}
                   setGoldenMovieInfos={setGoldenMovieInfos}
                   setShowGoldenMovie={setShowGoldenMovie}
                 />
               ) 
             })
           }
+          {(isFetching || areGoldNuggetsLoading) &&
+            [...Array(cardsToShow)].map((_, i) => (
+              <Stack key={i} alignItems="center" marginBottom='9px'>
+                <Skeleton
+                  variant="rounded"
+                  width={90}
+                  height={120}
+                  animation="wave"
+                  sx={{
+                    bgcolor: '#6072727a'
+                  }}
+                />
+              </Stack>
+            ))}
         </Stack>
       </Stack>   
     </>

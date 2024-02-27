@@ -1,11 +1,12 @@
 // Import des libs externes
-import { Stack, Typography, CardContent } from '@mui/material';
+import { Stack, Typography, CardContent, Divider, Box, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // Import des composants customisés
 import { YellowRating } from '@utils/components/styledComponent';
 import IsNew from '@utils/components/IsNew';
 import { useMemo } from 'react';
+import ColoredRating from '@utils/components/ColoredRating';
 
 const CriticAdvicesContent = ({
   type,
@@ -52,13 +53,26 @@ const CriticAdvicesContent = ({
     return infos ? infos.vote_average / 2 : 0;
   }, [type, chosenMovie, infos]);
 
+  const overview = useMemo(() => {
+    if(type === 'new-critic' || type === 'new-advice') {
+      return chosenMovie.overview;
+    } else {
+      return infos.overview;
+    }
+  }, [infos, chosenMovie])
+
   // Arrondi à un chiffre après la virgule
   const roundedScore = parseFloat(originalScore.toFixed(1));
 
   return (
-    <CardContent sx={{ padding: '0 0 0 12px !important', flexGrow: '1' }}>
-      <Stack>
-        <Stack>
+    <CardContent 
+      sx={{ width: 'calc(100% - 90px)', 
+      padding: '0 0 0 12px !important',
+      height: '140px',
+      overflow: 'hidden'
+    }}>
+      <Stack height='100%'>
+        <Stack height='100%'>
           <Stack direction="column" columnGap="10px">
             <Stack
               direction="row"
@@ -67,11 +81,12 @@ const CriticAdvicesContent = ({
               columnGap="10px"
             >
               <Typography
-                variant="body1"
-                fontWeight="bold"
+                fontSize='1.1em'
+                fontWeight="700"
                 component="h5"
                 textAlign="left"
                 color="primary.dark"
+                lineHeight='1.4'
                 sx={{
                   maxWidth: '190px',
                 }}
@@ -88,81 +103,63 @@ const CriticAdvicesContent = ({
               ) : null}
             </Stack>
             <Stack direction="row" columnGap="5px">
-              <YellowRating
+              <ColoredRating
+                color='#FCD717'
+                emptyColor='#969696'
                 value={roundedScore}
+                readOnly={true}
                 precision={0.1}
-                readOnly
-                sx={{ position: 'relative', top: '1.4px' }}
+                sx={{
+                  fontSize: '1.1em'
+                }}
               />
               <Typography variant="body2" fontWeight="bold" component="p">
                 {`${roundedScore}` + ' / 5'}
               </Typography>
             </Stack>
           </Stack>
-          <Stack direction="row">
-            <Typography
-              variant="body2"
-              fontWeight="bold"
-              component="p"
-              color="primary.dark"
-            >
-              {'Type :'}
-            </Typography>
-            <Typography variant="body2" component="p" marginLeft="5px">
-              {movieOrSeries}
-            </Typography>
+          <Stack 
+            bgcolor='#f2f2f2' 
+            marginTop='6px' 
+            flexGrow='1' 
+            sx={{
+              borderRadius: '7px'
+            }}
+          >
+            <Stack direction='row' columnGap='7px' justifyContent='space-between' padding='5px 10px'>
+              <Typography variant="body2" fontWeight='400' color='#1D5F5F'>
+                {movieOrSeries}
+              </Typography>
+              <Divider orientation='vertical' flexItem sx={{ borderColor: '#1D5F5F'}} />
+              <Typography 
+                variant="body2" 
+                fontWeight='400' 
+                color='#1D5F5F'
+                whiteSpace='nowrap'
+                overflow='hidden'
+                textOverflow='ellipsis'
+              >
+                {genres}
+              </Typography>
+              <Divider orientation='vertical' flexItem sx={{ borderColor: '#1D5F5F'}} />
+              <Typography variant="body2" fontWeight='400' color='#1D5F5F'>
+                {releaseYear}
+              </Typography>
+            </Stack>
+            <Divider />
+            <Stack>
+              <Typography 
+                fontSize='0.85em' 
+                align='justify' 
+                padding='5px 10px'
+                fontWeight='300'
+                lineHeight='1.4'
+              >
+                {overview}
+              </Typography>
+            </Stack>
           </Stack>
-          <Stack direction="row">
-            <Typography
-              variant="body2"
-              fontWeight="bold"
-              component="p"
-              color="primary.dark"
-              whiteSpace="nowrap"
-            >
-              {'Genre :'}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="p"
-              marginLeft="5px"
-              align="left"
-            >
-              {genres}
-            </Typography>
-          </Stack>
-          <Stack direction="row">
-            <Typography
-              variant="body2"
-              fontWeight="bold"
-              component="p"
-              color="primary.dark"
-            >
-              {'Année :'}
-            </Typography>
-            <Typography variant="body2" component="p" marginLeft="5px">
-              {releaseYear}
-            </Typography>
-          </Stack>
-          <Stack direction="row">
-            <Typography
-              variant="body2"
-              fontWeight="bold"
-              component="p"
-              color="primary.dark"
-            >
-              {'Synopsis :'}
-            </Typography>
-            <Typography
-              variant="body2"
-              fontWeight="bold"
-              component="p"
-              marginLeft="5px"
-              onClick={() => setDisplayOverview(!displayOverview)}
-            >
-              {!displayOverview ? 'Afficher' : 'Masquer'}
-            </Typography>
-          </Stack>
+          
         </Stack>
       </Stack>
     </CardContent>

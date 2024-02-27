@@ -1,23 +1,34 @@
 import { useData } from '@hooks/DataContext';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Modal, Stack, Typography } from '@mui/material';
 import ColoredRating from '@utils/components/ColoredRating';
 import Header from '@utils/components/Header';
+import SearchBar from '@utils/components/SearchBar';
 import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets2';
 import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
 import TopContributors from '@views/Contacts/TopContributors';
 import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { Item } from '@utils/components/styledComponent';
+import SearchBar2 from '@utils/components/SearchBar2';
+import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
+import useVerticalScroll from '@hooks/useVerticalScroll';
+import { useParams } from 'react-router-dom';
+
 
 const HomeComponent2 = () => {
 
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
-  const { displayType } = useData();
+  const { displayType, chosenMovie, setChosenMovie } = useData();
+  const { id } = useParams();
 
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
   const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
+
+  const firstRender = useRef(true);
 
   const getCritics = async page => {
     console.log('recup des critiques');
@@ -39,10 +50,44 @@ const HomeComponent2 = () => {
     return critics.length >= 5;
   };
 
+  const { observerRef, loading, hasMore } = useVerticalScroll(
+    id,
+    firstRender,
+    getCritics,
+    displayType,
+    setCriticsOfAcquaintances,
+    setIsDataFetched,
+  );
 
   return (
     <>
       <Header page={'home'} loggedUserInfos={loggedUserInfos} />
+      <Modal
+        open={chosenMovie !== null}
+        onClose={() => setChosenMovie(null)}
+        aria-labelledby={
+          loggedUserInfos.id === parseInt(id, 10)
+            ? 'Nouvelle critique'
+            : 'Nouveau conseil'
+        }
+        aria-describedby="modal-modal-description"
+      >
+        <Stack height="100vh" padding="0 6px" justifyContent="center">
+          <CriticAdvicesComponent
+            page={'home'}
+            type={'new-critic'}
+            chosenMovie={chosenMovie}
+            data={criticsOfAcquaintances}
+            setData={setCriticsOfAcquaintances}
+            setGoldenMovies={setGoldenMovies}
+            loggedUserInfos={loggedUserInfos}
+            chosenUser={null}
+            infos={null}
+            haveMoreCritics={null}
+            isLast={null}
+          />
+        </Stack>
+      </Modal>
       <Container
         maxWidth="xl"
         sx={{
@@ -73,31 +118,35 @@ const HomeComponent2 = () => {
               maskPosition: 'center center',
             }}
           >
-            <Typography 
-              component='h2' 
-              align='center'
-              fontWeight='800'
-              fontSize='7vh'
-              color='primary'
-              letterSpacing='-2px'
-              lineHeight='normal'
-              sx={{
-                textShadow: '#01121282 -4px 4px 0'
-              }}
-            >
-                {'À la une !'}
-            </Typography>
-            <Typography 
-              component='h2' 
-              align='center'
-              fontWeight='100'
-              fontSize='5vh'
-              color='primary'
-              letterSpacing='-2px'
-              lineHeight='normal'
-            >
-                {'Flight'}
-            </Typography>
+            <Stack width='100vw' position='fixed'>
+              <Typography 
+                component='h2' 
+                align='center'
+                fontWeight='800'
+                fontSize='7vh'
+                color='primary'
+                letterSpacing='-2px'
+                lineHeight='normal'
+                marginBottom='10px'
+                sx={{
+                  textShadow: '#01121282 -4px 4px 0'
+                }}
+              >
+                  {'À la une !'}
+              </Typography>
+              <Typography 
+                component='h2' 
+                align='center'
+                fontWeight='100'
+                fontSize='5vh'
+                color='primary'
+                letterSpacing='-2px'
+                lineHeight='normal'
+              >
+                  {'Flight'}
+              </Typography>
+            </Stack>
+         
           </Stack>
           <Stack alignItems='center' position='relative' bottom='23px'>
             <Stack 
@@ -117,7 +166,7 @@ const HomeComponent2 = () => {
               </Typography>
             </Stack>
           </Stack>
-          <Stack marginTop='-10px' marginBottom='5px' padding='0 5%'>
+          <Stack marginTop='-10px' padding='0 4%'>
             <Stack>
               <Typography 
                 component='h4' 
@@ -130,14 +179,14 @@ const HomeComponent2 = () => {
             </Stack>
           </Stack>
           <Stack 
-            margin='5px 0 5px 5%' 
+            margin='3px 0 15px 4%' 
             sx={{
               overflowX: 'scroll',
             }}
           >
             <TopContributors />
           </Stack>
-          <Stack marginTop='0px' padding='0 5%'>
+          <Stack padding='0 4%'>
             <Stack>
               <Typography 
                 component='h4' 
@@ -151,8 +200,7 @@ const HomeComponent2 = () => {
           </Stack>
           <Box 
             width='100vw' 
-            height='100vh'
-            marginTop='10vh'
+            marginTop='68px'
             bgcolor='#CAE6E4'
             position='relative'
           >
@@ -163,7 +211,56 @@ const HomeComponent2 = () => {
               loggedUserInfos={loggedUserInfos}
               // chosenUser={chosenUser}
             />
+            <Stack padding='0 4%' marginTop='80px'>
+              <Stack>
+                <Typography 
+                  component='h4' 
+                  variant='body2' 
+                  fontWeight='600'
+                  color='#383838'  
+                >
+                  {'Publier une critique'}
+                </Typography>
+              </Stack>
+              <SearchBar2 page={'home'} Item={Item} loggedUserInfos={loggedUserInfos}  />
+            </Stack>
+            <Stack padding='0 4%' marginTop='20px'>
+              <Stack marginBottom='6px'>
+                <Typography 
+                  component='h4' 
+                  variant='body2' 
+                  fontWeight='600'
+                  color='#383838'  
+                >
+                  {'Fil d\'actualité'}
+                </Typography>
+              </Stack>
+              {criticsOfAcquaintances.length ? (
+                criticsOfAcquaintances.map((critic, index) => {
+                  return (
+                    <CriticAdvicesComponent
+                      key={index}
+                      page={'home'}
+                      type={'old-critic'}
+                      data={criticsOfAcquaintances}
+                      setData={setCriticsOfAcquaintances}
+                      setGoldenMovies={setGoldenMovies}
+                      chosenMovie={null}
+                      infos={critic}
+                      loggedUserInfos={loggedUserInfos}
+                      chosenUser={null}
+                      haveMoreCritics={hasMore}
+                      isLast={criticsOfAcquaintances.length - 1 === index}
+                    />
+                  );
+                })
+              ) : !criticsOfAcquaintances.length && isDataFetched ? (
+                <NoCriticAdvice page={'home'} />
+              ) : null}
+            </Stack>
+            {hasMore && <div ref={observerRef}></div>}
           </Box>
+          
         </Stack>
       </Container>
     </>

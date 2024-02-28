@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Box, Typography, Divider, Card, Button } from '@mui/material';
+import { Stack, Box, Typography, Divider, Card, Button, Collapse } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
@@ -53,6 +53,7 @@ const CriticAdvicesComponent = ({
   chosenUser,
   haveMoreCritics,
   isLast,
+  setAreUserDataFetched
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
@@ -229,8 +230,18 @@ const CriticAdvicesComponent = ({
   };
 
   const getCriticUserInfos = async id => {
-    const userInfos = await getUser(id);    
-    setCriticUserInfos(userInfos);
+    try {      
+      setAreUserDataFetched(false);
+      const userInfos = await getUser(id);    
+      setCriticUserInfos(userInfos);
+
+    } catch (error) {
+      console.log('impossible de récupérer les informations utilisateurs', error);
+      
+    } finally {
+      setAreUserDataFetched(true);
+    }
+    
   };
 
   useEffect(() => {
@@ -307,7 +318,11 @@ const CriticAdvicesComponent = ({
                 bgcolor: '#fafafa'
               }}
             >
-              <Stack direction='row' width='100%'>
+              <Stack 
+                direction='row' 
+                width='100%'
+                marginBottom={infos?.text || isModify ? '12px' : '0'}
+              >
                 <CriticAdvicesPoster
                   chosenMovie={chosenMovie}
                   type={type}
@@ -325,60 +340,33 @@ const CriticAdvicesComponent = ({
                   infos={infos}
                 />
               </Stack>
-              <Stack
-                direction="row"
-                flexGrow="1"
-                marginBottom={
-                  type === 'new-critic' || type === 'new-advice' || isModify
-                    ? '15px'
-                    : '7px'
-                }
-                sx={{
-                  maxHeight: displayOverwiew ? '100px' : '0px',
-                  overflowY: 'scroll',
-                  transition: 'max-height 0.5s ease-in-out',
-                }}
-              >
-                <Divider
-                  orientation="vertical"
-                  sx={{ borderColor: 'primary.dark' }}
+              {(type === 'old-critic' || type === 'old-advice') && infos?.text === '' && !isModify ?
+                null
+                :
+                <CriticAdvicesReview2
+                  type={type}
+                  newCriticText={newCriticText}
+                  setNewCriticText={setNewCriticText}
+                  infos={infos}
+                  // chosenMovie={chosenMovie}
+                  isModify={isModify}
+                  newRating={newRating}
+                  // chosenUser={chosenUser}
+                  criticUserInfos={criticUserInfos}
                 />
-                <Typography
-                  variant="body2"
-                  component="p"
-                  align="left"
-                  paddingLeft="10px"
-                >
-                  {chosenMovie &&
-                  (type === 'new-critic' || type === 'new-advice')
-                    ? chosenMovie.overview
-                    : infos.overview}
-                </Typography>
-              </Stack>
-              {(type === 'new-critic' || type === 'new-advice' || infos.text === '') ? 
-                null 
-                : (
-                  <CriticAdvicesReview2
-                    // type={type}
-                    // newCriticText={newCriticText}
-                    // setNewCriticText={setNewCriticText}
-                    infos={infos}
-                    // chosenMovie={chosenMovie}
-                    // isModify={isModify}
-                    // newRating={newRating}
-                    // chosenUser={chosenUser}
-                    // criticUserInfos={criticUserInfos}
-                  />
-                )}
+              }
               {type === 'new-critic' || type === 'new-advice' || isModify ? (
                 <Stack direction="row" flexBasis="100%" justifyContent="center">
                   <Button
                     variant="contained"
                     sx={{
-                      maxWidth: '100px',
-                      maxHeight: '30px',
+                      width: '100px',
+                      height: '30px',
+                      padding: '0',
+                      marginTop: '12px',
                       backgroundColor:
                         newRating === null && !isModify ? '#a09f9f' : '#F29E50',
+                      color: '#fff',
                       opacity: newRating === null && !isModify ? '0.3' : '1',
                       cursor:
                         newRating === null && !isModify ? 'help' : 'pointer',
@@ -403,11 +391,14 @@ const CriticAdvicesComponent = ({
                       }
                     }}
                   >
-                    {isModify
-                      ? 'Modifier'
-                      : type === 'new-advice'
-                      ? 'Conseiller'
-                      : 'Publier'}
+                    <Typography fontWeight='500' paddingTop='3.5px'>
+                      {isModify
+                        ? 'Modifier'
+                        : type === 'new-advice'
+                        ? 'Conseiller'
+                        : 'Publier'
+                      }
+                    </Typography>     
                   </Button>
                 </Stack>
               ) : null}
@@ -424,7 +415,7 @@ const CriticAdvicesComponent = ({
           ) : null}
         </Stack>
       </Item>
-      {displayComments ? (
+      <Collapse in={displayComments}>
         <CommentsComponent
           page={page}
           criticId={infos.critic_id}
@@ -432,14 +423,14 @@ const CriticAdvicesComponent = ({
           comments={comments}
           setComments={setComments}
         />
-      ) : null}
-      {isLast && !haveMoreCritics ? (
+      </Collapse>
+      {isLast && !haveMoreCritics && (
         <Item>
           <Stack>
             <Typography fontSize="1em">{"Et c'est tout !"}</Typography>
           </Stack>
         </Item>
-      ) : null}
+      )}
     </>
   );
 };

@@ -215,7 +215,7 @@ const ProfilComponent = () => {
           />
         </Stack>
       </Modal>
-      <Header loggedUserInfos={loggedUserInfos} />
+      <Header page={'profil'} />
       <Card
         sx={{
           height: '30vh',

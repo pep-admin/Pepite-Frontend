@@ -123,8 +123,8 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
       ref={scrollContainerRef}
         width='calc(100vw - 3%)'
         marginLeft='3%'
-        position='absolute'
-        top='-63px'
+        position= 'absolute'
+        top='-59px'
         sx={{
           overflowX: 'scroll'
         }}

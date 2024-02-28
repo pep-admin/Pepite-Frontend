@@ -164,7 +164,7 @@ const CriticAdvicesFooter = ({
             </Typography>
           </Box>
           <LikesFooter from={'critic'} infos={infos} />
-          <GoldFooter infos={infos} />
+          <GoldFooter from={'critic'} infos={infos} />
         </Stack>
         
         {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
@@ -195,7 +195,9 @@ const CriticAdvicesFooter = ({
                 <Stack direction="row" columnGap="5px" alignItems="center">
                   <LibraryAddCheckTwoToneIcon
                     fontSize="small"
-                    color="primary"
+                    sx={{
+                      color: "#24A5A5"
+                    }}
                   />
                   <Typography variant="body2" fontWeight="600">
                     {'À voir'}
@@ -256,7 +258,9 @@ const CriticAdvicesFooter = ({
                 <ListItemIcon sx={{ minWidth: 'auto !important' }}>
                   <LibraryAddCheckTwoToneIcon
                     fontSize="small"
-                    color={userMovieStatus?.isWanted ? 'primary' : 'inherit'}
+                    sx={{
+                      color: userMovieStatus?.isWanted ? "#24A5A5" : "inherit"
+                    }}
                   />
                 </ListItemIcon>
                 <Typography fontSize="0.8em" lineHeight="normal">

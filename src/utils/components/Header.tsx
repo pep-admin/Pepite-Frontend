@@ -28,6 +28,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import SwipeIcon from '@mui/icons-material/Swipe';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import GroupsIcon from '@mui/icons-material/Groups';
+import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -40,7 +41,7 @@ import { MagnifyingGlassIcon } from './styledComponent';
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = ({ page, loggedUserInfos }) => {
+const Header = ({ page }) => {
   // const { displayType, setDisplayType } = useData();
   const userId = localStorage.getItem('user_id');
 
@@ -57,6 +58,8 @@ const Header = ({ page, loggedUserInfos }) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    console.log('settings', event.currentTarget);
+    
     setAnchorElUser(event.currentTarget);
   };
 
@@ -83,7 +86,7 @@ const Header = ({ page, loggedUserInfos }) => {
 
   return (
     <AppBar 
-      position={page === 'swipe' ? 'absolute' : page === 'home' ? 'fixed' : 'static'} 
+      position={page === 'swipe' ? 'absolute' : 'fixed'} 
       sx={{ 
         height: '50px', 
         justifyContent: 'center', 
@@ -101,55 +104,6 @@ const Header = ({ page, loggedUserInfos }) => {
           justifyContent: 'space-between'
         }}
       >
-        {/* <ToggleButtonGroup
-          color="primary"
-          value={alignment}
-          exclusive
-          onChange={handleChange}
-          aria-label="Platform"
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            flexGrow: '1',
-          }}
-        >
-          <ToggleButton
-            value="tous"
-            sx={{
-              padding: '5px',
-              fontSize: '0.7em',
-              fontWeight: 'bold',
-            }}
-            // onClick={() => setDisplayType('all')}
-            selected={displayType === 'all'}
-          >
-            {'Tous'}
-          </ToggleButton>
-          <ToggleButton
-            value="films"
-            sx={{
-              padding: '5px',
-              fontSize: '0.7em',
-              fontWeight: 'bold',
-            }}
-            onClick={() => setDisplayType('movie')}
-            selected={displayType === 'movie'}
-          >
-            {'Films'}
-          </ToggleButton>
-          <ToggleButton
-            value="series"
-            sx={{
-              padding: '5px',
-              fontSize: '0.7em',
-              fontWeight: 'bold',
-            }}
-            onClick={() => setDisplayType('tv')}
-            selected={displayType === 'tv'}
-          >
-            {'Séries'}
-          </ToggleButton>
-        </ToggleButtonGroup> */}
         <Stack
           sx={{
             display: 'flex',
@@ -250,46 +204,26 @@ const Header = ({ page, loggedUserInfos }) => {
           </Typography>
         </Stack>
         <Stack>
-          <MagnifyingGlassIcon />
-        </Stack>
-        {/* <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Badge
-                badgeContent={4}
-                color="primary"
-                sx={{
-                  '& .MuiBadge-badge': {
-                    top: '6px',
-                    right: '2px',
-                  },
-                }}
-              >
-                <UserAvatar
-                  variant={'circular'}
-                  userInfos={loggedUserInfos}
-                  picWidth={45}
-                  picHeight={45}
-                  isOutlined={false}
-                  outlineWidth={null}
-                  relationType={null}
-                  sx={null}
-                />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-nav-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenUserMenu}
+            sx={{ color: '#fff', padding: '0'}}
+          >
+            <ManageAccountsRoundedIcon sx={{ fontSize: '27px'}} />
+          </IconButton>
           <Menu
-            sx={{ mt: '45px' }}
-            id="menu-user-appbar"
             anchorEl={anchorElUser}
             anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: 'bottom',
+              horizontal: 'left',
             }}
             keepMounted
             transformOrigin={{
               vertical: 'top',
-              horizontal: 'right',
+              horizontal: 'left',
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
@@ -339,14 +273,14 @@ const Header = ({ page, loggedUserInfos }) => {
               ),
             ])}
           </Menu>
-        </Box> */}
+        </Stack>
       </Toolbar>
     </AppBar>
   );
 };
 
 Header.propTypes = {
-  loggedUserInfos: PropTypes.object.isRequired,
+  // loggedUserInfos: PropTypes.object.isRequired,
   setUserInfos: PropTypes.func,
 };
 

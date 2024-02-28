@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Typography } from '@mui/material';
+import { Badge, Stack, Typography } from '@mui/material';
 
 // Import des icônes
 import ColoredRating from './ColoredRating';
@@ -12,7 +12,7 @@ const SuggestedGoldNuggetsCards2 = ({
   movie,
   setGoldenMovieInfos,
   setShowGoldenMovie
-}) => {
+}) => {  
 
   // Récupère le nom du film ou de la série
   const getMovieTitle = () => {
@@ -24,6 +24,18 @@ const SuggestedGoldNuggetsCards2 = ({
   }
 
   return (
+    <Badge
+      badgeContent={movie.users?.length} 
+      color='secondary'
+      sx={{
+        '& .MuiBadge-badge': {
+          right: 0,
+          top: 10,
+          border: `2px solid`,
+          padding: '0 4px',
+        },
+      }}
+    >
       <Stack
         height='120px'
         width='90px'
@@ -101,8 +113,8 @@ const SuggestedGoldNuggetsCards2 = ({
             {`${convertRating(movie.vote_average)}`}
           </Typography>
         </Stack>
-      
       </Stack>
+    </Badge>
   );
 };
 

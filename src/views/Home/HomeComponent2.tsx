@@ -1,21 +1,26 @@
-import { useData } from '@hooks/DataContext';
+// Import des libs externes
+import { useEffect, useRef, useState } from 'react';
 import { Box, Container, Modal, Stack, Typography } from '@mui/material';
-import ColoredRating from '@utils/components/ColoredRating';
+import { useParams } from 'react-router-dom';
+
+// Import des composants internes
 import Header from '@utils/components/Header';
-import SearchBar from '@utils/components/SearchBar';
-import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets2';
-import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
-import ContactsSuggestions from '@views/Contacts/ContactsSuggestions';
 import TopContributors from '@views/Contacts/TopContributors';
-import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
-import React, { useRef, useState } from 'react';
-import { Item } from '@utils/components/styledComponent';
+import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets2';
 import SearchBar2 from '@utils/components/SearchBar2';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
-import useVerticalScroll from '@hooks/useVerticalScroll';
-import { useParams } from 'react-router-dom';
+import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
+import ColoredRating from '@utils/components/ColoredRating';
 
+// Import du contexte
+import { useData } from '@hooks/DataContext';
+
+// Import du hook de scroll vertical infini
+import useVerticalScroll from '@hooks/useVerticalScroll';
+
+// Import des requêtes
+import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 
 const HomeComponent2 = () => {
 
@@ -26,12 +31,13 @@ const HomeComponent2 = () => {
 
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
+  const [newCritics, setNewCritics] = useState([]);
   const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
+  const [areUserDataFetched, setAreUserDataFetched] = useState(false);
 
   const firstRender = useRef(true);
 
   const getCritics = async page => {
-    console.log('recup des critiques');
 
     const critics = await getAllCriticsOfAcquaintances(
       loggedUserInfos.id,
@@ -43,7 +49,7 @@ const HomeComponent2 = () => {
       ...existingCritics,
       ...critics,
     ]);
-
+    
     setIsDataFetched(true);
 
     // Return un booléen true si des données supplémentaires existent, sinon false
@@ -59,9 +65,15 @@ const HomeComponent2 = () => {
     setIsDataFetched,
   );
 
+  
+  useEffect(() => {
+    console.log('loading...', loading);
+    console.log('infos des users récupérés ?', areUserDataFetched);
+  }, [loading, areUserDataFetched])  
+
   return (
     <>
-      <Header page={'home'} loggedUserInfos={loggedUserInfos} />
+      <Header page={'home'} />
       <Modal
         open={chosenMovie !== null}
         onClose={() => setChosenMovie(null)}
@@ -85,6 +97,7 @@ const HomeComponent2 = () => {
             infos={null}
             haveMoreCritics={null}
             isLast={null}
+            setAreUserDataFetched={null}
           />
         </Stack>
       </Modal>
@@ -187,20 +200,18 @@ const HomeComponent2 = () => {
             <TopContributors />
           </Stack>
           <Stack padding='0 4%'>
-            <Stack>
-              <Typography 
-                component='h4' 
-                variant='body2' 
-                fontWeight='600'
-                color='#383838'  
-              >
-                {'Dernières pépites de vos contacts'}
-              </Typography>
-            </Stack>
+            <Typography 
+              component='h4' 
+              variant='body2' 
+              fontWeight='600'
+              color='#383838'  
+            >
+              {'Dernières pépites de vos contacts'}
+            </Typography>
           </Stack>
           <Box 
             width='100vw' 
-            marginTop='68px'
+            marginTop='64px'
             bgcolor='#CAE6E4'
             position='relative'
           >
@@ -222,7 +233,7 @@ const HomeComponent2 = () => {
                   {'Publier une critique'}
                 </Typography>
               </Stack>
-              <SearchBar2 page={'home'} Item={Item} loggedUserInfos={loggedUserInfos}  />
+              <SearchBar2 page={'home'} loggedUserInfos={loggedUserInfos}  />
             </Stack>
             <Stack padding='0 4%' marginTop='20px'>
               <Stack marginBottom='6px'>
@@ -251,6 +262,7 @@ const HomeComponent2 = () => {
                       chosenUser={null}
                       haveMoreCritics={hasMore}
                       isLast={criticsOfAcquaintances.length - 1 === index}
+                      setAreUserDataFetched={setAreUserDataFetched}
                     />
                   );
                 })
@@ -258,6 +270,7 @@ const HomeComponent2 = () => {
                 <NoCriticAdvice page={'home'} />
               ) : null}
             </Stack>
+            {(loading || !areUserDataFetched) && <SkeletonCard />}
             {hasMore && <div ref={observerRef}></div>}
           </Box>
           

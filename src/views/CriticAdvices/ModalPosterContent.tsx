@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Typography, Divider } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -61,7 +61,7 @@ const ModalPosterContent = ({
       left="0"
       height="100%"
       width="100%"
-      bgcolor="rgba(0, 0, 0, 0.67)"
+      bgcolor={!showMovieInfos ? "rgba(0, 0, 0, 0.67)" : "rgba(0, 0, 0, 0.85)"}
       padding="6px 20px"
       alignItems="center"
       sx={{
@@ -75,7 +75,6 @@ const ModalPosterContent = ({
         fontSize="3em"
         fontFamily="League Spartan"
         fontWeight={800}
-        marginBottom="7px"
         sx={{
           letterSpacing: '-3.5px',
           visibility:
@@ -86,17 +85,6 @@ const ModalPosterContent = ({
       >
         {'pépite.'}
       </Typography>
-      <Divider
-        sx={{
-          width: '75px',
-          borderBottomWidth: 'medium',
-          borderColor: '#fff',
-          visibility:
-            infos.is_gold_nugget === 1 || from === 'suggested'
-              ? 'visible'
-              : 'hidden',
-        }}
-      />
       <Stack
         width="100%"
         flexGrow="1"
@@ -118,31 +106,18 @@ const ModalPosterContent = ({
           // Si la modale affichée vient de la page de profil ou directement des critiques
           !showMovieInfos && (page === 'profil' || from === 'critic') ? (
             <>
-              <UserAvatar
-                variant={'circular'}
-                userInfos={
-                  loggedUserInfos.id === infos.user_id
-                    ? loggedUserInfos
-                    : chosenUser?.id === (infos.user_id || infos.sender_id)
-                    ? chosenUser
-                    : criticUserInfos
-                }
-                picWidth={90}
-                picHeight={90}
-                isOutlined={true}
-                outlineWidth={'3.5px'}
-                relationType={
-                  loggedUserInfos.id === infos.user_id
-                    ? 'self'
-                    : page === 'profil'
-                    ? chosenUser.relation_type
-                    : criticUserInfos.relation_type
-                }
-                sx={{ order: '2', marginBottom: '15px' }}
-              />
-              <Typography fontSize="1em" color="#fff" order="2">
+              <Typography 
+                variant='body1' 
+                fontWeight='400' 
+                color="#fff" 
+                order="2"
+                marginBottom='10px'
+              >
                 {loggedUserInfos.id === (infos.user_id || infos.sender_id) ? (
-                  `Vous avez noté le ${convertDate(infos.critic_date)}`
+                  <>
+                    {'Vous avez noté le '}
+                    <span style={{ color: '#24a5a5' }}>{`${convertDate(infos.critic_date)}`}</span>
+                  </>
                 ) : (
                   <>
                     <span
@@ -179,12 +154,14 @@ const ModalPosterContent = ({
               relationsRatings={relationsRatings}
             />
           ) : (
-            <Stack order="8">
+            <Stack order="8" marginTop='10px'>
               <Typography
                 align="justify"
                 variant="body2"
                 color="#fff"
                 marginTop="10px"
+                fontWeight='300'
+                lineHeight='1.7'
               >
                 {`${infos?.overview}`}
               </Typography>
@@ -197,9 +174,10 @@ const ModalPosterContent = ({
           columnGap="10px"
           maxWidth="200px"
           order="6"
+          marginBottom='10px'
         >
           <Typography
-            color="primary"
+            color="secondary"
             align="center"
             fontSize="1.5em"
             fontWeight="bold"
@@ -237,7 +215,13 @@ const ModalPosterContent = ({
               }
               sx={{ marginRight: '10px', fontSize: '1.3em' }}
             />
-            <Typography fontSize="1.3em" color="secondary" fontWeight="bold">
+            <Typography 
+              fontSize="1.2em" 
+              color="primary" 
+              lineHeight='normal' 
+              fontWeight="500"
+              paddingTop='3px' 
+            >
               {`${formatRating(
                 page === 'profil' || from === 'critic'
                   ? infos.rating

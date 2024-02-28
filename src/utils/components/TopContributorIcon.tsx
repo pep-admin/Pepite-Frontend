@@ -1,5 +1,4 @@
 import { Stack } from '@mui/material';
-import React from 'react';
 
 const TopContributorIcon = ({ color, sx }) => {
   return (

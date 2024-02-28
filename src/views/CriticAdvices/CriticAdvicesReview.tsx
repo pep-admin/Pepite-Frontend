@@ -49,7 +49,10 @@ const CriticAdvicesReview = ({
       <FormControl
         variant="outlined"
         fullWidth
-        sx={{ height: '100%', flexGrow: '1' }}
+        sx={{ 
+          height: '100%', 
+          flexGrow: '1',
+        }}
       >
         <InputLabel
           htmlFor="custom-outlined-input"
@@ -85,6 +88,7 @@ const CriticAdvicesReview = ({
               borderRadius: size === 'small' ? '10px 0 0 10px' : '0',
               borderColor: '#8e8e8e6e',
             },
+            
           }}
           inputProps={{
             sx: {

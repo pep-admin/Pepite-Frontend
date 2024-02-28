@@ -87,7 +87,7 @@ const CriticAdvicesHeader2 = ({
       case 'followed':
         return '#24A5A5';
       default:
-        return 'inherit';
+        return '#F29E50';
     }
   };
 
@@ -203,15 +203,7 @@ const CriticAdvicesHeader2 = ({
             emptyColor='#969696'
             precision={0.5}
             color={
-              (page === 'profil' && chosenUser?.relation_type === 'friend') ||
-              (page === 'home' && infos?.relation_type === 'friend') ||
-              loggedUserInfos.id === parseInt(id, 10)
-                ? '#F29E50'
-                : (page === 'profil' &&
-                    chosenUser?.relation_type === 'close_friend') ||
-                  (page === 'home' && infos?.relation_type === 'close_friend')
-                ? '#ff7b00'
-                : '#24A5A5'
+              findGoodColor(page)
             }
             value={
               type === 'new-critic' || type === 'new-advice' || isModify
@@ -236,11 +228,14 @@ const CriticAdvicesHeader2 = ({
                 }}
                 onClick={e => handleRatingsMenu(e)}
               >
-                {newRating === null && !isModify
-                  ? '?'
-                  : newRating === null && isModify
-                  ? `${formatRating(infos.rating)}`
-                  : newRating}
+                <Typography variant='body2' fontWeight='600' position='relative' top='1px'>
+                  {newRating === null && !isModify
+                    ? '?'
+                    : newRating === null && isModify
+                    ? `${formatRating(infos.rating)}`
+                    : newRating}
+                </Typography>
+                
               </Box>
               <RatingMenu
                 utility={'new-post'}

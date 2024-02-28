@@ -36,9 +36,9 @@ const UserAvatar = ({
       case 'followed':
         return '#24a5a5';
       case 'self':
-        return '#fff';
+        return '#FDFDFD';
       default:
-        return '#fff';
+        return '#FDFDFD';
     }
   };
 

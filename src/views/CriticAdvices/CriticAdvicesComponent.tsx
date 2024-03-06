@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Box, Typography, Divider, Card, Button, Collapse } from '@mui/material';
+import { Stack, Typography, Card, Button, Collapse } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
@@ -11,9 +11,7 @@ import { useData } from '@hooks/DataContext';
 import { Item } from '@utils/components/styledComponent';
 
 // Import des composants internes
-import CriticAdvicesHeader from './CriticAdvicesHeader';
 import CriticAdvicesContent from './CriticAdvicesContent';
-import CriticAdvicesReview from './CriticAdvicesReview';
 import CriticAdvicesFooter from './CriticAdvicesFooter';
 import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
@@ -33,11 +31,8 @@ import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
 import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
 import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
 
-// Import des fonctions utiles
-import { convertDate } from '@utils/functions/convertDate';
-
 // Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
-import { useCardsToShow } from '@hooks/useCardsToShow';
+import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
 import CriticAdvicesHeader2 from './CriticAdvicesHeader2';
 import CriticAdvicesReview2 from './CriticAdvicesReview2';
 
@@ -53,13 +48,11 @@ const CriticAdvicesComponent = ({
   chosenUser,
   haveMoreCritics,
   isLast,
-  setAreUserDataFetched
 }) => {
   const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
   const [newCriticText, setNewCriticText] = useState(''); // Nouveau texte de critique
   const [isGoldNugget, setIsGoldNugget] = useState(false); // Pépite ou non
-  // const [isNuggetAnimEnded, setIsNuggetAnimEnded] = useState(false);
   const [isTurnip, setIsTurnip] = useState(false); // Navet ou non
   const [isModify, setIsModify] = useState(false);
   const [displayComments, setDisplayComments] = useState(false);
@@ -67,6 +60,7 @@ const CriticAdvicesComponent = ({
   const [comments, setComments] = useState([]);
   const [displayRatings, setDisplayRatings] = useState(null);
   const [criticUserInfos, setCriticUserInfos] = useState({});
+  const [areUserDataFetched, setAreUserDataFetched] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState({
     state: null,
     message: null,
@@ -82,7 +76,7 @@ const CriticAdvicesComponent = ({
   /* Calcule les cards à afficher selon la largeur du viewport.
     width: 95px, gap: 6px, 3 cards en plus pour la marge
   */
-  const cardsToShow = useCardsToShow(95, 6, 3);
+  const cardsToShow = useCardsToShowHorizontal(95, 6, 3);
 
   // Fonction pour effectuer les mises à jour après la modification
   const performUpdatePostProcessing = async (
@@ -91,6 +85,8 @@ const CriticAdvicesComponent = ({
     displayType,
     isNewEntity,
   ) => {
+    console.log('action après envoi', page);
+    
     const message = isNewEntity
       ? `${
           type === 'critic' ? 'Critique ajoutée' : 'Conseil ajouté'
@@ -107,7 +103,7 @@ const CriticAdvicesComponent = ({
 
     const newData =
       type === 'critic'
-        ? await getCriticsOfUser(userId, displayType, 1)
+        ? await getCriticsOfUser(userId, displayType, 1, 5)
         : await getAdvicesReceived(id, displayType, 1);
 
     setData(newData);
@@ -119,6 +115,8 @@ const CriticAdvicesComponent = ({
         cardsToShow,
         1,
       );
+      console.log('les pépites', response.data.goldenMovies);
+      
 
       setGoldenMovies(response.data.goldenMovies);
     }
@@ -237,7 +235,7 @@ const CriticAdvicesComponent = ({
 
     } catch (error) {
       console.log('impossible de récupérer les informations utilisateurs', error);
-      
+
     } finally {
       setAreUserDataFetched(true);
     }
@@ -283,7 +281,7 @@ const CriticAdvicesComponent = ({
           // usage={'overwrite'}
         />
       ) : null}
-      <Item marginbottom='15px' >
+      <Item marginbottom={(type === 'old-critic' || type === 'old-advice') ? '15px' : '0'} >
         <Stack height="100%">
           <Stack direction="column" position="relative">
             <CriticAdvicesHeader2
@@ -304,6 +302,7 @@ const CriticAdvicesComponent = ({
               setIsTurnip={setIsTurnip}
               chosenUser={chosenUser}
               criticUserInfos={criticUserInfos}
+              areUserDataFetched={areUserDataFetched}
             />
           </Stack>
           <Stack padding="12px 8px">
@@ -404,7 +403,7 @@ const CriticAdvicesComponent = ({
               ) : null}
             </Card>
           </Stack>
-          {type === 'old-critic' || type === 'old-advice' ? (
+          {(type === 'old-critic' || type === 'old-advice') && (
             <CriticAdvicesFooter
               data={data}
               infos={infos}
@@ -412,20 +411,22 @@ const CriticAdvicesComponent = ({
               setDisplayComments={setDisplayComments}
               comments={comments}
             />
-          ) : null}
+          )}
         </Stack>
       </Item>
-      <Collapse in={displayComments}>
-        <CommentsComponent
-          page={page}
-          criticId={infos.critic_id}
-          adviceId={infos.advice_id}
-          comments={comments}
-          setComments={setComments}
-        />
-      </Collapse>
+      {(type === 'old-critic' || type === 'old-advice') && (
+        <Collapse in={displayComments}>
+          <CommentsComponent
+            page={page}
+            criticId={infos.critic_id}
+            adviceId={infos.advice_id}
+            comments={comments}
+            setComments={setComments}
+          />
+        </Collapse>
+      )}
       {isLast && !haveMoreCritics && (
-        <Item>
+        <Item marginbottom='15px'>
           <Stack>
             <Typography fontSize="1em">{"Et c'est tout !"}</Typography>
           </Stack>

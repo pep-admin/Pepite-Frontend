@@ -13,6 +13,7 @@ interface ItemProps {
   overflow?: string;
   display?: 'block' | 'flex';
   flexdirection?: CSSProperties['flexDirection'];
+  flexgrow?: CSSProperties['flexGrow'];
   alignitems?: CSSProperties['alignItems'];
   justifycontent?: CSSProperties['justifyContent'];
   outline?: string;
@@ -33,6 +34,7 @@ const StyledPaper = styled(Paper)<ItemProps>(
     overflow,
     display,
     flexdirection,
+    flexgrow,
     alignitems,
     justifycontent,
     position,
@@ -46,11 +48,12 @@ const StyledPaper = styled(Paper)<ItemProps>(
     overflow: overflow || 'visible',
     display: display || 'block',
     flexDirection: flexdirection || 'initial', // sera ignoré si display n'est pas "flex"
+    flexGrow: flexgrow || '0',
     alignItems: alignitems || 'initial', // sera ignoré si display n'est pas "flex"
     justifyContent: justifycontent || 'initial', // sera ignoré si display n'est pas "flex"
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fafafa',
     ...theme.typography.body2,
-    borderRadius: borderradius || '10px',
+    borderRadius: borderradius || '7px',
     textAlign: 'center',
     color: theme.palette.text.primary,
     outline: 'none',

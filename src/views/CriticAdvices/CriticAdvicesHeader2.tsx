@@ -1,21 +1,24 @@
 // Import des libs externes
-import { Stack, Box, Typography, Avatar, Divider } from '@mui/material';
+import { Stack, Box, Typography, Divider, Skeleton } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
+// Import des composants internes
+import UserAvatar from '@utils/components/UserAvatar';
+import ColoredRating from '@utils/components/ColoredRating';
+import RatingMenu from '@utils/components/RatingMenu';
+import ModifyOrDelete from '@utils/components/ModifyOrDelete';
 
 // Import des icônes
 import ClearIcon from '@mui/icons-material/Clear';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import ModifyOrDelete from '@utils/components/ModifyOrDelete';
+
+// Import des fonctions utilitaires
 import { formatRating } from '@utils/functions/formatRating';
-import ColoredRating from '@utils/components/ColoredRating';
-import RatingMenu from '@utils/components/RatingMenu';
-import { apiBaseUrl } from '@utils/request/config';
 import { convertDate } from '@utils/functions/convertDate';
-import UserAvatar from '@utils/components/UserAvatar';
 
 const CriticAdvicesHeader2 = ({
   page,
@@ -31,11 +34,11 @@ const CriticAdvicesHeader2 = ({
   setIsModify,
   isGoldNugget,
   setIsGoldNugget,
-  // setIsNuggetAnimEnded,
   isTurnip,
   setIsTurnip,
   chosenUser,
   criticUserInfos,
+  areUserDataFetched
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
@@ -163,7 +166,7 @@ const CriticAdvicesHeader2 = ({
       );
     }
   };  
-
+  
   return (
     <>
     <Stack
@@ -173,13 +176,21 @@ const CriticAdvicesHeader2 = ({
       padding="0 10px"
       columnGap="10px"
     >
-      {criticUserInfos.profilPics &&
+      {areUserDataFetched || type === 'new-critic' || type === 'new-advice' ?
         <UserAvatar 
           variant='circle'
-          userInfos={criticUserInfos}
-          picWidth={40}
+          userInfos={type === 'new-critic' || type === 'new-advice' ? loggedUserInfos : criticUserInfos}
           picHeight={40}
+          picWidth={40}
           isOutlined={false}
+          redirection={true}
+        />
+        :
+        <Skeleton 
+          variant='circular' 
+          animation='wave'
+          height={40}
+          width={40}
         />
       }
       <Stack alignItems='flex-start'>

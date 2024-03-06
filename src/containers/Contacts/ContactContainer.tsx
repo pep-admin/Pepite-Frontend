@@ -1,7 +1,7 @@
-import ContactsComponent from '@views/Contacts/ContactsComponent';
+import ContactsComponent2 from '@views/Contacts/ContactsComponent2';
 
 const ContactContainer = () => {
-  return <ContactsComponent />;
+  return <ContactsComponent2 />;
 };
 
 export default ContactContainer;

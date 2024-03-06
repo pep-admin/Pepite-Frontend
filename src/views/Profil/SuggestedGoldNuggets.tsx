@@ -17,7 +17,7 @@ import ProfilNoGold from '@views/Profil/ProfilNoGold';
 import SuggestedGoldNuggetsCards from '@views/Profil/SuggestedGoldNuggetsCards';
 
 // Import des hooks personnalisés
-import { useCardsToShow } from '@hooks/useCardsToShow';
+import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
 import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
 
 const SuggestedGoldNuggets = ({
@@ -41,7 +41,7 @@ const SuggestedGoldNuggets = ({
   /* Calcule les cards à afficher selon la largeur du viewport.
     width: 95px, gap: 6px, 3 cards en plus pour la marge
   */
-  const cardsToShow = useCardsToShow(95, 6, 3);
+  const cardsToShow = useCardsToShowHorizontal(95, 6, 3);
 
   const { displayType } = useData();
   const { id } = useParams();
@@ -164,7 +164,7 @@ const SuggestedGoldNuggets = ({
             overflowX: 'scroll',
           }}
         >
-          {goldenMovies.length > 0 &&
+          {/* {goldenMovies.length > 0 &&
             goldenMovies.map((movie, index) => {
               if (displayType === 'movie' && !movie.movie_id) return null;
               if (displayType === 'tv' && !movie.serie_id) return null;
@@ -183,7 +183,7 @@ const SuggestedGoldNuggets = ({
                   setShowGoldenMovie={setShowGoldenMovie}
                 />
               );
-            })}
+            })} */}
           {(isFetching || areGoldNuggetsLoading) &&
             [...Array(cardsToShow)].map((_, i) => (
               <Stack key={i} height="144px" alignItems="center">

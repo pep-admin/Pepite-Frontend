@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Skeleton, Stack } from '@mui/material';
+import { Paper, Skeleton, Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
 
 // Import des hooks personnalisés
 import { useData } from '@hooks/DataContext';
-import { useCardsToShow } from '@hooks/useCardsToShow';
+import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
 import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
 
 // Import des requêtes
@@ -34,7 +34,7 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
    /* Calcule les cards à afficher selon la largeur du viewport.
     width: 95px, gap: 6px, 3 cards en plus pour la marge
   */
-  const cardsToShow = useCardsToShow(95, 6, 3);
+  const cardsToShow = useCardsToShowHorizontal(95, 6, 3);
 
   const loadGoldNuggets = async () => {
     if (!hasMoreDataRef.current) return;
@@ -65,6 +65,8 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
       setGoldenMovies(prev => [...prev, ...data.goldenMovies]);
 
       if (!data.hasMore) {
+        console.log('plus aucune pépite à récup');
+        
         hasMoreDataRef.current = false;
       }
 
@@ -103,7 +105,7 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
       goldNuggetsPageRef.current = 1;
       loadGoldNuggets();
     }
-  }, [displayType, id]);  
+  }, [id]);    
 
   return (
     <>
@@ -120,14 +122,14 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
         )
       }
       <Stack 
-      ref={scrollContainerRef}
-        width='calc(100vw - 3%)'
-        marginLeft='3%'
-        position= 'absolute'
-        top='-59px'
-        sx={{
-          overflowX: 'scroll'
-        }}
+        ref={scrollContainerRef}
+          width='calc(100vw - 3%)'
+          marginLeft='3%'
+          position= 'absolute'
+          top='-59px'
+          sx={{
+            overflowX: 'scroll'
+          }}
       >
         <Stack 
           direction='row'
@@ -135,7 +137,7 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
           paddingLeft='1%'
         >
           { goldenMovies && 
-            goldenMovies.map((movie, index) => {
+            goldenMovies.map((movie) => {
               return(
                 <SuggestedGoldNuggetsCards2 
                   key={movie.movie_id}
@@ -147,24 +149,43 @@ const SuggestedGoldNuggets2 = ({page, loggedUserInfos, goldenMovies, setGoldenMo
               ) 
             })
           }
-          {(isFetching || areGoldNuggetsLoading) &&
-            [...Array(cardsToShow)].map((_, i) => (
-              <Stack key={i} alignItems="center" marginBottom='9px'>
-                <Skeleton
-                  variant="rounded"
-                  width={90}
-                  height={120}
-                  animation="wave"
-                  sx={{
-                    bgcolor: '#6072727a'
-                  }}
+          {/* Affichage conditionnel en fonction du chargement des données */}
+          {(areGoldNuggetsLoading || isFetching) && hasMoreDataRef.current ? (
+              // Affichage des Skeletons pendant le chargement
+              Array.from({ length: cardsToShow }).map((_, index) => (
+                <Skeleton 
+                  key={index} 
+                  variant="rounded" 
+                  width={90} 
+                  height={120} 
+                  animation="wave" 
+                  sx={{ 
+                    bgcolor: '#1a999945', 
+                    flexShrink: '0',
+                    marginBottom: '9px' 
+                  }} 
                 />
-              </Stack>
-            ))}
+              ))
+          ) : (
+            // Affichage des Papers une fois que les données sont chargées
+            Array.from({ length: Math.max(cardsToShow - goldenMovies.length, 0) }).map((_, index) => (
+              <Paper
+                key={index} 
+                sx={{
+                  width: 90, 
+                  height: 120, 
+                  bgcolor: '#1a999945',
+                  flexShrink: '0',
+                  marginBottom: '9px',
+                  boxShadow: '0px 2px 1px -1px rgb(174 174 174 / 20%), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgb(69 69 69 / 12%)'
+                }} 
+              />
+            ))
+          )
+          }
         </Stack>
       </Stack>   
     </>
-    
   );
 };
 

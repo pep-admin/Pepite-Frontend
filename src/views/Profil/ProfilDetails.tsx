@@ -47,7 +47,7 @@ const ProfilDetails = ({ criticsAndAdvices, loggedUserInfos, chosenUser }) => {
       padding="7px"
       display="flex"
       flexdirection="column"
-      margintop="6px"
+      // margintop="6px"
     >
       <ProfilRank
         // loggedUserInfos={loggedUserInfos}

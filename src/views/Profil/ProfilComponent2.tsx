@@ -97,14 +97,13 @@ const ProfilComponent2 = () => {
         let hasMoreCritics = true;
         let hasMoreAdvices = true;
 
-        const criticsData = await getCriticsOfUser(id, displayType, page);
+        const criticsData = await getCriticsOfUser(id, displayType, page, 3);
         if (criticsData.length < 3) {
           console.log('plus de critiques à récupérer');
 
           // Si les critiques reçues sont inférieures à 3
           hasMoreCritics = false;
         }
-        console.log('les critiques', criticsData);
 
         const advicesData = await getAdvicesReceived(id, displayType, page);
         if (advicesData.length < 3) {
@@ -113,7 +112,16 @@ const ProfilComponent2 = () => {
         }
 
         const combinedData = [...criticsData, ...advicesData];
-        setCriticsAndAdvices(prevData => [...prevData, ...combinedData]);
+
+        // Tri des données combinées du plus récent au plus ancien
+        const sortedCombinedData = combinedData.sort((a, b) => {
+          const dateA = a.critic_date || a.advice_date;
+          const dateB = b.critic_date || b.advice_date;
+          return new Date(dateB).getTime() - new Date(dateA).getTime(); // Tri décroissant
+
+        });
+        console.log('les critiques et conseils', sortedCombinedData);
+        setCriticsAndAdvices(prevData => [...prevData, ...sortedCombinedData]);
 
         setIsDataFetched(true);
 
@@ -168,7 +176,7 @@ const ProfilComponent2 = () => {
         open={chosenMovie !== null}
         onClose={() => setChosenMovie(null)}
         aria-labelledby={
-          loggedUserInfos.id === parseInt(id, 10)
+          isProfilUserLogged
             ? 'Nouvelle critique'
             : 'Nouveau conseil'
         }
@@ -176,14 +184,14 @@ const ProfilComponent2 = () => {
       >
         <Stack height="100vh" padding="0 6px" justifyContent="center">
           <CriticAdvicesComponent
-            page={'home'}
-            type={'new-critic'}
+            page={'profil'}
+            type={isProfilUserLogged ? 'new-critic' : 'new-advice'}
             chosenMovie={chosenMovie}
             data={criticsAndAdvices}
             setData={setCriticsAndAdvices}
             setGoldenMovies={setGoldenMovies}
             loggedUserInfos={loggedUserInfos}
-            chosenUser={null}
+            chosenUser={chosenUser}
             infos={null}
             haveMoreCritics={null}
             isLast={null}
@@ -246,10 +254,11 @@ const ProfilComponent2 = () => {
                     picHeight={100}
                     isOutlined={true}
                     outlineWidth={'4px'}
-                    relationType={isProfilUserLogged ? 'self' : chosenUser?.relation_type}
+                    relationType={'default'}
                     sx={{
                       boxShadow: '0px 8px 5px 0px rgb(57 57 57 / 14%)'
                     }}
+                    redirection={false}
                   />
                 )}
                 <GradientBtn 
@@ -314,10 +323,14 @@ const ProfilComponent2 = () => {
                   fontWeight='600'
                   color='#383838'  
                 >
-                  {'Publiez une critique'}
+                  { isProfilUserLogged ?
+                    'Publiez une critique'
+                    :
+                    'Conseillez quelque chose'
+                  }
                 </Typography>
               </Stack>
-              <SearchBar2 page={'profil'} loggedUserInfos={loggedUserInfos}  />
+              <SearchBar2 page={'profil'} loggedUserInfos={loggedUserInfos} chosenUser={chosenUser} />
             </Stack>
             <Stack padding='0 4%' marginTop='20px'>
               <Stack marginBottom='6px'>
@@ -327,7 +340,11 @@ const ProfilComponent2 = () => {
                   fontWeight='600'
                   color='#383838'  
                 >
-                  {'Votre fil d\'actualité'}
+                  { isProfilUserLogged ?
+                      'Votre fil d\'actualité'
+                    :
+                      `Fil d\'actualité de ${chosenUser?.first_name} ${chosenUser?.last_name} `
+                  }
                 </Typography>
               </Stack>
               {criticsAndAdvices.length ? (

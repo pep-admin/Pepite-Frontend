@@ -1,6 +1,7 @@
 import { Avatar } from '@mui/material';
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const UserAvatar = ({
   variant,
@@ -11,8 +12,11 @@ const UserAvatar = ({
   outlineWidth,
   relationType,
   sx,
+  redirection
 }) => {
-  // const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+  
+  const navigate = useNavigate();
+
   const fullName = `${userInfos.first_name} ${userInfos.last_name}`;
 
   const findProfilPic = userInfos => {
@@ -57,6 +61,9 @@ const UserAvatar = ({
         cursor: 'pointer',
         ...sx,
       }}
+      onClick={
+        () => redirection && navigate(`/profil/${userInfos.id}`)
+      }
     />
   );
 };

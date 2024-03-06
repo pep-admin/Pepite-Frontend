@@ -15,6 +15,7 @@ import {
   ListItemIcon,
   Divider,
   Stack,
+  Avatar,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -42,8 +43,9 @@ const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = ({ page }) => {
-  // const { displayType, setDisplayType } = useData();
-  const userId = localStorage.getItem('user_id');
+
+  // Infos de l'utilisateur connecté
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   const navigate = useNavigate();
 
@@ -77,6 +79,12 @@ const Header = ({ page }) => {
     setAlignment(newAlignment);
   };
 
+  function stringAvatar(name) {
+    return {
+      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    };
+  }
+
   async function onLogout() {
     await handleLogout();
     localStorage.clear();
@@ -86,7 +94,7 @@ const Header = ({ page }) => {
 
   return (
     <AppBar 
-      position={page === 'swipe' ? 'absolute' : 'fixed'} 
+      position={page === 'swipe' ? 'absolute' : page === 'list' || page === 'contacts' ? 'static' : 'fixed'} 
       sx={{ 
         height: '50px', 
         justifyContent: 'center', 
@@ -98,8 +106,6 @@ const Header = ({ page }) => {
         sx={{
           height: '50px',
           width: '100%',
-          position: 'fixed',
-          zIndex: '100',
           padding: '0 6%',
           justifyContent: 'space-between'
         }}
@@ -148,13 +154,13 @@ const Header = ({ page }) => {
                 key={page}
                 onClick={() => {
                   if (page === 'Accueil') {
-                    navigate(`/home/${userId}`);
+                    navigate(`/home/${loggedUserInfos.id}`);
                   } else if (page === 'Swipe') {
                     navigate('/swipe');
                   } else if (page === 'Ma liste') {
-                    navigate(`/list/${userId}`);
+                    navigate(`/list/${loggedUserInfos.id}`);
                   } else if (page === 'Mes contacts') {
-                    navigate(`/contacts/${userId}`);
+                    navigate(`/contacts/${loggedUserInfos.id}`);
                   }
                   handleCloseNavMenu();
                 }}
@@ -197,7 +203,6 @@ const Header = ({ page }) => {
             fontSize={'2.3em'}
             sx={{
               letterSpacing: '-3.5px',
-              textShadow: '#6a6a6a -2px 2px 0',
             }}
           >
             {'pépite.'}
@@ -212,7 +217,16 @@ const Header = ({ page }) => {
             onClick={handleOpenUserMenu}
             sx={{ color: '#fff', padding: '0'}}
           >
-            <ManageAccountsRoundedIcon sx={{ fontSize: '27px'}} />
+            <Avatar
+              sx={{
+                height: '37px',
+                width: '37px',
+                bgcolor: '#043232',
+                color: '#fdfdfd',
+                borderRadius: '50%',
+              }}
+              {...stringAvatar(`${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`)}
+            />
           </IconButton>
           <Menu
             anchorEl={anchorElUser}
@@ -239,10 +253,10 @@ const Header = ({ page }) => {
                 onClick={() => {
                   if (setting === 'Déconnexion') {
                     onLogout();
-                  } else if (setting === 'Profil' && userId) {
-                    navigate(`/profil/${userId}`);
-                  } else if (setting === 'Compte' && userId) {
-                    navigate(`/account/${userId}`);
+                  } else if (setting === 'Profil' && loggedUserInfos.id) {
+                    navigate(`/profil/${loggedUserInfos.id}`);
+                  } else if (setting === 'Compte' && loggedUserInfos.id) {
+                    navigate(`/account/${loggedUserInfos.id}`);
                   }
                   handleCloseUserMenu();
                 }}

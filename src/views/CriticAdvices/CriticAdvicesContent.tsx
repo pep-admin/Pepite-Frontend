@@ -72,7 +72,12 @@ const CriticAdvicesContent = ({
       overflow: 'hidden'
     }}>
       <Stack height='100%'>
-        <Stack height='100%'>
+        <Stack 
+          height='100%' 
+          sx={{ 
+            overflowY: 'scroll'
+          }}
+        >
           <Stack direction="column" columnGap="10px">
             <Stack
               direction="row"
@@ -110,7 +115,8 @@ const CriticAdvicesContent = ({
                 readOnly={true}
                 precision={0.1}
                 sx={{
-                  fontSize: '1.1em'
+                  fontSize: '1.1em',
+                  left: '0px'
                 }}
               />
               <Typography variant="body2" fontWeight="bold" component="p">

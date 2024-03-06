@@ -12,7 +12,7 @@ import { getUsersSuggestions } from '@utils/request/users/getUsersSuggestions';
 
 // Import des hooks
 import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
-import { useCardsToShow } from '@hooks/useCardsToShow';
+import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
 
 const ContactsSuggestions = ({
   page,
@@ -33,7 +33,7 @@ const ContactsSuggestions = ({
   /* Calcule les cards à afficher selon la largeur du viewport.
     width: 95px, gap: 6px, 3 cards en plus pour la marge
   */
-  const cardsToShow = useCardsToShow(95, 6, 3);
+  const cardsToShow = useCardsToShowHorizontal(95, 6, 3);
 
   const loadUsers = async () => {
     try {

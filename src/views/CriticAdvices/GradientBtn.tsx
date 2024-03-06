@@ -1,9 +1,6 @@
 import { Button, Stack, Typography } from '@mui/material';
 import MovieIcon from '@mui/icons-material/Movie';
-import GoldNuggetIcon from '@utils/components/GoldNuggetIcon';
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
 
 const GradientBtn = ({ btnType, criticsNumber, goldNuggetsNumber }) => {
   

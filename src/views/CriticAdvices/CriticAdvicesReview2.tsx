@@ -28,9 +28,9 @@ const CriticAdvicesReview2 = ({ infos, type, isModify, newCriticText, setNewCrit
         variant="outlined"
         fullWidth
         sx={{ 
-          height: '100%', 
+          height: '100px', 
           flexGrow: '1',
-          margin: type === 'new-critic' || type === 'new-advice' ? '10px 0 10px 0' : '6px 0 0 0'
+          margin: type === 'new-critic' || type === 'new-advice' ? '20px 0 0 0' : '6px 0 0 0'
         }}
       >
         {size === 'small' &&
@@ -159,7 +159,10 @@ const CriticAdvicesReview2 = ({ infos, type, isModify, newCriticText, setNewCrit
           <Stack direction='row' columnGap='5px' marginBottom='5px'>
             <FormatQuoteIcon fontSize='small' sx={{ color: '#0E6666'}}/>
             <Typography variant='body1' fontWeight='600' color='#0E6666'>
-              {'Votre critique'}
+              {type === 'old-critic' ? 
+                'Votre critique'
+              : 'Votre conseil'
+              }
             </Typography>
           </Stack>
           <Divider />

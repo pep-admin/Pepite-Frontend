@@ -40,7 +40,7 @@ const ListComponent = () => {
   };
 
   const getRatedMovies = async () => {
-    const rated = await getCriticsOfUser(id, displayType, 1);
+    const rated = await getCriticsOfUser(id, displayType, 1, 5);
     console.log('les films notés', rated);
     setRatedMovies(rated);
   };
@@ -53,7 +53,7 @@ const ListComponent = () => {
 
   return (
     <>
-      <Header loggedUserInfos={loggedUserInfos} />
+      <Header page={'list'} />
       <Container
         maxWidth="xl"
         sx={{
@@ -73,7 +73,6 @@ const ListComponent = () => {
           <Item
             customheight="calc(100% - 6px)"
             customwidth="100%"
-            margintop="6px"
             overflow="hidden"
           >
             <ProfilSuggestedNotes

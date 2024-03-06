@@ -50,15 +50,12 @@ const useVerticalScroll = (
 
   // Réinitialise la pagination et recharger les données en fonction des dépendances
   useEffect(() => {
-    if (firstRender.current) return;
-    console.log('changement de type');
 
     pageRef.current = 1;
     setHasMore(true);
     setData([]);
     setIsDataFetched(false);
     loadMore();
-    // Une fonction de réinitialisation ou un appel direct à loadMore peut être nécessaire ici
   }, [displayType, id]);
 
   return { observerRef, loading, hasMore };

@@ -31,11 +31,10 @@ const HomeComponent2 = () => {
 
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
-  const [newCritics, setNewCritics] = useState([]);
   const [isDataFetched, setIsDataFetched] = useState(false); // Si les données ont été récupérées
-  const [areUserDataFetched, setAreUserDataFetched] = useState(false);
 
   const firstRender = useRef(true);
+  const scrollContainerRef = useRef(null);
 
   const getCritics = async page => {
 
@@ -65,12 +64,6 @@ const HomeComponent2 = () => {
     setIsDataFetched,
   );
 
-  
-  useEffect(() => {
-    console.log('loading...', loading);
-    console.log('infos des users récupérés ?', areUserDataFetched);
-  }, [loading, areUserDataFetched])  
-
   return (
     <>
       <Header page={'home'} />
@@ -97,7 +90,6 @@ const HomeComponent2 = () => {
             infos={null}
             haveMoreCritics={null}
             isLast={null}
-            setAreUserDataFetched={null}
           />
         </Stack>
       </Modal>
@@ -187,17 +179,18 @@ const HomeComponent2 = () => {
                 fontWeight='600'
                 color='#383838'  
               >
-                {'Top 20 - Contributeurs de la semaine'}
+                {'Personnes suggérées - Pépites en commun'}
               </Typography>
             </Stack>
           </Stack>
           <Stack 
-            margin='3px 0 15px 4%' 
+            ref={scrollContainerRef}
+            margin='5px 0 15px 4%' 
             sx={{
               overflowX: 'scroll',
             }}
           >
-            <TopContributors />
+            <TopContributors scrollContainerRef={scrollContainerRef} />
           </Stack>
           <Stack padding='0 4%'>
             <Typography 
@@ -211,7 +204,7 @@ const HomeComponent2 = () => {
           </Stack>
           <Box 
             width='100vw' 
-            marginTop='64px'
+            marginTop='66px'
             bgcolor='#CAE6E4'
             position='relative'
           >
@@ -262,7 +255,6 @@ const HomeComponent2 = () => {
                       chosenUser={null}
                       haveMoreCritics={hasMore}
                       isLast={criticsOfAcquaintances.length - 1 === index}
-                      setAreUserDataFetched={setAreUserDataFetched}
                     />
                   );
                 })
@@ -270,7 +262,7 @@ const HomeComponent2 = () => {
                 <NoCriticAdvice page={'home'} />
               ) : null}
             </Stack>
-            {(loading || !areUserDataFetched) && <SkeletonCard />}
+            {loading && <SkeletonCard />}
             {hasMore && <div ref={observerRef}></div>}
           </Box>
           

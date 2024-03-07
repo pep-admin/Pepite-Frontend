@@ -32,17 +32,12 @@ const MainItemList = ({
   const [showRemoveWantedMovie, setShowRemoveWantedMovie] = useState(false);
   const [showRemoveWatchedMovie, setShowRemoveWatchedMovie] = useState(false);
 
-  const { displayType } = useData();
-
-  const updateFriendList = () => {
-    getRequest(); // Met à jour la liste des demandes d'amis
-    getRequest2(); // Met à jour la liste d'amis
-  };
+  const { displayType } = useData();    
 
   // Supprime un ami de la liste d'amis
-  const removeFriendFromList = async () => {
+  const removeFriendFromList = async () => {    
     await removeFriendRequest(data.id);
-    updateFriendList();
+    getRequest();
   };
 
   // Supprime un suivi de la liste des suivis
@@ -154,7 +149,8 @@ const MainItemList = ({
           data={data} 
           movieOrSerie={movieOrSerie} 
           getRequest={getRequest} 
-          updateFriendList={updateFriendList} 
+          getRequest2={getRequest2}
+          // updateFriendList={updateFriendList} 
           removeWatchedMovie={removeWatchedMovie}
           showRemoveFriendModal={showRemoveFriendModal}
           setShowRemoveFriendModal={setShowRemoveFriendModal}

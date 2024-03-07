@@ -1,13 +1,20 @@
+// Import des libs externes
+import { Avatar, Badge, Box, Modal, Skeleton, Stack, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+
+// Import des composants internes
+import ContactsUserFeatures from './ContactsUserFeatures';
+import TopContributorIcon from '@utils/components/TopContributorIcon';
+
+// Import des hooks personnalisés
 import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
 import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
-import { Avatar, Badge, Box, Modal, Skeleton, Stack, Typography } from '@mui/material';
-import TopContributorIcon from '@utils/components/TopContributorIcon';
+
+// Import des requêtes
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import { getUsersSuggestions } from '@utils/request/users/getUsersSuggestions';
-import { useEffect, useRef, useState } from 'react';
-import ContactsUserFeatures from './ContactsUserFeatures';
 
-const TopContributors = ({ scrollContainerRef }) => {
+const TopContributors = ({ page, scrollContainerRef, getFriendsRequests, getFriends, getFollowed }) => {
   
   const [usersSuggestion, setUsersSuggestion] = useState([]); // Les utilisateurs suggérés
   const [areUsersLoading, setAreUsersLoading] = useState(true); // Etat de chargement des utilisateurs suggérés
@@ -47,7 +54,7 @@ const TopContributors = ({ scrollContainerRef }) => {
     } catch (error) {
       console.error('Erreur lors du chargement des utilisateurs', error);
     } finally {
-      // setAreUsersLoading(false);
+      setAreUsersLoading(false);
     }
   };
 
@@ -84,7 +91,13 @@ const TopContributors = ({ scrollContainerRef }) => {
             width: '95vw', // Vous pouvez ajuster la largeur selon vos besoins
           }}
         >
-          <ContactsUserFeatures userInfos={showUserInfos.userInfos} />
+          <ContactsUserFeatures 
+            page={page}
+            userInfos={showUserInfos.userInfos} 
+            getFriendsRequests={getFriendsRequests}
+            getFriends={getFriends}
+            getFollowed={getFollowed}
+          />
         </Box>
       </Modal>
       <Stack 

@@ -7,6 +7,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import DoneIcon from '@mui/icons-material/Done';
 
 // Import des requêtes
 import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
@@ -19,8 +20,8 @@ const MainItemIcons = ({
   data, 
   movieOrSerie, 
   getRequest, 
-  // getRequest2, 
-  updateFriendList, 
+  getRequest2, 
+  // updateFriendList, 
   removeWatchedMovie,
   showRemoveFriendModal,
   setShowRemoveFriendModal,
@@ -48,15 +49,16 @@ const MainItemIcons = ({
   };
 
   // Accepte une demande d'ami
-  const acceptFriendRequest = async () => {
+  const acceptFriendRequest = async () => {    
     await acceptFriendship(data.id);
-    updateFriendList();
+    await getRequest();
+    getRequest2();
   };
 
   // Refuse une demande d'ami
   const declineFriendRequest = async () => {
     await declineFriendship(data.id);
-    updateFriendList();
+    getRequest();
   };
 
   // Ajoute le film à la liste des films déjà vus (à noter)
@@ -65,19 +67,30 @@ const MainItemIcons = ({
     getRequest(); // Supprime le film de la liste des films à voir
   };
 
-    // Affichage des amis proches au montage du composant
-    useEffect(() => {
-      if (data.is_close === 1) {
-        setIsCloseFriend(true);
-        isCloseRef.current = true;
-      } else {
-        setIsCloseFriend(false);
-        isCloseRef.current = false;
-      }
-    }, []);
+  // Affichage des amis proches au montage du composant
+  useEffect(() => {
+    if (data.is_close === 1) {
+      setIsCloseFriend(true);
+      isCloseRef.current = true;
+    } else {
+      setIsCloseFriend(false);
+      isCloseRef.current = false;
+    }
+  }, []);
 
   return (
     <Stack direction="row" spacing={3} alignItems="center">
+      {type === 'requests' &&
+        <DoneIcon 
+          fontSize="small"
+          sx={{
+            color: '#B9B9B9',
+          }}
+          onClick={() =>
+            acceptFriendRequest()
+          }
+        />
+      }
       {type === 'friends' ? (
         <FavoriteIcon
           fontSize="small"

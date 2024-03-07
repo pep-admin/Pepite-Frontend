@@ -38,6 +38,7 @@ import CriticAdvicesReview2 from './CriticAdvicesReview2';
 
 const CriticAdvicesComponent = ({
   page,
+  criticIndex,
   type,
   chosenMovie,
   data,
@@ -60,7 +61,6 @@ const CriticAdvicesComponent = ({
   const [comments, setComments] = useState([]);
   const [displayRatings, setDisplayRatings] = useState(null);
   const [criticUserInfos, setCriticUserInfos] = useState({});
-  const [areUserDataFetched, setAreUserDataFetched] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState({
     state: null,
     message: null,
@@ -227,21 +227,15 @@ const CriticAdvicesComponent = ({
     }
   };
 
-  const getCriticUserInfos = async id => {
-    try {      
-      setAreUserDataFetched(false);
-      const userInfos = await getUser(id);    
-      setCriticUserInfos(userInfos);
-
-    } catch (error) {
-      console.log('impossible de récupérer les informations utilisateurs', error);
-
-    } finally {
-      setAreUserDataFetched(true);
-    }
-    
+  const getCriticUserInfos = async (id, criticIndex) => {
+    const userInfos = await getUser(id);
+    // Mettez à jour la critique spécifique pour indiquer que le chargement est terminé
+    setData(existingCritics => existingCritics.map((critic, index) => (
+      index === criticIndex ? { ...critic, criticUserInfos: userInfos, isLoadingUser: false } : critic
+    )));
+    setCriticUserInfos(userInfos);
   };
-
+  
   useEffect(() => {
     if (isModify) {
       setNewRating(parseFloat(infos.rating));
@@ -251,9 +245,9 @@ const CriticAdvicesComponent = ({
 
   useEffect(() => {
     if (type === 'old-critic') {
-      getCriticUserInfos(infos.user_id);
+      getCriticUserInfos(infos.user_id, criticIndex);
     } else if (type === 'old-advice') {
-      getCriticUserInfos(infos.sender_id);
+      getCriticUserInfos(infos.sender_id, criticIndex);
     }
   }, [data]);
 
@@ -302,7 +296,6 @@ const CriticAdvicesComponent = ({
               setIsTurnip={setIsTurnip}
               chosenUser={chosenUser}
               criticUserInfos={criticUserInfos}
-              areUserDataFetched={areUserDataFetched}
             />
           </Stack>
           <Stack padding="12px 8px">

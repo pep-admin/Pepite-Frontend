@@ -1,52 +1,11 @@
-import React, { useEffect, useState } from 'react';
+// Import des libs externes
+import { Box, Divider, Stack, Typography } from '@mui/material';
 
 // Import des composants internes
 import { Item } from '@utils/components/styledComponent';
-import { Box, Divider, Stack, Typography } from '@mui/material';
-import { getFollowedList } from '@utils/request/followed/getFollowedList';
-import { getFriendsList } from '@utils/request/friendship/getFriendsList';
-import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
-import { useParams } from 'react-router-dom';
 import MainItemList from '@utils/components/MainItemList';
 
-const ContactsFriendsFollowed = ({ contactsType }) => {
-
-  const { id } = useParams();
-
-  const [friendRequestList, setFriendRequestList] = useState([]); // Liste des demandes d'amitié
-  const [friendsList, setFriendsList] = useState([]); // Liste des amis
-  const [followedList, setFollowedList] = useState([]); // Liste des suivis
-
-  const listArray = 
-    contactsType === 'requests' ?
-      friendRequestList
-    : contactsType === 'friends' ?
-      friendsList
-    : followedList;
-
-  // Récupération des demandes d'amis
-  const getFriendsRequests = async () => {
-    const askList = await getFriendRequestList();
-    setFriendRequestList(askList);
-  };
-
-  // Récupération de la liste d'amis
-  const getFriends = async () => {
-    const friendsList = await getFriendsList(id);
-    setFriendsList(friendsList);
-  };
-
-  // Récupération des suivis
-  const getFollowed = async () => {
-    const followedList = await getFollowedList(id);
-    setFollowedList(followedList);
-  };
-
-  useEffect(() => {
-    getFriendsRequests();
-    getFriends();
-    getFollowed();
-  }, []);  
+const ContactsFriendsFollowed = ({ contactsType, contactsList, getRequest, getRequest2 }) => {
 
   return (
     <Item overflow="scroll" maxheight="250px" flexgrow='1' marginbottom='10px'>
@@ -77,11 +36,7 @@ const ContactsFriendsFollowed = ({ contactsType }) => {
           >
             <Typography component='span' fontSize='0.8em' fontWeight='600'>
               {
-                contactsType === 'requests' ?
-                  friendRequestList.length
-                : contactsType === 'friends' ?
-                  friendsList.length
-                : followedList.length
+                contactsList.length
               }
             </Typography>
           </Box>
@@ -95,34 +50,28 @@ const ContactsFriendsFollowed = ({ contactsType }) => {
           }}
         >
           {
-            (contactsType === 'friends' && friendsList.length >= 1) ||
-            (contactsType === 'followed' && followedList.length >= 1) ? 
+            (contactsType === 'friends' && contactsList.length >= 1) ||
+            (contactsType === 'followed' && contactsList.length >= 1) ? 
             'Voir tous' 
-            : (contactsType === 'followed' && friendRequestList.length >= 1) ? 
+            : (contactsType === 'followed' && contactsList.length >= 1) ? 
             'Voir toutes'
             : null
           }
         </Typography>
       </Stack>
       <Divider />
-      {listArray.length ? (
-        listArray.map((movie, index) => {
+      {contactsList.length ? (
+        contactsList.map((item, index) => {
           return (
             <MainItemList
-              key={movie.id}
+              key={item.id}
               movieOrSerie={null}
               type={contactsType}
-              data={movie}
-              list={listArray}
-              getRequest={
-                contactsType === 'requests' ? 
-                  getFriendRequestList
-                : contactsType === 'friends' ?
-                  getFriendsList
-                : getFollowed
-              }
-              getRequest2={null}
-              isLast={index === listArray.length - 1}
+              data={item}
+              list={contactsList}
+              getRequest={getRequest}
+              getRequest2={getRequest2}
+              isLast={index === contactsList.length - 1}
             />
           );
         })
@@ -135,7 +84,7 @@ const ContactsFriendsFollowed = ({ contactsType }) => {
                   `Aucun${contactsType === 'requests' ? 'e demande d\'amitié' 
                   : contactsType === 'friends' ?
                     'e amitié'
-                  : 'suivi '}
+                  : ' suivi '}
                   `}
               </span>
               {' pour le moment.'}

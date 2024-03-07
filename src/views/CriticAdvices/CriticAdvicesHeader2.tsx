@@ -38,7 +38,6 @@ const CriticAdvicesHeader2 = ({
   setIsTurnip,
   chosenUser,
   criticUserInfos,
-  areUserDataFetched
 }) => {
   const { setChosenMovieId, setChosenMovie } = useData();
 
@@ -121,13 +120,26 @@ const CriticAdvicesHeader2 = ({
     } else if (type === 'old-critic' && infos.user_id !== loggedUserInfos.id) {
       return (
         <>
-          <span
-            style={{ fontWeight: '600', color: findGoodColor(page) }}
-            onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
-          >
-            {criticUserInfos.first_name} {criticUserInfos.last_name}
-          </span>
-          {' a noté'}
+          {
+            infos.isLoadingUser ? 
+              <Skeleton 
+                variant='text'
+                sx={{
+                  fontSize: '1em',
+                  width: '100px'
+                }}
+              />
+             : 
+              <>
+                <span
+                  style={{ fontWeight: '600', color: findGoodColor(page) }}
+                  onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
+                >
+                  {criticUserInfos.first_name} {criticUserInfos.last_name}
+                </span>
+                {' a noté'}
+              </>
+            }
         </>
       );
 
@@ -176,22 +188,18 @@ const CriticAdvicesHeader2 = ({
       padding="0 10px"
       columnGap="10px"
     >
-      {areUserDataFetched || type === 'new-critic' || type === 'new-advice' ?
+      {infos.isLoadingUser ? (
+        <Skeleton variant='circular' height={40} width={40} />
+      ) : (
         <UserAvatar 
-          variant='circle'
-          userInfos={type === 'new-critic' || type === 'new-advice' ? loggedUserInfos : criticUserInfos}
-          picHeight={40}
-          picWidth={40}
-          isOutlined={false}
-          redirection={true}
-        />
-        :
-        <Skeleton 
-          variant='circular' 
-          animation='wave'
-          height={40}
-          width={40}
-        />
+            variant='circle'
+            userInfos={type === 'new-critic' || type === 'new-advice' ? loggedUserInfos : criticUserInfos}
+            picHeight={40}
+            picWidth={40}
+            isOutlined={false}
+            redirection={true}
+          />
+        )
       }
       <Stack alignItems='flex-start'>
         <Stack direction='row' alignItems='center'>

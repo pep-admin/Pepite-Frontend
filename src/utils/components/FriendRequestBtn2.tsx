@@ -1,5 +1,6 @@
+// Import des libs externes
 import { Button, Divider, Menu, MenuItem, Stack } from '@mui/material';
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Import des icônes
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -7,7 +8,16 @@ import TimelapseIcon from '@mui/icons-material/Timelapse';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
-const FriendRequestBtn2 = () => {
+// Import des requêtes
+import { requestNewFriend } from '@utils/request/friendship/requestNewFriend';
+import { checkFriendshipStatus } from '@utils/request/friendship/checkFriendshipStatus';
+import { cancelFriendShip } from '@utils/request/friendship/cancelFriendship';
+import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
+import { followSomeone } from '@utils/request/followed/followSomeone';
+import { checkFollowedStatus } from '@utils/request/followed/checkFollowedStatus';
+import { unfollowSomeone } from '@utils/request/followed/unfollowSomeone';
+
+const FriendRequestBtn2 = ({ page, userInfos, getFriendsRequests, getFriends, getFollowed }) => {
 
   const [friendshipStatus, setFriendshipStatus] = useState({
     status: 'none',
@@ -30,7 +40,74 @@ const FriendRequestBtn2 = () => {
     setAnchorEl(null);
   };
 
+  // **** Amitiés **** //
+
+  // Vérifie si l'utilisateur connecté a envoyé une demande en ami, si une demande est en attente, si une amitié existe
+  const checkIfFriends = async () => {
+    const status = await checkFriendshipStatus(userInfos.id);
+    setFriendshipStatus(status);
+  };
+
+  // Envoie une demande d'amitié
+  const handleFriendRequest = async () => {
+    await requestNewFriend(userInfos.id);
+    handleClose();
+    checkIfFriends(); // Actualise le status d'amitié en attente
+  };
+
+  // Annuler une demande d'amitié
+  const cancelFriendshipRequest = async () => {
+    await cancelFriendShip(userInfos.id);
+    handleClose();
+    checkIfFriends(); // Supprime le bouton de demande en attente
+  };
   
+  // Accepte une demande d'amitié
+  const acceptFriendRequest = async () => {
+    await acceptFriendship(userInfos.id);
+    handleClose();
+    checkIfFriends(); // Actualise le status d'amitié accepté
+
+    if (page === 'contacts') {
+      getFriendsRequests();
+      getFriends();
+    }
+  };
+
+  // **** Suivis **** //
+
+  // Vérifie si l'utilisateur connecté suit la personne concernée
+  const checkIfFollowed = async () => {
+    const status = await checkFollowedStatus(userInfos.id);
+    setFollowedStatus(status);
+  };
+
+  // Suit la personne concernée
+  const followUser = async () => {
+    await followSomeone(userInfos.id);
+    handleClose();
+    checkIfFollowed();
+
+    if (page === 'contacts') {
+      getFollowed();
+    }
+  };
+
+  // Arrête de suivre la personne concernée
+  const unfollowUser = async () => {
+    await unfollowSomeone(userInfos.id);
+    handleClose();
+    checkIfFollowed();
+
+    if (page === 'contacts') {
+      getFollowed();
+    }
+  };
+
+  useEffect(() => {
+    checkIfFriends();
+    checkIfFollowed();
+  }, []);
 
   return (
     <>
@@ -80,7 +157,7 @@ const FriendRequestBtn2 = () => {
                 direction="row"
                 alignItems="center"
                 columnGap="7px"
-                // onClick={() => cancelFriendshipRequest()}
+                onClick={() => cancelFriendshipRequest()}
               >
                 <TimelapseIcon sx={{ color: '#ababab', fontSize: '22px' }} />
                 {'Annuler la demande'}
@@ -102,7 +179,7 @@ const FriendRequestBtn2 = () => {
                 direction="row"
                 alignItems="center"
                 columnGap="7px"
-                // onClick={() => acceptFriendRequest()}
+                onClick={() => acceptFriendRequest()}
               >
                 <VerifiedIcon sx={{ color: '#ababab', fontSize: '22px' }} />
                 {'Accepter'}
@@ -113,7 +190,7 @@ const FriendRequestBtn2 = () => {
                 direction="row"
                 alignItems="center"
                 columnGap="7px"
-                // onClick={handleFriendRequest}
+                onClick={handleFriendRequest}
               >
                 <PersonAddIcon sx={{ color: '#ababab', fontSize: '22px' }} />
                 {'Demander en ami'}
@@ -133,7 +210,7 @@ const FriendRequestBtn2 = () => {
                 direction="row"
                 alignItems="center"
                 columnGap="5px"
-                // onClick={() => unfollowUser()}
+                onClick={() => unfollowUser()}
               >
                 <BookmarkIcon sx={{ color: '#24A5A5', fontSize: '22px' }} />
                 {'Suivi'}
@@ -143,7 +220,7 @@ const FriendRequestBtn2 = () => {
                 direction="row"
                 alignItems="center"
                 columnGap="5px"
-                // onClick={() => followUser()}
+                onClick={() => followUser()}
               >
                 <BookmarkIcon sx={{ color: '#ababab', fontSize: '22px' }} />
                 {'Suivre'}

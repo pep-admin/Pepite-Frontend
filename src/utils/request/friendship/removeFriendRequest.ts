@@ -8,7 +8,7 @@ export const removeFriendRequest = async receiverId => {
       params: { receiverId: receiverId },
       withCredentials: true,
     });
-  } catch {
-    console.log("Impossible de retirer la personne de la liste d'amis");
+  } catch(error) {
+    console.log("Impossible de retirer la personne de la liste d'amis", error);
   }
 };

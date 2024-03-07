@@ -20,7 +20,7 @@ const UserAvatar = ({
   const fullName = `${userInfos.first_name} ${userInfos.last_name}`;
 
   const findProfilPic = userInfos => {
-    if (userInfos.profilPics.length) {
+    if (userInfos.profilPics?.length) {
       const findActivePic = userInfos.profilPics.find(pic => pic.isActive === 1)
         ?.filePath;
       return `${apiBaseUrl}/uploads/${findActivePic}`;

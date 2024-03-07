@@ -8,7 +8,7 @@ import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import { getCommonNuggetsRequest } from '@utils/request/goldNugget/getCommonNuggetsRequest';
 import { useEffect, useState } from 'react';
 
-const ContactsUserFeatures = ({ userInfos }) => {
+const ContactsUserFeatures = ({ page, userInfos, getFriendsRequests, getFriends, getFollowed }) => {
 
   const { displayType } = useData();
 
@@ -25,9 +25,7 @@ const ContactsUserFeatures = ({ userInfos }) => {
     };
 
     const getCommonNuggets = async () => {
-      const response = await getCommonNuggetsRequest(userInfos.id, displayType);
-      console.log('pépites en commun', response);
-      
+      const response = await getCommonNuggetsRequest(userInfos.id, displayType);      
       setCommonNuggets(response);
     }
 
@@ -142,7 +140,13 @@ const ContactsUserFeatures = ({ userInfos }) => {
           </Stack>
           <Divider />
           <Stack alignItems='center' marginTop='18px'>
-            <FriendRequestBtn2 />
+            <FriendRequestBtn2
+              page={page}
+              userInfos={userInfos} 
+              getFriendsRequests={getFriendsRequests}
+              getFriends={getFriends}
+              getFollowed={getFollowed} 
+            />
           </Stack>
         </Stack>
       </Stack>

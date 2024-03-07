@@ -29,7 +29,7 @@ const useVerticalScroll = (
   };
 
   // Observer pour détecter le scroll jusqu'à l'élément de référence en bas de page
-  useEffect(() => {
+  useEffect(() => {    
     const observer = new IntersectionObserver(
       entries => {
         if (entries[0].isIntersecting && hasMore) {

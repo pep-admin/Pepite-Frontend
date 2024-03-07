@@ -224,6 +224,7 @@ const Header = ({ page }) => {
                 bgcolor: '#043232',
                 color: '#fdfdfd',
                 borderRadius: '50%',
+                fontSize: '0.65em'
               }}
               {...stringAvatar(`${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`)}
             />

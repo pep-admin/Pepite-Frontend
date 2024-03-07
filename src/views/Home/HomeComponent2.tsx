@@ -1,5 +1,5 @@
 // Import des libs externes
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Box, Container, Modal, Stack, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
@@ -37,21 +37,11 @@ const HomeComponent2 = () => {
   const scrollContainerRef = useRef(null);
 
   const getCritics = async page => {
-
-    const critics = await getAllCriticsOfAcquaintances(
-      loggedUserInfos.id,
-      displayType,
-      page,
-    );
-
-    setCriticsOfAcquaintances(existingCritics => [
-      ...existingCritics,
-      ...critics,
-    ]);
-    
-    setIsDataFetched(true);
-
-    // Return un booléen true si des données supplémentaires existent, sinon false
+    const critics = await getAllCriticsOfAcquaintances(loggedUserInfos.id, displayType, page);
+    // Ajout d'une clé de vérification de chargement des données utilisateur
+    const criticsWithLoading = critics.map(critic => ({ ...critic, isLoadingUser: true }));
+    setCriticsOfAcquaintances(existingCritics => [...existingCritics, ...criticsWithLoading]);
+  
     return critics.length >= 5;
   };
 
@@ -79,6 +69,7 @@ const HomeComponent2 = () => {
       >
         <Stack height="100vh" padding="0 6px" justifyContent="center">
           <CriticAdvicesComponent
+            criticIndex={null}
             page={'home'}
             type={'new-critic'}
             chosenMovie={chosenMovie}
@@ -190,7 +181,13 @@ const HomeComponent2 = () => {
               overflowX: 'scroll',
             }}
           >
-            <TopContributors scrollContainerRef={scrollContainerRef} />
+            <TopContributors 
+              page={'home'} 
+              scrollContainerRef={scrollContainerRef} 
+              getFriendsRequests={null}
+              getFriends={null}
+              getFollowed={null}
+            />
           </Stack>
           <Stack padding='0 4%'>
             <Typography 
@@ -244,6 +241,7 @@ const HomeComponent2 = () => {
                   return (
                     <CriticAdvicesComponent
                       key={index}
+                      criticIndex={index}
                       page={'home'}
                       type={'old-critic'}
                       data={criticsOfAcquaintances}
@@ -261,8 +259,14 @@ const HomeComponent2 = () => {
               ) : !criticsOfAcquaintances.length && isDataFetched ? (
                 <NoCriticAdvice page={'home'} />
               ) : null}
+              {loading && 
+                <>
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </>
+              }
             </Stack>
-            {loading && <SkeletonCard />}
             {hasMore && <div ref={observerRef}></div>}
           </Box>
           

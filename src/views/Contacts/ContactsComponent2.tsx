@@ -1,12 +1,51 @@
+// Import des libs externes
 import { Container, Stack , Typography, Box} from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+// Import des composants internes
 import Header from '@utils/components/Header';
-import { useRef } from 'react';
 import TopContributors from './TopContributors';
 import ContactsFriendsFollowed from './ContactsFriendsFollowed';
 
+// Import des requêtes
+import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
+import { getFriendsList } from '@utils/request/friendship/getFriendsList';
+import { getFollowedList } from '@utils/request/followed/getFollowedList';
+
 const ContactsComponent2 = () => {
 
+  const { id } = useParams();
+
+  const [friendRequestList, setFriendRequestList] = useState([]); // Liste des demandes d'amitié
+  const [friendsList, setFriendsList] = useState([]); // Liste des amis
+  const [followedList, setFollowedList] = useState([]); // Liste des suivis
+
   const scrollContainerRef = useRef(null);
+
+  // Récupération des demandes d'amis
+  const getFriendsRequests = async () => {    
+    const askList = await getFriendRequestList();
+    setFriendRequestList(askList);
+  };
+
+  // Récupération de la liste d'amis
+  const getFriends = async () => {    
+    const friendsList = await getFriendsList(id);
+    setFriendsList(friendsList);
+  };
+
+  // Récupération des suivis
+  const getFollowed = async () => {
+    const followedList = await getFollowedList(id);
+    setFollowedList(followedList);
+  };
+
+  useEffect(() => {
+    getFriendsRequests();
+    getFriends();
+    getFollowed();
+  }, []);  
 
   return (
     <>
@@ -37,7 +76,13 @@ const ContactsComponent2 = () => {
               overflowX: 'scroll',
             }}
           >
-            <TopContributors scrollContainerRef={scrollContainerRef} />
+            <TopContributors 
+              page={'contacts'} 
+              scrollContainerRef={scrollContainerRef} 
+              getFriendsRequests={getFriendsRequests}
+              getFriends={getFriends} 
+              getFollowed={getFollowed} 
+            />
           </Stack>
           <Stack padding='0 4%' >
             <Typography
@@ -61,12 +106,21 @@ const ContactsComponent2 = () => {
             <Stack padding='0 4%' marginTop='-27px' width='100%' flexGrow='1'>
               <ContactsFriendsFollowed 
                 contactsType={'requests'}
+                contactsList={friendRequestList}
+                getRequest={getFriendsRequests}
+                getRequest2={getFriends}
               />
               <ContactsFriendsFollowed 
                 contactsType={'friends'}
+                contactsList={friendsList}
+                getRequest={getFriends}
+                getRequest2={null}
               />
               <ContactsFriendsFollowed 
                 contactsType={'followed'}
+                contactsList={followedList}
+                getRequest={getFollowed}
+                getRequest2={null}
               />
             </Stack>            
           </Box>

@@ -9,7 +9,7 @@ import {
   MenuItem,
   Snackbar,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des icônes
@@ -35,7 +35,6 @@ import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieR
 import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
 import { getAdviceCommentsNumber } from '@utils/request/comments/getAdviceCommentsNumber';
-import GradientBtn from './GradientBtn';
 
 const CriticAdvicesFooter = ({
   data,
@@ -83,7 +82,6 @@ const CriticAdvicesFooter = ({
       response = await getCriticCommentsNumber(infos.critic_id, displayType);
     } else if ('advice_id' in infos) {
       response = await getAdviceCommentsNumber(infos.advice_id, displayType);
-      console.log('la réponse', response);
     } else {
       return;
     }
@@ -138,12 +136,12 @@ const CriticAdvicesFooter = ({
       <Divider />
       <Stack
         direction="row"
-        justifyContent='space-between'
+        justifyContent="space-between"
         height="30px"
         padding="0 15px"
         flexGrow="1"
       >
-        <Stack direction='row' columnGap='25px'>
+        <Stack direction="row" columnGap="25px">
           <Box
             height="100%"
             display="flex"
@@ -159,19 +157,17 @@ const CriticAdvicesFooter = ({
                 color: displayComments ? '#24a5a5' : 'inherit',
               }}
             />
-            <Typography variant='body1' fontWeight="600">
+            <Typography variant="body1" fontWeight="600">
               {commentsNumber}
             </Typography>
           </Box>
           <LikesFooter from={'critic'} infos={infos} />
           <GoldFooter from={'critic'} infos={infos} />
         </Stack>
-        
+
         {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
         {infos.user_id !== parseInt(loggedUserInfos.id, 10) ? (
           <>
-            {/* <GradientBtn />
-            <GradientBtn /> */}
             <Box
               height="100%"
               display="flex"
@@ -196,7 +192,7 @@ const CriticAdvicesFooter = ({
                   <LibraryAddCheckTwoToneIcon
                     fontSize="small"
                     sx={{
-                      color: "#24A5A5"
+                      color: '#24A5A5',
                     }}
                   />
                   <Typography variant="body2" fontWeight="600">
@@ -259,7 +255,7 @@ const CriticAdvicesFooter = ({
                   <LibraryAddCheckTwoToneIcon
                     fontSize="small"
                     sx={{
-                      color: userMovieStatus?.isWanted ? "#24A5A5" : "inherit"
+                      color: userMovieStatus?.isWanted ? '#24A5A5' : 'inherit',
                     }}
                   />
                 </ListItemIcon>
@@ -344,4 +340,4 @@ CriticAdvicesFooter.propTypes = {
   comments: PropTypes.array.isRequired,
 };
 
-export default CriticAdvicesFooter;
+export default React.memo(CriticAdvicesFooter);

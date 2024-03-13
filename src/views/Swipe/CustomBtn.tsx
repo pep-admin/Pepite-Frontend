@@ -11,50 +11,55 @@ interface CustomButtonProps extends ButtonProps {
 
 const btnSize = {
   filter: '50px',
-  others: '60px'
-}
+  others: '60px',
+};
 
 const bgGradient = {
-  filter: 'linear-gradient(to bottom right, rgba(4, 50, 50, 1) 0%, rgba(1, 18, 18, 0.7) 75%)',
-  others: 'linear-gradient(to bottom right, rgba(4, 50, 50, 1) 0%, rgba(1, 18, 18, 0) 75%)'
-}
+  filter:
+    'linear-gradient(to bottom right, rgba(4, 50, 50, 1) 0%, rgba(1, 18, 18, 0.7) 75%)',
+  others:
+    'linear-gradient(to bottom right, rgba(4, 50, 50, 1) 0%, rgba(1, 18, 18, 0) 75%)',
+};
 
 const hoverColors = {
-  filter: 'linear-gradient(to bottom right, rgba(42, 42, 42, 1), rgba(0, 0, 0, 0.73))',
+  filter:
+    'linear-gradient(to bottom right, rgba(42, 42, 42, 1), rgba(0, 0, 0, 0.73))',
   unwanted: 'linear-gradient(to bottom right, #792332, #000000)',
   wanted: 'linear-gradient(to bottom right, #225b1d, #000000)',
-  watched: 'linear-gradient(to bottom right, #70491d, #000000)'
+  watched: 'linear-gradient(to bottom right, #70491d, #000000)',
 };
 
 const getGradientColor = (choice, isunwanted, iswanted, iswatched) => {
-  if(choice === 'unwanted' && isunwanted) {
+  if (choice === 'unwanted' && isunwanted) {
     return hoverColors.unwanted;
-  }
-  else if(choice === 'wanted' && iswanted) {
+  } else if (choice === 'wanted' && iswanted) {
     return hoverColors.wanted;
-  }
-  else if(choice === 'watched' && iswatched) {
+  } else if (choice === 'watched' && iswatched) {
     return hoverColors.watched;
-  }
-  else {
+  } else {
     return bgGradient.others;
   }
-}
+};
 
 // Bouton rond de gradient personnalisé
 export const CustomButton = styled(Button, {
-  shouldForwardProp: (prop) => prop !== 'isunwanted' && prop !== 'iswanted' && prop !== 'iswatched' && prop !== 'btntype',
-})<CustomButtonProps>(({ choice, btntype, isunwanted, iswanted, iswatched}) => ({
-  height: btnSize[btntype],
-  width: btnSize[btntype],
-  minWidth: 'auto',
-  padding: '0',
-  background: 
-    btntype === 'filter' ?
-      bgGradient.filter
-    :
-      getGradientColor(choice, isunwanted, iswanted, iswatched),
-  color: '#fff',
-  borderRadius: '50%',
-  boxShadow: 'inset 4.5px 4px 4px rgba(31, 170, 179, 0.25) !important',
-}));
+  shouldForwardProp: prop =>
+    prop !== 'isunwanted' &&
+    prop !== 'iswanted' &&
+    prop !== 'iswatched' &&
+    prop !== 'btntype',
+})<CustomButtonProps>(
+  ({ choice, btntype, isunwanted, iswanted, iswatched }) => ({
+    height: btnSize[btntype],
+    width: btnSize[btntype],
+    minWidth: 'auto',
+    padding: '0',
+    background:
+      btntype === 'filter'
+        ? bgGradient.filter
+        : getGradientColor(choice, isunwanted, iswanted, iswatched),
+    color: '#fff',
+    borderRadius: '50%',
+    boxShadow: 'inset 4.5px 4px 4px rgba(31, 170, 179, 0.25) !important',
+  }),
+);

@@ -1,35 +1,25 @@
 // Import des libs externes
 import { Stack, Typography, Divider, TextField } from '@mui/material';
-import { MessageIcon } from '@utils/components/styledComponent';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
 import UserAvatar from '@utils/components/UserAvatar';
 import ModifyOrDelete from '@utils/components/ModifyOrDelete';
+import LikesFooter from '@views/CriticAdvices/LikesFooter';
+import GoldFooter from '@views/CriticAdvices/GoldFooter';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 import { convertDate } from '@utils/functions/convertDate';
 
 // Import des icônes
-import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import EditIcon from '@mui/icons-material/Edit';
 
 // Import des requêtes internes
-import { addCriticCommentLike } from '@utils/request/comments/addCriticCommentLike';
-import { getCommentsCriticLikesNumber } from '@utils/request/comments/getCommentsCriticLikesNumber';
-import { checkCriticCommentLikeStatus } from '@utils/request/comments/checkCriticCommentLikeStatus';
-import { removeCriticCommentLike } from '@utils/request/comments/removeCriticCommentLike';
 import { modifyCriticComment } from '@utils/request/comments/modifyCriticComment';
 import { getUser } from '@utils/request/users/getUser';
-import { addAdviceCommentLike } from '@utils/request/comments/addAdviceCommentLike';
-import { getCommentsAdviceLikesNumber } from '@utils/request/comments/getCommentsAdviceLikesNumber';
-import { checkAdviceCommentLikeStatus } from '@utils/request/comments/checkAdviceCommentLikeStatus';
-import { removeAdviceCommentLike } from '@utils/request/comments/removeAdviceCommentLike';
 import { modifyAdviceComment } from '@utils/request/comments/modifyAdviceComment';
-import LikesFooter from '@views/CriticAdvices/LikesFooter';
-import GoldFooter from '@views/CriticAdvices/GoldFooter';
 
 interface Picture {
   id: number;
@@ -107,8 +97,13 @@ const CommentsContent = ({
               borderRadius: '10px 10px 0 0',
             }}
           >
-            <Stack direction="row" justifyContent="space-between" alignItems='center' marginBottom='5px'>
-              <Stack direction='row' columnGap='10px'>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              marginBottom="5px"
+            >
+              <Stack direction="row" columnGap="10px">
                 {commentUserInfos && (
                   <UserAvatar
                     variant={'circle'}
@@ -118,17 +113,14 @@ const CommentsContent = ({
                     isOutlined={false}
                     outlineWidth={null}
                     relationType={null}
+                    redirection={true}
                   />
                 )}
                 <Stack>
-                  <Typography
-                    variant='body2'
-                    align="left"
-                    fontWeight="600"
-                  >
+                  <Typography variant="body2" align="left" fontWeight="600">
                     {`${commentUserInfos?.first_name} ${commentUserInfos?.last_name}`}
                   </Typography>
-                  <Typography align='left' fontSize='0.8em' color='#9B9B9B'>
+                  <Typography align="left" fontSize="0.8em" color="#9B9B9B">
                     {`le ${convertDate(comment.created_date)}`}
                   </Typography>
                 </Stack>
@@ -144,7 +136,7 @@ const CommentsContent = ({
                 />
               ) : null}
             </Stack>
-            <Divider/>
+            <Divider />
             {isModify ? (
               <Stack direction="row" margin="6px 0">
                 <TextField
@@ -178,7 +170,7 @@ const CommentsContent = ({
                 </Stack>
               </Stack>
             ) : (
-              <Typography variant="body2" align="left" padding='5px 10px'>
+              <Typography variant="body2" align="left" padding="5px 10px">
                 {`${comment.text}`}
               </Typography>
             )}

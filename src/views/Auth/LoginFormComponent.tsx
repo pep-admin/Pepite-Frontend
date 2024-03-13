@@ -46,7 +46,7 @@ const LoginFormComponent = ({ formik }) => {
           }}
         >
           <form onSubmit={formik.handleSubmit}>
-            <Grid container rowGap='20px'>
+            <Grid container rowGap="20px">
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -80,11 +80,12 @@ const LoginFormComponent = ({ formik }) => {
                   type="submit"
                   variant="contained"
                   fullWidth
-                  sx={{ 
-                    background: 'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)', 
+                  sx={{
+                    background:
+                      'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)',
                     color: '#ffffff',
                     lineHeight: 'normal',
-                    padding: '2px 0 0 0'
+                    padding: '2px 0 0 0',
                   }}
                 >
                   {'Se connecter'}
@@ -121,7 +122,7 @@ const LoginFormComponent = ({ formik }) => {
             variant="body1"
             sx={{
               color: '#8E8E8E',
-              marginBottom: '11px'
+              marginBottom: '11px',
             }}
           >
             {"Vous n'avez pas de compte ?"}
@@ -129,12 +130,12 @@ const LoginFormComponent = ({ formik }) => {
           <Button
             type="submit"
             variant="contained"
-            sx={{ 
+            sx={{
               width: '75%',
-              backgroundColor: '#24A5A5', 
+              backgroundColor: '#24A5A5',
               color: '#ffffff',
               lineHeight: 'normal',
-              padding: '2px 0 0 0'
+              padding: '2px 0 0 0',
             }}
             onClick={() => navigate('/register')}
           >

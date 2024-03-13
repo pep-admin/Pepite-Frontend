@@ -10,21 +10,17 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Import des requêtes
-import { requestNewFriend } from '../request/friendship/requestNewFriend';
-import { checkFriendshipStatus } from '../request/friendship/checkFriendshipStatus';
+import { requestNewFriend } from '@utils/request/friendship/requestNewFriend';
+import { checkFriendshipStatus } from '@utils/request/friendship/checkFriendshipStatus';
+import { cancelFriendShip } from '@utils/request/friendship/cancelFriendship';
 import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
-import { checkFollowedStatus } from '../request/followed/checkFollowedStatus';
-import { followSomeone } from '../request/followed/followSomeone';
-import { unfollowSomeone } from '../request/followed/unfollowSomeone';
-import { cancelFriendShip } from '../request/friendship/cancelFriendship';
+import { followSomeone } from '@utils/request/followed/followSomeone';
+import { checkFollowedStatus } from '@utils/request/followed/checkFollowedStatus';
+import { unfollowSomeone } from '@utils/request/followed/unfollowSomeone';
 
 const FriendRequestBtn = ({
   page,
-  anchorProfilBtn,
-  setAnchorProfilBtn,
-  receiverId,
-  friendsList,
-  followedList,
+  userInfos,
   getFriendsRequests,
   getFriends,
   getFollowed,
@@ -40,30 +36,61 @@ const FriendRequestBtn = ({
   });
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
 
+  const open = Boolean(anchorEl);
+
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
 
-  const open = Boolean(page === 'profil' ? anchorProfilBtn : anchorEl);
-
   const handleClose = () => {
-    if (page === 'profil') {
-      setAnchorProfilBtn(null);
-    } else {
-      setAnchorEl(null);
-    }
+    setAnchorEl(null);
+  };
+
+  // **** Amitiés **** //
+
+  // Vérifie si l'utilisateur connecté a envoyé une demande en ami, si une demande est en attente, si une amitié existe
+  const checkIfFriends = async () => {
+    const status = await checkFriendshipStatus(userInfos.id);
+    setFriendshipStatus(status);
   };
 
   // Envoie une demande d'amitié
   const handleFriendRequest = async () => {
-    await requestNewFriend(receiverId);
+    await requestNewFriend(userInfos.id);
     handleClose();
     checkIfFriends(); // Actualise le status d'amitié en attente
   };
 
+  // Annuler une demande d'amitié
+  const cancelFriendshipRequest = async () => {
+    await cancelFriendShip(userInfos.id);
+    handleClose();
+    checkIfFriends(); // Supprime le bouton de demande en attente
+  };
+
+  // Accepte une demande d'amitié
+  const acceptFriendRequest = async () => {
+    await acceptFriendship(userInfos.id);
+    handleClose();
+    checkIfFriends(); // Actualise le status d'amitié accepté
+
+    if (page === 'contacts') {
+      getFriendsRequests();
+      getFriends();
+    }
+  };
+
+  // **** Suivis **** //
+
+  // Vérifie si l'utilisateur connecté suit la personne concernée
+  const checkIfFollowed = async () => {
+    const status = await checkFollowedStatus(userInfos.id);
+    setFollowedStatus(status);
+  };
+
   // Suit la personne concernée
   const followUser = async () => {
-    await followSomeone(receiverId);
+    await followSomeone(userInfos.id);
     handleClose();
     checkIfFollowed();
 
@@ -74,7 +101,7 @@ const FriendRequestBtn = ({
 
   // Arrête de suivre la personne concernée
   const unfollowUser = async () => {
-    await unfollowSomeone(receiverId);
+    await unfollowSomeone(userInfos.id);
     handleClose();
     checkIfFollowed();
 
@@ -83,60 +110,23 @@ const FriendRequestBtn = ({
     }
   };
 
-  // Vérifie si l'utilisateur connecté a envoyé une demande en ami, si une demande est en attente, si une amitié existe
-  const checkIfFriends = async () => {
-    const status = await checkFriendshipStatus(receiverId);
-    setFriendshipStatus(status);
-  };
-
-  // Vérifie si l'utilisateur connecté a envoyé une demande en ami, si une demande est en attente, si une amitié existe
-  const checkIfFollowed = async () => {
-    const status = await checkFollowedStatus(receiverId);
-    setFollowedStatus(status);
-  };
-
-  // Accepte une demande d'amitié
-  const acceptFriendRequest = async () => {
-    await acceptFriendship(receiverId);
-    handleClose();
-    checkIfFriends(); // Actualise le status d'amitié accepté
-
-    if (page === 'contacts') {
-      getFriendsRequests();
-      getFriends();
-    }
-  };
-
-  // Annuler une demande d'amitié
-  const cancelFriendshipRequest = async () => {
-    await cancelFriendShip(receiverId);
-    handleClose();
-    checkIfFriends(); // Supprime le bouton de demande en attente
-  };
-
-  // A chaque fois qu'on récupère la liste des personnes suggérées, on met à jour le status (pas de demande, en attente, à confirmer, ou accepté )
   useEffect(() => {
     checkIfFriends();
-  }, [friendsList]);
-
-  // A chaque fois qu'on récupère la liste des suivis, on met à jour le status (suivi ou non)
-  useEffect(() => {
     checkIfFollowed();
-  }, [followedList]);
+  }, []);
 
   return (
     <>
       <Button
-        size="small"
         variant="contained"
         sx={{
-          width: '72px',
-          height: '20px',
-          textTransform: 'initial',
-          fontWeight: 'normal',
-          fontSize: '0.9em',
-          padding: '0',
-          display: page === 'profil' ? 'none' : 'flex',
+          height: '35px',
+          width: '130px',
+          background:
+            'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)',
+          color: '#fff',
+          lineHeight: 'normal',
+          padding: '2px 0 0 0',
         }}
         onClick={e => handleClick(e)}
       >
@@ -144,7 +134,7 @@ const FriendRequestBtn = ({
       </Button>
       <Menu
         id="basic-menu"
-        anchorEl={page === 'profil' ? anchorProfilBtn : anchorEl}
+        anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         autoFocus={false}
@@ -252,12 +242,7 @@ const FriendRequestBtn = ({
 
 FriendRequestBtn.propTypes = {
   page: PropTypes.string.isRequired,
-  anchorProfilBtn: PropTypes.instanceOf(Element),
-  setAnchorProfilBtn: PropTypes.func,
-  receiverId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
-  friendsList: PropTypes.array,
-  followedList: PropTypes.array,
+  userInfos: PropTypes.object.isRequired,
   getFriendsRequests: PropTypes.func,
   getFriends: PropTypes.func,
   getFollowed: PropTypes.func,

@@ -1,48 +1,31 @@
 // Import des libs externes
-import {
-  Card,
-  CardMedia,
-  Container,
-  Stack,
-  Box,
-  Typography,
-  Modal,
-} from '@mui/material';
-import Header from '@utils/components/Header';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { Box, Container, Modal, Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import des composants internes
-import { Item } from '@utils/components/styledComponent';
-import ProfilDetails from '@views/Profil/ProfilDetails';
-import SuggestedGoldNuggets from '@views/Profil/SuggestedGoldNuggets';
+import Header from '@utils/components/Header';
 import SearchBar from '@utils/components/SearchBar';
+import UserAvatar from '@utils/components/UserAvatar';
+import ProfilRank from '@views/Profil/ProfilRank';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
+import GradientBtn from '@views/CriticAdvices/GradientBtn';
+import SuggestedGoldNuggets from '@utils/components/SuggestedGoldNuggets';
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
-import AccountUpdatePic from '@views/Account/AccountUpdatePic';
-import FriendRequestBtn from '@utils/components/FriendRequestBtn';
 import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
-
-// Import des icônes
-import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
-import PersonAddAlt1TwoToneIcon from '@mui/icons-material/PersonAddAlt1TwoTone';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-// Import des variables d'environnements
-import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
-
-// Import des requêtes
-import { getUser } from '@utils/request/users/getUser';
-import { getCriticsOfUser } from '@utils/request/critics/getCritics';
-import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
-
 // Import du hook de scroll vertical infini
 import useVerticalScroll from '@hooks/useVerticalScroll';
-import UserAvatar from '@utils/components/UserAvatar';
+
+// Import des requêtes
+import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
+import { getCriticsOfUser } from '@utils/request/critics/getCritics';
+import { getUser } from '@utils/request/users/getUser';
+import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
 
 interface Picture {
   id: number;
@@ -66,56 +49,56 @@ interface User {
 }
 
 const ProfilComponent = () => {
-  const { id } = useParams();
   const { displayType, chosenMovie, setChosenMovie } = useData();
+  const { id } = useParams();
 
-  // Utilisateur connecté
-  const [loggedUserInfos, setLoggedUserInfos] = useState(
-    JSON.parse(localStorage.getItem('user_infos')),
-  );
-  // Utilisateur externe
-  const [chosenUser, setChosenUser] = useState<User | null>(null); // Les informations de l'utilisateur autre que celui connecté
-  const [isChosenUserLoaded, setIsChosenUserLoaded] = useState(false); // Etat de chargement des informations de l'utilisateur extérieur
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos')); // Les infos de l'utilisateur connecté
+
+  const isProfilUserLogged = loggedUserInfos.id === parseInt(id, 10); // Vérifie si le profil affiché est celui de l'utilisateur connecté
+
   const [criticsAndAdvices, setCriticsAndAdvices] = useState([]); // Les critiques et les conseils de l'utilisateur du profil
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
-  const [modifyCoverPic, setModifyCoverPic] = useState({
-    state: false,
-    type: null,
-  }); // Booléen pour ouvrir ou non la fenêtre de modification de photo de couverture
-  const [anchorProfilBtn, setAnchorProfilBtn] = useState(null); // Booléen pour ouvrir le Menu de demande en ami
-  const [isDataFetched, setIsDataFetched] = useState(false); // Si les critiques et conseils ont été récupérés
+  const [chosenUser, setChosenUser] = useState<User | null>(null); // Les informations de l'utilisateur autre que celui connecté
+  const [isChosenUserLoaded, setIsChosenUserLoaded] = useState(false); // Etat de chargement des informations de l'utilisateur extérieur
+  const [criticsNumber, setCriticsNumber] = useState(0);
+  const [goldNuggetsNumber, setGoldNuggetsNumber] = useState(0);
 
   const firstRender = useRef(true);
 
-  // const [alertSeverity, setAlertSeverity] = useState({state: null, message: null, action: null}); // Message de succès, d'info, d'erreur
-
-  // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
-  const fetchChosenUser = async user_id => {
-    setIsChosenUserLoaded(false);
-    const user = await getUser(user_id);
-    setChosenUser(user);
-    setIsChosenUserLoaded(true);
+  // Récupération de la photo de couverture
+  const getCoverPic = () => {
+    // Si profil de l'utilisateur connecté et qu'une photo de couverture a été choisie
+    if (isProfilUserLogged && loggedUserInfos.coverPics.length) {
+      return `${apiBaseUrl}/uploads/${
+        loggedUserInfos.coverPics.find(pic => pic.isActive === 1).filePath
+      }`;
+    }
+    // Si profil d'un autre utilisateur et qu'une photo de couverture a été choisie
+    else if (!isProfilUserLogged && chosenUser?.coverPics.length) {
+      return `${apiBaseUrl}/uploads/${
+        chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
+      }`;
+    }
+    // Si aucune photo de couverture n'a été choisie
+    else {
+      return `${assetsBaseUrl}/images/default_cover_pic_pietro_jeng.jpg`;
+    }
   };
 
   // Récupère les critiques et conseils de l'utilisateur du profil
   const getCriticsAndAdvices = useCallback(
     async page => {
       try {
-        console.log('APPEL !!!');
-
-        setIsDataFetched(false);
-
         let hasMoreCritics = true;
         let hasMoreAdvices = true;
 
-        const criticsData = await getCriticsOfUser(id, displayType, page);
+        const criticsData = await getCriticsOfUser(id, displayType, page, 3);
         if (criticsData.length < 3) {
           console.log('plus de critiques à récupérer');
 
           // Si les critiques reçues sont inférieures à 3
           hasMoreCritics = false;
         }
-        console.log('les critiques', criticsData);
 
         const advicesData = await getAdvicesReceived(id, displayType, page);
         if (advicesData.length < 3) {
@@ -124,9 +107,22 @@ const ProfilComponent = () => {
         }
 
         const combinedData = [...criticsData, ...advicesData];
-        setCriticsAndAdvices(prevData => [...prevData, ...combinedData]);
 
-        setIsDataFetched(true);
+        // Tri des données combinées du plus récent au plus ancien
+        const sortedCombinedData = combinedData.sort((a, b) => {
+          const dateA = a.critic_date || a.advice_date;
+          const dateB = b.critic_date || b.advice_date;
+          return new Date(dateB).getTime() - new Date(dateA).getTime(); // Tri décroissant
+        });
+
+        // Ajout d'une clé de vérification de chargement des données utilisateur
+        const dataWithLoading = sortedCombinedData.map(item => ({
+          ...item,
+          isLoadingUser: true,
+        }));
+
+        // console.log('les critiques et conseils', dataWithLoading);
+        setCriticsAndAdvices(prevData => [...prevData, ...dataWithLoading]);
 
         // Retourne true s'il reste des critiques ou des conseils à charger
         return hasMoreCritics || hasMoreAdvices;
@@ -137,329 +133,245 @@ const ProfilComponent = () => {
     [id, displayType],
   );
 
+  // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
+  const fetchChosenUser = async user_id => {
+    setIsChosenUserLoaded(false);
+    const user = await getUser(user_id);
+    setChosenUser(user);
+    setIsChosenUserLoaded(true);
+  };
+
+  // Hook customisé pour le scroll infini vertical
   const { observerRef, loading, hasMore } = useVerticalScroll(
     id,
     firstRender,
     getCriticsAndAdvices,
     displayType,
     setCriticsAndAdvices,
-    setIsDataFetched,
   );
 
-  // Récupération des informations de l'utilisateur si le profil est différent de l'utilisateur connecté
   useEffect(() => {
-    const loggedInUserId = loggedUserInfos.id;
-    const profileUserId = parseInt(id, 10);
+    const fetchCounts = async () => {
+      const { criticsNumber, goldNuggetsNumber } =
+        await countCriticsAndGoldUser(id);
+      setCriticsNumber(criticsNumber);
+      setGoldNuggetsNumber(goldNuggetsNumber);
+    };
 
-    // Si l'id de l'utilisateur dans l'URL est différent de celui de l'utilisateur connecté
-    if (loggedInUserId !== profileUserId) {
-      // Fetch les informations de cet utilisateur
-      fetchChosenUser(profileUserId);
+    fetchCounts();
+  }, [id, criticsAndAdvices]);
+
+  useEffect(() => {
+    if (!isProfilUserLogged) {
+      fetchChosenUser(id);
     }
-  }, [id, loggedUserInfos]);
 
-  // Réinitialisation lors du changement de type (films ou séries)
-  useEffect(() => {
-    // Premier rendu
-    if (firstRender.current) firstRender.current = false;
+    firstRender.current = false;
   }, []);
-
-  const handleClick = event => {
-    setAnchorProfilBtn(event.currentTarget);
-  };
 
   return (
     <>
-      {/* {alertSeverity.state ?
-        <CustomAlert 
-          type={alertSeverity.state} 
-          message={alertSeverity.message} 
-          setOnAlert={setAlertSeverity} 
-          />
-        :
-        null
-      } */}
-      {modifyCoverPic.state && (
-        <AccountUpdatePic
-          showPicModal={modifyCoverPic}
-          setShowPicModal={setModifyCoverPic}
-          loggedUserInfos={loggedUserInfos}
-          setLoggedUserInfos={setLoggedUserInfos}
-        />
-      )}
+      <Header page={'profil'} />
       <Modal
         open={chosenMovie !== null}
         onClose={() => setChosenMovie(null)}
         aria-labelledby={
-          loggedUserInfos.id === parseInt(id, 10)
-            ? 'Nouvelle critique'
-            : 'Nouveau conseil'
+          isProfilUserLogged ? 'Nouvelle critique' : 'Nouveau conseil'
         }
         aria-describedby="modal-modal-description"
       >
         <Stack height="100vh" padding="0 6px" justifyContent="center">
           <CriticAdvicesComponent
             page={'profil'}
-            type={
-              loggedUserInfos.id === parseInt(id, 10)
-                ? 'new-critic'
-                : 'new-advice'
-            }
+            criticIndex={null}
+            type={isProfilUserLogged ? 'new-critic' : 'new-advice'}
             chosenMovie={chosenMovie}
             data={criticsAndAdvices}
             setData={setCriticsAndAdvices}
             setGoldenMovies={setGoldenMovies}
             loggedUserInfos={loggedUserInfos}
-            infos={null}
             chosenUser={chosenUser}
+            infos={null}
+            haveMoreCritics={null}
+            isLast={null}
           />
         </Stack>
       </Modal>
-      <Header page={'profil'} />
-      <Card
+      <Container
+        maxWidth="xl"
         sx={{
-          height: '30vh',
-          width: '100%',
-          position: 'relative',
-          borderRadius: '0',
+          padding: '0 !important',
+          margin: '0',
+          backgroundColor: '#FDFDFD',
+          minHeight: 'calc(100vh - 60px)',
         }}
       >
-        <CardMedia
-          image={
-            // Si profil de l'utilisateur connecté et qu'il a choisi une photo de couverture
-            loggedUserInfos.id === parseInt(id, 10) &&
-            loggedUserInfos.coverPics.length
-              ? `${apiBaseUrl}/uploads/${
-                  loggedUserInfos.coverPics.find(pic => pic.isActive === 1)
-                    .filePath
-                }`
-              : // Si profil d'un autre utilisateur et qu'il a choisi une photo de couverture
-              loggedUserInfos.id !== parseInt(id, 10) &&
-                chosenUser?.coverPics.length
-              ? `${apiBaseUrl}/uploads/${
-                  chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
-                }`
-              : // Si l'utilisateur n'a pas choisi de photo de couverture
-                `${assetsBaseUrl}/images/default_cover_pic_pietro_jeng.jpg`
-          }
-          sx={{
-            height: '100%',
-          }}
-        />
-        {/* Backround gradient pour la lisibilité du nom de l'utilisateur */}
-        <Box
-          width="100%"
-          height="100%"
-          position="absolute"
-          bottom="0"
-          right="0"
-          sx={{
-            background:
-              'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(14,14,14,0.37) 70%)',
-          }}
-        >
-          {
-            // Si profil de l'utilisateur connecté, on permet de changer la photo de couverture
-            loggedUserInfos.id === parseInt(id, 10) ? (
-              <AddPhotoAlternateTwoToneIcon
-                fontSize="medium"
-                sx={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '10px',
-                  color: '#585858',
-                  cursor: 'pointer',
-                }}
-                onClick={() =>
-                  setModifyCoverPic({ state: true, type: 'couverture' })
-                }
+        <Stack direction="column">
+          <Stack position="relative">
+            <Box
+              height="40vh"
+              width="100vw"
+              justifyContent="flex-end"
+              sx={{
+                backgroundImage: `url(${getCoverPic()})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                maskImage: "url('/images/rounded_mask.svg')",
+                maskSize: 'cover',
+                maskRepeat: 'no-repeat',
+                maskPosition: 'center center',
+              }}
+            ></Box>
+            <Stack
+              alignItems="center"
+              width="100vw"
+              position="absolute"
+              bottom="-45px"
+              zIndex="2"
+            >
+              <GradientBtn
+                btnType={'movies-list'}
+                criticsNumber={null}
+                goldNuggetsNumber={null}
               />
-            ) : null
-          }
-        </Box>
-        <Stack
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-end"
-          position="absolute"
-          bottom="0"
-          right="0"
-          width="100%"
-          padding="0 9.5px"
-          marginBottom="6px"
-        >
-          {(loggedUserInfos.id === parseInt(id, 10) || isChosenUserLoaded) && (
-            <UserAvatar
-              variant={'rounded'}
-              userInfos={
-                loggedUserInfos.id === parseInt(id, 10)
-                  ? loggedUserInfos
-                  : chosenUser
-              }
-              picWidth={90}
-              picHeight={90}
-              isOutlined={false}
-              outlineWidth={null}
-              relationType={null}
-              sx={{ border: '3.5px solid #fff' }}
-            />
-          )}
-
-          <Stack direction="row" alignItems="center" columnGap="5px">
+              <Stack direction="row" alignItems="center" columnGap="9vw">
+                <GradientBtn
+                  btnType={'ratings'}
+                  criticsNumber={criticsNumber}
+                  goldNuggetsNumber={goldNuggetsNumber}
+                />
+                {(isProfilUserLogged || isChosenUserLoaded) && (
+                  <UserAvatar
+                    variant={'circular'}
+                    userInfos={
+                      isProfilUserLogged ? loggedUserInfos : chosenUser
+                    }
+                    picWidth={120}
+                    picHeight={120}
+                    isOutlined={true}
+                    outlineWidth={'5px'}
+                    relationType={'default'}
+                    sx={{
+                      boxShadow: '0px 8px 5px 0px rgb(57 57 57 / 14%)',
+                    }}
+                    redirection={false}
+                  />
+                )}
+                <GradientBtn
+                  btnType={'gold-nuggets'}
+                  criticsNumber={criticsNumber}
+                  goldNuggetsNumber={goldNuggetsNumber}
+                />
+              </Stack>
+            </Stack>
+          </Stack>
+          <Stack alignItems="center" marginTop="52px">
             <Typography
               component="h2"
-              sx={{
-                color: '#fff',
-                fontWeight: 'bold',
-                fontSize: '1.4em',
-                padding: '0 6px 0 16px',
-                textShadow: '#00000040 1px 2px 2px',
-              }}
+              fontWeight="600"
+              color="#383838"
+              fontSize="4vh"
+              letterSpacing="-1px"
+              lineHeight="1"
+              margin="7px 0 4px 0"
             >
-              {loggedUserInfos.id === parseInt(id, 10)
+              {isProfilUserLogged
                 ? `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`
                 : isChosenUserLoaded
                 ? `${chosenUser.first_name} ${chosenUser.last_name}`
                 : null}
             </Typography>
-            {loggedUserInfos.id !== parseInt(id, 10) && isChosenUserLoaded ? (
-              <>
-                {chosenUser.relation_type === 'close_friend' ? (
-                  <VerifiedIcon
-                    sx={{
-                      color: '#F16C22',
-                      fontSize: '23.5px',
-                    }}
-                    onClick={e => handleClick(e)}
-                  />
-                ) : chosenUser.relation_type === 'friend' ? (
-                  <VerifiedIcon
-                    sx={{
-                      color: '#F29E50',
-                      fontSize: '23.5px',
-                    }}
-                    onClick={e => handleClick(e)}
-                  />
-                ) : chosenUser.relation_type === 'followed' ? (
-                  <BookmarkIcon
-                    sx={{ color: '#24A5A5', fontSize: '22px' }}
-                    onClick={e => handleClick(e)}
-                  />
-                ) : (
-                  <PersonAddAlt1TwoToneIcon
-                    sx={{
-                      fontSize: '23.5px',
-                      color: '#dcdcdc',
-                      position: 'relative',
-                      bottom: '1.1px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={e => handleClick(e)}
-                  />
-                )}
-                <FriendRequestBtn
-                  page={'profil'}
-                  anchorProfilBtn={anchorProfilBtn}
-                  setAnchorProfilBtn={setAnchorProfilBtn}
-                  receiverId={id}
-                />
-              </>
-            ) : null}
+            <ProfilRank page={'profil'} criticsNumber={criticsNumber} />
           </Stack>
-        </Stack>
-      </Card>
-      <Container
-        maxWidth="xl"
-        sx={{
-          padding: '0 6px',
-          backgroundColor: '#F4F4F4',
-          minHeight: 'calc(100vh - (60px + 30vh))',
-          marginBottom: '7px',
-        }}
-      >
-        <Stack height="100%" position="relative">
-          <Box
-            width="100px"
-            display="flex"
-            justifyContent="center"
-            position="absolute"
-            top="-66px"
-            left="0"
-          ></Box>
-          <Stack
-            direction="column"
-            height="189px"
-            columnGap="6px"
-            flexWrap="wrap"
-          >
-            <Box height="189px" width="100px">
-              <ProfilDetails
-                criticsAndAdvices={criticsAndAdvices}
-                loggedUserInfos={loggedUserInfos}
-                chosenUser={chosenUser}
-              />
-            </Box>
-            <Item
-              customheight="calc(100% - 6px)"
-              customwidth="calc(100% - 108px)"
-              margintop="6px"
-              overflow="hidden"
+          <Stack padding="0 4%" margin="20px 0 0 0">
+            <Typography
+              component="h4"
+              variant="body1"
+              fontWeight="600"
+              color="#383838"
             >
-              <SuggestedGoldNuggets
-                page={'profil'}
-                goldenMovies={goldenMovies}
-                setGoldenMovies={setGoldenMovies}
-                chosenUser={chosenUser}
-                loggedUserInfos={loggedUserInfos}
-              />
-            </Item>
+              {isProfilUserLogged
+                ? 'Vos dernières pépites'
+                : isChosenUserLoaded
+                ? `Dernières pépites de ${chosenUser.first_name} ${chosenUser.last_name}`
+                : null}
+            </Typography>
           </Stack>
-          <SearchBar
-            Item={Item}
-            page={'profil'}
-            loggedUserInfos={loggedUserInfos}
-            chosenUser={chosenUser}
-            handlePoster={null}
-          />
-          {/* {chosenMovie !== null ? (
-            <CriticAdvicesComponent
+          <Box
+            width="100vw"
+            marginTop="64px"
+            bgcolor="#CAE6E4"
+            position="relative"
+          >
+            <SuggestedGoldNuggets
               page={'profil'}
-              type={
-                loggedUserInfos.id === parseInt(id, 10)
-                  ? 'new-critic'
-                  : 'new-advice'
-              }
-              chosenMovie={chosenMovie}
-              data={criticsAndAdvices}
-              setData={setCriticsAndAdvices}
-              setGoldenMovies={setGoldenMovies}
               loggedUserInfos={loggedUserInfos}
-              infos={null}
-              chosenUser={chosenUser}
+              goldenMovies={goldenMovies}
+              setGoldenMovies={setGoldenMovies}
             />
-          ) : null} */}
-          {criticsAndAdvices.length ? (
-            criticsAndAdvices.map(infos => {
-              return (
-                <CriticAdvicesComponent
-                  key={`${infos.type}-${infos.id}`}
-                  page={'profil'}
-                  type={infos.critic_id ? 'old-critic' : 'old-advice'}
-                  data={criticsAndAdvices}
-                  setData={setCriticsAndAdvices}
-                  setGoldenMovies={setGoldenMovies}
-                  chosenMovie={null}
-                  loggedUserInfos={loggedUserInfos}
-                  infos={infos}
-                  chosenUser={chosenUser}
-                />
-              );
-            })
-          ) : !criticsAndAdvices.length && isDataFetched ? (
-            <NoCriticAdvice page={'profil'} />
-          ) : null}
-          {loading && <SkeletonCard />}
-          {hasMore && <div ref={observerRef}></div>}
+            <Stack padding="0 4%" marginTop="80px">
+              <Stack>
+                <Typography
+                  component="h4"
+                  variant="body1"
+                  fontWeight="600"
+                  color="#383838"
+                >
+                  {isProfilUserLogged
+                    ? 'Publiez une critique'
+                    : 'Conseillez quelque chose'}
+                </Typography>
+              </Stack>
+              <SearchBar
+                page={'profil'}
+                loggedUserInfos={loggedUserInfos}
+                chosenUser={chosenUser}
+              />
+            </Stack>
+            <Stack padding="0 4%" marginTop="20px">
+              <Stack marginBottom="6px">
+                <Typography
+                  component="h4"
+                  variant="body1"
+                  fontWeight="600"
+                  color="#383838"
+                >
+                  {isProfilUserLogged
+                    ? "Votre fil d'actualité"
+                    : `Fil d'actualité de ${chosenUser?.first_name} ${chosenUser?.last_name} `}
+                </Typography>
+              </Stack>
+              {criticsAndAdvices.length ? (
+                criticsAndAdvices.map((infos, index) => {
+                  return (
+                    <CriticAdvicesComponent
+                      key={`${infos.type}-${infos.id}`}
+                      criticIndex={index}
+                      page={'profil'}
+                      type={infos.critic_id ? 'old-critic' : 'old-advice'}
+                      data={criticsAndAdvices}
+                      setData={setCriticsAndAdvices}
+                      setGoldenMovies={setGoldenMovies}
+                      chosenMovie={null}
+                      loggedUserInfos={loggedUserInfos}
+                      infos={infos}
+                      chosenUser={chosenUser}
+                    />
+                  );
+                })
+              ) : !criticsAndAdvices.length && !loading ? (
+                <NoCriticAdvice page={'profil'} />
+              ) : null}
+              {loading && (
+                <>
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </>
+              )}
+            </Stack>
+            {hasMore && !loading && <div ref={observerRef}></div>}
+          </Box>
         </Stack>
       </Container>
     </>

@@ -1,14 +1,21 @@
+// Import des libs externes
 import { Stack, Avatar, Typography } from '@mui/material';
-import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
+// Import des composants internes
+import AcquaintancesMenu from './AcquaintancesMenu';
 import IsNew from './IsNew';
 import { OrangeRating, YellowRating } from './styledComponent';
+
+// Import des variables d'environnement
+import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
+
+// Import des fonctions
 import { convertRating } from '@utils/functions/convertRating';
-import AcquaintancesMenu from './AcquaintancesMenu';
 
-const MainItemContent = ({ type, data, movieOrSerie, list }) => {
-
+const MainItemContent = ({ type, data, movieOrSerie }) => {
   const navigate = useNavigate();
 
   const [showMutualFriends, setShowMutualFriends] = useState(null);
@@ -25,9 +32,9 @@ const MainItemContent = ({ type, data, movieOrSerie, list }) => {
           type === 'wanted-movies' ||
           type === 'watched-movies' ||
           type === 'rated-movies'
-            ? `Poster ${
-                movieOrSerie === 'movie' ? 'du film' : 'de la série'
-              } ${movieOrSerie === 'movie' ? data.title : data.name}`
+            ? `Poster ${movieOrSerie === 'movie' ? 'du film' : 'de la série'} ${
+                movieOrSerie === 'movie' ? data.title : data.name
+              }`
             : `Photo de profil de ${data.first_name} ${data.last_name}`
         }
         src={
@@ -63,18 +70,14 @@ const MainItemContent = ({ type, data, movieOrSerie, list }) => {
             : navigate(`/profil/${data.id}`)
         }
       />
-      <Stack
-        direction="column"
-        alignItems="flex-start"
-        justifyContent="center"
-      >
+      <Stack direction="column" alignItems="flex-start" justifyContent="center">
         <Stack direction="row" columnGap="5px" alignItems="center">
           <Typography
             variant="body2"
             component="h4"
             fontWeight="bold"
             whiteSpace="nowrap"
-            maxWidth={type === 'rated-movies' ? "auto" : "130px"}
+            maxWidth={type === 'rated-movies' ? 'auto' : '130px'}
             overflow="hidden"
             textOverflow="ellipsis"
           >
@@ -111,7 +114,7 @@ const MainItemContent = ({ type, data, movieOrSerie, list }) => {
                     bottom: '-1px',
                   }}
                 />
-                <Typography fontSize="0.8em" fontWeight="700">
+                <Typography fontSize="0.8em" fontWeight="600">
                   {`${data.rating} / 5`}
                 </Typography>
               </>
@@ -127,7 +130,7 @@ const MainItemContent = ({ type, data, movieOrSerie, list }) => {
                     bottom: '-1px',
                   }}
                 />
-                <Typography fontSize="0.8em" fontWeight="700">
+                <Typography fontSize="0.8em" fontWeight="600">
                   {`${convertRating(data.vote_average)} / 5`}
                 </Typography>
               </>
@@ -138,9 +141,7 @@ const MainItemContent = ({ type, data, movieOrSerie, list }) => {
               height="14.22px"
               flexBasis="100%"
               color={
-                data.friends_and_followed_critics.length
-                  ? 'inherit'
-                  : '#B9B9B9'
+                data.friends_and_followed_critics.length ? 'inherit' : '#B9B9B9'
               }
             >
               <>
@@ -206,14 +207,19 @@ const MainItemContent = ({ type, data, movieOrSerie, list }) => {
               open={openMutualFriends}
               anchorEl={showMutualFriends}
               setAnchorEl={setShowMutualFriends}
-              infos={list}
+              infos={data.common_friends_details}
             />
           </>
         )}
       </Stack>
     </Stack>
-        
   );
+};
+
+MainItemContent.propTypes = {
+  type: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
+  movieOrSerie: PropTypes.string,
 };
 
 export default MainItemContent;

@@ -47,14 +47,13 @@ const GoldFooter = ({ from, infos }) => {
     let response;
 
     if ('critic_id' in infos) {
-      if(from === 'comment') {
+      if (from === 'comment') {
         response = await getDiamondsCriticCommentNumber(infos.id, displayType);
-      } else {  
+      } else {
         response = await getDiamondsCriticNumber(infos.critic_id, displayType);
       }
     } else if ('advice_id' in infos) {
-      if(from === 'comment') {
-
+      if (from === 'comment') {
       } else {
         response = await getDiamondsAdviceNumber(infos.advice_id, displayType);
       }
@@ -70,14 +69,13 @@ const GoldFooter = ({ from, infos }) => {
     let response;
 
     if ('critic_id' in infos) {
-      if(from === 'comment') {
+      if (from === 'comment') {
         response = await checkDiamondCriticCommentStatus(infos.id, displayType);
       } else {
         response = await checkDiamondCriticStatus(infos.critic_id, displayType);
       }
     } else if ('advice_id' in infos) {
-      if(from === 'comment') {
-
+      if (from === 'comment') {
       } else {
         response = await checkDiamondAdviceStatus(infos.advice_id, displayType);
       }
@@ -113,14 +111,13 @@ const GoldFooter = ({ from, infos }) => {
       setGoldAnim(true);
 
       if ('critic_id' in infos) {
-        if(from === 'comment') {
+        if (from === 'comment') {
           await addDiamondCriticComment(infos.id, displayType);
         } else {
           await addDiamondCritic(infos.critic_id, displayType);
         }
       } else if ('advice_id' in infos) {
-        if(from === 'comment') {
-
+        if (from === 'comment') {
         } else {
           await addDiamondAdvice(infos.advice_id, displayType);
         }
@@ -129,14 +126,13 @@ const GoldFooter = ({ from, infos }) => {
       setGoldAnim(false);
 
       if ('critic_id' in infos) {
-        if(from === 'comment') {
+        if (from === 'comment') {
           await removeDiamondCriticComment(infos.id, displayType);
         } else {
-          await removeDiamondCritic(infos.critic_id, displayType);  
+          await removeDiamondCritic(infos.critic_id, displayType);
         }
       } else if ('advice_id' in infos) {
-        if(from === 'comment') {
-
+        if (from === 'comment') {
         } else {
           await removeDiamondAdvice(infos.advice_id, displayType);
         }
@@ -180,13 +176,13 @@ const GoldFooter = ({ from, infos }) => {
       >
         <animated.div style={{ transform: style.transform }}>
           <Stack width="10px">
-            <Typography variant='body1' fontWeight="600">
+            <Typography variant="body1" fontWeight="600">
               {goldMinusOne}
             </Typography>
-            <Typography variant='body1' fontWeight="600">
+            <Typography variant="body1" fontWeight="600">
               {gold}
             </Typography>
-            <Typography variant='body1' fontWeight="600">
+            <Typography variant="body1" fontWeight="600">
               {goldPlusOne}
             </Typography>
           </Stack>
@@ -197,6 +193,7 @@ const GoldFooter = ({ from, infos }) => {
 };
 
 GoldFooter.propTypes = {
+  from: PropTypes.string.isRequired,
   infos: PropTypes.object.isRequired,
 };
 

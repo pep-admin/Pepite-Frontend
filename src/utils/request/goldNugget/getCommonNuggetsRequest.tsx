@@ -4,10 +4,13 @@ import { apiBaseUrl } from '../config';
 
 // Récupération des informations des pépites en commun
 export const getCommonNuggetsRequest = async (targetUserId, type) => {
-  const response = await axios.get(`${apiBaseUrl}/movies/common_nuggets/${targetUserId}`, {
-    params: { type: type },
-    withCredentials: true,
-  });
+  const response = await axios.get(
+    `${apiBaseUrl}/movies/common_nuggets/${targetUserId}`,
+    {
+      params: { type: type },
+      withCredentials: true,
+    },
+  );
 
   if (!Array.isArray(response.data)) {
     return [];

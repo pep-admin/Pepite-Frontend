@@ -3,15 +3,10 @@ import * as React from 'react';
 import {
   AppBar,
   Typography,
-  Box,
   IconButton,
   Menu,
   MenuItem,
-  Tooltip,
   Toolbar,
-  Badge,
-  ToggleButton,
-  ToggleButtonGroup,
   ListItemIcon,
   Divider,
   Stack,
@@ -20,30 +15,23 @@ import {
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
-
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import SwipeIcon from '@mui/icons-material/Swipe';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import GroupsIcon from '@mui/icons-material/Groups';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 // Import des requêtes
 import { handleLogout } from '../request/authRequest';
-import UserAvatar from './UserAvatar';
-import { MagnifyingGlassIcon } from './styledComponent';
 
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
 const Header = ({ page }) => {
-
   // Infos de l'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
@@ -61,7 +49,7 @@ const Header = ({ page }) => {
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     console.log('settings', event.currentTarget);
-    
+
     setAnchorElUser(event.currentTarget);
   };
 
@@ -71,12 +59,6 @@ const Header = ({ page }) => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-  };
-
-  const [alignment, setAlignment] = React.useState('films');
-
-  const handleChange = (_, newAlignment) => {
-    setAlignment(newAlignment);
   };
 
   function stringAvatar(name) {
@@ -93,11 +75,17 @@ const Header = ({ page }) => {
   }
 
   return (
-    <AppBar 
-      position={page === 'swipe' ? 'absolute' : page === 'list' || page === 'contacts' ? 'static' : 'fixed'} 
-      sx={{ 
-        height: '50px', 
-        justifyContent: 'center', 
+    <AppBar
+      position={
+        page === 'swipe'
+          ? 'absolute'
+          : page === 'list' || page === 'contacts'
+          ? 'static'
+          : 'fixed'
+      }
+      sx={{
+        height: '50px',
+        justifyContent: 'center',
         backgroundColor: 'rgba(1, 18, 18, 0.9)',
       }}
     >
@@ -107,7 +95,7 @@ const Header = ({ page }) => {
           height: '50px',
           width: '100%',
           padding: '0 6%',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         <Stack
@@ -122,7 +110,7 @@ const Header = ({ page }) => {
             aria-controls="menu-nav-appbar"
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
-            sx={{ color: '#fff', padding: '0'}}
+            sx={{ color: '#fff', padding: '0' }}
           >
             <MenuIcon />
           </IconButton>
@@ -215,7 +203,7 @@ const Header = ({ page }) => {
             aria-controls="menu-nav-appbar"
             aria-haspopup="true"
             onClick={handleOpenUserMenu}
-            sx={{ color: '#fff', padding: '0'}}
+            sx={{ color: '#fff', padding: '0' }}
           >
             <Avatar
               sx={{
@@ -224,9 +212,11 @@ const Header = ({ page }) => {
                 bgcolor: '#043232',
                 color: '#fdfdfd',
                 borderRadius: '50%',
-                fontSize: '0.65em'
+                fontSize: '0.65em',
               }}
-              {...stringAvatar(`${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`)}
+              {...stringAvatar(
+                `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`,
+              )}
             />
           </IconButton>
           <Menu
@@ -295,8 +285,7 @@ const Header = ({ page }) => {
 };
 
 Header.propTypes = {
-  // loggedUserInfos: PropTypes.object.isRequired,
-  setUserInfos: PropTypes.func,
+  page: PropTypes.string.isRequired,
 };
 
 export default Header;

@@ -21,21 +21,20 @@ import MainItemIcons from './MainItemIcons';
 const MainItemList = ({
   type,
   data,
-  list,
   getRequest,
   getRequest2,
+  movieOrSerie,
   isLast,
-  movieOrSerie
 }) => {
   const [showRemoveFriendModal, setShowRemoveFriendModal] = useState(false);
   const [showRemoveFollowedModal, setShowRemoveFollowedModal] = useState(false);
   const [showRemoveWantedMovie, setShowRemoveWantedMovie] = useState(false);
   const [showRemoveWatchedMovie, setShowRemoveWatchedMovie] = useState(false);
 
-  const { displayType } = useData();    
+  const { displayType } = useData();
 
   // Supprime un ami de la liste d'amis
-  const removeFriendFromList = async () => {    
+  const removeFriendFromList = async () => {
     await removeFriendRequest(data.id);
     getRequest();
   };
@@ -53,11 +52,11 @@ const MainItemList = ({
   };
 
   // Supprime un film de la liste des films à noter
-  const removeWatchedMovie = async (choice) => {
+  const removeWatchedMovie = async choice => {
     console.log('suppression');
     await removeWatchedMovieRequest(data.id, movieOrSerie);
     getRequest();
-    if(choice === 'cancel') {
+    if (choice === 'cancel') {
       console.log('annulation');
       await addWantedMovieRequest(data.id, movieOrSerie);
     }
@@ -94,9 +93,7 @@ const MainItemList = ({
                   <strong> {data.name} </strong>
                 )}
                 {`de votre liste des ${
-                  movieOrSerie === 'movie'
-                    ? 'films à voir'
-                    : 'séries à voir'
+                  movieOrSerie === 'movie' ? 'films à voir' : 'séries à voir'
                 } ?`}
               </span>
             ) : showRemoveWatchedMovie ? (
@@ -137,20 +134,15 @@ const MainItemList = ({
           }
         />
       ) : null}
-      <Stack direction="row" justifyContent="space-between" padding='5px'>
-        <MainItemContent 
-          type={type} 
-          data={data} 
-          movieOrSerie={movieOrSerie} 
-          list={list} 
-        />
-        <MainItemIcons 
-          type={type} 
-          data={data} 
-          movieOrSerie={movieOrSerie} 
-          getRequest={getRequest} 
+      <Stack direction="row" justifyContent="space-between" padding="5px">
+        <MainItemContent type={type} data={data} movieOrSerie={movieOrSerie} />
+        <MainItemIcons
+          type={type}
+          data={data}
+          movieOrSerie={movieOrSerie}
+          getRequest={getRequest}
           getRequest2={getRequest2}
-          // updateFriendList={updateFriendList} 
+          // updateFriendList={updateFriendList}
           removeWatchedMovie={removeWatchedMovie}
           showRemoveFriendModal={showRemoveFriendModal}
           setShowRemoveFriendModal={setShowRemoveFriendModal}
@@ -168,13 +160,13 @@ const MainItemList = ({
 };
 
 MainItemList.propTypes = {
-  data: PropTypes.object.isRequired,
-  isLast: PropTypes.bool.isRequired,
   type: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
   getRequest: PropTypes.func.isRequired,
   getRequest2: PropTypes.func,
   getFollowed: PropTypes.func,
-  list: PropTypes.array,
+  movieOrSerie: PropTypes.string,
+  isLast: PropTypes.bool.isRequired,
 };
 
 export default MainItemList;

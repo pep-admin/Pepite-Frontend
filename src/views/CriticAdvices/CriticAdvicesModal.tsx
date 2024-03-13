@@ -170,9 +170,9 @@ const CriticAdvicesModal = ({
             display="flex"
             alignItems="center"
             justifyContent="center"
-            sx={{ 
+            sx={{
               backgroundColor: '#3b3b3b',
-              borderRadius: '4px'
+              borderRadius: '4px',
             }}
             onClick={() => setShowPoster(null)}
           >

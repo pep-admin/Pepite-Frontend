@@ -7,12 +7,10 @@ import { Item } from '@utils/components/styledComponent';
 
 const NoCriticAdvice = () => {
   return (
-    <Item minheight="175px" marginbottom='10px'>
-     <Stack height='175px' justifyContent='center'>
-      <Typography>
-        {'Aucun contenu à afficher pour le moment.'}
-      </Typography>
-     </Stack>
+    <Item minheight="175px" marginbottom="10px">
+      <Stack height="175px" justifyContent="center">
+        <Typography>{'Aucun contenu à afficher pour le moment.'}</Typography>
+      </Stack>
     </Item>
   );
 };

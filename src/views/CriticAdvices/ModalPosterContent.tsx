@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import UserAvatar from '@utils/components/UserAvatar';
 import ModalAcquaintancesInfos from './ModalAcquaintancesInfos';
 
 // Import des icônes
@@ -61,7 +60,7 @@ const ModalPosterContent = ({
       left="0"
       height="100%"
       width="100%"
-      bgcolor={!showMovieInfos ? "rgba(0, 0, 0, 0.67)" : "rgba(0, 0, 0, 0.85)"}
+      bgcolor={!showMovieInfos ? 'rgba(0, 0, 0, 0.67)' : 'rgba(0, 0, 0, 0.85)'}
       padding="6px 20px"
       alignItems="center"
       sx={{
@@ -106,17 +105,19 @@ const ModalPosterContent = ({
           // Si la modale affichée vient de la page de profil ou directement des critiques
           !showMovieInfos && (page === 'profil' || from === 'critic') ? (
             <>
-              <Typography 
-                variant='body1' 
-                fontWeight='400' 
-                color="#fff" 
+              <Typography
+                variant="body1"
+                fontWeight="400"
+                color="#fff"
                 order="2"
-                marginBottom='10px'
+                marginBottom="10px"
               >
                 {loggedUserInfos.id === (infos.user_id || infos.sender_id) ? (
                   <>
                     {'Vous avez noté le '}
-                    <span style={{ color: '#24a5a5' }}>{`${convertDate(infos.critic_date)}`}</span>
+                    <span style={{ color: '#24a5a5' }}>{`${convertDate(
+                      infos.critic_date,
+                    )}`}</span>
                   </>
                 ) : (
                   <>
@@ -154,14 +155,14 @@ const ModalPosterContent = ({
               relationsRatings={relationsRatings}
             />
           ) : (
-            <Stack order="8" marginTop='10px'>
+            <Stack order="8" marginTop="10px">
               <Typography
                 align="justify"
                 variant="body2"
                 color="#fff"
                 marginTop="10px"
-                fontWeight='300'
-                lineHeight='1.7'
+                fontWeight="300"
+                lineHeight="1.7"
               >
                 {`${infos?.overview}`}
               </Typography>
@@ -174,7 +175,7 @@ const ModalPosterContent = ({
           columnGap="10px"
           maxWidth="200px"
           order="6"
-          marginBottom='10px'
+          marginBottom="10px"
         >
           <Typography
             color="secondary"
@@ -215,12 +216,12 @@ const ModalPosterContent = ({
               }
               sx={{ marginRight: '10px', fontSize: '1.3em' }}
             />
-            <Typography 
-              fontSize="1.2em" 
-              color="primary" 
-              lineHeight='normal' 
+            <Typography
+              fontSize="1.2em"
+              color="primary"
+              lineHeight="normal"
               fontWeight="500"
-              paddingTop='3px' 
+              paddingTop="3px"
             >
               {`${formatRating(
                 page === 'profil' || from === 'critic'

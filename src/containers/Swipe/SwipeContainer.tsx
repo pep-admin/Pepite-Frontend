@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 
 // Import des composants internes
-import SwipeComponent2 from '@views/Swipe/SwipeComponent2';
+import SwipeComponent from '@views/Swipe/SwipeComponent';
 
 // Import des requêtes
 import { fetchTwentyMovies } from '@utils/request/swipe/getMoviesSwipe';
@@ -12,16 +12,24 @@ import { getMovieDetails } from '@utils/request/getMovieDetails';
 const SwipeContainer = () => {
   const [swipeType, setSwipeType] = useState('movie'); // Films ou séries pour le swipe
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
-  const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]);
+  const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]); // Copie du tableau des films / séries + les status "unwanted", "watched", "wanted"
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
   const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
-  const [nextMovieDetail, setNextMovieDetail] = useState({}); // Informations détaillées sur le film affiché
   const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
-  const [swipeAction, setSwipeAction] = useState({direction: null, from: null}); // Gauche ou droite
-  const [countryChosen, setCountryChosen] = useState({name: 'États-Unis', code: 'US'});
+  const [swipeAction, setSwipeAction] = useState({
+    direction: null,
+    from: null,
+  }); // Gauche ou droite
+  const [countryChosen, setCountryChosen] = useState({
+    name: 'États-Unis',
+    code: 'US',
+  });
   const [genreChosen, setGenreChosen] = useState({ name: null, id: null });
-  const [ratingChosen, setRatingChosen] = useState({ number: null, value: null}); // Note générale
+  const [ratingChosen, setRatingChosen] = useState({
+    number: null,
+    value: null,
+  }); // Note générale
   const [loading, setLoading] = useState({ movies: true, details: true }); // Premier chargement
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
   const [isFilterValidated, setIsFilterValidated] = useState(false);
@@ -110,11 +118,6 @@ const SwipeContainer = () => {
         current: detailsDataArray[0],
         next: detailsDataArray[1],
       });
-
-      // Préchargement du prochain film
-      if (detailsDataArray.length > 1 && detailsDataArray[1]) {
-        setNextMovieDetail(detailsDataArray[1]);
-      }
     } catch (err) {
       console.error(
         'Erreur lors de la récupération des détails des films',
@@ -134,16 +137,15 @@ const SwipeContainer = () => {
 
   // Si l'utilisateur change de film à série, ou filtre le swipe : RESET
   useEffect(() => {
-    if(!isFilterValidated) return;
+    if (!isFilterValidated) return;
 
     console.log('pays choisi => ', countryChosen);
-    
 
     setLoading({ movies: true, details: true });
     setMovies([]); // Réinitialisation des données liées aux films/séries
     setMoviePage(1); // Réinitialisation à la page à 1
     setCurrentMovieIndex(0); // Réinitialisation l'index courant à 0
-    setSwipeAction({direction: null, from: null});
+    setSwipeAction({ direction: null, from: null });
     getMovies(1, countryChosen, genreChosen.id); // Recharger les films/séries
     setIsFilterValidated(false);
   }, [isFilterValidated]);
@@ -175,10 +177,9 @@ const SwipeContainer = () => {
   }, []);
 
   return (
-    <SwipeComponent2
+    <SwipeComponent
       movies={movies}
       movieDetail={movieDetail}
-      nextMovieDetail={nextMovieDetail}
       error={error}
       loading={loading}
       currentMovieIndex={currentMovieIndex}

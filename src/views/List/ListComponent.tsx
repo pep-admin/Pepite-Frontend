@@ -1,271 +1,104 @@
 // Import des libs externes
-import { Container, Stack, Typography, Divider } from '@mui/material';
+import {
+  Box,
+  Container,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 // Import des composants internes
 import Header from '@utils/components/Header';
-import ProfilSuggestedNotes from '@views/Profil/SuggestedGoldNuggets';
-import { Item } from '@utils/components/styledComponent';
-import SearchBar from '@utils/components/SearchBar';
-import MainItemList from '@utils/components/MainItemList';
+import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets';
+import ListMoviesSeries from './ListMoviesSeries';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
-
-// Import des requêtes
-import { getWantedMoviesRequest } from '@utils/request/list/getWantedMoviesRequest';
-import { getWatchedMoviesRequest } from '@utils/request/list/getWatchedMoviesRequest';
-import { getCriticsOfUser } from '@utils/request/critics/getCritics';
-
-const ListComponent = () => {
-  const { id } = useParams();
-  const { displayType } = useData();
-
+const ListComponent2 = () => {
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
+  const [alignment, setAlignment] = useState('À voir');
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
-  const [wantedMovies, setWantedMovies] = useState([]); // Les films que l'utilisateur a choisi de voir
-  const [watchedMovies, setWatchedMovies] = useState([]); // Les films que l'utilisateur a déjà vu
-  const [ratedMovies, setRatedMovies] = useState([]); // Les films que l'utilisateur a noté
 
-  const getWantedMovies = async () => {
-    const wanted = await getWantedMoviesRequest(id, displayType);
-    setWantedMovies(wanted);
-  };
-
-  const getWatchedMovies = async () => {
-    const watched = await getWatchedMoviesRequest(id, displayType);
-    setWatchedMovies(watched);
-  };
-
-  const getRatedMovies = async () => {
-    const rated = await getCriticsOfUser(id, displayType, 1, 5);
-    console.log('les films notés', rated);
-    setRatedMovies(rated);
+  const handleChange = (_, newAlignment) => {
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+    }
   };
 
   useEffect(() => {
-    getWantedMovies();
-    getWatchedMovies();
-    getRatedMovies();
-  }, [displayType]);
+    console.log(alignment);
+  }, [alignment]);
 
   return (
     <>
       <Header page={'list'} />
       <Container
-        maxWidth="xl"
         sx={{
-          padding: '6px',
-          backgroundColor: '#F4F4F4',
-          minHeight: 'calc(100vh - 60px)',
+          height: 'calc(100vh - 65px)',
+          marginTop: '15px',
+          padding: '0',
         }}
       >
-        <Stack direction="column" spacing={1}>
-          <SearchBar
-            Item={Item}
-            page={'contacts'}
-            loggedUserInfos={loggedUserInfos}
-            chosenUser={null}
-            handlePoster={null}
-          />
-          <Item
-            customheight="calc(100% - 6px)"
-            customwidth="100%"
-            overflow="hidden"
+        <Stack height="100%">
+          <Stack alignItems="center" padding="0 4%">
+            <ToggleButtonGroup
+              color="success"
+              value={alignment}
+              exclusive
+              onChange={handleChange}
+              aria-label="Platform"
+              fullWidth
+            >
+              <ToggleButton value="À voir">{'À voir'}</ToggleButton>
+              <ToggleButton value="À noter">{'À noter'}</ToggleButton>
+              <ToggleButton value="Notés">{'Notés'}</ToggleButton>
+            </ToggleButtonGroup>
+          </Stack>
+          <Stack marginTop="10px" padding="0 4%">
+            <Typography
+              component="h4"
+              variant="body2"
+              fontWeight="600"
+              color="#383838"
+            >
+              {'Dernières pépites de vos contacts'}
+            </Typography>
+          </Stack>
+          <Box
+            width="100vw"
+            marginTop="66px"
+            bgcolor="#CAE6E4"
+            position="relative"
+            display="flex"
+            flexGrow="1"
           >
-            <ProfilSuggestedNotes
+            <SuggestedGoldNuggets2
               page={'list'}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
               loggedUserInfos={loggedUserInfos}
+              // chosenUser={chosenUser}
             />
-          </Item>
-          <Item overflow="hidden" maxheight="250px">
-            <Stack
-              direction="row"
-              height="25px"
-              alignItems="center"
-              justifyContent="space-between"
-              padding="0 10px"
-            >
-              <Typography variant="body2" component="p" fontWeight="bold">
-                {wantedMovies.length ? `${wantedMovies.length}` : 'Aucun '}
-                {` film${wantedMovies.length > 1 ? 's' : ''} à voir`}
-              </Typography>
-              <Typography
-                variant="body2"
-                component="p"
-                fontWeight="bold"
-                sx={{
-                  cursor: 'pointer',
-                }}
-              >
-                {'Voir tous'}
-              </Typography>
+            <Stack width="100vw" padding="0 4%" marginTop="73px">
+              <Stack>
+                <Typography
+                  component="h4"
+                  variant="body2"
+                  fontWeight="600"
+                  color="#383838"
+                >
+                  {`${alignment}`}
+                </Typography>
+              </Stack>
+              <ListMoviesSeries movieOrSerie={'movie'} alignment={alignment} />
+              <ListMoviesSeries movieOrSerie={'tv'} alignment={alignment} />
             </Stack>
-            <Divider />
-            <Stack
-              direction="column"
-              padding="6px"
-              rowGap="6px"
-              sx={{ maxHeight: '188px', overflowY: 'scroll' }}
-            >
-              {wantedMovies.length ? (
-                wantedMovies.map((movie, index) => {
-                  return (
-                    <MainItemList
-                      key={movie.id}
-                      type={'wanted-movies'}
-                      data={movie}
-                      list={wantedMovies}
-                      getRequest={getWantedMovies}
-                      getRequest2={getWatchedMovies}
-                      isLast={index === wantedMovies.length - 1}
-                    />
-                  );
-                })
-              ) : (
-                <Stack direction="column">
-                  <Typography variant="body2" component="p">
-                    <>
-                      <span style={{ fontWeight: 'bold' }}>
-                        {'Aucun film à voir '}
-                      </span>
-                      {'pour le moment.'}
-                    </>
-                  </Typography>
-                </Stack>
-              )}
-            </Stack>
-          </Item>
-          <Item overflow="hidden" maxheight="250px">
-            <Stack
-              direction="row"
-              height="25px"
-              alignItems="center"
-              justifyContent="space-between"
-              padding="0 10px"
-            >
-              <Typography variant="body2" component="p" fontWeight="bold">
-                {watchedMovies.length}{' '}
-                {`film${watchedMovies.length > 1 ? 's' : ''} à noter`}
-              </Typography>
-              <Typography
-                variant="body2"
-                component="p"
-                fontWeight="bold"
-                sx={{
-                  cursor: 'pointer',
-                }}
-              >
-                {'Voir tous'}
-              </Typography>
-            </Stack>
-            <Divider />
-            <Stack
-              direction="column"
-              padding="6px"
-              rowGap="6px"
-              sx={{
-                maxHeight: '188px',
-                overflowY: 'scroll',
-              }}
-            >
-              {watchedMovies.length ? (
-                watchedMovies.map((movie, index) => {
-                  return (
-                    <MainItemList
-                      key={movie.id}
-                      type={'watched-movies'}
-                      data={movie}
-                      list={watchedMovies}
-                      getRequest={getWatchedMovies}
-                      getRequest2={null}
-                      isLast={index === watchedMovies.length - 1}
-                    />
-                  );
-                })
-              ) : (
-                <Stack direction="column">
-                  <Typography variant="body2" component="p">
-                    <>
-                      <span style={{ fontWeight: 'bold' }}>
-                        {'Aucun film à voir '}
-                      </span>
-                      {'pour le moment.'}
-                    </>
-                  </Typography>
-                </Stack>
-              )}
-            </Stack>
-          </Item>
-          <Item overflow="hidden" maxheight="250px">
-            <Stack
-              direction="row"
-              height="25px"
-              alignItems="center"
-              justifyContent="space-between"
-              padding="0 10px"
-            >
-              <Typography variant="body2" component="p" fontWeight="bold">
-                {ratedMovies.length}{' '}
-                {`film${ratedMovies.length > 1 ? 's' : ''} notés`}
-              </Typography>
-              <Typography
-                variant="body2"
-                component="p"
-                fontWeight="bold"
-                sx={{
-                  cursor: 'pointer',
-                }}
-              >
-                {'Voir tous'}
-              </Typography>
-            </Stack>
-            <Divider />
-            <Stack
-              direction="column"
-              padding="6px"
-              rowGap="6px"
-              sx={{
-                maxHeight: '188px',
-                overflowY: 'scroll',
-              }}
-            >
-              {ratedMovies.length ? (
-                ratedMovies.map((movie, index) => {
-                  return (
-                    <MainItemList
-                      key={movie.id}
-                      type={'rated-movies'}
-                      data={movie}
-                      list={ratedMovies}
-                      getRequest={getWatchedMovies}
-                      getRequest2={null}
-                      isLast={index === ratedMovies.length - 1}
-                    />
-                  );
-                })
-              ) : (
-                <Stack direction="column">
-                  <Typography variant="body2" component="p">
-                    <>
-                      <span style={{ fontWeight: 'bold' }}>
-                        {'Aucun film à voir '}
-                      </span>
-                      {'pour le moment.'}
-                    </>
-                  </Typography>
-                </Stack>
-              )}
-            </Stack>
-          </Item>
+          </Box>
         </Stack>
       </Container>
     </>
   );
 };
 
-export default ListComponent;
+export default ListComponent2;

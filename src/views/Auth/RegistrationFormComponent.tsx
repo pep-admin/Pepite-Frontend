@@ -17,7 +17,7 @@ import AuthHeader from './AuthHeader';
 
 import '../../styles/autofill.css';
 
-function RegistrationFormComponent({ formik, setIsBtnClicked }) {
+function RegistrationFormComponent({ formik }) {
   const navigate = useNavigate();
 
   // Status de l'autocomplétion de chrome sur les inputs
@@ -74,7 +74,7 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
             }}
           >
             <form onSubmit={formik.handleSubmit}>
-              <Grid container rowGap='20px'>
+              <Grid container rowGap="20px">
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
@@ -88,12 +88,16 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
                         className: 'auto-fill-state',
                       },
                     }}
-                    InputLabelProps={{ shrink: isAutoFill.firstName || undefined }}
+                    InputLabelProps={{
+                      shrink: isAutoFill.firstName || undefined,
+                    }}
                     {...formik.getFieldProps('lastName')}
                     error={
                       formik.touched.lastName && Boolean(formik.errors.lastName)
                     }
-                    helperText={formik.touched.lastName && formik.errors.lastName}
+                    helperText={
+                      formik.touched.lastName && formik.errors.lastName
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -109,15 +113,20 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
                         className: 'auto-fill-state',
                       },
                     }}
-                    InputLabelProps={{ shrink: isAutoFill.lastName || undefined }}
+                    InputLabelProps={{
+                      shrink: isAutoFill.lastName || undefined,
+                    }}
                     {...formik.getFieldProps('firstName')}
                     error={
-                      formik.touched.firstName && Boolean(formik.errors.firstName)
+                      formik.touched.firstName &&
+                      Boolean(formik.errors.firstName)
                     }
-                    helperText={formik.touched.firstName && formik.errors.firstName}
+                    helperText={
+                      formik.touched.firstName && formik.errors.firstName
+                    }
                   />
                 </Grid>
-                <Grid item xs={12}>  
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Email"
@@ -136,7 +145,7 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
                     helperText={formik.touched.email && formik.errors.email}
                   />
                 </Grid>
-                <Grid item xs={12}>  
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Mot de passe"
@@ -148,10 +157,12 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
                     error={
                       formik.touched.password && Boolean(formik.errors.password)
                     }
-                    helperText={formik.touched.password && formik.errors.password}
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
                   />
                 </Grid>
-                <Grid item xs={12}>  
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Confirmez le mot de passe"
@@ -175,14 +186,15 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    sx={{ 
-                      background: 'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)', 
+                    sx={{
+                      background:
+                        'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)',
                       color: '#ffffff',
                       lineHeight: 'normal',
-                      padding: '2px 0 0 0'
+                      padding: '2px 0 0 0',
                     }}
                   >
-                    {'S\'inscrire'}
+                    {"S'inscrire"}
                   </Button>
                 </Grid>
               </Grid>
@@ -206,7 +218,7 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
               variant="body1"
               sx={{
                 color: '#8E8E8E',
-                marginBottom: '11px'
+                marginBottom: '11px',
               }}
             >
               {'Vous possédez déjà un compte ?'}
@@ -214,12 +226,12 @@ function RegistrationFormComponent({ formik, setIsBtnClicked }) {
             <Button
               type="submit"
               variant="contained"
-              sx={{ 
+              sx={{
                 width: '75%',
-                backgroundColor: 'form.light', 
+                backgroundColor: 'form.light',
                 color: '#ffffff',
                 lineHeight: 'normal',
-                padding: '2px 0 0 0'
+                padding: '2px 0 0 0',
               }}
               onClick={() => navigate('/login')}
             >

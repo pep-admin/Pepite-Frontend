@@ -68,7 +68,7 @@ const CustomAlert = ({
             marginBottom: '0',
             borderRadius: '0',
             bgcolor: '#032c2c',
-            color: '#fff'
+            color: '#fff',
           }}
         >
           {message}
@@ -82,7 +82,7 @@ const CustomAlert = ({
                   )
                 }
                 sx={{
-                  color: '#D66506'
+                  color: '#D66506',
                 }}
               >
                 {'Confirmer'}

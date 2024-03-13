@@ -13,7 +13,9 @@ export const fetchTwentyMovies = async (
   let genreString;
 
   if (countryChosen.name !== '')
-    countryString = `&with_origin_country=${findIsoCountry(countryChosen.name)}`;
+    countryString = `&with_origin_country=${findIsoCountry(
+      countryChosen.name,
+    )}`;
   else countryString = '';
 
   if (genreChosen !== null) genreString = `&with_genres=${genreChosen}`;

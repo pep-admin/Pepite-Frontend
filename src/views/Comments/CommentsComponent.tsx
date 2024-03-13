@@ -47,7 +47,7 @@ const CommentsComponent = ({
   }, []);
 
   return (
-    <Item marginbottom='15px'>
+    <Item marginbottom="15px">
       <Stack direction="row" height="25px" alignItems="center" padding="0 15px">
         <Typography
           variant="body2"
@@ -63,7 +63,6 @@ const CommentsComponent = ({
         <CommentsInput
           criticId={criticId}
           adviceId={adviceId}
-          comments={comments}
           getComments={getComments}
           userInfos={user_infos}
         />

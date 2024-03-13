@@ -1,7 +1,7 @@
-import ProfilComponent2 from '@views/Profil/ProfilComponent2';
+import ProfilComponent from '@views/Profil/ProfilComponent';
 
 const ProfilContainer = () => {
-  return <ProfilComponent2 />;
+  return <ProfilComponent />;
 };
 
 export default ProfilContainer;

@@ -9,7 +9,7 @@ export const useHorizontalScroll = (
 ) => {
   const [isFetching, setIsFetching] = useState(false);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (!ref || !hasMoreDataRef || isFetching) return;
 
     const handleScroll = event => {

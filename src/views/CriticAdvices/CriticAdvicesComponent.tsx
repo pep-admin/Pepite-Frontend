@@ -17,7 +17,8 @@ import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
 import CustomAlert from '@utils/components/CustomAlert';
 import CriticAdvicesPoster from './CriticAdvicesPoster';
-// import GoldNugget from '@utils/GoldNugget';
+import CriticAdvicesReview from './CriticAdvicesReview';
+import CriticAdvicesHeader2 from './CriticAdvicesHeader2';
 
 // Import des requêtes
 import { addNewCritic } from '@utils/request/critics/postCritic';
@@ -33,8 +34,6 @@ import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCritic
 
 // Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
-import CriticAdvicesHeader2 from './CriticAdvicesHeader2';
-import CriticAdvicesReview2 from './CriticAdvicesReview2';
 
 const CriticAdvicesComponent = ({
   page,
@@ -50,7 +49,6 @@ const CriticAdvicesComponent = ({
   haveMoreCritics,
   isLast,
 }) => {
-  const [displayOverwiew, setDisplayOverview] = useState(false); // Affichage du synopsis
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
   const [newCriticText, setNewCriticText] = useState(''); // Nouveau texte de critique
   const [isGoldNugget, setIsGoldNugget] = useState(false); // Pépite ou non
@@ -86,7 +84,7 @@ const CriticAdvicesComponent = ({
     isNewEntity,
   ) => {
     console.log('action après envoi', page);
-    
+
     const message = isNewEntity
       ? `${
           type === 'critic' ? 'Critique ajoutée' : 'Conseil ajouté'
@@ -116,7 +114,6 @@ const CriticAdvicesComponent = ({
         1,
       );
       console.log('les pépites', response.data.goldenMovies);
-      
 
       setGoldenMovies(response.data.goldenMovies);
     }
@@ -230,12 +227,16 @@ const CriticAdvicesComponent = ({
   const getCriticUserInfos = async (id, criticIndex) => {
     const userInfos = await getUser(id);
     // Mettez à jour la critique spécifique pour indiquer que le chargement est terminé
-    setData(existingCritics => existingCritics.map((critic, index) => (
-      index === criticIndex ? { ...critic, criticUserInfos: userInfos, isLoadingUser: false } : critic
-    )));
+    setData(existingCritics =>
+      existingCritics.map((critic, index) =>
+        index === criticIndex
+          ? { ...critic, criticUserInfos: userInfos, isLoadingUser: false }
+          : critic,
+      ),
+    );
     setCriticUserInfos(userInfos);
   };
-  
+
   useEffect(() => {
     if (isModify) {
       setNewRating(parseFloat(infos.rating));
@@ -249,7 +250,7 @@ const CriticAdvicesComponent = ({
     } else if (type === 'old-advice') {
       getCriticUserInfos(infos.sender_id, criticIndex);
     }
-  }, [data]);
+  }, []);
 
   return (
     <>
@@ -275,7 +276,11 @@ const CriticAdvicesComponent = ({
           // usage={'overwrite'}
         />
       ) : null}
-      <Item marginbottom={(type === 'old-critic' || type === 'old-advice') ? '15px' : '0'} >
+      <Item
+        marginbottom={
+          type === 'old-critic' || type === 'old-advice' ? '15px' : '0'
+        }
+      >
         <Stack height="100%">
           <Stack direction="column" position="relative">
             <CriticAdvicesHeader2
@@ -307,12 +312,12 @@ const CriticAdvicesComponent = ({
                 display: 'flex',
                 flexWrap: 'wrap',
                 overflow: 'visible',
-                bgcolor: '#fafafa'
+                bgcolor: '#fafafa',
               }}
             >
-              <Stack 
-                direction='row' 
-                width='100%'
+              <Stack
+                direction="row"
+                width="100%"
                 marginBottom={infos?.text || isModify ? '12px' : '0'}
               >
                 <CriticAdvicesPoster
@@ -327,26 +332,22 @@ const CriticAdvicesComponent = ({
                 <CriticAdvicesContent
                   type={type}
                   chosenMovie={chosenMovie}
-                  displayOverview={displayOverwiew}
-                  setDisplayOverview={setDisplayOverview}
                   infos={infos}
                 />
               </Stack>
-              {(type === 'old-critic' || type === 'old-advice') && infos?.text === '' && !isModify ?
-                null
-                :
-                <CriticAdvicesReview2
+              {(type === 'old-critic' || type === 'old-advice') &&
+              infos?.text === '' &&
+              !isModify ? null : (
+                <CriticAdvicesReview
                   type={type}
                   newCriticText={newCriticText}
                   setNewCriticText={setNewCriticText}
                   infos={infos}
-                  // chosenMovie={chosenMovie}
                   isModify={isModify}
                   newRating={newRating}
-                  // chosenUser={chosenUser}
                   criticUserInfos={criticUserInfos}
                 />
-              }
+              )}
               {type === 'new-critic' || type === 'new-advice' || isModify ? (
                 <Stack direction="row" flexBasis="100%" justifyContent="center">
                   <Button
@@ -383,14 +384,13 @@ const CriticAdvicesComponent = ({
                       }
                     }}
                   >
-                    <Typography fontWeight='500' paddingTop='3.5px'>
+                    <Typography fontWeight="500" paddingTop="3.5px">
                       {isModify
                         ? 'Modifier'
                         : type === 'new-advice'
                         ? 'Conseiller'
-                        : 'Publier'
-                      }
-                    </Typography>     
+                        : 'Publier'}
+                    </Typography>
                   </Button>
                 </Stack>
               ) : null}
@@ -419,7 +419,7 @@ const CriticAdvicesComponent = ({
         </Collapse>
       )}
       {isLast && !haveMoreCritics && (
-        <Item marginbottom='15px'>
+        <Item marginbottom="15px">
           <Stack>
             <Typography fontSize="1em">{"Et c'est tout !"}</Typography>
           </Stack>
@@ -430,13 +430,14 @@ const CriticAdvicesComponent = ({
 };
 
 CriticAdvicesComponent.propTypes = {
-  data: PropTypes.array.isRequired,
   page: PropTypes.string.isRequired,
+  criticIndex: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),
+  data: PropTypes.array.isRequired,
   setData: PropTypes.func,
-  infos: PropTypes.object,
   setGoldenMovies: PropTypes.func.isRequired,
+  infos: PropTypes.object,
   loggedUserInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
   haveMoreCritics: PropTypes.bool,

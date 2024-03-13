@@ -1,14 +1,16 @@
 // Import des libs externes
-import { LinearProgress, Stack, Typography } from '@mui/material';
+import { Stack, Typography, styled } from '@mui/material';
+import LinearProgress, {
+  linearProgressClasses,
+} from '@mui/material/LinearProgress';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-// Import des icônes
-import MilitaryTechTwoToneIcon from '@mui/icons-material/MilitaryTechTwoTone';
-import { useEffect, useState } from 'react';
+// Import des requêtes
 import { getUserRankRequest } from '@utils/request/grades/getUserRankRequest';
 
-const ProfilRank = ({ criticsNumber }) => {
+const ProfilRank = ({ page, criticsNumber }) => {
   const { id } = useParams();
 
   const [progression, setProgression] = useState(0);
@@ -18,17 +20,13 @@ const ProfilRank = ({ criticsNumber }) => {
 
   const getUserRank = async () => {
     const response = await getUserRankRequest(id);
-    console.log('la réponse', response);
+    // console.log('la réponse', response);
 
     setProgression(response.progression);
     setUserRank(response.rank);
     setCurrentGradePoints(response.currentGradePoints);
     setNextGradePoints(response.nextGradePoints);
   };
-
-  useEffect(() => {
-    getUserRank();
-  }, [criticsNumber]);
 
   // Calcul du pourcentage de progression vers le prochain grade
   const progressionPercentage =
@@ -38,37 +36,45 @@ const ProfilRank = ({ criticsNumber }) => {
         100
       : 0;
 
+  const BorderLinearProgress = styled(LinearProgress)(() => ({
+    variant: 'determinate',
+    height: 10,
+    borderRadius: 5,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+      backgroundColor: '#E0E0E0',
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+      borderRadius: 5,
+      backgroundColor: '#1BADAD',
+    },
+  }));
+
+  useEffect(() => {
+    getUserRank();
+  }, [criticsNumber]);
+
   return (
-    <Stack alignItems="center">
-      <MilitaryTechTwoToneIcon sx={{ color: '#8324A5' }} />
+    <Stack width={page === 'profil' ? '110px' : '100%'}>
       <Typography
-        component="h4"
-        sx={{
-          color: '#8324A5',
-          margin: '4px 0 6px 0',
-          fontFamily: 'League Spartan',
-          fontSize: '0.85em',
-          fontWeight: '700',
-          letterSpacing: '-0.2px',
-          lineHeight: 'normal',
-        }}
+        variant="body2"
+        align={page === 'profil' ? 'center' : 'left'}
+        color="#898989"
+        fontWeight="600"
+        marginBottom="3px"
       >
-        {userRank}
+        {`${userRank}`}
       </Typography>
-      <LinearProgress
-        color="success"
+      <BorderLinearProgress
         variant="determinate"
         value={progressionPercentage}
-        sx={{
-          width: '100%',
-        }}
       />
     </Stack>
   );
 };
 
 ProfilRank.propTypes = {
-  criticsNumber: PropTypes.number.isRequired,
+  page: PropTypes.string.isRequired,
+  criticsNumber: PropTypes.number,
 };
 
 export default ProfilRank;

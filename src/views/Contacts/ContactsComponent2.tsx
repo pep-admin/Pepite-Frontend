@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Container, Stack , Typography, Box} from '@mui/material';
+import { Container, Stack, Typography, Box } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -14,7 +14,6 @@ import { getFriendsList } from '@utils/request/friendship/getFriendsList';
 import { getFollowedList } from '@utils/request/followed/getFollowedList';
 
 const ContactsComponent2 = () => {
-
   const { id } = useParams();
 
   const [friendRequestList, setFriendRequestList] = useState([]); // Liste des demandes d'amitié
@@ -24,13 +23,13 @@ const ContactsComponent2 = () => {
   const scrollContainerRef = useRef(null);
 
   // Récupération des demandes d'amis
-  const getFriendsRequests = async () => {    
+  const getFriendsRequests = async () => {
     const askList = await getFriendRequestList();
     setFriendRequestList(askList);
   };
 
   // Récupération de la liste d'amis
-  const getFriends = async () => {    
+  const getFriends = async () => {
     const friendsList = await getFriendsList(id);
     setFriendsList(friendsList);
   };
@@ -45,84 +44,84 @@ const ContactsComponent2 = () => {
     getFriendsRequests();
     getFriends();
     getFollowed();
-  }, []);  
+  }, []);
 
   return (
     <>
       <Header page={'contacts'} />
       <Container
-        sx={{ 
+        sx={{
           minHeight: 'calc(100vh - 50px)',
           padding: '0',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}
       >
-        <Stack flexGrow='1' >
-          <Stack marginTop='10px' padding='0 4%' >
+        <Stack flexGrow="1">
+          <Stack marginTop="10px" padding="0 4%">
             <Typography
-              component='h4' 
-              variant='body2' 
-              fontWeight='600'
-              color='#383838'  
+              component="h4"
+              variant="body2"
+              fontWeight="600"
+              color="#383838"
             >
               {'Personnes suggérées - Pépites en commun'}
             </Typography>
           </Stack>
-          <Stack 
+          <Stack
             ref={scrollContainerRef}
-            margin='5px 0 15px 4%' 
+            margin="5px 0 15px 4%"
             sx={{
               overflowX: 'scroll',
             }}
           >
-            <TopContributors 
-              page={'contacts'} 
-              scrollContainerRef={scrollContainerRef} 
+            <TopContributors
+              page={'contacts'}
+              scrollContainerRef={scrollContainerRef}
               getFriendsRequests={getFriendsRequests}
-              getFriends={getFriends} 
-              getFollowed={getFollowed} 
+              getFriends={getFriends}
+              getFollowed={getFollowed}
             />
           </Stack>
-          <Stack padding='0 4%' >
+          <Stack padding="0 4%">
             <Typography
-              component='h4' 
-              variant='body2' 
-              fontWeight='600'
-              color='#383838'  
+              component="h4"
+              variant="body2"
+              fontWeight="600"
+              color="#383838"
             >
-              {'Demandes d\'amitié - Amis - Suivis'}
+              {"Demandes d'amitié - Amis - Suivis"}
             </Typography>
           </Stack>
           <Box
-            width='100vw' 
-            marginTop='33px'
-            bgcolor='#CAE6E4'
-            position='relative'
-            display='flex'
-            flexDirection='column'
-            flexGrow='1'
+            width="100vw"
+            marginTop="33px"
+            bgcolor="#CAE6E4"
+            position="relative"
+            display="flex"
+            flexDirection="column"
+            flexGrow="1"
           >
-            <Stack padding='0 4%' marginTop='-27px' width='100%' flexGrow='1'>
-              <ContactsFriendsFollowed 
+            <Stack padding="0 4%" marginTop="-27px" width="100%" flexGrow="1">
+              <ContactsFriendsFollowed
                 contactsType={'requests'}
                 contactsList={friendRequestList}
                 getRequest={getFriendsRequests}
                 getRequest2={getFriends}
               />
-              <ContactsFriendsFollowed 
+              <ContactsFriendsFollowed
                 contactsType={'friends'}
                 contactsList={friendsList}
                 getRequest={getFriends}
                 getRequest2={null}
               />
-              <ContactsFriendsFollowed 
+              <ContactsFriendsFollowed
                 contactsType={'followed'}
                 contactsList={followedList}
                 getRequest={getFollowed}
                 getRequest2={null}
               />
-            </Stack>            
+            </Stack>
           </Box>
         </Stack>
       </Container>

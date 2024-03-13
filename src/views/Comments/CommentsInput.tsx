@@ -4,7 +4,6 @@ import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import { MessageIcon } from '@utils/components/styledComponent';
 import SendIcon from '@mui/icons-material/Send';
 
 // Import du contexte
@@ -14,13 +13,7 @@ import { useData } from '@hooks/DataContext';
 import { addCriticComment } from '@utils/request/comments/addCriticComment';
 import { addAdviceComment } from '@utils/request/comments/addAdviceComment';
 
-const CommentsInput = ({
-  criticId,
-  adviceId,
-  comments,
-  getComments,
-  userInfos,
-}) => {
+const CommentsInput = ({ criticId, adviceId, getComments, userInfos }) => {
   const { displayType } = useData();
 
   const [newComment, setNewComment] = useState('');
@@ -60,22 +53,18 @@ const CommentsInput = ({
       >
         <MessageIcon sx={{ fontSize: '2.5em' }} />
       </Stack> */}
-      <Stack
-        direction="column"
-        justifyContent="space-between"
-        flexGrow="1"
-      >
-        <Stack direction='row' columnGap='5px' margin='6px 0 4px 0'>
+      <Stack direction="column" justifyContent="space-between" flexGrow="1">
+        <Stack direction="row" columnGap="5px" margin="6px 0 4px 0">
           <Typography
-            variant='body2'
+            variant="body2"
             fontWeight="600"
             align="left"
-            marginLeft='5px'
+            marginLeft="5px"
           >
             {`${userInfos.first_name} ${userInfos.last_name}`}
           </Typography>
         </Stack>
-        <Stack direction='row' marginBottom='6px'>
+        <Stack direction="row" marginBottom="6px">
           <TextField
             id="filled-basic"
             ref={inputRef}
@@ -84,10 +73,16 @@ const CommentsInput = ({
             value={newComment}
             fullWidth
             sx={{
-             '& .MuiInputBase-root': {
-              borderRadius: '7px 0 0 7px',
-              bgcolor: '#f0f0f0'
-             }
+              '& .MuiInputBase-root': {
+                borderRadius: '7px 0 0 7px',
+                bgcolor: '#f0f0f0',
+                '&:after': {
+                  borderBottomColor: '#24A5A5', // Couleur désirée pour la bordure active
+                },
+              },
+              '& .MuiInputLabel-filled.Mui-focused': {
+                color: '#24A5A5',
+              },
             }}
             onChange={e => setNewComment(e.target.value)}
           />
@@ -105,9 +100,7 @@ const CommentsInput = ({
             <SendIcon sx={{ color: '#fff' }} />
           </Stack>
         </Stack>
-       
       </Stack>
-      
     </Stack>
   );
 };
@@ -115,7 +108,6 @@ const CommentsInput = ({
 CommentsInput.propTypes = {
   criticId: PropTypes.number,
   adviceId: PropTypes.number,
-  comments: PropTypes.array.isRequired,
   getComments: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,
 };

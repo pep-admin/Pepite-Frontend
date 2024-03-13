@@ -1,40 +1,40 @@
 // Import des libs externes
 import {
-  Stack,
   Box,
-  Typography,
+  Button,
+  Divider,
   FormControl,
   InputLabel,
   OutlinedInput,
-  Button,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
+// Import des composants internes
+import CriticAdvicesReviewModal from './CriticAdvicesReviewModal';
 
 // Import des icônes
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 
-// Import des composants internes
-import CriticAdvicesReviewModal from './CriticAdvicesReviewModal';
-import UserAvatar from '@utils/components/UserAvatar';
-import { useParams } from 'react-router-dom';
-
 const CriticAdvicesReview = ({
+  infos,
   type,
+  isModify,
   newCriticText,
   setNewCriticText,
-  infos,
-  isModify,
   newRating,
   criticUserInfos,
 }) => {
+  // Utilisateur connecté
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+
   const { id } = useParams();
 
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
-
-  // Utilisateur connecté
-  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   useEffect(() => {
     if (isModify) {
@@ -49,14 +49,41 @@ const CriticAdvicesReview = ({
       <FormControl
         variant="outlined"
         fullWidth
-        sx={{ 
-          height: '100%', 
+        sx={{
+          height: '100px',
           flexGrow: '1',
+          margin:
+            type === 'new-critic' || type === 'new-advice'
+              ? '20px 0 0 0'
+              : '6px 0 0 0',
         }}
       >
+        {size === 'small' && (
+          <Box
+            position="absolute"
+            right="-5px"
+            top="-11.5px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            zIndex="10"
+            sx={{
+              backgroundColor: '#f2f2f2',
+            }}
+            onClick={() => setShowReviewModal(true)}
+          >
+            <FullscreenIcon />
+          </Box>
+        )}
         <InputLabel
           htmlFor="custom-outlined-input"
-          sx={{ fontStyle: 'italic', overflow: 'visible' }}
+          sx={{
+            fontStyle: 'italic',
+            overflow: 'visible',
+            '&&.Mui-focused': {
+              color: '#24A5A5',
+            },
+          }}
         >
           {loggedUserInfos.id === parseInt(id, 10)
             ? 'Votre critique'
@@ -88,7 +115,10 @@ const CriticAdvicesReview = ({
               borderRadius: size === 'small' ? '10px 0 0 10px' : '0',
               borderColor: '#8e8e8e6e',
             },
-            
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#24A5A5',
+              borderWidth: '1px',
+            },
           }}
           inputProps={{
             sx: {
@@ -106,11 +136,17 @@ const CriticAdvicesReview = ({
               height: '35px',
               padding: '0',
               alignSelf: 'center',
-              marginTop: '14px',
+              marginTop: '15px',
+              backgroundColor: '#F29E50',
+              color: '#fff',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: '#F29E50',
+              },
             }}
             onClick={() => setShowReviewModal(false)}
           >
-            {'Valider le texte'}
+            <Typography>{'Valider le texte'}</Typography>
           </Button>
         ) : null}
       </FormControl>
@@ -119,7 +155,7 @@ const CriticAdvicesReview = ({
 
   return (
     <>
-      {showReviewModal ? (
+      {showReviewModal && (
         <CriticAdvicesReviewModal
           showReviewModal={showReviewModal}
           setShowReviewModal={setShowReviewModal}
@@ -130,122 +166,49 @@ const CriticAdvicesReview = ({
           newRating={newRating}
           criticUserInfos={criticUserInfos}
         />
-      ) : null}
-      <Stack
-        direction="row-reverse"
-        position="relative"
-        borderRadius="10px"
-        flexGrow="1"
-        marginBottom={
-          type === 'new-critic' || type === 'new-advice' || isModify
-            ? '7px'
-            : '0'
-        }
-        sx={{
-          backgroundColor: '#F1F1F1',
-        }}
-        onClick={
-          type === 'old-critic' && !isModify
-            ? () => setShowReviewModal(true)
-            : null
-        }
-      >
-        <Box
-          position="absolute"
-          right="47.5px"
-          top="-11.5px"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          zIndex="10"
+      )}
+      {type === 'new-critic' || type === 'new-advice' || isModify ? (
+        customTextArea('small')
+      ) : (
+        <Stack
+          bgcolor="#f2f2f2"
+          flexGrow="1"
+          padding="5px 10px"
           sx={{
-            backgroundColor: '#e3e3e3',
+            borderRadius: '5px',
           }}
           onClick={() => setShowReviewModal(true)}
         >
-          <FullscreenIcon />
-        </Box>
-        <UserAvatar
-          variant={'square'}
-          userInfos={
-            type === 'new-critic' || type === 'new-advice'
-              ? loggedUserInfos
-              : criticUserInfos?.id &&
-                criticUserInfos?.id !== loggedUserInfos.id
-              ? criticUserInfos
-              : loggedUserInfos
-          }
-          picWidth={60}
-          picHeight={70}
-          isOutlined={false}
-          outlineWidth={null}
-          relationType={null}
-          sx={{ filter: 'grayscale(1)' }}
-        />
-        <Box
-          height={
-            type === 'new-critic' || type === 'new-advice' || isModify
-              ? '100%'
-              : '70px'
-          }
-          padding={
-            type === 'new-critic' || type === 'new-advice' || isModify
-              ? '0'
-              : '7px 10px 0 20px'
-          }
-          display="flex"
-          flexGrow="1"
-          overflow={
-            type === 'new-critic' || type === 'new-advice' || isModify
-              ? 'visible'
-              : 'scroll'
-          }
-        >
-          {type === 'new-critic' || type === 'new-advice' || isModify ? (
-            customTextArea('small')
-          ) : (
-            <Typography variant="body2" component="blockquote" textAlign="left">
-              <Typography variant="body2" component="p">
-                {`${infos.text}`}
-              </Typography>
-              <Typography
-                variant="body2"
-                component="cite"
-                fontWeight="bold"
-                fontStyle="italic"
-              >
-                {`- ${criticUserInfos.first_name} ${criticUserInfos.last_name} -`}
-              </Typography>
+          <Stack direction="row" columnGap="5px" marginBottom="5px">
+            <FormatQuoteIcon fontSize="small" sx={{ color: '#0E6666' }} />
+            <Typography variant="body1" fontWeight="600" color="#0E6666">
+              {type === 'old-critic' ? 'Votre critique' : 'Votre conseil'}
             </Typography>
-          )}
-        </Box>
-        <Box
-          position="absolute"
-          top="17.5px"
-          right="47.5px"
-          height="25px"
-          width="25px"
-          borderRadius="50%"
-          sx={{
-            backgroundColor: '#24A5A5',
-            boxShadow:
-              '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
-          }}
-        >
-          <FormatQuoteIcon sx={{ color: '#fff !important' }} />
-        </Box>
-      </Stack>
+          </Stack>
+          <Divider />
+          <Stack padding="5px 10px">
+            <Typography
+              variant="body2"
+              align="left"
+              fontWeight="400"
+              whiteSpace="pre-line"
+            >
+              {`${infos.text}`}
+            </Typography>
+          </Stack>
+        </Stack>
+      )}
     </>
   );
 };
 
 CriticAdvicesReview.propTypes = {
+  infos: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
-  setNewCriticText: PropTypes.func.isRequired,
-  infos: PropTypes.object,
-  newCriticText: PropTypes.string.isRequired,
   isModify: PropTypes.bool.isRequired,
-  newRating: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf([null])]),
+  newCriticText: PropTypes.string.isRequired,
+  setNewCriticText: PropTypes.func.isRequired,
+  newRating: PropTypes.number,
   criticUserInfos: PropTypes.object.isRequired,
 };
 

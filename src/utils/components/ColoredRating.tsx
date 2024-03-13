@@ -3,13 +3,20 @@ import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
 import PropTypes from 'prop-types';
 
-const ColoredRating = ({ color, emptyColor, value, readOnly, precision, sx }) => {
+const ColoredRating = ({
+  color,
+  emptyColor,
+  value,
+  readOnly,
+  precision,
+  sx,
+}) => {
   const StyledRating = styled(Rating)({
     '.MuiRating-iconFilled': {
       color: color,
     },
     '.MuiRating-iconEmpty': {
-      color: emptyColor, 
+      color: emptyColor,
     },
   });
 
@@ -33,6 +40,7 @@ const ColoredRating = ({ color, emptyColor, value, readOnly, precision, sx }) =>
 
 ColoredRating.propTypes = {
   color: PropTypes.string.isRequired,
+  emptyColor: PropTypes.string.isRequired,
   value: PropTypes.number,
   readOnly: PropTypes.bool.isRequired,
   precision: PropTypes.number.isRequired,

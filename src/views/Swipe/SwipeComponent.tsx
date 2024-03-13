@@ -1,8 +1,8 @@
 // Import des libs externes
 import { Container, Stack } from '@mui/material';
-import PropTypes from 'prop-types';
 import { useSpring } from 'react-spring';
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 
 // Import des composants internes
 import Header from '@utils/components/Header';
@@ -11,9 +11,9 @@ import LastCard from './LastCard';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
-import SwipeCard2 from './SwipeCard2';
+import SwipeCard from './SwipeCard';
 
-const SwipeComponent2 = ({
+const SwipeComponent = ({
   movies,
   movieDetail,
   error,
@@ -33,12 +33,9 @@ const SwipeComponent2 = ({
   setRatingChosen,
   setIsFilterValidated,
   swipeType,
-  setSwipeType
+  setSwipeType,
 }) => {
-
-  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
-
-  const { displayType } = useData();
+  const { displayType } = useData(); // Le choix de préférence de contenu qu'à choisi l'utilisateur (défault : 'all')
 
   const prevDisplayTypeRef = useRef('movie');
   const lastCardRef = useRef(null);
@@ -159,7 +156,7 @@ const SwipeComponent2 = ({
 
       return newCards;
     });
-  }
+  };
 
   // *** SWIPE VERS LA GAUCHE *** //
 
@@ -216,7 +213,7 @@ const SwipeComponent2 = ({
     } else {
       setCards(initialCards);
     }
-  }
+  };
 
   // Si l'utilisateur change de film à série et inversement, on reset les animations
   useEffect(() => {
@@ -242,38 +239,33 @@ const SwipeComponent2 = ({
     }
   }, [movies, loading.movies]);
 
-
   useEffect(() => {
     // On bloque si l'utilisateur a cliqué sur un des boutons de choix
-    if(!swipeAction?.direction || swipeAction?.from === 'choice') return;
+    if (!swipeAction?.direction || swipeAction?.from === 'choice') return;
 
     if (swipeAction.direction === 'right') {
       swipeToTheRight();
     }
 
     if (swipeAction.direction === 'left') {
-      swipeToTheLeft();      
+      swipeToTheLeft();
     }
   }, [swipeAction]);
 
   useEffect(() => {
     console.log('les cards', cards);
-    
-  }, [cards])
+  }, [cards]);
 
   return (
     <>
-      <Header
-        page={'swipe'}
-        loggedUserInfos={loggedUserInfos}
-      />
+      <Header page={'swipe'} />
       <Container
         maxWidth="xl"
         sx={{
           padding: '0',
           backgroundColor: '#101010',
           height: '100vh',
-          width: '100vw'
+          width: '100vw',
         }}
       >
         <Stack
@@ -283,13 +275,12 @@ const SwipeComponent2 = ({
           overflow="hidden"
         >
           {cards.map(card => (
-            <SwipeCard2
+            <SwipeCard
               key={card.id}
               id={card.id}
               movies={movies}
               movieDetail={movieDetail}
               error={error}
-              loading={loading}
               index={card.index}
               currentMovieIndex={currentMovieIndex}
               setCurrentMovieIndex={setCurrentMovieIndex}
@@ -340,12 +331,9 @@ const SwipeComponent2 = ({
   );
 };
 
-SwipeComponent2.propTypes = {
+SwipeComponent.propTypes = {
   movies: PropTypes.array.isRequired,
-  moviesStatusUpdated: PropTypes.array.isRequired,
-  setMoviesStatusUpdated: PropTypes.func.isRequired,
   movieDetail: PropTypes.object.isRequired,
-  nextMovieDetail: PropTypes.object.isRequired,
   error: PropTypes.shape({
     message: PropTypes.string,
     error: PropTypes.object,
@@ -363,6 +351,13 @@ SwipeComponent2.propTypes = {
   hasMoreMovies: PropTypes.bool.isRequired,
   genreChosen: PropTypes.object.isRequired,
   setGenreChosen: PropTypes.func.isRequired,
+  moviesStatusUpdated: PropTypes.array.isRequired,
+  setMoviesStatusUpdated: PropTypes.func.isRequired,
+  ratingChosen: PropTypes.object,
+  setRatingChosen: PropTypes.func.isRequired,
+  setIsFilterValidated: PropTypes.func.isRequired,
+  swipeType: PropTypes.string.isRequired,
+  setSwipeType: PropTypes.func.isRequired,
 };
 
-export default React.memo(SwipeComponent2);
+export default React.memo(SwipeComponent);

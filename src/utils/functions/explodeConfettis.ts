@@ -1,6 +1,6 @@
 import confetti from 'canvas-confetti';
 
-export const explodeConfetti = (anchor) => {
+export const explodeConfetti = anchor => {
   if (anchor) {
     // Récupère les coordonnées du bouton "je veux le voir"
     const rect = anchor.getBoundingClientRect();
@@ -16,4 +16,4 @@ export const explodeConfetti = (anchor) => {
       },
     });
   }
-}
+};

@@ -1,5 +1,7 @@
+// Import des libs externes
 import { Stack } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -15,13 +17,13 @@ import { handleCloseFriendRequest } from '@utils/request/friendship/handleCloseF
 import { declineFriendship } from '@utils/request/friendship/declineFriendship';
 import { addWatchedMovieRequest } from '../request/list/addWatchedMovieRequest';
 
-const MainItemIcons = ({ 
-  type, 
-  data, 
-  movieOrSerie, 
-  getRequest, 
-  getRequest2, 
-  // updateFriendList, 
+const MainItemIcons = ({
+  type,
+  data,
+  movieOrSerie,
+  getRequest,
+  getRequest2,
+  // updateFriendList,
   removeWatchedMovie,
   showRemoveFriendModal,
   setShowRemoveFriendModal,
@@ -30,9 +32,8 @@ const MainItemIcons = ({
   showRemoveWantedMovie,
   setShowRemoveWantedMovie,
   showRemoveWatchedMovie,
-  setShowRemoveWatchedMovie
- }) => {
-
+  setShowRemoveWatchedMovie,
+}) => {
   const [isCloseFriend, setIsCloseFriend] = useState(false);
 
   const isCloseRef = useRef(false);
@@ -49,7 +50,7 @@ const MainItemIcons = ({
   };
 
   // Accepte une demande d'ami
-  const acceptFriendRequest = async () => {    
+  const acceptFriendRequest = async () => {
     await acceptFriendship(data.id);
     await getRequest();
     getRequest2();
@@ -80,17 +81,15 @@ const MainItemIcons = ({
 
   return (
     <Stack direction="row" spacing={3} alignItems="center">
-      {type === 'requests' &&
-        <DoneIcon 
+      {type === 'requests' && (
+        <DoneIcon
           fontSize="small"
           sx={{
             color: '#B9B9B9',
           }}
-          onClick={() =>
-            acceptFriendRequest()
-          }
+          onClick={() => acceptFriendRequest()}
         />
-      }
+      )}
       {type === 'friends' ? (
         <FavoriteIcon
           fontSize="small"
@@ -98,38 +97,32 @@ const MainItemIcons = ({
           onClick={() => handleCloseFriend()}
         />
       ) : null}
-      {type === 'wanted-movies' ?
-        <VisibilityOutlinedIcon 
+      {type === 'wanted-movies' ? (
+        <VisibilityOutlinedIcon
           fontSize="small"
           sx={{
             color: '#B9B9B9',
           }}
-          onClick={() =>
-            addWatchedMovie()
-          }
+          onClick={() => addWatchedMovie()}
         />
-        : type === 'watched-movies' ?
-        <VisibilityOffOutlinedIcon 
+      ) : type === 'watched-movies' ? (
+        <VisibilityOffOutlinedIcon
           fontSize="small"
           sx={{
             color: '#B9B9B9',
           }}
-          onClick={() =>
-            removeWatchedMovie('cancel')
-          }
+          onClick={() => removeWatchedMovie('cancel')}
         />
-        : null
-      }
-      {type === 'wanted-movies' || type === 'watched-movies' ?
-        <StarBorderOutlinedIcon 
+      ) : null}
+      {type === 'wanted-movies' || type === 'watched-movies' ? (
+        <StarBorderOutlinedIcon
           fontSize="small"
           sx={{
             color: '#B9B9B9',
             visibility: type === 'rated-movies' ? 'hidden' : 'visible',
           }}
         />
-        : null
-      }
+      ) : null}
       <DeleteOutlineOutlinedIcon
         fontSize="small"
         sx={{
@@ -139,24 +132,41 @@ const MainItemIcons = ({
         onClick={() =>
           // Suppression de la demande d'amitié reçue
           type === 'requests'
-          ? declineFriendRequest()
-          : // Apparition de la modale demandant la confirmation de suppression d'un ami
-          type === 'friends'
-          ? setShowRemoveFriendModal(!showRemoveFriendModal)
-          : // Apparition de la modale demandant la confirmation de ne plus suivre quelqu'un
-          type === 'followed'
-          ? setShowRemoveFollowedModal(!showRemoveFollowedModal)
-          : // Retire le film de la liste des films à voir
-          type === 'wanted-movies'
-          ? setShowRemoveWantedMovie(!showRemoveWantedMovie)
-          : // Retire le film de la liste des films à noter
-          type === 'watched-movies'
-          ? setShowRemoveWatchedMovie(!showRemoveWatchedMovie)
-          : null
+            ? declineFriendRequest()
+            : // Apparition de la modale demandant la confirmation de suppression d'un ami
+            type === 'friends'
+            ? setShowRemoveFriendModal(!showRemoveFriendModal)
+            : // Apparition de la modale demandant la confirmation de ne plus suivre quelqu'un
+            type === 'followed'
+            ? setShowRemoveFollowedModal(!showRemoveFollowedModal)
+            : // Retire le film de la liste des films à voir
+            type === 'wanted-movies'
+            ? setShowRemoveWantedMovie(!showRemoveWantedMovie)
+            : // Retire le film de la liste des films à noter
+            type === 'watched-movies'
+            ? setShowRemoveWatchedMovie(!showRemoveWatchedMovie)
+            : null
         }
       />
     </Stack>
   );
+};
+
+MainItemIcons.propTypes = {
+  type: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
+  movieOrSerie: PropTypes.string,
+  getRequest: PropTypes.func.isRequired,
+  getRequest2: PropTypes.func,
+  removeWatchedMovie: PropTypes.func,
+  showRemoveFriendModal: PropTypes.bool,
+  setShowRemoveFriendModal: PropTypes.func,
+  showRemoveFollowedModal: PropTypes.bool,
+  setShowRemoveFollowedModal: PropTypes.func,
+  showRemoveWantedMovie: PropTypes.bool,
+  setShowRemoveWantedMovie: PropTypes.func,
+  showRemoveWatchedMovie: PropTypes.bool,
+  setShowRemoveWatchedMovie: PropTypes.func,
 };
 
 export default MainItemIcons;

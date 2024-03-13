@@ -43,7 +43,7 @@ const CriticAdvicesHeader2 = ({
 
   const { id } = useParams();
 
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   // Infos de l'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
@@ -120,26 +120,25 @@ const CriticAdvicesHeader2 = ({
     } else if (type === 'old-critic' && infos.user_id !== loggedUserInfos.id) {
       return (
         <>
-          {
-            infos.isLoadingUser ? 
-              <Skeleton 
-                variant='text'
-                sx={{
-                  fontSize: '1em',
-                  width: '100px'
-                }}
-              />
-             : 
-              <>
-                <span
-                  style={{ fontWeight: '600', color: findGoodColor(page) }}
-                  onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
-                >
-                  {criticUserInfos.first_name} {criticUserInfos.last_name}
-                </span>
-                {' a noté'}
-              </>
-            }
+          {infos.isLoadingUser ? (
+            <Skeleton
+              variant="text"
+              sx={{
+                fontSize: '1em',
+                width: '100px',
+              }}
+            />
+          ) : (
+            <>
+              <span
+                style={{ fontWeight: '600', color: findGoodColor(page) }}
+                onClick={() => navigate(`/profil/${criticUserInfos.id}`)}
+              >
+                {criticUserInfos.first_name} {criticUserInfos.last_name}
+              </span>
+              {' a noté'}
+            </>
+          )}
         </>
       );
 
@@ -149,9 +148,7 @@ const CriticAdvicesHeader2 = ({
       type === 'old-advice' &&
       infos.sender_id === loggedUserInfos.id
     ) {
-      return (
-        <span style={{ fontWeight: '600' }}>{'Vous avez conseillé'}</span>
-      );
+      return <span style={{ fontWeight: '600' }}>{'Vous avez conseillé'}</span>;
 
       // Si l'utilisateur voit une de ses anciennes critiques
     } else if (type === 'old-critic' && infos.user_id === loggedUserInfos.id) {
@@ -177,172 +174,171 @@ const CriticAdvicesHeader2 = ({
         </>
       );
     }
-  };  
-  
+  };
+
   return (
     <>
-    <Stack
-      direction="row"
-      height="48px"
-      alignItems="center"
-      padding="0 10px"
-      columnGap="10px"
-    >
-      {infos.isLoadingUser ? (
-        <Skeleton variant='circular' height={40} width={40} />
-      ) : (
-        <UserAvatar 
-            variant='circle'
-            userInfos={type === 'new-critic' || type === 'new-advice' ? loggedUserInfos : criticUserInfos}
+      <Stack
+        direction="row"
+        height="48px"
+        alignItems="center"
+        padding="0 10px"
+        columnGap="10px"
+      >
+        {infos?.isLoadingUser &&
+        (type === 'old-critic' || type === 'old-advice') ? (
+          <Skeleton variant="circular" height={40} width={40} />
+        ) : (
+          <UserAvatar
+            variant="circle"
+            userInfos={
+              type === 'new-critic' || type === 'new-advice'
+                ? loggedUserInfos
+                : criticUserInfos
+            }
             picHeight={40}
             picWidth={40}
             isOutlined={false}
             redirection={true}
           />
-        )
-      }
-      <Stack alignItems='flex-start'>
-        <Stack direction='row' alignItems='center'>
-          <Typography
-            variant="body2"
-            component="p"
-            minWidth="80px"
-            align="left"
-            whiteSpace="nowrap"
-            maxWidth="363px"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            marginRight='10px'
-            lineHeight='normal'
-          >
-            {generateContent()}
-          </Typography>
-          <ColoredRating
-            readOnly={true}
-            emptyColor='#969696'
-            precision={0.5}
-            color={
-              findGoodColor(page)
-            }
-            value={
-              type === 'new-critic' || type === 'new-advice' || isModify
-                ? newRating
-                : parseFloat(infos.rating)
-            }
-            sx={{ position: 'relative', bottom: '0.5px' }}
-          />
-          {type === 'new-critic' || type === 'new-advice' || isModify ? (
-            <>
-              <Box
-                ref={ratingsHeaderRef}
-                width="25px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                  backgroundColor:
-                    newRating === null && !isModify ? '#a09f9f' : '#F29E50',
-                  color: newRating === null ? '#fff' : 'inherit',
-                  fontWeight: newRating === null ? 'normal' : '600',
-                }}
-                onClick={e => handleRatingsMenu(e)}
-              >
-                <Typography variant='body2' fontWeight='600' position='relative' top='1px'>
-                  {newRating === null && !isModify
-                    ? '?'
-                    : newRating === null && isModify
-                    ? `${formatRating(infos.rating)}`
-                    : newRating}
-                </Typography>
-                
-              </Box>
-              <RatingMenu
-                utility={'new-post'}
-                infos={infos}
-                setIsQuicklyRated={null}
-                setOpenSnackbar={null}
-                anchorQuickNoteMenu={displayRatings}
-                setAnchorQuickNoteMenu={setDisplayRatings}
-                handleCloseNoteMenu={closeMenu}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-                setNewRating={setNewRating}
-                isGoldNugget={isGoldNugget}
-                setIsGoldNugget={setIsGoldNugget}
-                isTurnip={isTurnip}
-                setIsTurnip={setIsTurnip}
-              />
-            </>
-          ) : null}
-          <Typography 
-            variant="body2" 
-            component="p" 
-            fontWeight="600"
-            position='relative'
-            top='1px'
-            marginLeft='2px'
-          >
-            {((type === 'new-critic' || type === 'new-advice') && !infos) ||
-            isModify
-              ? ' / 5'
-              : `${formatRating(infos.rating)} / 5`}
-          </Typography>
+        )}
+        <Stack alignItems="flex-start">
+          <Stack direction="row" alignItems="center">
+            <Typography
+              variant="body2"
+              component="p"
+              minWidth="80px"
+              align="left"
+              whiteSpace="nowrap"
+              maxWidth="363px"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              marginRight="10px"
+              lineHeight="normal"
+            >
+              {generateContent()}
+            </Typography>
+            <ColoredRating
+              readOnly={true}
+              emptyColor="#969696"
+              precision={0.5}
+              color={findGoodColor(page)}
+              value={
+                type === 'new-critic' || type === 'new-advice' || isModify
+                  ? newRating
+                  : parseFloat(infos.rating)
+              }
+              sx={{ position: 'relative', bottom: '0.5px' }}
+            />
+            {type === 'new-critic' || type === 'new-advice' || isModify ? (
+              <>
+                <Box
+                  ref={ratingsHeaderRef}
+                  width="25px"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{
+                    backgroundColor:
+                      newRating === null && !isModify ? '#a09f9f' : '#F29E50',
+                    color: newRating === null ? '#fff' : 'inherit',
+                    fontWeight: newRating === null ? 'normal' : '600',
+                  }}
+                  onClick={e => handleRatingsMenu(e)}
+                >
+                  <Typography
+                    variant="body2"
+                    fontWeight="600"
+                    position="relative"
+                    top="1px"
+                  >
+                    {newRating === null && !isModify
+                      ? '?'
+                      : newRating === null && isModify
+                      ? `${formatRating(infos.rating)}`
+                      : newRating}
+                  </Typography>
+                </Box>
+                <RatingMenu
+                  utility={'new-post'}
+                  infos={infos}
+                  setIsQuicklyRated={null}
+                  setOpenSnackbar={null}
+                  anchorQuickNoteMenu={displayRatings}
+                  setAnchorQuickNoteMenu={setDisplayRatings}
+                  handleCloseNoteMenu={closeMenu}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  setNewRating={setNewRating}
+                  isGoldNugget={isGoldNugget}
+                  setIsGoldNugget={setIsGoldNugget}
+                  isTurnip={isTurnip}
+                  setIsTurnip={setIsTurnip}
+                />
+              </>
+            ) : null}
+            <Typography
+              variant="body2"
+              component="p"
+              fontWeight="600"
+              position="relative"
+              top="1px"
+              marginLeft="2px"
+            >
+              {((type === 'new-critic' || type === 'new-advice') && !infos) ||
+              isModify
+                ? ' / 5'
+                : `${formatRating(infos.rating)} / 5`}
+            </Typography>
+          </Stack>
+          {(type === 'old-critic' || type === 'old-advice') && (
+            <Typography fontSize="0.8em" color="#9B9B9B" fontWeight="300">
+              {`le ${convertDate(
+                type === 'old-critic' ? infos.critic_date : infos.advice_date,
+              )}`}
+            </Typography>
+          )}
         </Stack>
-        { (type === 'old-critic' || type === 'old-advice') &&
-          <Typography
-            fontSize='0.8em'
-            color='#9B9B9B'
-            fontWeight='300'
-          >
-            {`le ${convertDate(
-              type === 'old-critic'
-                ? infos.critic_date
-                : infos.advice_date,
-            )}`}
-          </Typography>
-        }
-        
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+          flexGrow="1"
+        >
+          {type === 'new-critic' || type === 'new-advice' ? (
+            <ClearIcon
+              fontSize="small"
+              sx={{
+                position: 'relative',
+                left: '4px',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                setChosenMovieId(null);
+                setChosenMovie(null);
+              }}
+            />
+          ) : loggedUserInfos.id === infos.user_id ||
+            loggedUserInfos.id === infos.sender_id ? (
+            <ModifyOrDelete
+              page={page}
+              parent={'critic'}
+              infos={infos}
+              setData={setData}
+              // setInfos={setUserCritics}
+              isModify={isModify}
+              setIsModify={setIsModify}
+            />
+          ) : null}
+        </Box>
       </Stack>
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        alignItems="center"
-        flexGrow='1'
-      >
-        {type === 'new-critic' || type === 'new-advice' ? (
-          <ClearIcon
-            fontSize="small"
-            sx={{
-              position: 'relative',
-              left: '4px',
-              cursor: 'pointer',
-            }}
-            onClick={() => {
-              setChosenMovieId(null);
-              setChosenMovie(null);
-            }}
-          />
-        ) : loggedUserInfos.id === infos.user_id ||
-          loggedUserInfos.id === infos.sender_id ? (
-          <ModifyOrDelete
-            page={page}
-            parent={'critic'}
-            infos={infos}
-            setData={setData}
-            // setInfos={setUserCritics}
-            isModify={isModify}
-            setIsModify={setIsModify}
-          />
-        ) : null}
-      </Box>
-    </Stack>
-    <Divider sx={{ borderColor: '#e9e9e9'}} />
+      <Divider sx={{ borderColor: '#e9e9e9' }} />
     </>
   );
 };

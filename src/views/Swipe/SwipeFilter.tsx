@@ -1,369 +1,256 @@
 // Import des libs externes
-// import * as React from 'react';
-import { useState, useEffect } from 'react';
-import {
-  Box,
-  Menu,
-  MenuItem,
-  Button,
-  Fade,
-  Rating,
-  Typography,
-} from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
+import { Button, Divider, Stack, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+// Import des composants internes
+import FilterMenu from './FilterMenu';
 
-// Import de la liste de tous les pays
-import {
-  americanCountryCodes,
-  continents,
-  countriesList,
-} from '@utils/data/countries';
-import { shortGenresMovieList, shortGenresSerieList } from '@utils/data/shortGenres';
+// Import des icônes
+import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
+import FlagIcon from '@mui/icons-material/Flag';
+import StarIcon from '@mui/icons-material/Star';
+import MovieFilterIcon from '@mui/icons-material/MovieFilter';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-// Légende des notes
-const labels: { [index: string]: string } = {
-  0.5: 'Terrible',
-  1: 'Mauvais',
-  1.5: 'Médiocre',
-  2: 'Passable',
-  2.5: 'Moyen',
-  3: 'Pas mal',
-  3.5: 'Bon',
-  4: 'Très bon',
-  4.5: 'Excellent',
-  5: "Chef d'œuvre",
-};
-
-function getLabelText(value: number) {
-  return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
-}
+import { americanCountryCodes } from '@utils/data/countries';
 
 const SwipeFilter = ({
-  Item,
+  swipeType,
+  setSwipeType,
   countryChosen,
   setCountryChosen,
-  isoCountry,
   genreChosen,
   setGenreChosen,
+  ratingChosen,
+  setRatingChosen,
+  setIsFilterValidated,
+  setAreFiltersOpen,
 }) => {
   const { displayType } = useData();
 
-  // ***** Filtre selon les pays ***** //
-  const [countryFilter, setCountryFilter] = useState(null);
-  const openCountry = Boolean(countryFilter);
-  const handleCountryClick = event => {
-    setCountryFilter(event.currentTarget);
-  };
-
-  const [openContinent, setOpenContinent] = useState({
+  const [typeFilter, setTypeFilter] = useState(null);
+  const [continentFilter, setContinentFilter] = useState({
     anchor: null,
     continent: {
       name: 'Amérique',
       code: americanCountryCodes,
     },
-    open: false,
   });
-  const [continentChosen, setContinentChosen] = useState([]);
-
-  // ***** Filtre selon le genre ***** //
   const [genreFilter, setGenreFilter] = useState(null);
-  const [movieOrSerie, setMovieOrSerie] = useState(shortGenresMovieList);
+  const [ratingFilter, setRatingFilter] = useState(null);
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
 
-  const openGenre = Boolean(genreFilter);
-  const handleGenreClick = event => {
-    setGenreFilter(event.currentTarget);
-  };
+  const isFirstRender = useRef(true);
 
-  // ***** Filtre selon la note ***** //
-  const [ratingsFilter, setRatingsFilter] = useState(null);
-  const openRatings = Boolean(ratingsFilter);
-  const handleRatingsClick = event => {
-    setRatingsFilter(event.currentTarget);
-  };
-  const handleRatingsClose = () => {
-    setRatingsFilter(null);
-  };
+  const openTypeFilter = Boolean(typeFilter);
+  const openContinentFilter = Boolean(continentFilter.anchor);
+  const openGenreFilter = Boolean(genreFilter);
+  const openRatingFilter = Boolean(ratingFilter);
 
-  const [value, setValue] = useState(2);
-  const [hover, setHover] = useState(-1);
+  const handleTypeClick = (event, filterType) => {
+    if (typeFilter || continentFilter.anchor || genreFilter || ratingFilter) {
+      return;
+    }
+
+    switch (filterType) {
+      case 'type':
+        setTypeFilter(event.currentTarget);
+        break;
+      case 'continent':
+        setContinentFilter({
+          anchor: event.currentTarget,
+          continent: {
+            name: 'Amérique',
+            code: americanCountryCodes,
+          },
+        });
+        break;
+      case 'genre':
+        setGenreFilter(event.currentTarget);
+        break;
+      case 'rating':
+        setRatingFilter(event.currentTarget);
+        break;
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
-    if (displayType === 'movie') {
-      setMovieOrSerie(shortGenresMovieList);
-    } else if (displayType === 'tv') {
-      setMovieOrSerie(shortGenresSerieList);
+    console.log('le filtre continent', continentFilter);
+  }, [continentFilter]);
+
+  // Surveillez les changements dans les filtres
+  useEffect(() => {
+    // Ignorer le premier rendu
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // Marquez que le premier rendu est passé
+      return;
     }
-  }, [displayType]);
+
+    // Si l'un des filtres change, affichez le bouton de validation
+    if (
+      displayType ||
+      continentFilter.continent.code ||
+      genreChosen.name ||
+      ratingChosen.value
+    ) {
+      setIsButtonVisible(true);
+    } else {
+      setIsButtonVisible(false);
+    }
+  }, [displayType, swipeType, continentFilter, genreChosen, ratingChosen]);
 
   return (
-    <Item
-      sx={{
-        backgroundColor: '#0E6666',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        padding: '0 3%',
-      }}
-    >
-      {/* Filtre par pays */}
-      <Button
-        id="fade-button"
-        aria-controls={openCountry ? 'fade-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={openCountry ? 'true' : undefined}
-        onClick={handleCountryClick}
-        sx={{
-          color: countryChosen !== '' ? '#fff' : '#24A5A5',
-          position: 'relative',
-        }}
+    <Stack>
+      <Stack
+        direction="row"
+        height="12vh"
+        color="#bababa"
+        columnGap="15px"
+        alignItems="center"
+        padding="0 3vw"
+        onClick={e => handleTypeClick(e, 'type')}
       >
-        {'Pays'}
-        {isoCountry !== '' ? (
-          <img
-            src={`https://flagsapi.com/${isoCountry}/shiny/16.png`}
-            style={{ position: 'absolute', right: '3px' }}
-          />
-        ) : null}
-      </Button>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
-        anchorEl={countryFilter}
-        open={openCountry}
-        onClose={() => setCountryFilter(null)}
-        TransitionComponent={Fade}
+        <LocalMoviesIcon fontSize="medium" />
+        <Stack>
+          <Typography component="h3">{'Type'}</Typography>
+          <Typography variant="body2" color="secondary">
+            {swipeType === 'movie'
+              ? 'Films'
+              : swipeType === 'tv'
+              ? 'Séries'
+              : 'Films et séries'}
+          </Typography>
+        </Stack>
+        <FilterMenu
+          filterName={'type'}
+          anchorEl={typeFilter}
+          openMenu={openTypeFilter}
+          filter={null}
+          setFilter={setTypeFilter}
+          state={swipeType}
+          setState={setSwipeType}
+        />
+      </Stack>
+      <Divider sx={{ borderColor: '#404040' }} />
+      <Stack
+        direction="row"
+        height="12vh"
+        color="#bababa"
+        columnGap="15px"
+        alignItems="center"
+        padding="0 5vw 0 3vw"
+        onClick={e => handleTypeClick(e, 'continent')}
       >
-        {/* Pays choisi */}
-        {countriesList
-          .filter(country => country.iso_3166_1 === isoCountry)
-          .map(country => {
-            return (
-              <MenuItem
-                key={country.native_name}
-                onClick={() => {
-                  setCountryChosen(country.native_name);
-                  setCountryFilter(null);
-                }}
-                sx={{
-                  backgroundColor:
-                    countryChosen !== '' &&
-                    country.native_name === countryChosen
-                      ? '#24A5A5'
-                      : 'inherit',
-                }}
-              >
-                {country.native_name}
-              </MenuItem>
-            );
-          })}
-        {/* Continents */}
-        {continents.map(continent => {
-          return (
-            <MenuItem
-              key={continent.name}
-              onClick={event => {
-                setOpenContinent({
-                  anchor: event.currentTarget,
-                  continent: continent,
-                  open: !openContinent.open,
-                });
-                setContinentChosen(continent.code);
-              }}
-              sx={{
-                backgroundColor:
-                  openContinent.continent.name === continent.name &&
-                  openContinent.open
-                    ? '#dcdcdc !important'
-                    : 'inherit',
-                justifyContent: 'space-between',
-                paddingRight: '5px',
-                gap: '20px',
-              }}
-            >
-              {continent.name}
-              {openContinent.continent.name === continent.name &&
-              openContinent.open ? (
-                <ChevronRightIcon sx={{ color: '#0e6666' }} />
-              ) : (
-                <ChevronLeftIcon sx={{ color: '#0e6666' }} />
-              )}
-            </MenuItem>
-          );
-        })}
-      </Menu>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
-        anchorEl={openContinent.anchor}
-        open={openContinent.open && openContinent.anchor !== null}
-        onClose={() =>
-          setOpenContinent({
-            anchor: null,
-            continent: openContinent.continent,
-            open: false,
-          })
-        }
-        TransitionComponent={Fade}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        <FlagIcon fontSize="medium" />
+        <Stack>
+          <Typography component="h3">{'Pays'}</Typography>
+          <Typography variant="body2" color="secondary" whiteSpace="nowrap">
+            {countryChosen.name}
+          </Typography>
+        </Stack>
+        <FilterMenu
+          filterName={'continent'}
+          anchorEl={continentFilter.anchor}
+          openMenu={openContinentFilter}
+          filter={continentFilter}
+          setFilter={setContinentFilter}
+          state={countryChosen}
+          setState={setCountryChosen}
+        />
+      </Stack>
+      <Divider sx={{ borderColor: '#404040' }} />
+      <Stack
+        direction="row"
+        height="12vh"
+        color="#bababa"
+        columnGap="15px"
+        alignItems="center"
+        padding="0 5vw 0 3vw"
+        onClick={e => handleTypeClick(e, 'genre')}
       >
-        {countriesList
-          .filter(country => continentChosen.includes(country.iso_3166_1))
-          .map(country => {
-            return (
-              <MenuItem
-                key={country.native_name}
-                onClick={() => {
-                  setOpenContinent({
-                    anchor: null,
-                    continent: openContinent.continent,
-                    open: false,
-                  });
-                  setCountryChosen(country.native_name);
-                  setCountryFilter(null);
-                }}
-                sx={{
-                  fontSize: '1em',
-                  backgroundColor:
-                    countryChosen !== '' &&
-                    country.native_name === countryChosen
-                      ? '#24A5A5'
-                      : 'inherit',
-                }}
-              >
-                {country.native_name}
-              </MenuItem>
-            );
-          })}
-      </Menu>
-      {/* Filtre par genre */}
-      <Button
-        id="fade-button"
-        aria-controls={openGenre ? 'fade-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={openGenre ? 'true' : undefined}
-        onClick={handleGenreClick}
-        sx={{
-          color: genreChosen.id !== null ? '#fff' : '#24A5A5',
-          position: 'relative',
-        }}
-      >
-        {'Genre'}
-        {genreChosen.name !== null ? (
+        <MovieFilterIcon fontSize="medium" />
+        <Stack>
+          <Typography component="h3">{'Genre'}</Typography>
           <Typography
-            component="span"
-            color="primary"
             variant="body2"
-            sx={{
-              width: '50px',
-              position: 'absolute',
-              right: '-30px',
-              top: '11px',
-              textTransform: 'none',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              textAlign: 'left',
+            color={genreChosen.name ? 'secondary' : '#7b7b7b'}
+          >
+            {genreChosen.name ? genreChosen.name : 'Tous'}
+          </Typography>
+        </Stack>
+        <FilterMenu
+          filterName={'genre'}
+          anchorEl={genreFilter}
+          openMenu={openGenreFilter}
+          filter={genreFilter}
+          setFilter={setGenreFilter}
+          state={genreChosen}
+          setState={setGenreChosen}
+        />
+      </Stack>
+      <Divider sx={{ borderColor: '#404040' }} />
+      <Stack
+        direction="row"
+        height="12vh"
+        color="#bababa"
+        columnGap="15px"
+        alignItems="center"
+        padding="0 5vw 0 3vw"
+        onClick={e => handleTypeClick(e, 'rating')}
+      >
+        <StarIcon fontSize="medium" />
+        <Stack>
+          <Typography component="h3">{'Note'}</Typography>
+          <Typography
+            variant="body2"
+            color={ratingChosen.value ? 'secondary' : '#7b7b7b'}
+          >
+            {ratingChosen.value ? ratingChosen.value : 'toutes'}
+          </Typography>
+        </Stack>
+        <FilterMenu
+          filterName={'rating'}
+          anchorEl={ratingFilter}
+          openMenu={openRatingFilter}
+          filter={ratingFilter}
+          setFilter={setRatingFilter}
+          state={ratingChosen}
+          setState={setRatingChosen}
+        />
+      </Stack>
+      <Divider sx={{ borderColor: '#404040' }} />
+      {isButtonVisible && (
+        <Stack marginTop="20px">
+          <Button
+            onClick={() => {
+              setIsFilterValidated(true);
+              setAreFiltersOpen(false);
             }}
           >
-            {genreChosen.name}
-          </Typography>
-        ) : null}
-      </Button>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
-        anchorEl={genreFilter}
-        open={openGenre}
-        onClose={() => setGenreFilter(null)}
-        TransitionComponent={Fade}
-      >
-        {movieOrSerie.map((genre, index) => {
-          return (
-            <MenuItem
-              key={index}
-              onClick={() => {
-                setGenreChosen({ name: genre.name, id: genre.id });
-                setGenreFilter(null);
-              }}
-              sx={{
-                backgroundColor:
-                  genreChosen.id !== null && genre.id === genreChosen.id
-                    ? '#24A5A5'
-                    : 'inherit',
-              }}
-            >
-              {genre.name}
-            </MenuItem>
-          );
-        })}
-      </Menu>
-
-      {/* Filtre par note */}
-      <Button
-        id="fade-button"
-        aria-controls={openRatings ? 'fade-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={openRatings ? 'true' : undefined}
-        onClick={handleRatingsClick}
-      >
-        Note
-      </Button>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
-        anchorEl={ratingsFilter}
-        open={openRatings}
-        onClose={handleRatingsClose}
-        TransitionComponent={Fade}
-      >
-        <MenuItem onClick={() => setCountryFilter(null)}>
-          <Rating
-            name="hover-feedback"
-            value={value}
-            precision={0.5}
-            getLabelText={getLabelText}
-            onChange={(_, newValue) => {
-              setValue(newValue);
-            }}
-            onChangeActive={(_, newHover) => {
-              setHover(newHover);
-            }}
-            emptyIcon={
-              <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
-            }
-          />
-          {value !== null && (
-            <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : value]}</Box>
-          )}
-        </MenuItem>
-      </Menu>
-    </Item>
+            {'Valider'}
+          </Button>
+        </Stack>
+      )}
+    </Stack>
   );
 };
 
 SwipeFilter.propTypes = {
-  Item: PropTypes.elementType.isRequired,
-  isoCountry: PropTypes.string.isRequired,
-  countryChosen: PropTypes.string.isRequired,
+  swipeType: PropTypes.string.isRequired,
+  setSwipeType: PropTypes.func.isRequired,
+  countryChosen: PropTypes.object,
   setCountryChosen: PropTypes.func.isRequired,
-  genreChosen: PropTypes.object.isRequired,
+  genreChosen: PropTypes.object,
   setGenreChosen: PropTypes.func.isRequired,
+  ratingChosen: PropTypes.object,
+  setRatingChosen: PropTypes.func.isRequired,
+  setIsFilterValidated: PropTypes.func.isRequired,
+  setAreFiltersOpen: PropTypes.func.isRequired,
 };
 
 export default SwipeFilter;

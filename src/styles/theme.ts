@@ -24,7 +24,7 @@ const theme = createTheme({
     primary: {
       main: '#fff',
       dark: '#0E6666',
-      light: '#24A5A5'
+      light: '#24A5A5',
     },
     secondary: {
       main: '#E7AE1A',
@@ -40,7 +40,7 @@ const theme = createTheme({
       main: '#5AC164',
     },
     text: {
-      primary: '#3B3B3B',
+      primary: '#383838',
     },
   },
   components: {

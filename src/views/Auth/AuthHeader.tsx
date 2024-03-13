@@ -72,12 +72,12 @@ const AuthHeader = () => {
       flexDirection="column"
       alignItems="center"
     >
-      <Box
-        position="relative"
-        display="flex"
-        justifyContent="center"
-      >
-        <img src="/images/logoPep.svg" style={{ height: '130px'}} alt="cornet de pop corns" />
+      <Box position="relative" display="flex" justifyContent="center">
+        <img
+          src="/images/logoPep.svg"
+          style={{ height: '130px' }}
+          alt="cornet de pop corns"
+        />
         <Box position="absolute" bottom="5px" height="34px" width="79px">
           {icons.map(icon => (
             <ShineIcon
@@ -109,13 +109,13 @@ const AuthHeader = () => {
       </Typography>
       <Typography
         variant="h5"
-        fontSize='1.7em'
+        fontSize="1.7em"
         component="p"
         fontFamily={'Square peg'}
         color="form.light"
         marginBottom={'15px'}
-        position='relative'
-        right='4.5px'
+        position="relative"
+        right="4.5px"
       >
         {'Échanges cinéphiles'}
       </Typography>
@@ -123,7 +123,7 @@ const AuthHeader = () => {
         variant="h2"
         color={'#FEFEFE'}
         fontSize={'1.5em'}
-        fontWeight='300'
+        fontWeight="300"
       >
         {'Partagez vos films et séries préférés avec vos amis.'}
       </Typography>

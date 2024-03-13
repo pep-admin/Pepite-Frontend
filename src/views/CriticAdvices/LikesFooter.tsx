@@ -1,16 +1,26 @@
+// Import des libs externes
+import { Stack, Typography } from '@mui/material';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { animated } from 'react-spring';
-import { Stack, Typography } from '@mui/material';
-import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import PropTypes from 'prop-types';
 
+// Import des composants internes
+import Particles from '@utils/anims/Particles';
+
+// Import des icônes
+import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
+
+// Import du contexte
 import { useData } from '@hooks/DataContext';
+
+// Import du hook personnalisé d'animation verticale pour l'affichage des chiffres
+import { useVerticalAnimation } from '@hooks/useVerticalAnimation';
+
+// Import des requêtes
 import { removeLikeCritic } from '@utils/request/critics/removeLikeCritic';
 import { addLikeCritic } from '@utils/request/critics/addLikeCritic';
 import { getCriticLikesNumber } from '@utils/request/critics/getCriticLikesNumber';
 import { checkLikeCriticStatus } from '@utils/request/critics/checkLikeCriticStatus';
-import { useVerticalAnimation } from '@hooks/useVerticalAnimation';
-import Particles from '@utils/anims/Particles';
 import { addLikeAdvice } from '@utils/request/advices/addLikeAdvice';
 import { checkLikeAdviceStatus } from '@utils/request/advices/checkLikeAdviceStatus';
 import { getAdviceLikesNumber } from '@utils/request/advices/getAdviceLikesNumber';
@@ -34,19 +44,19 @@ const LikesFooter = ({ from, infos }) => {
 
   const { style, toggleAnimation } = useVerticalAnimation(
     initialYposition.current,
-  );  
+  );
 
   const fetchLikesNumber = useCallback(async () => {
     let response;
 
     if ('critic_id' in infos) {
-      if(from === 'comment') {
+      if (from === 'comment') {
         response = await getCommentsCriticLikesNumber(infos.id, displayType);
       } else {
         response = await getCriticLikesNumber(infos.critic_id, displayType);
       }
     } else if ('advice_id' in infos) {
-      if(from === 'comment') {
+      if (from === 'comment') {
         response = await getCommentsAdviceLikesNumber(infos.id, displayType);
       } else {
         response = await getAdviceLikesNumber(infos.advice_id, displayType);
@@ -63,13 +73,13 @@ const LikesFooter = ({ from, infos }) => {
     let response;
 
     if ('critic_id' in infos) {
-      if(from === 'comment') {
+      if (from === 'comment') {
         response = await checkCriticCommentLikeStatus(infos.id, displayType);
       } else {
         response = await checkLikeCriticStatus(infos.critic_id, displayType);
       }
     } else if ('advice_id' in infos) {
-      if(from === 'comment') {
+      if (from === 'comment') {
         response = await checkAdviceCommentLikeStatus(infos.id, displayType);
       } else {
         response = await checkLikeAdviceStatus(infos.advice_id, displayType);
@@ -105,13 +115,13 @@ const LikesFooter = ({ from, infos }) => {
       setLikeAnim(true);
 
       if ('critic_id' in infos) {
-        if(from === 'comment') {
+        if (from === 'comment') {
           await addCriticCommentLike(infos.id, displayType);
         } else {
           await addLikeCritic(infos.critic_id, displayType);
         }
       } else if ('advice_id' in infos) {
-        if(from === 'comment') {
+        if (from === 'comment') {
           await addAdviceCommentLike(infos.id, displayType);
         } else {
           await addLikeAdvice(infos.advice_id, displayType);
@@ -121,13 +131,13 @@ const LikesFooter = ({ from, infos }) => {
       setLikeAnim(false);
 
       if ('critic_id' in infos) {
-        if(from === 'comment') {
+        if (from === 'comment') {
           await removeCriticCommentLike(infos.id, displayType);
         } else {
           await removeLikeCritic(infos.critic_id, displayType);
         }
       } else if ('advice_id' in infos) {
-        if(from === 'comment') {
+        if (from === 'comment') {
           await removeAdviceCommentLike(infos.id, displayType);
         } else {
           await removeLikeAdvice(infos.advice_id, displayType);
@@ -170,13 +180,13 @@ const LikesFooter = ({ from, infos }) => {
       >
         <animated.div style={{ transform: style.transform }}>
           <Stack width="10px">
-            <Typography variant='body1' fontWeight="600">
+            <Typography variant="body1" fontWeight="600">
               {likesMinusOne}
             </Typography>
-            <Typography variant='body1' fontWeight="600">
+            <Typography variant="body1" fontWeight="600">
               {likes}
             </Typography>
-            <Typography variant='body1' fontWeight="600">
+            <Typography variant="body1" fontWeight="600">
               {likesPlusOne}
             </Typography>
           </Stack>
@@ -187,6 +197,7 @@ const LikesFooter = ({ from, infos }) => {
 };
 
 LikesFooter.propTypes = {
+  from: PropTypes.string.isRequired,
   infos: PropTypes.object.isRequired,
 };
 

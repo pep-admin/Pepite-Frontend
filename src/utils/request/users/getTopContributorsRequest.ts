@@ -9,6 +9,9 @@ export const getTopContributorsRequest = async () => {
 
     return response.data;
   } catch (error) {
-    console.log("erreur dans la récupération des meilleurs contributeurs :", error);
+    console.log(
+      'erreur dans la récupération des meilleurs contributeurs :',
+      error,
+    );
   }
 };

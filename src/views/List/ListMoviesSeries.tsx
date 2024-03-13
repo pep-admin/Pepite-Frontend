@@ -2,6 +2,7 @@
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import des composants internes
 import { Item } from '@utils/components/styledComponent';
@@ -13,7 +14,6 @@ import { getWantedMoviesRequest } from '@utils/request/list/getWantedMoviesReque
 import { getWatchedMoviesRequest } from '@utils/request/list/getWatchedMoviesRequest';
 
 const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
-
   const { id } = useParams();
 
   const [wantedMovies, setWantedMovies] = useState([]); // Les films que l'utilisateur a choisi de voir
@@ -24,23 +24,22 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
   const [watchedSeries, setWatchedSeries] = useState([]); // Les séries que l'utilisateur a déjà vu
   const [ratedSeries, setRatedSeries] = useState([]); // Les séries que l'utilisateur a noté
 
-  const listArray = 
-    alignment === 'À voir' ?
-      movieOrSerie === 'movie' ? wantedMovies
-      :
-      wantedSeries
-    : alignment === 'À noter' ?
-      movieOrSerie === 'movie' ? watchedMovies
-      :
-      watchedSeries
-    : alignment === 'Notés' ?
-      movieOrSerie === 'movie' ? ratedMovies
-      :
-      ratedSeries
-    : [];
+  const listArray =
+    alignment === 'À voir'
+      ? movieOrSerie === 'movie'
+        ? wantedMovies
+        : wantedSeries
+      : alignment === 'À noter'
+      ? movieOrSerie === 'movie'
+        ? watchedMovies
+        : watchedSeries
+      : alignment === 'Notés'
+      ? movieOrSerie === 'movie'
+        ? ratedMovies
+        : ratedSeries
+      : [];
 
   const getWanted = async () => {
-
     const wantedMov = await getWantedMoviesRequest(id, 'movie');
     const wantedSer = await getWantedMoviesRequest(id, 'tv');
     setWantedMovies(wantedMov);
@@ -58,25 +57,23 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
     const ratedMov = await getCriticsOfUser(id, 'movie', 1, 5);
     const ratedSer = await getCriticsOfUser(id, 'tv', 1, 5);
     console.log('les films notés', ratedMov);
-    
+
     setRatedMovies(ratedMov);
     setRatedSeries(ratedSer);
   };
 
   useEffect(() => {
-    if(alignment === 'À voir') {
+    if (alignment === 'À voir') {
       getWanted();
-    } 
-    else if(alignment === 'À noter') {
+    } else if (alignment === 'À noter') {
       getWatched();
-    } 
-    else {
+    } else {
       getRated();
     }
   }, [alignment]);
 
   return (
-    <Item overflow="scroll" maxheight="250px" flexgrow='1' marginbottom='10px'>
+    <Item overflow="scroll" maxheight="250px" flexgrow="1" marginbottom="10px">
       <Stack
         direction="row"
         height="27px"
@@ -84,27 +81,28 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
         justifyContent="space-between"
         padding="0 10px"
       >
-        <Stack direction='row' alignItems='center' columnGap='5px'>
-          <Typography variant="body2" component="p" lineHeight='normal' fontWeight="600">
-            { movieOrSerie === 'movie' ?
-              'Films'
-              :
-              'Séries'
-            }
+        <Stack direction="row" alignItems="center" columnGap="5px">
+          <Typography
+            variant="body2"
+            component="p"
+            lineHeight="normal"
+            fontWeight="600"
+          >
+            {movieOrSerie === 'movie' ? 'Films' : 'Séries'}
           </Typography>
           <Box
-            display='flex'
-            justifyContent='center'
-            bgcolor='#E7AE1A'
-            height='15px'
-            width='15px'
-            borderRadius='50%'
+            display="flex"
+            justifyContent="center"
+            bgcolor="#E7AE1A"
+            height="15px"
+            width="15px"
+            borderRadius="50%"
           >
-            <Typography component='span' fontSize='0.8em' fontWeight='600'>
+            <Typography component="span" fontSize="0.8em" fontWeight="600">
               {listArray.length}
             </Typography>
           </Box>
-        </Stack>      
+        </Stack>
         <Typography
           variant="body2"
           component="p"
@@ -113,12 +111,10 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
             cursor: 'pointer',
           }}
         >
-          {
-            (movieOrSerie === 'movie' && wantedMovies.length >= 1) ||
-            (movieOrSerie === 'tv' && wantedSeries.length >= 1) ? 
-            'Voir tous' 
-            : null
-          }
+          {(movieOrSerie === 'movie' && wantedMovies.length >= 1) ||
+          (movieOrSerie === 'tv' && wantedSeries.length >= 1)
+            ? 'Voir tous'
+            : null}
         </Typography>
       </Stack>
       <Divider />
@@ -129,20 +125,19 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
               key={movie.id}
               movieOrSerie={movieOrSerie}
               type={
-                alignment === 'À voir' ? 
-                  'wanted-movies'
-                : alignment === 'À noter' ?
-                  'watched-movies'
-                : 'rated-movies'  
+                alignment === 'À voir'
+                  ? 'wanted-movies'
+                  : alignment === 'À noter'
+                  ? 'watched-movies'
+                  : 'rated-movies'
               }
               data={movie}
-              list={listArray}
               getRequest={
-                alignment === 'À voir' ? 
-                  getWanted
-                : alignment === 'À noter' ?
-                  getWatched
-                : getRated 
+                alignment === 'À voir'
+                  ? getWanted
+                  : alignment === 'À noter'
+                  ? getWatched
+                  : getRated
               }
               getRequest2={null}
               isLast={index === listArray.length - 1}
@@ -151,18 +146,18 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
         })
       ) : (
         <Stack direction="column">
-          <Typography variant="body2" padding='10px 0'>
+          <Typography variant="body2" padding="10px 0">
             <>
               <span style={{ fontWeight: 'bold' }}>
-                {
-                  `Aucun${movieOrSerie === 'movie' ? ' film' : 'e série'}
-                  ${alignment === 'À voir' ? 
-                      'à voir' 
-                    : alignment === 'À noter' ? 
-                      'à noter'
-                    : movieOrSerie === 'movie' ?
-                      'noté'
-                    : 'notée'
+                {`Aucun${movieOrSerie === 'movie' ? ' film' : 'e série'}
+                  ${
+                    alignment === 'À voir'
+                      ? 'à voir'
+                      : alignment === 'À noter'
+                      ? 'à noter'
+                      : movieOrSerie === 'movie'
+                      ? 'noté'
+                      : 'notée'
                   }`}
               </span>
               {' pour le moment.'}
@@ -172,6 +167,11 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
       )}
     </Item>
   );
+};
+
+ListMoviesSeries.propTypes = {
+  movieOrSerie: PropTypes.string.isRequired,
+  alignment: PropTypes.string,
 };
 
 export default ListMoviesSeries;

@@ -12,9 +12,8 @@ const UserAvatar = ({
   outlineWidth,
   relationType,
   sx,
-  redirection
+  redirection,
 }) => {
-  
   const navigate = useNavigate();
 
   const fullName = `${userInfos.first_name} ${userInfos.last_name}`;
@@ -61,9 +60,7 @@ const UserAvatar = ({
         cursor: 'pointer',
         ...sx,
       }}
-      onClick={
-        () => redirection && navigate(`/profil/${userInfos.id}`)
-      }
+      onClick={() => redirection && navigate(`/profil/${userInfos.id}`)}
     />
   );
 };
@@ -77,6 +74,7 @@ UserAvatar.propTypes = {
   outlineWidth: PropTypes.string,
   relationType: PropTypes.string,
   sx: PropTypes.object,
+  redirection: PropTypes.bool.isRequired,
 };
 
 export default UserAvatar;

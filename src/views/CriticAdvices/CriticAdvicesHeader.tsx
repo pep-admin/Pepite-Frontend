@@ -161,7 +161,7 @@ const CriticAdvicesHeader = ({
         </>
       );
     }
-  };  
+  };
 
   return (
     <Stack
@@ -173,12 +173,14 @@ const CriticAdvicesHeader = ({
       columnGap="10px"
     >
       <Avatar
-        alt={`photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`} 
-        src={`${apiBaseUrl}/Uploads/${criticUserInfos.profilPics?.find((pic) => pic.isActive === 1).filePath}`} 
+        alt={`photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
+        src={`${apiBaseUrl}/Uploads/${criticUserInfos.profilPics?.find(
+          pic => pic.isActive === 1,
+        ).filePath}`}
         sx={{
           height: 40,
           width: 40,
-          boxShadow: '0px 3px 3.7px rgba(0, 0, 0, 0.30)'
+          boxShadow: '0px 3px 3.7px rgba(0, 0, 0, 0.30)',
         }}
       />
       <Typography

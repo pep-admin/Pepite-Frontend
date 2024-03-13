@@ -54,8 +54,7 @@ const CriticAdvicesReviewModal = ({
         }}
       >
         <Stack direction="row">
-          {
-            !isModify &&
+          {!isModify && (
             <UserAvatar
               variant={'circular'}
               userInfos={
@@ -73,8 +72,8 @@ const CriticAdvicesReviewModal = ({
               relationType={null}
               sx={{ order: '1' }}
             />
-          }
-         
+          )}
+
           <Box
             height="30px"
             width="30px"
@@ -83,9 +82,9 @@ const CriticAdvicesReviewModal = ({
             display="flex"
             alignItems="center"
             justifyContent="center"
-            sx={{ 
+            sx={{
               backgroundColor: '#e1e1e1',
-              borderRadius: '7px'
+              borderRadius: '7px',
             }}
             onClick={() => setShowReviewModal(false)}
           >
@@ -113,7 +112,9 @@ const CriticAdvicesReviewModal = ({
           <Stack
             direction="column"
             marginBottom={
-              type === 'new-critic' || type === 'new-advice' || isModify ? '10px' : 0
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? '10px'
+                : 0
             }
             rowGap="3px"
           >
@@ -158,9 +159,7 @@ const CriticAdvicesReviewModal = ({
               </Typography>
             </Stack>
           </Stack>
-          {!isModify ? (
-            <Divider sx={{ margin: '12px 0' }} />
-          ) : null}
+          {!isModify ? <Divider sx={{ margin: '12px 0' }} /> : null}
           <Stack direction="column" flexGrow="1">
             {type === 'new-critic' || type === 'new-advice' || isModify ? (
               customTextarea('big')
@@ -187,8 +186,7 @@ const CriticAdvicesReviewModal = ({
             )}
           </Stack>
         </Box>
-        {
-          !isModify &&
+        {!isModify && (
           <Box
             height="35px"
             width="35px"
@@ -208,7 +206,7 @@ const CriticAdvicesReviewModal = ({
           >
             <FormatQuoteIcon sx={{ color: '#fff', fontSize: '1.8em' }} />
           </Box>
-        }
+        )}
       </Stack>
     </Modal>
   );

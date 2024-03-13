@@ -1,33 +1,31 @@
 // Import des libs externes
-import React, { useEffect, useRef, useState } from 'react';
-import { Stack, Typography, Divider, Skeleton } from '@mui/material';
+import { Paper, Skeleton, Stack } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
+// Import des composants internes
+import SuggestedGoldNuggetsCards from './SuggestedGoldNuggetsCards';
+import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
+
+// Import des hooks personnalisés
+import { useData } from '@hooks/DataContext';
+import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
+import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
 
 // Import des requêtes
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { getGoldNuggetsFromAcquaintances } from '@utils/request/goldNugget/getGoldNuggetsFromAcquaintances';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
-
-// Import des composants internes
-import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
-import ProfilNoGold from '@views/Profil/ProfilNoGold';
-import SuggestedGoldNuggetsCards from '@views/Profil/SuggestedGoldNuggetsCards';
-
-// Import des hooks personnalisés
-import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
-import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
-
 const SuggestedGoldNuggets = ({
   page,
-  // userCritics,
+  loggedUserInfos,
   goldenMovies,
   setGoldenMovies,
-  loggedUserInfos,
-  chosenUser,
 }) => {
+  const { displayType } = useData();
+  const { id } = useParams();
+
   const [showGoldenMovie, setShowGoldenMovie] = useState(false);
   const [goldenMovieInfos, setGoldenMovieInfos] = useState(null);
   const [areGoldNuggetsLoading, setAreGoldNuggetsLoading] = useState(true);
@@ -43,14 +41,6 @@ const SuggestedGoldNuggets = ({
   */
   const cardsToShow = useCardsToShowHorizontal(95, 6, 3);
 
-  const { displayType } = useData();
-  const { id } = useParams();
-
-  /* 
-    Récupère les pépites de l'utilisateur pour la page de profil
-  OU
-    Récupère les pépites des amis et suivis pour la page d'accueil et page de listes de films
-  */
   const loadGoldNuggets = async () => {
     if (!hasMoreDataRef.current) return;
 
@@ -80,6 +70,8 @@ const SuggestedGoldNuggets = ({
       setGoldenMovies(prev => [...prev, ...data.goldenMovies]);
 
       if (!data.hasMore) {
+        console.log('plus aucune pépite à récup');
+
         hasMoreDataRef.current = false;
       }
 
@@ -118,96 +110,77 @@ const SuggestedGoldNuggets = ({
       goldNuggetsPageRef.current = 1;
       loadGoldNuggets();
     }
-  }, [displayType, id]);
+  }, [id]);
 
   return (
     <>
-      {showGoldenMovie ? (
+      {showGoldenMovie && (
         <CriticAdvicesModal
           page={page}
           showPoster={showGoldenMovie}
           setShowPoster={setShowGoldenMovie}
           infos={goldenMovieInfos}
           loggedUserInfos={loggedUserInfos} // Les infos de l'utilisateur connecté
-          chosenUser={chosenUser} // Les infos de l'utilisateur visité
+          // chosenUser={chosenUser} // Les infos de l'utilisateur visité
           from={'suggested'}
         />
-      ) : null}
-      <Stack direction="column" height="100%">
-        <Stack
-          direction="row"
-          height="25px"
-          justifyContent="space-between"
-          alignItems="center"
-          padding="0 10px"
-        >
-          <Typography variant="body2" component="p" fontWeight={600}>
-            {page === 'profil' && loggedUserInfos.id === parseInt(id, 10)
-              ? 'Vos dernières pépites'
-              : page === 'profil' && loggedUserInfos.id !== parseInt(id, 10)
-              ? 'Ses dernières pépites'
-              : 'Dernières pépites de vos contacts'}
-          </Typography>
-          <Typography variant="body2" component="p" fontWeight="bold">
-            {'Voir +'}
-          </Typography>
-        </Stack>
-        <Divider />
-        <Stack
-          ref={scrollContainerRef}
-          direction="row"
-          height={page === 'profil' ? 'calc(100% - 25.8px)' : '150px'}
-          justifyContent="flex-start"
-          padding={!goldenMovies.length ? '6px' : '6px 6px 0 6px'}
-          columnGap={page === 'profil' ? '10px' : '6px'}
-          sx={{
-            overflowX: 'scroll',
-          }}
-        >
-          {/* {goldenMovies.length > 0 &&
-            goldenMovies.map((movie, index) => {
-              if (displayType === 'movie' && !movie.movie_id) return null;
-              if (displayType === 'tv' && !movie.serie_id) return null;
-
+      )}
+      <Stack
+        ref={scrollContainerRef}
+        width="calc(100vw - 3%)"
+        marginLeft="3%"
+        position="absolute"
+        top="-59px"
+        sx={{
+          overflowX: 'scroll',
+        }}
+      >
+        <Stack direction="row" columnGap="10px" paddingLeft="1%">
+          {goldenMovies &&
+            goldenMovies.map(movie => {
               return (
                 <SuggestedGoldNuggetsCards
-                  key={
-                    displayType === 'movie'
-                      ? `movie-${movie.movie_id}`
-                      : `serie-${movie.serie_id}`
-                  }
-                  page={page}
+                  key={movie.movie_id}
                   movie={movie}
-                  isLast={goldenMovies.length - 1 === index ? true : false}
                   setGoldenMovieInfos={setGoldenMovieInfos}
                   setShowGoldenMovie={setShowGoldenMovie}
                 />
               );
-            })} */}
-          {(isFetching || areGoldNuggetsLoading) &&
-            [...Array(cardsToShow)].map((_, i) => (
-              <Stack key={i} height="144px" alignItems="center">
+            })}
+          {/* Affichage conditionnel en fonction du chargement des données */}
+          {(areGoldNuggetsLoading || isFetching) && hasMoreDataRef.current
+            ? // Affichage des Skeletons pendant le chargement
+              Array.from({ length: cardsToShow }).map((_, index) => (
                 <Skeleton
+                  key={index}
                   variant="rounded"
-                  width={95}
-                  height={121}
+                  width={90}
+                  height={120}
                   animation="wave"
+                  sx={{
+                    bgcolor: '#1a999945',
+                    flexShrink: '0',
+                    marginBottom: '9px',
+                  }}
                 />
-                <Skeleton
-                  variant="text"
-                  width={70}
-                  height={23}
-                  animation="wave"
+              ))
+            : // Affichage des Papers une fois que les données sont chargées
+              Array.from({
+                length: Math.max(cardsToShow - goldenMovies.length, 0),
+              }).map((_, index) => (
+                <Paper
+                  key={index}
+                  sx={{
+                    width: 90,
+                    height: 120,
+                    bgcolor: '#1a999945',
+                    flexShrink: '0',
+                    marginBottom: '9px',
+                    boxShadow:
+                      '0px 2px 1px -1px rgb(174 174 174 / 20%), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgb(69 69 69 / 12%)',
+                  }}
                 />
-              </Stack>
-            ))}
-          {!goldenMovies.length && !areGoldNuggetsLoading && (
-            <ProfilNoGold
-              page={page}
-              loggedUserInfos={loggedUserInfos}
-              chosenUser={chosenUser}
-            />
-          )}
+              ))}
         </Stack>
       </Stack>
     </>
@@ -215,12 +188,10 @@ const SuggestedGoldNuggets = ({
 };
 
 SuggestedGoldNuggets.propTypes = {
+  page: PropTypes.string.isRequired,
+  loggedUserInfos: PropTypes.object.isRequired,
   goldenMovies: PropTypes.array.isRequired,
   setGoldenMovies: PropTypes.func.isRequired,
-  loggedUserInfos: PropTypes.object.isRequired,
-  chosenUser: PropTypes.object,
-  page: PropTypes.string.isRequired,
-  // userCritics: PropTypes.array.isRequired,
 };
 
-export default React.memo(SuggestedGoldNuggets);
+export default SuggestedGoldNuggets;

@@ -27,7 +27,7 @@ const CriticAdvicesPoster = ({
     >
       <CardMedia
         component="img"
-        height='100%'
+        height="100%"
         image={
           chosenMovie !== null
             ? `https://image.tmdb.org/t/p/w500/${chosenMovie.poster_path}`

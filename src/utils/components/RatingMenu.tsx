@@ -5,7 +5,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  // Stack,
   Typography,
 } from '@mui/material';
 import { useEffect } from 'react';
@@ -160,6 +159,7 @@ const RatingMenu = ({
           <ListItemIcon sx={{ minWidth: 'auto' }}>
             <ColoredRating
               color="#F29E50"
+              emptyColor="#969696"
               value={rating.number}
               precision={0.5}
               readOnly

@@ -27,6 +27,10 @@ import { getDiamondsCriticCommentNumber } from '@utils/request/comments/getDiamo
 import { checkDiamondCriticCommentStatus } from '@utils/request/comments/checkDiamondCriticCommentStatus';
 import { addDiamondCriticComment } from '@utils/request/comments/addDiamondCriticComment';
 import { removeDiamondCriticComment } from '@utils/request/comments/removeDiamondCriticComment';
+import { getDiamondsAdviceCommentNumber } from '@utils/request/advices/getDiamondsAviceCommentNumber';
+import { checkDiamondAdviceCommentStatus } from '@utils/request/advices/checkDiamondAdviceCommentStatus';
+import { addDiamondAdviceComment } from '@utils/request/advices/addDiamondAdviceComment';
+import { removeDiamondAdviceComment } from '@utils/request/advices/removeDiamondAdviceComment';
 
 const GoldFooter = ({ from, infos }) => {
   const { displayType } = useData();
@@ -54,6 +58,7 @@ const GoldFooter = ({ from, infos }) => {
       }
     } else if ('advice_id' in infos) {
       if (from === 'comment') {
+        response = await getDiamondsAdviceCommentNumber(infos.id, displayType);
       } else {
         response = await getDiamondsAdviceNumber(infos.advice_id, displayType);
       }
@@ -76,6 +81,7 @@ const GoldFooter = ({ from, infos }) => {
       }
     } else if ('advice_id' in infos) {
       if (from === 'comment') {
+        response = await checkDiamondAdviceCommentStatus(infos.id, displayType);
       } else {
         response = await checkDiamondAdviceStatus(infos.advice_id, displayType);
       }
@@ -118,6 +124,7 @@ const GoldFooter = ({ from, infos }) => {
         }
       } else if ('advice_id' in infos) {
         if (from === 'comment') {
+          await addDiamondAdviceComment(infos.id, displayType);
         } else {
           await addDiamondAdvice(infos.advice_id, displayType);
         }
@@ -133,6 +140,7 @@ const GoldFooter = ({ from, infos }) => {
         }
       } else if ('advice_id' in infos) {
         if (from === 'comment') {
+          await removeDiamondAdviceComment(infos.id, displayType);
         } else {
           await removeDiamondAdvice(infos.advice_id, displayType);
         }

@@ -111,7 +111,7 @@ const CriticAdvicesHeader2 = ({
             }}
             onClick={() => navigate(`/profil/${chosenUser.id}`)}
           >
-            {chosenUser.first_name} {chosenUser.last_name}
+            {chosenUser.first_name}
           </span>
         </>
       );
@@ -210,7 +210,7 @@ const CriticAdvicesHeader2 = ({
               minWidth="80px"
               align="left"
               whiteSpace="nowrap"
-              maxWidth="363px"
+              maxWidth="144px"
               overflow="hidden"
               textOverflow="ellipsis"
               marginRight="10px"

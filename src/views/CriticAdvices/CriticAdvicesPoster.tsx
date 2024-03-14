@@ -18,11 +18,11 @@ const CriticAdvicesPoster = ({
     <CardActionArea
       sx={{
         position: 'relative',
-        height: '140px',
-        width: '90px',
+        height: '158px',
+        width: '105px',
         display: 'flex',
         alignItems: 'flex-start',
-        overflow: 'hidden',
+        overflow: 'visible',
       }}
     >
       <CardMedia
@@ -33,9 +33,14 @@ const CriticAdvicesPoster = ({
             ? `https://image.tmdb.org/t/p/w500/${chosenMovie.poster_path}`
             : `https://image.tmdb.org/t/p/w500/${infos.poster_path}`
         }
-        alt="green iguana"
+        alt={
+          chosenMovie !== null
+            ? `Affiche de ${chosenMovie.title}`
+            : `Affiche de ${infos.title}`
+        }
         sx={{
           borderRadius: '5px',
+          boxShadow: '5px 4px 0px #e9e9e9',
         }}
         onClick={type === 'old-critic' ? () => setShowPoster(true) : null}
       />

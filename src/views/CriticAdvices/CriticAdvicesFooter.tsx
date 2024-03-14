@@ -36,13 +36,7 @@ import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieReque
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
 import { getAdviceCommentsNumber } from '@utils/request/comments/getAdviceCommentsNumber';
 
-const CriticAdvicesFooter = ({
-  data,
-  infos,
-  displayComments,
-  setDisplayComments,
-  comments,
-}) => {
+const CriticAdvicesFooter = ({ data, infos, toggleDrawer, comments }) => {
   const { displayType } = useData();
 
   // L'utilisateur connecté
@@ -147,14 +141,13 @@ const CriticAdvicesFooter = ({
             display="flex"
             alignItems="center"
             columnGap="5px"
-            onClick={() => setDisplayComments(!displayComments)}
+            onClick={toggleDrawer(true)}
           >
             <ChatTwoToneIcon
               fontSize="small"
               sx={{
                 position: 'relative',
                 top: '1px',
-                color: displayComments ? '#24a5a5' : 'inherit',
               }}
             />
             <Typography variant="body1" fontWeight="600">
@@ -335,8 +328,7 @@ const CriticAdvicesFooter = ({
 CriticAdvicesFooter.propTypes = {
   data: PropTypes.array.isRequired,
   infos: PropTypes.object.isRequired,
-  displayComments: PropTypes.bool.isRequired,
-  setDisplayComments: PropTypes.func.isRequired,
+  toggleDrawer: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
 };
 

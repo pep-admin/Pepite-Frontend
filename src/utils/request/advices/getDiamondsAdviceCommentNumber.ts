@@ -11,13 +11,9 @@ export const getDiamondsAdviceCommentNumber = async (commentId, type) => {
         withCredentials: true,
       },
     );
-    console.log('count', response.data);
 
     return response.data.goldCount;
   } catch (error) {
-    console.log(
-      'erreur dans le comptage des diamants du commentaire de conseil :',
-      error,
-    );
+    console.log('erreur dans le comptage des diamants du commentaire :', error);
   }
 };

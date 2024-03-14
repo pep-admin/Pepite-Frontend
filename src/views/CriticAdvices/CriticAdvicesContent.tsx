@@ -60,9 +60,9 @@ const CriticAdvicesContent = ({ type, chosenMovie, infos }) => {
   return (
     <CardContent
       sx={{
-        width: 'calc(100% - 90px)',
+        width: 'calc(100% - 105px)',
         padding: '0 0 0 12px !important',
-        height: '140px',
+        height: '162px',
         overflow: 'hidden',
       }}
     >
@@ -70,7 +70,7 @@ const CriticAdvicesContent = ({ type, chosenMovie, infos }) => {
         <Stack
           height="100%"
           sx={{
-            overflowY: 'scroll',
+            overflowY: 'auto',
           }}
         >
           <Stack direction="column" columnGap="10px">

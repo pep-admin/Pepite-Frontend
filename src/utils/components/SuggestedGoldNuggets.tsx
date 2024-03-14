@@ -105,6 +105,8 @@ const SuggestedGoldNuggets = ({
     if (isFirstRender.current) {
       isFirstRender.current = false;
     } else {
+      console.log('reinit pépites');
+
       setGoldenMovies([]);
       hasMoreDataRef.current = true;
       goldNuggetsPageRef.current = 1;

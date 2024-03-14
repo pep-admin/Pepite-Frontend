@@ -1,5 +1,11 @@
 // Import des libs externes
-import { Stack, Typography, Card, Button, Collapse } from '@mui/material';
+import {
+  Stack,
+  Typography,
+  Card,
+  Button,
+  SwipeableDrawer,
+} from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
@@ -49,16 +55,20 @@ const CriticAdvicesComponent = ({
   haveMoreCritics,
   isLast,
 }) => {
+  const { id } = useParams(); // Id de l'utilisateur du profil visité
+
+  const isProfilUserLogged = loggedUserInfos.id === parseInt(id, 10); // Vérifie si l'utilisateur connecté est sur son profil
+
   const [newRating, setNewRating] = useState(null); // Note attribuée par l'utilisateur
   const [newCriticText, setNewCriticText] = useState(''); // Nouveau texte de critique
   const [isGoldNugget, setIsGoldNugget] = useState(false); // Pépite ou non
   const [isTurnip, setIsTurnip] = useState(false); // Navet ou non
   const [isModify, setIsModify] = useState(false);
-  const [displayComments, setDisplayComments] = useState(false);
   const [showPoster, setShowPoster] = useState(false);
   const [comments, setComments] = useState([]);
   const [displayRatings, setDisplayRatings] = useState(null);
   const [criticUserInfos, setCriticUserInfos] = useState({});
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState({
     state: null,
     message: null,
@@ -66,8 +76,6 @@ const CriticAdvicesComponent = ({
   }); // Message de succès, d'info, d'erreur
 
   const ratingsHeaderRef = useRef(null);
-
-  const { id } = useParams(); // Id de l'utilisateur du profil visité
 
   const { displayType, setChosenMovieId, setChosenMovie } = useData();
 
@@ -106,7 +114,7 @@ const CriticAdvicesComponent = ({
 
     setData(newData);
 
-    if (page === 'profil') {
+    if (page === 'profil' && isProfilUserLogged) {
       const response = await getAllGoldNuggetsOfUser(
         displayType,
         userId,
@@ -235,6 +243,19 @@ const CriticAdvicesComponent = ({
       ),
     );
     setCriticUserInfos(userInfos);
+  };
+
+  // Fonction pour gérer l'ouverture du SwipeableDrawer des commentaires
+  const toggleDrawer = open => event => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setDrawerOpen(open);
   };
 
   useEffect(() => {
@@ -400,23 +421,35 @@ const CriticAdvicesComponent = ({
             <CriticAdvicesFooter
               data={data}
               infos={infos}
-              displayComments={displayComments}
-              setDisplayComments={setDisplayComments}
+              toggleDrawer={toggleDrawer}
               comments={comments}
             />
           )}
         </Stack>
       </Item>
       {(type === 'old-critic' || type === 'old-advice') && (
-        <Collapse in={displayComments}>
+        <SwipeableDrawer
+          anchor="bottom" // Pour que le tiroir s'ouvre du bas
+          open={drawerOpen}
+          onClose={toggleDrawer(false)}
+          onOpen={toggleDrawer(true)}
+          sx={{
+            '& .MuiPaper-root': {
+              borderRadius: '15px 15px 0 0',
+              maxHeight: '75vh',
+              overflow: 'visible',
+            },
+          }}
+        >
           <CommentsComponent
             page={page}
             criticId={infos.critic_id}
             adviceId={infos.advice_id}
             comments={comments}
             setComments={setComments}
+            infos={infos}
           />
-        </Collapse>
+        </SwipeableDrawer>
       )}
       {isLast && !haveMoreCritics && (
         <Item marginbottom="15px">

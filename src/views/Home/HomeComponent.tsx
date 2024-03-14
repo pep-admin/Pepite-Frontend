@@ -62,7 +62,6 @@ const HomeComponent = () => {
   );
 
   useEffect(() => {
-    getCritics('home');
     firstRender.current = false;
   }, []);
 

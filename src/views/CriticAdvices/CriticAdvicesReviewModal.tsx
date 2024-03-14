@@ -71,6 +71,7 @@ const CriticAdvicesReviewModal = ({
               outlineWidth={null}
               relationType={null}
               sx={{ order: '1' }}
+              redirection={true}
             />
           )}
 

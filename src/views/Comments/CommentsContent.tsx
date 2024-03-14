@@ -47,6 +47,7 @@ const CommentsContent = ({
   setData,
   getComments,
   userInfos,
+  isFirst,
 }) => {
   const { displayType } = useData();
 
@@ -81,19 +82,19 @@ const CommentsContent = ({
 
   return (
     <>
-      <Divider sx={{ margin: '0px 0px 1px 0px' }} />
       <Stack
         direction="row"
         justifyContent="space-between"
         minHeight="67px"
         padding="0 10px"
-        margin="5px 0"
+        flexShrink="0"
+        margin={isFirst ? '0 0 10px 0' : '10px 0'}
       >
         <Stack direction="column" flexGrow={1}>
           <Stack
             padding="5px 10px"
             sx={{
-              backgroundColor: '#F1F1F1',
+              backgroundColor: '#f7f7f7',
               borderRadius: '10px 10px 0 0',
             }}
           >
@@ -136,7 +137,11 @@ const CommentsContent = ({
                 />
               ) : null}
             </Stack>
-            <Divider />
+            <Divider
+              sx={{
+                borderColor: '#e9e9e9',
+              }}
+            />
             {isModify ? (
               <Stack direction="row" margin="6px 0">
                 <TextField
@@ -178,11 +183,10 @@ const CommentsContent = ({
           <Stack
             direction="row"
             alignItems="center"
-            // height="25px"
             padding="5px 15px"
             columnGap="25px"
             sx={{
-              backgroundColor: '#ededed',
+              backgroundColor: '#ececec',
               borderRadius: '0 0 10px 10px',
             }}
           >
@@ -201,6 +205,7 @@ CommentsContent.propTypes = {
   setData: PropTypes.func.isRequired,
   getComments: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,
+  isFirst: PropTypes.bool.isRequired,
 };
 
 export default CommentsContent;

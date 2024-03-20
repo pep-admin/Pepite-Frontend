@@ -37,6 +37,8 @@ const SwipeCard = ({
   ratingChosen,
   setRatingChosen,
   setIsFilterValidated,
+  periodChosen,
+  setPeriodChosen,
   swipeType,
   setSwipeType,
 }) => {
@@ -150,6 +152,8 @@ const SwipeCard = ({
                     setGenreChosen={setGenreChosen}
                     ratingChosen={ratingChosen}
                     setRatingChosen={setRatingChosen}
+                    periodChosen={periodChosen}
+                    setPeriodChosen={setPeriodChosen}
                     setIsFilterValidated={setIsFilterValidated}
                     setAreFiltersOpen={setAreFiltersOpen}
                   />
@@ -248,6 +252,8 @@ SwipeCard.propTypes = {
   setIsFilterValidated: PropTypes.func.isRequired,
   swipeType: PropTypes.string.isRequired,
   setSwipeType: PropTypes.func.isRequired,
+  periodChosen: PropTypes.string.isRequired,
+  setPeriodChosen: PropTypes.func.isRequired,
 };
 
 export default SwipeCard;

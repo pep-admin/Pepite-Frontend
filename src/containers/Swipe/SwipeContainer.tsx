@@ -30,6 +30,7 @@ const SwipeContainer = () => {
     number: null,
     value: null,
   }); // Note générale
+  const [periodChosen, setPeriodChosen] = useState('Toutes'); // Période de productions des films / séries
   const [loading, setLoading] = useState({ movies: true, details: true }); // Premier chargement
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
   const [isFilterValidated, setIsFilterValidated] = useState(false);
@@ -46,6 +47,7 @@ const SwipeContainer = () => {
         countryChosen,
         genreChosen,
         ratingChosen.number,
+        periodChosen,
       );
 
       if (elligibleMovies.length < 20) {
@@ -196,6 +198,8 @@ const SwipeContainer = () => {
       setMoviesStatusUpdated={setMoviesStatusUpdated}
       ratingChosen={ratingChosen}
       setRatingChosen={setRatingChosen}
+      periodChosen={periodChosen}
+      setPeriodChosen={setPeriodChosen}
       setIsFilterValidated={setIsFilterValidated}
       swipeType={swipeType}
       setSwipeType={setSwipeType}

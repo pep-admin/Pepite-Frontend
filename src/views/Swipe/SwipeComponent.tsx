@@ -31,6 +31,8 @@ const SwipeComponent = ({
   setMoviesStatusUpdated,
   ratingChosen,
   setRatingChosen,
+  periodChosen,
+  setPeriodChosen,
   setIsFilterValidated,
   swipeType,
   setSwipeType,
@@ -295,6 +297,8 @@ const SwipeComponent = ({
               setGenreChosen={setGenreChosen}
               ratingChosen={ratingChosen}
               setRatingChosen={setRatingChosen}
+              periodChosen={periodChosen}
+              setPeriodChosen={setPeriodChosen}
               setIsFilterValidated={setIsFilterValidated}
               swipeType={swipeType}
               setSwipeType={setSwipeType}
@@ -358,6 +362,8 @@ SwipeComponent.propTypes = {
   setIsFilterValidated: PropTypes.func.isRequired,
   swipeType: PropTypes.string.isRequired,
   setSwipeType: PropTypes.func.isRequired,
+  periodChosen: PropTypes.string.isRequired,
+  setPeriodChosen: PropTypes.func.isRequired,
 };
 
 export default React.memo(SwipeComponent);

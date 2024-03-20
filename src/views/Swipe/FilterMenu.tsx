@@ -17,6 +17,18 @@ import { shortGenresMovieList } from '@utils/data/shortGenres';
 import { ratings } from '@utils/data/ratings';
 
 const typeMenu = ['Films', 'Séries'];
+const periodMenu = [
+  'Toutes',
+  'Avant 1950',
+  '1950 à 1960',
+  '1960 à 1970',
+  '1970 à 1980',
+  '1980 à 1990',
+  '1990 à 2000',
+  '2000 à 2010',
+  '2010 à 2020',
+  'Depuis 2020',
+];
 
 const FilterMenu = ({
   filterName,
@@ -198,6 +210,41 @@ const FilterMenu = ({
 
         return menuItem;
       });
+    } else if (filterName === 'period') {
+      return periodMenu.map((period, index) => {
+        const menuItem = (
+          <MenuItem
+            key={period}
+            sx={{
+              '&:hover': {
+                bgcolor: state === period ? '#E7AE1A' : 'inherit', // Couleur de fond par défaut
+                color: state === period ? '#111111' : 'inherit', // Couleur du texte par défaut
+              },
+              columnGap: '5px',
+              bgcolor: state === period ? '#E7AE1A' : 'inherit', // Couleur de fond par défaut
+              color: state === period ? '#111111' : 'inherit', // Couleur du texte par défaut
+            }}
+            onClick={() => {
+              setState(period);
+            }}
+          >
+            {period}
+          </MenuItem>
+        );
+
+        // Conditionnellement ajouter un Divider sauf pour le dernier élément
+        if (index !== periodMenu.length - 1) {
+          const divider = (
+            <Divider
+              key={`divider-${index}`}
+              sx={{ borderColor: '#4c4c4c', margin: '0 !important' }}
+            />
+          );
+          return [menuItem, divider];
+        }
+
+        return menuItem;
+      });
     }
   };
 
@@ -218,11 +265,6 @@ const FilterMenu = ({
       ],
       [],
     );
-
-    // // Trie dans l'ordre alphabétique
-    // const sortedCountries = countriesFromContinent.sort((a, b) =>
-    //   a.native_name.localeCompare(b.native_name),
-    // );
 
     return countriesFromContinent.map(country => (
       <MenuItem

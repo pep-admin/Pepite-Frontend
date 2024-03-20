@@ -55,6 +55,8 @@ const CriticAdvicesComponent = ({
   haveMoreCritics,
   isLast,
 }) => {
+  console.log('rendu');
+
   const { id } = useParams(); // Id de l'utilisateur du profil visité
 
   const isProfilUserLogged = loggedUserInfos.id === parseInt(id, 10); // Vérifie si l'utilisateur connecté est sur son profil
@@ -110,7 +112,7 @@ const CriticAdvicesComponent = ({
     const newData =
       type === 'critic'
         ? await getCriticsOfUser(userId, displayType, 1, 5)
-        : await getAdvicesReceived(id, displayType, 1);
+        : await getAdvicesReceived(id, displayType, 1, 5);
 
     setData(newData);
 

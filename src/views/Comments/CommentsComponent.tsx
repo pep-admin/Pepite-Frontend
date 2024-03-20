@@ -36,7 +36,6 @@ const CommentsComponent = ({
       response = await getAllCriticComments(displayType, criticId);
     } else if (adviceId) {
       response = await getAllAdviceComments(displayType, adviceId);
-      console.log('les commentaires de critique', response.data);
     } else {
       return;
     }

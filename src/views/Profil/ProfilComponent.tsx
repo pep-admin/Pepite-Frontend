@@ -92,17 +92,17 @@ const ProfilComponent = () => {
         let hasMoreCritics = true;
         let hasMoreAdvices = true;
 
-        const criticsData = await getCriticsOfUser(id, displayType, page, 3);
-        if (criticsData.length < 3) {
+        const criticsData = await getCriticsOfUser(id, displayType, page, 5);
+        if (criticsData.length < 5) {
           console.log('plus de critiques à récupérer');
 
-          // Si les critiques reçues sont inférieures à 3
+          // Si les critiques reçues sont inférieures à 5
           hasMoreCritics = false;
         }
 
-        const advicesData = await getAdvicesReceived(id, displayType, page);
-        if (advicesData.length < 3) {
-          // Si les conseils reçus sont inférieurs à 3
+        const advicesData = await getAdvicesReceived(id, displayType, page, 5);
+        if (advicesData.length < 5) {
+          // Si les conseils reçus sont inférieurs à 5
           hasMoreAdvices = false;
         }
 
@@ -168,6 +168,10 @@ const ProfilComponent = () => {
 
     firstRender.current = false;
   }, []);
+
+  useEffect(() => {
+    console.log('les conseils et critiques =>', criticsAndAdvices);
+  }, [criticsAndAdvices]);
 
   return (
     <>

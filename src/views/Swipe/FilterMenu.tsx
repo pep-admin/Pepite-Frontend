@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 // Import des composants internes
 import ColoredRating from '@utils/components/ColoredRating';
+import LanguageIcon from '@mui/icons-material/Language';
 
 // Import de la liste de tous les pays
 import { continents, countriesList } from '@utils/data/countries';
@@ -15,7 +16,7 @@ import { shortGenresMovieList } from '@utils/data/shortGenres';
 // Import des choix de notations
 import { ratings } from '@utils/data/ratings';
 
-const typeMenu = ['Tous', 'Films', 'Séries'];
+const typeMenu = ['Films', 'Séries'];
 
 const FilterMenu = ({
   filterName,
@@ -23,11 +24,12 @@ const FilterMenu = ({
   openMenu,
   filter,
   setFilter,
+  continentChosen,
+  setContinentChosen,
   state,
   setState,
 }) => {
   const [menuAnchor, setMenuAnchor] = useState(null); // Ancre du menu des continents
-  const [continentChosen, setContinentChosen] = useState('Amérique'); // Continent choisi par l'utilisateur
 
   // Affichage des sous-filtres (Type, Pays, Genre, Note)
   const displaySubFilters = () => {
@@ -92,7 +94,12 @@ const FilterMenu = ({
               color: continentChosen === continent.name ? '#111111' : 'inherit', // Couleur du texte par défaut
             }}
             onClick={e => {
-              setMenuAnchor(e.currentTarget);
+              if (continent.name === 'Tous') {
+                setMenuAnchor(null);
+                setState({ name: 'Tous', code: null });
+              } else {
+                setMenuAnchor(e.currentTarget);
+              }
               setContinentChosen(continent.name);
             }}
           >
@@ -127,7 +134,6 @@ const FilterMenu = ({
               color: state.name === genre.name ? '#111111' : 'inherit', // Couleur du texte par défaut
             }}
             onClick={() => {
-              // setMenuAnchor(e.currentTarget);
               setState({ name: genre.name, id: genre.id });
               setFilter(null);
             }}
@@ -213,12 +219,12 @@ const FilterMenu = ({
       [],
     );
 
-    // Trie dans l'ordre alphabétique
-    const sortedCountries = countriesFromContinent.sort((a, b) =>
-      a.native_name.localeCompare(b.native_name),
-    );
+    // // Trie dans l'ordre alphabétique
+    // const sortedCountries = countriesFromContinent.sort((a, b) =>
+    //   a.native_name.localeCompare(b.native_name),
+    // );
 
-    return sortedCountries.map(country => (
+    return countriesFromContinent.map(country => (
       <MenuItem
         key={country.iso_3166_1}
         sx={{
@@ -236,11 +242,24 @@ const FilterMenu = ({
           setMenuAnchor(null);
         }}
       >
-        <img
-          src={`https://flagsapi.com/${country.iso_3166_1}/flat/16.png`}
-          alt={`${country.native_name} flag`}
-          style={{ height: '16px', width: '16px', marginRight: '10px' }}
-        />
+        {country.iso_3166_1 !== 'AFRICA' &&
+        country.iso_3166_1 !== 'AMERICA' &&
+        country.iso_3166_1 !== 'ASIA' &&
+        country.iso_3166_1 !== 'EUROPE' &&
+        country.iso_3166_1 !== 'OCEANIA' ? (
+          <img
+            src={`https://flagsapi.com/${country.iso_3166_1}/flat/16.png`}
+            alt={`${country.native_name} flag`}
+            style={{ height: '16px', width: '16px', marginRight: '10px' }}
+          />
+        ) : (
+          <LanguageIcon
+            fontSize="small"
+            sx={{
+              marginRight: '6px',
+            }}
+          />
+        )}
         {country.native_name}
       </MenuItem>
     ));
@@ -327,8 +346,10 @@ FilterMenu.propTypes = {
   openMenu: PropTypes.bool.isRequired,
   filter: PropTypes.object,
   setFilter: PropTypes.func.isRequired,
-  state: PropTypes.string.isRequired,
+  state: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   setState: PropTypes.func.isRequired,
+  continentChosen: PropTypes.string,
+  setContinentChosen: PropTypes.func,
 };
 
 export default FilterMenu;

@@ -1,128 +1,115 @@
 export const africanCountryCodes = [
+  'ZA', // Afrique du Sud
   'DZ', // Algérie
   'AO', // Angola
   'BJ', // Bénin
   'BW', // Botswana
   'BF', // Burkina Faso
   'BI', // Burundi
-  'CV', // Cap-Vert
   'CM', // Cameroun
-  'CF', // République centrafricaine
-  'TD', // Tchad
+  'CV', // Cap-Vert
+  'CF', // Centrafrique
   'KM', // Comores
   'CG', // Congo (Congo-Brazzaville)
   'CD', // Congo (RDC)
   'CI', // Côte d'Ivoire
   'DJ', // Djibouti
   'EG', // Égypte
-  'GQ', // Guinée équatoriale
   'ER', // Érythrée
-  'SZ', // Eswatini (Swaziland)
   'ET', // Éthiopie
+  'GQ', // Guinée équatoriale
   'GA', // Gabon
   'GM', // Gambie
   'GH', // Ghana
   'GN', // Guinée
   'GW', // Guinée-Bissau
   'KE', // Kenya
+  'RE', // La Réunion
   'LS', // Lesotho
   'LR', // Liberia
   'LY', // Libye
   'MG', // Madagascar
   'MW', // Malawi
   'ML', // Mali
-  'MR', // Mauritanie
-  'MU', // Maurice
   'MA', // Maroc
+  'MU', // Maurice
+  'MR', // Mauritanie
   'MZ', // Mozambique
   'NA', // Namibie
   'NE', // Niger
   'NG', // Nigeria
-  'RE', // La Réunion
+  'UG', // Ouganda
   'RW', // Rwanda
   'ST', // Sao Tomé-et-Principe
   'SN', // Sénégal
   'SC', // Seychelles
   'SL', // Sierra Leone
   'SO', // Somalie
-  'ZA', // Afrique du Sud
-  'SS', // Soudan du Sud
   'SD', // Soudan
+  'SS', // Soudan du Sud
+  'SZ', // Swaziland
   'TZ', // Tanzanie
+  'TD', // Tchad
   'TG', // Togo
   'TN', // Tunisie
-  'UG', // Ouganda
-  'EH', // Sahara occidental
   'ZM', // Zambie
   'ZW', // Zimbabwe
 ];
 
 export const americanCountryCodes = [
-  // Amérique du Nord
-  'CA', // Canada
-  'MX', // Mexique
-  'US', // États-Unis
-
-  // Amérique centrale
-  'BZ', // Belize
-  'CR', // Costa Rica
-  'SV', // El Salvador
-  'GT', // Guatemala
-  'HN', // Honduras
-  'NI', // Nicaragua
-  'PA', // Panama
-
-  // Les Caraïbes
   'AG', // Antigua-et-Barbuda
+  'AR', // Argentine
   'BS', // Bahamas
   'BB', // Barbade
-  'CU', // Cuba
-  'DM', // Dominique
-  'DO', // République dominicaine
-  'GD', // Grenade
-  'HT', // Haïti
-  'JM', // Jamaïque
-  'KN', // Saint-Christophe-et-Niévès
-  'LC', // Sainte-Lucie
-  // 'VC', // Saint-Vincent-et-les-Grenadines
-  'TT', // Trinité-et-Tobago
-
-  // Amérique du Sud
-  'AR', // Argentine
+  'BZ', // Belize
+  'BM', // Bermudes
   'BO', // Bolivie
   'BR', // Brésil
+  'CA', // Canada
   'CL', // Chili
   'CO', // Colombie
+  'CR', // Costa Rica
+  'CU', // Cuba
+  'DM', // Dominique
+  'SV', // El Salvador
   'EC', // Équateur
+  'US', // États-Unis
+  'GD', // Grenade
+  'GL', // Groenland
+  'GT', // Guatemala
   'GY', // Guyana
+  'HT', // Haïti
+  'HN', // Honduras
+  'JM', // Jamaïque
+  'MX', // Mexique
+  'NI', // Nicaragua
+  'PA', // Panama
   'PY', // Paraguay
   'PE', // Pérou
+  'DO', // République dominicaine
+  'KN', // Saint-Christophe-et-Niévès
+  'LC', // Sainte-Lucie
   'SR', // Suriname
+  'TT', // Trinité-et-Tobago
   'UY', // Uruguay
   'VE', // Venezuela
-
-  // Autres territoires en Amérique
-  'BM', // Bermudes
-  'GL', // Groenland
-  // 'PM', // Saint-Pierre-et-Miquelon
-  // 'FK', // Îles Malouines
-  // 'GF', // Guyane française
-  // 'GS', // Géorgie du Sud et les îles Sandwich du Sud
-  // 'AQ', // Antarctique (certaines parties sont revendiquées par des pays d'Amérique du Sud)
 ];
 
 export const asianCountryCodes = [
   'AF', // Afghanistan
+  'SA', // Arabie Saoudite
   'AM', // Arménie
   'AZ', // Azerbaïdjan
   'BH', // Bahreïn
   'BD', // Bangladesh
   'BT', // Bhoutan
   'BN', // Brunei
-  'MM', // Birmanie (Myanmar)
   'KH', // Cambodge
   'CN', // Chine
   'CY', // Chypre
+  'KP', // Corée du Nord
+  'KR', // Corée du Sud
+  'AE', // Émirats arabes unis
   'GE', // Géorgie
   'IN', // Inde
   'ID', // Indonésie
@@ -132,65 +119,58 @@ export const asianCountryCodes = [
   'JP', // Japon
   'JO', // Jordanie
   'KZ', // Kazakhstan
-  'KP', // Corée du Nord
-  'KR', // Corée du Sud
-  'KW', // Koweït
   'KG', // Kirghizistan
+  'KW', // Koweït
   'LA', // Laos
   'LB', // Liban
   'MY', // Malaisie
   'MV', // Maldives
   'MN', // Mongolie
+  'MM', // Birmanie (Myanmar)
   'NP', // Népal
   'OM', // Oman
+  'UZ', // Ouzbékistan
   'PK', // Pakistan
   'PS', // Palestine
   'PH', // Philippines
   'QA', // Qatar
   'RU', // Russie (une partie en Asie)
-  'SA', // Arabie Saoudite
   'SG', // Singapour
   'LK', // Sri Lanka
   'SY', // Syrie
-  'TW', // Taïwan
   'TJ', // Tadjikistan
+  'TW', // Taïwan
   'TH', // Thaïlande
   'TL', // Timor oriental
-  'TR', // Turquie (une partie en Asie)
   'TM', // Turkménistan
-  'AE', // Émirats arabes unis
-  'UZ', // Ouzbékistan
+  'TR', // Turquie (une partie en Asie)
   'VN', // Vietnam
   'YE', // Yémen
 ];
 
 export const europeanCountryCodes = [
-  'AL', // Albanie
   'AD', // Andorre
+  'AL', // Albanie
+  'DE', // Allemagne
   'AT', // Autriche
-  'BY', // Biélorussie
   'BE', // Belgique
+  'BY', // Biélorussie
   'BA', // Bosnie-Herzégovine
   'BG', // Bulgarie
   'HR', // Croatie
-  'CZ', // République tchèque
   'DK', // Danemark
+  'ES', // Espagne
   'EE', // Estonie
-  'FO', // Îles Féroé
   'FI', // Finlande
   'FR', // France
-  'DE', // Allemagne
   'GI', // Gibraltar
   'GR', // Grèce
   'GG', // Guernesey
-  'VA', // Saint-Siège (Cité du Vatican)
   'HU', // Hongrie
-  'IS', // Islande
+  'FO', // Îles Féroé
   'IE', // Irlande
-  'IM', // Île de Man
+  'IS', // Islande
   'IT', // Italie
-  'JE', // Jersey
-  'XK', // Kosovo
   'LV', // Lettonie
   'LI', // Liechtenstein
   'LT', // Lituanie
@@ -200,44 +180,43 @@ export const europeanCountryCodes = [
   'MD', // Moldavie
   'MC', // Monaco
   'ME', // Monténégro
-  'NL', // Pays-Bas
   'NO', // Norvège
+  'NL', // Pays-Bas
   'PL', // Pologne
   'PT', // Portugal
+  'CZ', // République tchèque
   'RO', // Roumanie
+  'GB', // Royaume-Uni
   'RU', // Russie (une partie en Europe)
   'SM', // Saint-Marin
   'RS', // Serbie
   'SK', // Slovaquie
   'SI', // Slovénie
-  'ES', // Espagne
   'SE', // Suède
   'CH', // Suisse
   'UA', // Ukraine
-  'GB', // Royaume-Uni
 ];
 
 export const oceaniaCountryCodes = [
-  'AS', // Samoa américaines
   'AU', // Australie
-  'CK', // Îles Cook
   'FJ', // Fidji
-  'PF', // Polynésie française
   'GU', // Guam
-  'KI', // Kiribati
+  'CK', // Îles Cook
+  'MP', // Îles Mariannes du Nord
   'MH', // Îles Marshall
-  'FM', // Micronésie
+  'NF', // Île Norfolk
+  'SB', // Îles Salomon
+  'KI', // Kiribati
   'NR', // Nauru
+  'NU', // Niue
   'NC', // Nouvelle-Calédonie
   'NZ', // Nouvelle-Zélande
-  'NU', // Niue
-  'NF', // Île Norfolk
-  'MP', // Îles Mariannes du Nord
   'PW', // Palaos
   'PG', // Papouasie-Nouvelle-Guinée
-  'PN', // Îles Pitcairn
+  'PN', // Pitcairn
+  'PF', // Polynésie française
   'WS', // Samoa
-  'SB', // Îles Salomon
+  'AS', // Samoa américaines
   'TK', // Tokelau
   'TO', // Tonga
   'TV', // Tuvalu
@@ -247,6 +226,10 @@ export const oceaniaCountryCodes = [
 
 // Liste des continents
 export const continents = [
+  {
+    name: 'Tous',
+    code: null,
+  },
   {
     name: 'Afrique',
     code: africanCountryCodes,
@@ -892,11 +875,6 @@ export const countriesList = [
     native_name: 'Kiribati',
   },
   {
-    iso_3166_1: 'XK',
-    english_name: 'Kosovo',
-    native_name: 'Kosovo',
-  },
-  {
     iso_3166_1: 'KW',
     english_name: 'Kuwait',
     native_name: 'Koweït',
@@ -1204,7 +1182,7 @@ export const countriesList = [
   {
     iso_3166_1: 'CF',
     english_name: 'Central African Republic',
-    native_name: 'République centrafricaine',
+    native_name: 'Centrafrique',
   },
   {
     iso_3166_1: 'DO',
@@ -1409,7 +1387,7 @@ export const countriesList = [
   {
     iso_3166_1: 'PS',
     english_name: 'Palestinian Territory',
-    native_name: 'Territoires palestiniens',
+    native_name: 'Palestine',
   },
   {
     iso_3166_1: 'TH',

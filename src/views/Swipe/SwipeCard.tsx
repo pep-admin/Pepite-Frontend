@@ -44,6 +44,7 @@ const SwipeCard = ({
 
   const [showMovieInfos, setShowMovieInfos] = useState(false);
   const [areFiltersOpen, setAreFiltersOpen] = useState(false);
+  const [continentChosen, setContinentChosen] = useState('Amérique'); // Continent choisi par l'utilisateur
 
   const toggleFilters = open => event => {
     // Ignorer les événements qui ont été déclenchés par des éléments non souhaités
@@ -141,6 +142,8 @@ const SwipeCard = ({
                   <SwipeFilter
                     swipeType={swipeType}
                     setSwipeType={setSwipeType}
+                    continentChosen={continentChosen}
+                    setContinentChosen={setContinentChosen}
                     countryChosen={countryChosen}
                     setCountryChosen={setCountryChosen}
                     genreChosen={genreChosen}

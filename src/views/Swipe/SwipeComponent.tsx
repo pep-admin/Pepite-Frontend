@@ -252,9 +252,9 @@ const SwipeComponent = ({
     }
   }, [swipeAction]);
 
-  useEffect(() => {
-    console.log('les cards', cards);
-  }, [cards]);
+  // useEffect(() => {
+  //   console.log('les cards', cards);
+  // }, [cards]);
 
   return (
     <>

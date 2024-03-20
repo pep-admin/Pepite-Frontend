@@ -11,7 +11,6 @@ export const getDiamondsAdviceCommentNumber = async (commentId, type) => {
         withCredentials: true,
       },
     );
-    console.log('count', response.data);
 
     return response.data.goldCount;
   } catch (error) {

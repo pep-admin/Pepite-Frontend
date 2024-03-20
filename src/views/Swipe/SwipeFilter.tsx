@@ -15,11 +15,11 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
 // Import du contexte
 import { useData } from '@hooks/DataContext';
 
-import { americanCountryCodes } from '@utils/data/countries';
-
 const SwipeFilter = ({
   swipeType,
   setSwipeType,
+  continentChosen,
+  setContinentChosen,
   countryChosen,
   setCountryChosen,
   genreChosen,
@@ -34,10 +34,7 @@ const SwipeFilter = ({
   const [typeFilter, setTypeFilter] = useState(null);
   const [continentFilter, setContinentFilter] = useState({
     anchor: null,
-    continent: {
-      name: 'Amérique',
-      code: americanCountryCodes,
-    },
+    continent: continentChosen,
   });
   const [genreFilter, setGenreFilter] = useState(null);
   const [ratingFilter, setRatingFilter] = useState(null);
@@ -62,10 +59,7 @@ const SwipeFilter = ({
       case 'continent':
         setContinentFilter({
           anchor: event.currentTarget,
-          continent: {
-            name: 'Amérique',
-            code: americanCountryCodes,
-          },
+          continent: continentChosen,
         });
         break;
       case 'genre':
@@ -80,21 +74,16 @@ const SwipeFilter = ({
   };
 
   useEffect(() => {
-    console.log('le filtre continent', continentFilter);
-  }, [continentFilter]);
-
-  // Surveillez les changements dans les filtres
-  useEffect(() => {
     // Ignorer le premier rendu
     if (isFirstRender.current) {
-      isFirstRender.current = false; // Marquez que le premier rendu est passé
+      isFirstRender.current = false;
       return;
     }
 
-    // Si l'un des filtres change, affichez le bouton de validation
+    // Si l'un des filtres change, on affiche le bouton de validation
     if (
       displayType ||
-      continentFilter.continent.code ||
+      continentFilter.continent ||
       genreChosen.name ||
       ratingChosen.value
     ) {
@@ -132,6 +121,8 @@ const SwipeFilter = ({
           openMenu={openTypeFilter}
           filter={null}
           setFilter={setTypeFilter}
+          continentChosen={null}
+          setContinentChosen={null}
           state={swipeType}
           setState={setSwipeType}
         />
@@ -149,7 +140,15 @@ const SwipeFilter = ({
         <FlagIcon fontSize="medium" />
         <Stack>
           <Typography component="h3">{'Pays'}</Typography>
-          <Typography variant="body2" color="secondary" whiteSpace="nowrap">
+          <Typography
+            variant="body2"
+            color={
+              countryChosen.name && countryChosen.name !== 'Tous'
+                ? 'secondary'
+                : '#7b7b7b'
+            }
+            whiteSpace="nowrap"
+          >
             {countryChosen.name}
           </Typography>
         </Stack>
@@ -159,6 +158,8 @@ const SwipeFilter = ({
           openMenu={openContinentFilter}
           filter={continentFilter}
           setFilter={setContinentFilter}
+          continentChosen={continentChosen}
+          setContinentChosen={setContinentChosen}
           state={countryChosen}
           setState={setCountryChosen}
         />
@@ -178,7 +179,11 @@ const SwipeFilter = ({
           <Typography component="h3">{'Genre'}</Typography>
           <Typography
             variant="body2"
-            color={genreChosen.name ? 'secondary' : '#7b7b7b'}
+            color={
+              genreChosen.name && genreChosen.name !== 'Tous'
+                ? 'secondary'
+                : '#7b7b7b'
+            }
           >
             {genreChosen.name ? genreChosen.name : 'Tous'}
           </Typography>
@@ -189,6 +194,8 @@ const SwipeFilter = ({
           openMenu={openGenreFilter}
           filter={genreFilter}
           setFilter={setGenreFilter}
+          continentChosen={null}
+          setContinentChosen={null}
           state={genreChosen}
           setState={setGenreChosen}
         />
@@ -208,9 +215,13 @@ const SwipeFilter = ({
           <Typography component="h3">{'Note'}</Typography>
           <Typography
             variant="body2"
-            color={ratingChosen.value ? 'secondary' : '#7b7b7b'}
+            color={
+              ratingChosen.value && ratingChosen.value !== 'Toutes'
+                ? 'secondary'
+                : '#7b7b7b'
+            }
           >
-            {ratingChosen.value ? ratingChosen.value : 'toutes'}
+            {ratingChosen.value ? ratingChosen.value : 'Toutes'}
           </Typography>
         </Stack>
         <FilterMenu
@@ -219,6 +230,8 @@ const SwipeFilter = ({
           openMenu={openRatingFilter}
           filter={ratingFilter}
           setFilter={setRatingFilter}
+          continentChosen={null}
+          setContinentChosen={null}
           state={ratingChosen}
           setState={setRatingChosen}
         />
@@ -251,6 +264,8 @@ SwipeFilter.propTypes = {
   setRatingChosen: PropTypes.func.isRequired,
   setIsFilterValidated: PropTypes.func.isRequired,
   setAreFiltersOpen: PropTypes.func.isRequired,
+  continentChosen: PropTypes.string.isRequired,
+  setContinentChosen: PropTypes.func.isRequired,
 };
 
 export default SwipeFilter;

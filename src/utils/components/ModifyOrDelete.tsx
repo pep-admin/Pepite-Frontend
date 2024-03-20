@@ -61,7 +61,7 @@ const ModifyOrDelete = ({
           1,
         );
       } else if (page === 'profil') {
-        newCriticsData = await getCriticsOfUser(userId, displayType, 1);
+        newCriticsData = await getCriticsOfUser(userId, displayType, 1, 5);
       } else {
         return;
       }

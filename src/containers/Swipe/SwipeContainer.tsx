@@ -45,6 +45,7 @@ const SwipeContainer = () => {
         swipeType,
         countryChosen,
         genreChosen,
+        ratingChosen.number,
       );
 
       if (elligibleMovies.length < 20) {

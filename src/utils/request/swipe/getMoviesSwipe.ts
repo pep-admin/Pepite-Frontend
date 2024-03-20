@@ -8,21 +8,26 @@ export const fetchTwentyMovies = async (
   swipeType: string,
   countryChosen,
   genreChosen: null | number,
+  ratingChosen: null | number,
 ) => {
   let countryString;
   let genreString;
+  let ratingString;
 
-  if (countryChosen.name !== '')
+  if (countryChosen.name !== 'Tous') {
     countryString = `&with_origin_country=${findIsoCountry(
       countryChosen.name,
     )}`;
-  else countryString = '';
+  } else countryString = '';
 
   if (genreChosen !== null) genreString = `&with_genres=${genreChosen}`;
   else genreString = '';
 
+  if (ratingChosen) ratingString = `&vote_average=${ratingChosen * 2}`;
+  else ratingString = '';
+
   const response = await axios.get(
-    `${apiBaseUrl}/movies/all?page=${moviePage}&type=${swipeType}${countryString}${genreString}`,
+    `${apiBaseUrl}/movies/all?page=${moviePage}&type=${swipeType}${countryString}${genreString}${ratingString}`,
     { withCredentials: true },
   );
 

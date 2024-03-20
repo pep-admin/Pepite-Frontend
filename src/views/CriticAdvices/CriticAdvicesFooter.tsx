@@ -9,7 +9,7 @@ import {
   MenuItem,
   Snackbar,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des icônes
@@ -36,13 +36,7 @@ import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieReque
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
 import { getAdviceCommentsNumber } from '@utils/request/comments/getAdviceCommentsNumber';
 
-const CriticAdvicesFooter = ({
-  data,
-  infos,
-  displayComments,
-  setDisplayComments,
-  comments,
-}) => {
+const CriticAdvicesFooter = ({ data, infos, toggleDrawer, comments }) => {
   const { displayType } = useData();
 
   // L'utilisateur connecté
@@ -82,7 +76,6 @@ const CriticAdvicesFooter = ({
       response = await getCriticCommentsNumber(infos.critic_id, displayType);
     } else if ('advice_id' in infos) {
       response = await getAdviceCommentsNumber(infos.advice_id, displayType);
-      console.log('la réponse', response);
     } else {
       return;
     }
@@ -137,32 +130,34 @@ const CriticAdvicesFooter = ({
       <Divider />
       <Stack
         direction="row"
-        spacing={5}
+        justifyContent="space-between"
         height="30px"
         padding="0 15px"
         flexGrow="1"
       >
-        <Box
-          height="100%"
-          display="flex"
-          alignItems="center"
-          columnGap="5px"
-          onClick={() => setDisplayComments(!displayComments)}
-        >
-          <ChatTwoToneIcon
-            fontSize="small"
-            sx={{
-              position: 'relative',
-              top: '1px',
-              color: displayComments ? '#24a5a5' : 'inherit',
-            }}
-          />
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {commentsNumber}
-          </Typography>
-        </Box>
-        <LikesFooter infos={infos} />
-        <GoldFooter infos={infos} />
+        <Stack direction="row" columnGap="25px">
+          <Box
+            height="100%"
+            display="flex"
+            alignItems="center"
+            columnGap="5px"
+            onClick={toggleDrawer(true)}
+          >
+            <ChatTwoToneIcon
+              fontSize="small"
+              sx={{
+                position: 'relative',
+                top: '1px',
+              }}
+            />
+            <Typography variant="body1" fontWeight="600">
+              {commentsNumber}
+            </Typography>
+          </Box>
+          <LikesFooter from={'critic'} infos={infos} />
+          <GoldFooter from={'critic'} infos={infos} />
+        </Stack>
+
         {/* Affichage de la notation rapide / bouton à voir si la critique n'a pas été émise par l'utilisateur connecté */}
         {infos.user_id !== parseInt(loggedUserInfos.id, 10) ? (
           <>
@@ -181,7 +176,7 @@ const CriticAdvicesFooter = ({
                   color="#5ac164"
                 >
                   <VisibilityTwoToneIcon fontSize="small" />
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="600">
                     {'Vu'}
                   </Typography>
                 </Stack>
@@ -189,16 +184,18 @@ const CriticAdvicesFooter = ({
                 <Stack direction="row" columnGap="5px" alignItems="center">
                   <LibraryAddCheckTwoToneIcon
                     fontSize="small"
-                    color="primary"
+                    sx={{
+                      color: '#24A5A5',
+                    }}
                   />
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="600">
                     {'À voir'}
                   </Typography>
                 </Stack>
               ) : (
                 <Stack direction="row" columnGap="5px" alignItems="center">
                   <QueueTwoToneIcon fontSize="small" />
-                  <Typography variant="body2" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="600">
                     {'Non vu'}
                   </Typography>
                 </Stack>
@@ -250,7 +247,9 @@ const CriticAdvicesFooter = ({
                 <ListItemIcon sx={{ minWidth: 'auto !important' }}>
                   <LibraryAddCheckTwoToneIcon
                     fontSize="small"
-                    color={userMovieStatus?.isWanted ? 'primary' : 'inherit'}
+                    sx={{
+                      color: userMovieStatus?.isWanted ? '#24A5A5' : 'inherit',
+                    }}
                   />
                 </ListItemIcon>
                 <Typography fontSize="0.8em" lineHeight="normal">
@@ -298,7 +297,7 @@ const CriticAdvicesFooter = ({
             >
               <Stack direction="row" columnGap="5px" alignItems="center">
                 <StarTwoToneIcon fontSize="small" />
-                <Typography variant="body2" fontWeight="bold">
+                <Typography variant="body2" fontWeight="600">
                   {userMovieStatus?.isRated ? 'Noté' : 'Noter'}
                 </Typography>
               </Stack>
@@ -329,9 +328,8 @@ const CriticAdvicesFooter = ({
 CriticAdvicesFooter.propTypes = {
   data: PropTypes.array.isRequired,
   infos: PropTypes.object.isRequired,
-  displayComments: PropTypes.bool.isRequired,
-  setDisplayComments: PropTypes.func.isRequired,
+  toggleDrawer: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
 };
 
-export default CriticAdvicesFooter;
+export default React.memo(CriticAdvicesFooter);

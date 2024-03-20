@@ -6,7 +6,6 @@ const useVerticalScroll = (
   loadDataFunction,
   displayType,
   setData,
-  setIsDataFetched,
 ) => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -16,7 +15,7 @@ const useVerticalScroll = (
 
   // Fonction pour charger plus de données
   const loadMore = async () => {
-    if (loading || !hasMore) return; // Si en cours de chargement ou s'il n'y a plus de données on arrête la fonction
+    if (loading || firstRender.current || !hasMore) return; // Si en cours de chargement ou s'il n'y a plus de données on arrête la fonction
     console.log(`chargement... page n°${pageRef.current}`);
 
     setLoading(true); // chargement en cours
@@ -36,7 +35,7 @@ const useVerticalScroll = (
           loadMore();
         }
       },
-      { rootMargin: '250px' }, // à 250px de la div de bas de page, on lance la fonction
+      { rootMargin: '500px' }, // à 500px de la div de bas de page, on lance la fonction
     );
     if (observerRef.current) {
       observer.observe(observerRef.current);
@@ -50,15 +49,10 @@ const useVerticalScroll = (
 
   // Réinitialise la pagination et recharger les données en fonction des dépendances
   useEffect(() => {
-    if (firstRender.current) return;
-    console.log('changement de type');
-
     pageRef.current = 1;
     setHasMore(true);
     setData([]);
-    setIsDataFetched(false);
     loadMore();
-    // Une fonction de réinitialisation ou un appel direct à loadMore peut être nécessaire ici
   }, [displayType, id]);
 
   return { observerRef, loading, hasMore };

@@ -5,7 +5,7 @@ const theme = createTheme({
 
   typography: {
     allVariants: {
-      fontFamily: 'Pragati Narrow',
+      fontFamily: 'League Spartan',
     },
     h1: {
       fontFamily: 'League Spartan',
@@ -13,7 +13,7 @@ const theme = createTheme({
     },
     body1: {
       fontWeight: 400,
-      fontSize: '1.2em',
+      fontSize: '1em',
     },
     body2: {
       fontWeight: 400,
@@ -22,26 +22,25 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      // Bleu/vert clair
-      main: '#24A5A5',
+      main: '#fff',
       dark: '#0E6666',
+      light: '#24A5A5',
     },
     secondary: {
-      // Orange
-      main: '#F29E50',
+      main: '#E7AE1A',
       contrastText: '#FEFEFE',
     },
     form: {
-      main: '#0E6666',
+      main: '#034A4A',
       light: '#24A5A5',
-      dark: '#094B4B',
+      dark: '#034040',
       // contrastText: '#242105', TODO
     },
     success: {
       main: '#5AC164',
     },
     text: {
-      primary: '#3B3B3B',
+      primary: '#383838',
     },
   },
   components: {
@@ -105,7 +104,7 @@ const theme = createTheme({
     MuiFilledInput: {
       styleOverrides: {
         root: {
-          height: '30px',
+          // height: '30px',
           borderRadius: '10px',
           '&::before': {
             width: 'calc(100% - 17px)',
@@ -157,6 +156,9 @@ const theme = createTheme({
           fontSize: '1em',
           fontWeight: 'bold',
           padding: '8px 25px',
+          '&:hover': {
+            backgroundColor: 'transparent', // Neutralise le changement de couleur de fond
+          },
         },
       },
     },

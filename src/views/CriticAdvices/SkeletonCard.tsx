@@ -9,22 +9,42 @@ import CriticAdvicesContentSkeleton from './CriticAdvicesContentSkeleton';
 
 const SkeletonCard = () => {
   return (
-    <Item margintop="6px">
+    <Item marginbottom="15px">
       <Stack height="100%">
         <Stack direction="column" position="relative">
-          <Stack height="35px" justifyContent="center" padding="0 8px">
-            <Skeleton
-              variant="text"
-              sx={{ fontSize: '1rem' }}
-              animation="wave"
-            />
+          <Stack
+            direction="row"
+            height="48px"
+            alignItems="center"
+            columnGap="10px"
+            padding="0 10px"
+          >
+            <Skeleton variant="circular" height={40} width={40} />
+            <Stack width="75%">
+              <Skeleton
+                variant="text"
+                sx={{
+                  fontSize: '0.9em',
+                  width: '100%',
+                }}
+                animation="wave"
+              />
+              <Skeleton
+                variant="text"
+                sx={{
+                  fontSize: '0.7em',
+                  width: '35%',
+                }}
+                animation="wave"
+              />
+            </Stack>
           </Stack>
         </Stack>
-        <Stack padding="10px 8px">
+        <Stack padding="10px 10px 0 10px">
           <Card
             sx={{
-              height: '100%',
-              width: 'auto',
+              height: 140,
+              width: 90,
               boxShadow: 'none',
               display: 'flex',
               flexWrap: 'wrap',

@@ -18,25 +18,29 @@ const CriticAdvicesPoster = ({
     <CardActionArea
       sx={{
         position: 'relative',
-        height: '100%',
-        width: 'auto',
+        height: '158px',
+        width: '105px',
         display: 'flex',
         alignItems: 'flex-start',
-        overflow: 'hidden',
+        overflow: 'visible',
       }}
     >
       <CardMedia
         component="img"
-        height="120px"
+        height="100%"
         image={
           chosenMovie !== null
             ? `https://image.tmdb.org/t/p/w500/${chosenMovie.poster_path}`
             : `https://image.tmdb.org/t/p/w500/${infos.poster_path}`
         }
-        alt="green iguana"
+        alt={
+          chosenMovie !== null
+            ? `Affiche de ${chosenMovie.title}`
+            : `Affiche de ${infos.title}`
+        }
         sx={{
-          objectFit: 'contain',
-          borderRadius: '10px',
+          borderRadius: '5px',
+          boxShadow: '5px 4px 0px #e9e9e9',
         }}
         onClick={type === 'old-critic' ? () => setShowPoster(true) : null}
       />
@@ -46,8 +50,8 @@ const CriticAdvicesPoster = ({
       ((type === 'new-critic' || type === 'new-advice' || isModify) &&
         (isGoldNugget || isTurnip)) ? (
         <Box
-          width="23px"
-          height="23px"
+          width="25px"
+          height="25px"
           position="absolute"
           top="3px"
           right="3px"
@@ -62,7 +66,7 @@ const CriticAdvicesPoster = ({
           (isGoldNugget && !isTurnip) ? (
             <img
               src="/images/gold_right_top_outlined.svg"
-              alt=""
+              alt="pépite d'or"
               style={{
                 position: 'relative',
                 top: '0.2px',

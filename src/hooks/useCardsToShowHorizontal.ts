@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useCardsToShow = (cardWidth, gap, additionalCards) => {
+export const useCardsToShowHorizontal = (cardWidth, gap, additionalCards) => {
   const [cardsToShow, setCardsToShow] = useState(0);
 
   useEffect(() => {

@@ -162,7 +162,7 @@ const CriticAdvicesModal = ({
           direction="row"
           justifyContent="flex-end"
           width="80vw"
-          marginBottom="3px"
+          marginBottom="15px"
         >
           <Box
             height="30px"
@@ -170,7 +170,10 @@ const CriticAdvicesModal = ({
             display="flex"
             alignItems="center"
             justifyContent="center"
-            sx={{ backgroundColor: '#3b3b3b' }}
+            sx={{
+              backgroundColor: '#3b3b3b',
+              borderRadius: '4px',
+            }}
             onClick={() => setShowPoster(null)}
           >
             <CloseIcon sx={{ color: '#fff' }} />

@@ -3,23 +3,17 @@ import * as React from 'react';
 import {
   AppBar,
   Typography,
-  Box,
   IconButton,
   Menu,
   MenuItem,
-  Tooltip,
   Toolbar,
-  Badge,
-  ToggleButton,
-  ToggleButtonGroup,
   ListItemIcon,
   Divider,
+  Stack,
+  Avatar,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
-// Import du contexte
-import { useData } from '@hooks/DataContext';
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
@@ -33,14 +27,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 // Import des requêtes
 import { handleLogout } from '../request/authRequest';
-import UserAvatar from './UserAvatar';
 
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = ({ loggedUserInfos }) => {
-  const { displayType, setDisplayType } = useData();
-  const userId = localStorage.getItem('user_id');
+const Header = ({ page }) => {
+  // Infos de l'utilisateur connecté
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   const navigate = useNavigate();
 
@@ -55,6 +48,8 @@ const Header = ({ loggedUserInfos }) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    console.log('settings', event.currentTarget);
+
     setAnchorElUser(event.currentTarget);
   };
 
@@ -66,11 +61,11 @@ const Header = ({ loggedUserInfos }) => {
     setAnchorElUser(null);
   };
 
-  const [alignment, setAlignment] = React.useState('films');
-
-  const handleChange = (_, newAlignment) => {
-    setAlignment(newAlignment);
-  };
+  function stringAvatar(name) {
+    return {
+      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    };
+  }
 
   async function onLogout() {
     await handleLogout();
@@ -80,79 +75,30 @@ const Header = ({ loggedUserInfos }) => {
   }
 
   return (
-    <AppBar position="static" sx={{ height: '60px', justifyContent: 'center' }}>
+    <AppBar
+      position={
+        page === 'swipe'
+          ? 'absolute'
+          : page === 'list' || page === 'contacts'
+          ? 'static'
+          : 'fixed'
+      }
+      sx={{
+        height: '50px',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(1, 18, 18, 0.9)',
+      }}
+    >
       <Toolbar
         disableGutters
         sx={{
-          height: '60px',
+          height: '50px',
           width: '100%',
-          position: 'fixed',
-          zIndex: '100',
-          padding: '0 3%',
-          backgroundColor: '#0E6666',
+          padding: '0 6%',
+          justifyContent: 'space-between',
         }}
       >
-        <Typography
-          variant="h1"
-          color={'#fff'}
-          fontSize={'2.3em'}
-          sx={{
-            letterSpacing: '-3.5px',
-            textShadow: '#02455C -3px 2.75px 0',
-          }}
-        >
-          {'pépite.'}
-        </Typography>
-        <ToggleButtonGroup
-          color="primary"
-          value={alignment}
-          exclusive
-          onChange={handleChange}
-          aria-label="Platform"
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            flexGrow: '1',
-          }}
-        >
-          <ToggleButton
-            value="tous"
-            sx={{
-              padding: '5px',
-              fontSize: '0.7em',
-              fontWeight: 'bold',
-            }}
-            // onClick={() => setDisplayType('all')}
-            selected={displayType === 'all'}
-          >
-            {'Tous'}
-          </ToggleButton>
-          <ToggleButton
-            value="films"
-            sx={{
-              padding: '5px',
-              fontSize: '0.7em',
-              fontWeight: 'bold',
-            }}
-            onClick={() => setDisplayType('movie')}
-            selected={displayType === 'movie'}
-          >
-            {'Films'}
-          </ToggleButton>
-          <ToggleButton
-            value="series"
-            sx={{
-              padding: '5px',
-              fontSize: '0.7em',
-              fontWeight: 'bold',
-            }}
-            onClick={() => setDisplayType('tv')}
-            selected={displayType === 'tv'}
-          >
-            {'Séries'}
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <Box
+        <Stack
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
@@ -164,7 +110,7 @@ const Header = ({ loggedUserInfos }) => {
             aria-controls="menu-nav-appbar"
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
-            sx={{ color: '#052525', paddingRight: '15px' }}
+            sx={{ color: '#fff', padding: '0' }}
           >
             <MenuIcon />
           </IconButton>
@@ -196,13 +142,13 @@ const Header = ({ loggedUserInfos }) => {
                 key={page}
                 onClick={() => {
                   if (page === 'Accueil') {
-                    navigate(`/home/${userId}`);
+                    navigate(`/home/${loggedUserInfos.id}`);
                   } else if (page === 'Swipe') {
                     navigate('/swipe');
                   } else if (page === 'Ma liste') {
-                    navigate(`/list/${userId}`);
+                    navigate(`/list/${loggedUserInfos.id}`);
                   } else if (page === 'Mes contacts') {
-                    navigate(`/contacts/${userId}`);
+                    navigate(`/contacts/${loggedUserInfos.id}`);
                   }
                   handleCloseNavMenu();
                 }}
@@ -237,45 +183,52 @@ const Header = ({ loggedUserInfos }) => {
               ),
             ])}
           </Menu>
-        </Box>
-        <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Badge
-                badgeContent={4}
-                color="primary"
-                sx={{
-                  '& .MuiBadge-badge': {
-                    top: '6px',
-                    right: '2px',
-                  },
-                }}
-              >
-                <UserAvatar
-                  variant={'circular'}
-                  userInfos={loggedUserInfos}
-                  picWidth={45}
-                  picHeight={45}
-                  isOutlined={false}
-                  outlineWidth={null}
-                  relationType={null}
-                  sx={null}
-                />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+        </Stack>
+        <Stack>
+          <Typography
+            variant="h1"
+            color={'#fff'}
+            fontSize={'2.3em'}
+            sx={{
+              letterSpacing: '-3.5px',
+            }}
+          >
+            {'pépite.'}
+          </Typography>
+        </Stack>
+        <Stack>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-nav-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenUserMenu}
+            sx={{ color: '#fff', padding: '0' }}
+          >
+            <Avatar
+              sx={{
+                height: '37px',
+                width: '37px',
+                bgcolor: '#043232',
+                color: '#fdfdfd',
+                borderRadius: '50%',
+                fontSize: '0.65em',
+              }}
+              {...stringAvatar(
+                `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`,
+              )}
+            />
+          </IconButton>
           <Menu
-            sx={{ mt: '45px' }}
-            id="menu-user-appbar"
             anchorEl={anchorElUser}
             anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: 'bottom',
+              horizontal: 'left',
             }}
             keepMounted
             transformOrigin={{
               vertical: 'top',
-              horizontal: 'right',
+              horizontal: 'left',
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
@@ -291,10 +244,10 @@ const Header = ({ loggedUserInfos }) => {
                 onClick={() => {
                   if (setting === 'Déconnexion') {
                     onLogout();
-                  } else if (setting === 'Profil' && userId) {
-                    navigate(`/profil/${userId}`);
-                  } else if (setting === 'Compte' && userId) {
-                    navigate(`/account/${userId}`);
+                  } else if (setting === 'Profil' && loggedUserInfos.id) {
+                    navigate(`/profil/${loggedUserInfos.id}`);
+                  } else if (setting === 'Compte' && loggedUserInfos.id) {
+                    navigate(`/account/${loggedUserInfos.id}`);
                   }
                   handleCloseUserMenu();
                 }}
@@ -325,15 +278,14 @@ const Header = ({ loggedUserInfos }) => {
               ),
             ])}
           </Menu>
-        </Box>
+        </Stack>
       </Toolbar>
     </AppBar>
   );
 };
 
 Header.propTypes = {
-  loggedUserInfos: PropTypes.object.isRequired,
-  setUserInfos: PropTypes.func,
+  page: PropTypes.string.isRequired,
 };
 
 export default Header;

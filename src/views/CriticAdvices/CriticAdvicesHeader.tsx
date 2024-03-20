@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Box, Typography } from '@mui/material';
+import { Stack, Box, Typography, Avatar } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -13,6 +13,7 @@ import ModifyOrDelete from '@utils/components/ModifyOrDelete';
 import { formatRating } from '@utils/functions/formatRating';
 import ColoredRating from '@utils/components/ColoredRating';
 import RatingMenu from '@utils/components/RatingMenu';
+import { apiBaseUrl } from '@utils/request/config';
 
 const CriticAdvicesHeader = ({
   page,
@@ -171,6 +172,17 @@ const CriticAdvicesHeader = ({
       padding="0 10px"
       columnGap="10px"
     >
+      <Avatar
+        alt={`photo de profil de ${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
+        src={`${apiBaseUrl}/Uploads/${criticUserInfos.profilPics?.find(
+          pic => pic.isActive === 1,
+        ).filePath}`}
+        sx={{
+          height: 40,
+          width: 40,
+          boxShadow: '0px 3px 3.7px rgba(0, 0, 0, 0.30)',
+        }}
+      />
       <Typography
         variant="body2"
         component="p"

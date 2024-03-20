@@ -1,7 +1,6 @@
 // Import des libs externes
-import { Stack, Typography, Divider } from '@mui/material';
-import { Item } from '@utils/components/styledComponent';
-import { useEffect } from 'react';
+import { Stack, Typography, Divider, Skeleton, Collapse } from '@mui/material';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants enfants
@@ -21,8 +20,11 @@ const CommentsComponent = ({
   adviceId,
   comments,
   setComments,
+  infos,
 }) => {
   const { displayType } = useData();
+
+  const [showInput, setShowInput] = useState(false);
 
   // Infos de l'utilisateur connecté
   const user_infos = JSON.parse(localStorage.getItem('user_infos'));
@@ -34,7 +36,6 @@ const CommentsComponent = ({
       response = await getAllCriticComments(displayType, criticId);
     } else if (adviceId) {
       response = await getAllAdviceComments(displayType, adviceId);
-      console.log('les commentaires de critique', response.data);
     } else {
       return;
     }
@@ -47,42 +48,76 @@ const CommentsComponent = ({
   }, []);
 
   return (
-    <Item margintop="6px">
-      <Stack direction="row" height="25px" alignItems="center" padding="0 10px">
+    <Stack>
+      <Stack alignItems="center" rowGap="20px">
+        <Skeleton
+          variant="rectangular"
+          height={7}
+          width={70}
+          animation={false}
+          sx={{
+            borderRadius: '7px',
+            marginTop: '5px',
+          }}
+        />
         <Typography
           variant="body2"
           component="p"
-          fontWeight="bold"
+          fontWeight="600"
           lineHeight="10px"
+          marginBottom="20px"
         >
           {'Commentaires'}
         </Typography>
       </Stack>
-      <Divider />
-      <Stack height="67px">
-        <CommentsInput
-          criticId={criticId}
-          adviceId={adviceId}
-          comments={comments}
-          getComments={getComments}
-          userInfos={user_infos}
-        />
+      <Divider
+        sx={{
+          borderColor: '#e9e9e9',
+        }}
+      />
+      <Stack
+        sx={{
+          overflow: 'auto', // Active le défilement si le contenu dépasse la hauteur
+          maxHeight: 'calc(75vh - 63px)', // Ajustez la hauteur maximale selon vos besoins
+        }}
+      >
+        <Stack margin="15px 0">
+          <Collapse in={showInput}>
+            <CommentsInput
+              criticId={criticId}
+              adviceId={adviceId}
+              getComments={getComments}
+              infos={infos}
+              setShowInput={setShowInput}
+            />
+          </Collapse>
+          {!showInput && (
+            <Typography
+              padding="0 12px"
+              color="#adadad"
+              onClick={() => setShowInput(true)}
+            >
+              {'Écrire un commentaire'}
+            </Typography>
+          )}
+        </Stack>
+        {comments.length > 0
+          ? comments.map((comment, index) => {
+              return (
+                <CommentsContent
+                  key={comment.id}
+                  page={page}
+                  comment={comment}
+                  setData={setComments}
+                  getComments={getComments}
+                  userInfos={user_infos}
+                  isFirst={index === 0}
+                />
+              );
+            })
+          : null}
       </Stack>
-      {comments.length > 0
-        ? comments.map(comment => {
-            return (
-              <CommentsContent
-                key={comment.id}
-                page={page}
-                comment={comment}
-                setData={setComments}
-                getComments={getComments}
-                userInfos={user_infos}
-              />
-            );
-          })
-        : null}
-    </Item>
+    </Stack>
   );
 };
 
@@ -92,6 +127,7 @@ CommentsComponent.propTypes = {
   adviceId: PropTypes.number,
   comments: PropTypes.array.isRequired,
   setComments: PropTypes.func.isRequired,
+  infos: PropTypes.object.isRequired,
 };
 
 export default CommentsComponent;

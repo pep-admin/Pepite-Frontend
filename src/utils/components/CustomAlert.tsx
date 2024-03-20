@@ -63,11 +63,12 @@ const CustomAlert = ({
             </IconButton>
           }
           sx={{
-            mb: 2,
             alignItems: 'center',
             textAlign: 'center',
             marginBottom: '0',
             borderRadius: '0',
+            bgcolor: '#032c2c',
+            color: '#fff',
           }}
         >
           {message}
@@ -80,6 +81,9 @@ const CustomAlert = ({
                     criticOrAdvice === 'new-critic' ? 'critic' : 'advice',
                   )
                 }
+                sx={{
+                  color: '#D66506',
+                }}
               >
                 {'Confirmer'}
               </Button>

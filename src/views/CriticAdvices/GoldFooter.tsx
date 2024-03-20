@@ -23,8 +23,16 @@ import { addDiamondAdvice } from '@utils/request/advices/addDiamondAdvice';
 import { removeDiamondAdvice } from '@utils/request/advices/removeDiamondAdvice';
 import { checkDiamondAdviceStatus } from '@utils/request/advices/checkDiamondAdviceStatus';
 import { getDiamondsAdviceNumber } from '@utils/request/advices/getDiamondsAdviceNumber';
+import { getDiamondsCriticCommentNumber } from '@utils/request/comments/getDiamondCriticCommentNumber';
+import { checkDiamondCriticCommentStatus } from '@utils/request/comments/checkDiamondCriticCommentStatus';
+import { addDiamondCriticComment } from '@utils/request/comments/addDiamondCriticComment';
+import { removeDiamondCriticComment } from '@utils/request/comments/removeDiamondCriticComment';
+import { getDiamondsAdviceCommentNumber } from '@utils/request/advices/getDiamondsAviceCommentNumber';
+import { checkDiamondAdviceCommentStatus } from '@utils/request/advices/checkDiamondAdviceCommentStatus';
+import { addDiamondAdviceComment } from '@utils/request/advices/addDiamondAdviceComment';
+import { removeDiamondAdviceComment } from '@utils/request/advices/removeDiamondAdviceComment';
 
-const GoldFooter = ({ infos }) => {
+const GoldFooter = ({ from, infos }) => {
   const { displayType } = useData();
 
   const [goldInfo, setGoldInfo] = useState({
@@ -43,9 +51,17 @@ const GoldFooter = ({ infos }) => {
     let response;
 
     if ('critic_id' in infos) {
-      response = await getDiamondsCriticNumber(infos.critic_id, displayType);
+      if (from === 'comment') {
+        response = await getDiamondsCriticCommentNumber(infos.id, displayType);
+      } else {
+        response = await getDiamondsCriticNumber(infos.critic_id, displayType);
+      }
     } else if ('advice_id' in infos) {
-      response = await getDiamondsAdviceNumber(infos.advice_id, displayType);
+      if (from === 'comment') {
+        response = await getDiamondsAdviceCommentNumber(infos.id, displayType);
+      } else {
+        response = await getDiamondsAdviceNumber(infos.advice_id, displayType);
+      }
     }
 
     setGoldInfo(prev => ({
@@ -58,9 +74,17 @@ const GoldFooter = ({ infos }) => {
     let response;
 
     if ('critic_id' in infos) {
-      response = await checkDiamondCriticStatus(infos.critic_id, displayType);
+      if (from === 'comment') {
+        response = await checkDiamondCriticCommentStatus(infos.id, displayType);
+      } else {
+        response = await checkDiamondCriticStatus(infos.critic_id, displayType);
+      }
     } else if ('advice_id' in infos) {
-      response = await checkDiamondAdviceStatus(infos.advice_id, displayType);
+      if (from === 'comment') {
+        response = await checkDiamondAdviceCommentStatus(infos.id, displayType);
+      } else {
+        response = await checkDiamondAdviceStatus(infos.advice_id, displayType);
+      }
     }
 
     setGoldInfo(prev => ({
@@ -93,17 +117,33 @@ const GoldFooter = ({ infos }) => {
       setGoldAnim(true);
 
       if ('critic_id' in infos) {
-        await addDiamondCritic(infos.critic_id, displayType);
+        if (from === 'comment') {
+          await addDiamondCriticComment(infos.id, displayType);
+        } else {
+          await addDiamondCritic(infos.critic_id, displayType);
+        }
       } else if ('advice_id' in infos) {
-        await addDiamondAdvice(infos.advice_id, displayType);
+        if (from === 'comment') {
+          await addDiamondAdviceComment(infos.id, displayType);
+        } else {
+          await addDiamondAdvice(infos.advice_id, displayType);
+        }
       }
     } else {
       setGoldAnim(false);
 
       if ('critic_id' in infos) {
-        await removeDiamondCritic(infos.critic_id, displayType);
+        if (from === 'comment') {
+          await removeDiamondCriticComment(infos.id, displayType);
+        } else {
+          await removeDiamondCritic(infos.critic_id, displayType);
+        }
       } else if ('advice_id' in infos) {
-        await removeDiamondAdvice(infos.advice_id, displayType);
+        if (from === 'comment') {
+          await removeDiamondAdviceComment(infos.id, displayType);
+        } else {
+          await removeDiamondAdvice(infos.advice_id, displayType);
+        }
       }
     }
   }, [goldInfo.hasBeenGold, infos.critic_id, displayType]);
@@ -136,25 +176,32 @@ const GoldFooter = ({ infos }) => {
         className={goldAnim ? 'gold-anim' : ''}
         onClick={toggleGold}
       />
-      {/* <Particles particles={particles} /> */}
-      <animated.div style={{ transform: style.transform }}>
-        <Stack width="10px">
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {goldMinusOne}
-          </Typography>
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {gold}
-          </Typography>
-          <Typography component="p" fontSize="1em" fontWeight="bold">
-            {goldPlusOne}
-          </Typography>
-        </Stack>
-      </animated.div>
+      <Stack
+        width="10px"
+        height="21.61px"
+        justifyContent="center"
+        overflow="hidden"
+      >
+        <animated.div style={{ transform: style.transform }}>
+          <Stack width="10px">
+            <Typography variant="body1" fontWeight="600">
+              {goldMinusOne}
+            </Typography>
+            <Typography variant="body1" fontWeight="600">
+              {gold}
+            </Typography>
+            <Typography variant="body1" fontWeight="600">
+              {goldPlusOne}
+            </Typography>
+          </Stack>
+        </animated.div>
+      </Stack>
     </Stack>
   );
 };
 
 GoldFooter.propTypes = {
+  from: PropTypes.string.isRequired,
   infos: PropTypes.object.isRequired,
 };
 

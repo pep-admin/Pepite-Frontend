@@ -37,13 +37,18 @@ interface Movie {
   vote_count: number;
 }
 
+interface SwipeAction {
+  direction: 'left' | 'right';
+  from: 'normal' | null;
+}
+
 interface LastCardProps {
   Item: React.ElementType;
   type: string;
   movies: Array<Movie>;
   currentMovieIndex: number;
-  setCurrentMovieIndex: (prevIndex) => number;
-  setSwipeDirection: (direction: string) => void;
+  setCurrentMovieIndex: (value: React.SetStateAction<number>) => void;
+  setSwipeAction: (value: React.SetStateAction<SwipeAction>) => void;
   displayType: string;
   countryChosen: string;
 }
@@ -58,7 +63,7 @@ const LastCard = forwardRef<LastCardHandle, LastCardProps>(
       Item,
       type,
       movies,
-      setSwipeDirection,
+      setSwipeAction,
       currentMovieIndex,
       setCurrentMovieIndex,
       displayType,
@@ -166,7 +171,7 @@ const LastCard = forwardRef<LastCardHandle, LastCardProps>(
                   }}
                   onClick={() => {
                     if (type === 'no-movies-anymore') {
-                      setSwipeDirection('left');
+                      setSwipeAction({ direction: 'left', from: 'normal' });
                       if (currentMovieIndex === -1) {
                         setCurrentMovieIndex(movies.length - 1);
                       }

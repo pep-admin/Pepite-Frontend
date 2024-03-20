@@ -1,6 +1,7 @@
 import { Avatar } from '@mui/material';
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const UserAvatar = ({
   variant,
@@ -11,12 +12,14 @@ const UserAvatar = ({
   outlineWidth,
   relationType,
   sx,
+  redirection,
 }) => {
-  // const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+  const navigate = useNavigate();
+
   const fullName = `${userInfos.first_name} ${userInfos.last_name}`;
 
   const findProfilPic = userInfos => {
-    if (userInfos.profilPics.length) {
+    if (userInfos.profilPics?.length) {
       const findActivePic = userInfos.profilPics.find(pic => pic.isActive === 1)
         ?.filePath;
       return `${apiBaseUrl}/uploads/${findActivePic}`;
@@ -36,9 +39,9 @@ const UserAvatar = ({
       case 'followed':
         return '#24a5a5';
       case 'self':
-        return '#fff';
+        return '#FDFDFD';
       default:
-        return '#fff';
+        return '#FDFDFD';
     }
   };
 
@@ -57,6 +60,7 @@ const UserAvatar = ({
         cursor: 'pointer',
         ...sx,
       }}
+      onClick={() => redirection && navigate(`/profil/${userInfos.id}`)}
     />
   );
 };
@@ -70,6 +74,7 @@ UserAvatar.propTypes = {
   outlineWidth: PropTypes.string,
   relationType: PropTypes.string,
   sx: PropTypes.object,
+  redirection: PropTypes.bool.isRequired,
 };
 
 export default UserAvatar;

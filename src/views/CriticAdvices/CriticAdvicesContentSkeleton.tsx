@@ -7,37 +7,37 @@ const CriticAdvicesContentSkeleton = () => {
       <Skeleton
         variant="text"
         sx={{ fontSize: '1.2em' }}
-        width={200}
+        width={150}
         animation="wave"
       />
       <Skeleton
         variant="text"
         sx={{ fontSize: '0.7em' }}
-        width={100}
+        width={130}
         animation="wave"
       />
       <Skeleton
         variant="text"
         sx={{ fontSize: '0.7em' }}
-        width={100}
+        width={190}
         animation="wave"
       />
       <Skeleton
         variant="text"
         sx={{ fontSize: '0.7em' }}
-        width={100}
+        width={190}
         animation="wave"
       />
       <Skeleton
         variant="text"
         sx={{ fontSize: '0.7em' }}
-        width={100}
+        width={190}
         animation="wave"
       />
       <Skeleton
         variant="text"
         sx={{ fontSize: '0.7em' }}
-        width={100}
+        width={190}
         animation="wave"
       />
     </Stack>

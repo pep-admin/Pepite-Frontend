@@ -3,17 +3,17 @@ import { parseDatabaseData } from '../parseDetails';
 import { apiBaseUrl } from '../config';
 
 // Récupération des critiques d'un utilisateur
-export const getCriticsOfUser = async (userId, type, page) => {
+export const getCriticsOfUser = async (userId, type, page, limit) => {
   const response = await axios.get(`${apiBaseUrl}/critics/all/${userId}`, {
-    params: { type: type, page: page },
+    params: { type: type, page: page, limit: limit },
     withCredentials: true,
   });
 
-  if (!Array.isArray(response.data)) {
+  if (!Array.isArray(response.data.critics)) {
     return [];
   }
 
-  const parsedData = response.data.map(critic =>
+  const parsedData = response.data.critics.map(critic =>
     parseDatabaseData(critic, type, 'critic'),
   );
 

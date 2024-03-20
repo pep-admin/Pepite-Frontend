@@ -1,10 +1,10 @@
 // Import des libs externes
-import { Stack, Typography, TextField } from '@mui/material';
+import { Stack, Typography, TextField, Avatar } from '@mui/material';
 import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des icônes
-import { MessageIcon } from '@utils/components/styledComponent';
+import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 
 // Import du contexte
@@ -17,9 +17,9 @@ import { addAdviceComment } from '@utils/request/comments/addAdviceComment';
 const CommentsInput = ({
   criticId,
   adviceId,
-  comments,
   getComments,
-  userInfos,
+  infos,
+  setShowInput,
 }) => {
   const { displayType } = useData();
 
@@ -48,58 +48,75 @@ const CommentsInput = ({
       position="relative"
       borderRadius="10px"
       flexGrow="1"
-      paddingLeft="10px"
+      padding="0 10px"
       alignItems="center"
     >
+      <Avatar
+        variant={'square'}
+        alt={`Affiche de ${infos.title}`}
+        src={`https://image.tmdb.org/t/p/w500/${infos.poster_path}`}
+        sx={{
+          width: 95,
+          height: 140,
+          borderRadius: '4px',
+        }}
+      />
       <Stack
-        direction="row"
-        width="65px"
-        height="100%"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <MessageIcon sx={{ fontSize: '2.5em' }} />
-      </Stack>
-      <Stack
+        height="140px"
         direction="column"
         justifyContent="space-between"
-        paddingLeft="8px"
         flexGrow="1"
+        paddingLeft="10px"
       >
-        <Typography
-          component="h5"
-          fontWeight="bold"
-          align="left"
-          width="80%"
-          fontSize="1em"
-          paddingLeft="12px"
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          marginBottom="4px"
         >
-          {`${userInfos.first_name} ${userInfos.last_name}`}
-        </Typography>
-        <TextField
-          id="filled-basic"
-          ref={inputRef}
-          label="Votre commentaire"
-          variant="filled"
-          value={newComment}
-          sx={{
-            width: '80%',
-          }}
-          onChange={e => setNewComment(e.target.value)}
-        />
-      </Stack>
-      <Stack
-        height="100%"
-        width="40px"
-        alignItems="center"
-        justifyContent="center"
-        sx={{
-          backgroundColor: '#24A5A5',
-          borderRadius: comments.length > 0 ? '0' : '0 0 10px 0',
-        }}
-        onClick={() => addNewComment()}
-      >
-        <SendIcon sx={{ color: '#fff' }} />
+          <Typography variant="body2" fontWeight="600" align="left">
+            {`${infos.title}`}
+          </Typography>
+          <CloseIcon
+            fontSize="small"
+            sx={{
+              marginRight: '4px',
+            }}
+            onClick={() => setShowInput(false)}
+          />
+        </Stack>
+        <Stack direction="row" justifyContent="space-between" flexGrow="1">
+          <TextField
+            id="filled-basic"
+            ref={inputRef}
+            label="Votre commentaire"
+            variant="filled"
+            value={newComment}
+            fullWidth
+            multiline
+            autoComplete="off"
+            sx={{
+              '& .MuiInputBase-root': {
+                borderRadius: '7px',
+                flexGrow: '1',
+                bgcolor: '#f0f0f0',
+                alignItems: 'flex-start',
+                '&:after': {
+                  borderBottomColor: '#24A5A5',
+                },
+              },
+              '& .MuiInputLabel-filled.Mui-focused': {
+                color: '#24A5A5',
+              },
+            }}
+            onChange={e => setNewComment(e.target.value)}
+          />
+          <Stack width="30px" marginLeft="14px" justifyContent="center">
+            <SendIcon
+              sx={{ color: '#383838' }}
+              onClick={() => addNewComment()}
+            />
+          </Stack>
+        </Stack>
       </Stack>
     </Stack>
   );
@@ -108,9 +125,9 @@ const CommentsInput = ({
 CommentsInput.propTypes = {
   criticId: PropTypes.number,
   adviceId: PropTypes.number,
-  comments: PropTypes.array.isRequired,
   getComments: PropTypes.func.isRequired,
-  userInfos: PropTypes.object.isRequired,
+  infos: PropTypes.object.isRequired,
+  setShowInput: PropTypes.func.isRequired,
 };
 
 export default CommentsInput;

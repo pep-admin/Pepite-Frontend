@@ -11,6 +11,7 @@ import {
   ImageListItem,
   Card,
   CardMedia,
+  Snackbar,
 } from '@mui/material';
 import { Item } from '@utils/components/styledComponent';
 import { useState } from 'react';
@@ -29,7 +30,6 @@ import CloseIcon from '@mui/icons-material/Close';
 // Import des requêtes
 import { uploadUserPic } from '@utils/request/uploads/uploadUserPic';
 import { getUser } from '@utils/request/users/getUser';
-import CustomAlert from '@utils/components/CustomAlert';
 import { recoverOldPic } from '@utils/request/uploads/recoverOldPic';
 import { uploadPoster } from '@utils/request/uploads/uploadPoster';
 
@@ -40,7 +40,14 @@ const AccountUpdatePic = ({
   setLoggedUserInfos,
 }) => {
   const [alignment, setAlignment] = useState('picture'); // Téléchargement par photo ou recherche de poster
-  const [onSuccess, setOnSuccess] = useState({ state: null, message: null });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+  });
+
+  const openSnackbar = message => {
+    setSnackbar({ open: true, message });
+  };
 
   // Ajout d'une nouvelle photo de profil / de couverture depuis la bibliothèque personnelle de l'utilisateur
   const handleFileChange = async (event, picType) => {
@@ -51,13 +58,14 @@ const AccountUpdatePic = ({
 
       const newData = await getUser(loggedUserInfos.id);
 
+      // Met à jour le localStorage
+      localStorage.setItem('user_infos', JSON.stringify(newData));
+
       setLoggedUserInfos(newData);
-      setOnSuccess({
-        state: true,
-        message: `Photo de ${picType} ajoutée avec succès !`,
-      });
+
+      openSnackbar(`Photo de ${picType} ajoutée avec succès !`);
     } catch (error) {
-      setOnSuccess({ state: false, message: error.response.data.message });
+      openSnackbar(`Impossible d'ajouter la photo de ${picType}.`);
     }
   };
 
@@ -68,15 +76,12 @@ const AccountUpdatePic = ({
       const newData = await getUser(loggedUserInfos.id);
       setLoggedUserInfos(newData);
 
-      setOnSuccess({
-        state: true,
-        message: `Ancienne photo de ${picType} réactivée`,
-      });
+      // Met à jour le localStorage
+      localStorage.setItem('user_infos', JSON.stringify(newData));
+
+      openSnackbar(`Ancienne photo de ${picType} réactivée !`);
     } catch (error) {
-      setOnSuccess({
-        state: false,
-        message: `Erreur dans la modification de la photo de ${picType}`,
-      });
+      openSnackbar(`Erreur dans la modification de la photo de ${picType}`);
     }
   };
 
@@ -87,15 +92,12 @@ const AccountUpdatePic = ({
       const newData = await getUser(loggedUserInfos.id);
       setLoggedUserInfos(newData);
 
-      setOnSuccess({
-        state: true,
-        message: 'Photo de profil ajoutée avec succès !',
-      });
+      // Met à jour le localStorage
+      localStorage.setItem('user_infos', JSON.stringify(newData));
+
+      openSnackbar('Photo de profil ajoutée avec succès !');
     } catch (error) {
-      setOnSuccess({
-        state: false,
-        message: error.response.data.message,
-      });
+      openSnackbar("Impossible d'ajouter la photo de profil.");
     }
   };
 
@@ -112,25 +114,7 @@ const AccountUpdatePic = ({
         alignItems: 'center',
       }}
     >
-      <Item
-        customheight="auto"
-        customwidth="80vw"
-        margintop="0"
-        position="relative"
-      >
-        {onSuccess.state ? (
-          <CustomAlert
-            alertType={'success'}
-            message={onSuccess.message}
-            setOnAlert={setOnSuccess}
-          />
-        ) : onSuccess.state === false ? (
-          <CustomAlert
-            alertType={'error'}
-            message={onSuccess.message}
-            setOnAlert={setOnSuccess}
-          />
-        ) : null}
+      <Item customheight="auto" customwidth="80vw" position="relative">
         <Stack
           direction="row"
           height="33px"
@@ -150,7 +134,6 @@ const AccountUpdatePic = ({
         </Stack>
         <Stack direction="row">
           <ToggleButtonGroup
-            color="primary"
             value={alignment}
             exclusive
             aria-label="Platform"
@@ -187,6 +170,7 @@ const AccountUpdatePic = ({
               outlineWidth={null}
               relationType={null}
               sx={null}
+              redirection={false}
             />
           ) : (
             <Card
@@ -238,6 +222,9 @@ const AccountUpdatePic = ({
                     padding: '0',
                     fontSize: '1em',
                     textTransform: 'initial',
+                    background:
+                      'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)',
+                    color: '#fff',
                   }}
                   component="span"
                 >
@@ -306,7 +293,6 @@ const AccountUpdatePic = ({
                 {'Depuis une recherche de film / série'}
               </Typography>
               <SearchBar
-                Item={Item}
                 page={'params'}
                 loggedUserInfos={loggedUserInfos}
                 handlePoster={handlePoster}
@@ -315,6 +301,12 @@ const AccountUpdatePic = ({
             </Stack>
           )}
         </Stack>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          message={snackbar.message}
+        />
       </Item>
     </Modal>
   );

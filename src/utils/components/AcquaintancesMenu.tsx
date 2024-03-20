@@ -21,6 +21,8 @@ const AcquaintancesMenu = ({
   chosenRelationship,
   ratings,
 }) => {
+  console.log('les infos', infos);
+
   // Filtre les utilisateurs selon leur relation avec l'utilisateur connecté, selon le choix d'affichage (amis proches, amis ou suivis)
   const filteredUsers =
     page === 'poster'
@@ -93,6 +95,7 @@ const AcquaintancesMenu = ({
                       ? '#F29E50'
                       : '#24A5A5'
                   }
+                  emptyColor="gray"
                   value={
                     page === 'poster'
                       ? ratings?.individual_ratings.find(

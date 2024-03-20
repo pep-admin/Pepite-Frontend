@@ -1,109 +1,76 @@
 // Import des libs externes
-import {
-  Alert,
-  Skeleton,
-  Stack,
-  Typography,
-  Box,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-} from '@mui/material';
+import { Alert, Stack, Badge, SwipeableDrawer } from '@mui/material';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { animated as a } from 'react-spring';
-import { useEffect, useRef } from 'react';
-import confetti from 'canvas-confetti';
 
 // Import des composants internes
-import SwipePoster from './SwipePoster';
 import SwipeContent from './SwipeContent';
+import SwipeFilter from './SwipeFilter';
+import { CustomButton } from './CustomBtn';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
+// Import des icônes
+import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
+import SwipeRightIcon from '@mui/icons-material/SwipeRight';
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 
-// Import des requêtes
-import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
-import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
+// Import des variables d'environnements
+import { assetsBaseUrl } from '@utils/request/config';
 
 const SwipeCard = ({
   id,
-  Item,
   movies,
   movieDetail,
-  // generalRatings,
   error,
-  loading,
   index,
   currentMovieIndex,
   setCurrentMovieIndex,
-  setSwipeDirection,
+  setSwipeAction,
   cardProps,
-  certification,
   moviesStatusUpdated,
   setMoviesStatusUpdated,
+  swipeToTheRight,
+  countryChosen,
+  setCountryChosen,
+  genreChosen,
+  setGenreChosen,
+  ratingChosen,
+  setRatingChosen,
+  setIsFilterValidated,
+  periodChosen,
+  setPeriodChosen,
+  swipeType,
+  setSwipeType,
 }) => {
-  const AnimatedCard = a(Item);
+  const AnimatedCard = a(Stack);
 
-  const { displayType } = useData();
+  const [showMovieInfos, setShowMovieInfos] = useState(false);
+  const [areFiltersOpen, setAreFiltersOpen] = useState(false);
+  const [continentChosen, setContinentChosen] = useState('Amérique'); // Continent choisi par l'utilisateur
 
-  const buttonRef = useRef(null);
-  const isWantedRef = useRef(moviesStatusUpdated[currentMovieIndex]?.is_wanted);
-
-  function explodeConfetti() {
-    if (buttonRef.current) {
-      // Récupère les coordonnées du bouton "je veux le voir"
-      const rect = buttonRef.current.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: {
-          x: x / window.innerWidth,
-          y: y / window.innerHeight,
-        },
-      });
-    }
-  }
-
-  const handleMovieWanted = async () => {
-    const updatedMovies = moviesStatusUpdated.map(movie => {
-      if (movie.id === moviesStatusUpdated[currentMovieIndex].id) {
-        return { ...movie, is_wanted: !isWantedRef.current };
-      }
-      return movie;
-    });
-
-    if (!isWantedRef.current) {
-      explodeConfetti();
-      await addWantedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
-    } else {
-      await removeWantedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
+  const toggleFilters = open => event => {
+    // Ignorer les événements qui ont été déclenchés par des éléments non souhaités
+    if (
+      event &&
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
     }
 
-    setMoviesStatusUpdated(updatedMovies);
-    isWantedRef.current = !isWantedRef.current;
+    setAreFiltersOpen(open);
   };
-
-  // Réinitialisation de la ref "isWantedRef", à chaque fois que l'utilisateur swipe
-  useEffect(() => {
-    isWantedRef.current = moviesStatusUpdated[currentMovieIndex]?.is_wanted;
-  }, [currentMovieIndex]);
 
   return (
     <AnimatedCard
       id={id}
-      customheight="100%"
       style={cardProps}
-      sx={{ position: 'absolute', width: '100%', boxShadow: 'none' }}
+      sx={{
+        position: 'absolute',
+        height: '100vh',
+        width: '100vw',
+        boxShadow: 'none',
+      }}
     >
       {error.error !== null ? (
         <Alert
@@ -118,273 +85,146 @@ const SwipeCard = ({
           {error.message}
         </Alert>
       ) : (
-        <>
+        movies[index] && (
           <Stack
-            direction="row"
+            direction="column"
+            alignItems="center"
+            justifyContent="flex-end"
             sx={{
-              height: '35px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderBottom: '1px solid #EBEBEB',
-              position: 'relative',
+              height: '100%',
+              backgroundImage: `linear-gradient(
+                to top,
+                ${
+                  !showMovieInfos
+                    ? 'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 1) 20%, rgba(1, 18, 18, 0.6) 50%, rgba(1, 18, 18, 0) 100%'
+                    : 'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 0.97) 30%, rgba(1, 18, 18, 0.5) 85%, rgba(1, 18, 18, 0) 100%'
+                }
+              ), url(${
+                movies[index].poster_path !== null
+                  ? `https://image.tmdb.org/t/p/original/${movies[index].poster_path}`
+                  : `${assetsBaseUrl}/images/no_poster.jpg`
+              })`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              padding: '0 6%',
             }}
           >
-            {loading.movies || loading.details ? (
-              <Skeleton animation={false} height={10} width="100px" />
-            ) : (
-              <>
-                <Typography
-                  variant="h2"
-                  sx={{
-                    color: '#0E6666',
-                    fontSize: '1.2em',
-                    fontWeight: 'bold',
-                    maxWidth: '70%',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {movies.length > 0 && index >= 0 && displayType === 'movie'
-                    ? movies[index]?.title
-                    : movies.length > 0 && index >= 0 && displayType === 'tv'
-                    ? movies[index]?.name
-                    : null}
-                </Typography>
-                <img
-                  src={certification.imgUrl}
-                  alt={certification.alt}
-                  style={{
-                    position: 'absolute',
-                    right: '15px',
-                  }}
-                />
-              </>
-            )}
-          </Stack>
-          <Box padding="10px 0" height="calc(100% - 35px)">
-            {loading.movies || loading.details ? (
-              <Card
+            <Stack position="absolute" top="75px" right="6%">
+              <Badge
+                badgeContent={0}
+                showZero
+                overlap="circular"
                 sx={{
-                  boxShadow: 'none',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
+                  '& .MuiBadge-badge': {
+                    color: '#000',
+                    backgroundColor: 'secondary.main',
+                  },
                 }}
               >
-                <Skeleton
+                <CustomButton btntype={'filter'} onClick={toggleFilters(true)}>
+                  <TuneOutlinedIcon fontSize="medium" />
+                </CustomButton>
+              </Badge>
+              {areFiltersOpen && (
+                <SwipeableDrawer
+                  anchor="left"
+                  open={areFiltersOpen}
+                  onClose={toggleFilters(false)}
+                  onOpen={toggleFilters(true)}
                   sx={{
-                    height: 'calc(65% - 16.5px)',
-                    width: 'calc(100% - 170px)',
-                  }}
-                  animation="wave"
-                  variant="rectangular"
-                />
-                <Stack
-                  direction="row"
-                  height="calc(35% - 10px)"
-                  width="100%"
-                  justifyContent="space-evenly"
-                >
-                  <Box
-                    width="30%"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-evenly"
-                  >
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                  </Box>
-                  <Box
-                    width="55%"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-evenly"
-                  >
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                    <Skeleton
-                      animation={false}
-                      variant="text"
-                      sx={{ fontSize: '0.3em' }}
-                      width={'100%'}
-                    />
-                  </Box>
-                </Stack>
-                <Stack>
-                  <Skeleton
-                    animation="wave"
-                    variant="rectangular"
-                    height="33px"
-                    width="125px"
-                  />
-                </Stack>
-              </Card>
-            ) : (
-              movies[index] && (
-                <Card
-                  sx={{
-                    boxShadow: 'none',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
+                    '& .MuiDrawer-paper': {
+                      height: 'calc(100% - 50px)',
+                      width: '35vw',
+                      bgcolor: '#101010',
+                      top: 'auto',
+                      bottom: '0',
+                    },
                   }}
                 >
-                  <SwipePoster
-                    movies={movies}
-                    loading={loading}
-                    index={index}
-                    currentMovieIndex={currentMovieIndex}
-                    setCurrentMovieIndex={setCurrentMovieIndex}
-                    // generalRatings={generalRatings}
-                    setSwipeDirection={setSwipeDirection}
-                    moviesStatusUpdated={moviesStatusUpdated}
-                    setMoviesStatusUpdated={setMoviesStatusUpdated}
+                  <SwipeFilter
+                    swipeType={swipeType}
+                    setSwipeType={setSwipeType}
+                    continentChosen={continentChosen}
+                    setContinentChosen={setContinentChosen}
+                    countryChosen={countryChosen}
+                    setCountryChosen={setCountryChosen}
+                    genreChosen={genreChosen}
+                    setGenreChosen={setGenreChosen}
+                    ratingChosen={ratingChosen}
+                    setRatingChosen={setRatingChosen}
+                    periodChosen={periodChosen}
+                    setPeriodChosen={setPeriodChosen}
+                    setIsFilterValidated={setIsFilterValidated}
+                    setAreFiltersOpen={setAreFiltersOpen}
                   />
-                  <CardContent
-                    sx={{
-                      height: 'calc(35% - 16.5px)',
-                      width: '100%',
-                      padding: '10px 16px',
-                      alignItems: 'flex-end',
-                    }}
-                  >
-                    <SwipeContent
-                      movieDetail={movieDetail}
-                      movies={movies}
-                      index={index}
-                    />
-                  </CardContent>
-                  <CardActions
-                    sx={{
-                      height: '33px',
-                      justifyContent: 'center',
-                      padding: 0,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <Stack
-                      direction="column"
-                      gap="33px"
-                      sx={{
-                        transition: 'transform 300ms ease-in-out',
-                        transform:
-                          // Si le film est vu mais que l'utilisateur le supprime : possibilité de le noter
-                          moviesStatusUpdated[index].is_watched &&
-                          moviesStatusUpdated[index].is_unwanted
-                            ? 'translateY(63px)'
-                            : // Si le film n'est pas vu et que l'utilisateur le supprime : le film ne sera plus proposé
-                            !moviesStatusUpdated[index].is_watched &&
-                              moviesStatusUpdated[index].is_unwanted
-                            ? 'translateY(-63px)'
-                            : // Si le film est vu et que l'utilisateur ne le supprime pas : possibilité de le noter
-                            moviesStatusUpdated[index].is_watched &&
-                              !moviesStatusUpdated[index].is_unwanted
-                            ? 'translateY(63px)'
-                            : 'translateY(0px)',
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        sx={{
-                          height: '30px',
-                          width: '150px',
-                          margin: 'auto',
-                          padding: '0 15px',
-                          fontSize: '0.9em',
-                        }}
-                      >
-                        {'Noter ce film'}
-                      </Button>
-                      <Button
-                        ref={buttonRef}
-                        variant="contained"
-                        sx={{
-                          bgcolor: moviesStatusUpdated[index].is_wanted
-                            ? 'success.main'
-                            : 'primary.dark',
-                          '&:hover': {
-                            bgcolor: moviesStatusUpdated[index].is_wanted
-                              ? 'success.main'
-                              : 'primary.dark',
-                          },
-                          color: '#fff',
-                          height: '30px',
-                          width: '150px',
-                          margin: 'auto',
-                          padding: '0 15px',
-                          fontSize: '0.9em',
-                        }}
-                        onClick={() => handleMovieWanted()}
-                      >
-                        {!moviesStatusUpdated[index].is_wanted
-                          ? 'Je veux le voir !'
-                          : 'Ajouté !'}
-                      </Button>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          height: '30px',
-                          width: '150px',
-                          margin: 'auto',
-                          padding: '0 15px',
-                          fontSize: '0.9em',
-                          backgroundColor: '#4f4f4f !important',
-                        }}
-                      >
-                        {displayType === 'movie'
-                          ? 'Film supprimé'
-                          : 'Série supprimée'}
-                      </Button>
-                    </Stack>
-                  </CardActions>
-                </Card>
-              )
-            )}
-          </Box>
-        </>
+                </SwipeableDrawer>
+              )}
+            </Stack>
+            <Stack
+              direction="row"
+              width="100%"
+              justifyContent="space-between"
+              position="absolute"
+              top="50%"
+              padding="0 6%"
+              sx={{
+                transform: 'translateY(-50%)',
+                display: showMovieInfos ? 'none' : 'flex',
+              }}
+            >
+              <SwipeLeftIcon
+                color="error"
+                sx={{
+                  height: '1.3em',
+                  width: '1.3em',
+                  color: currentMovieIndex > 0 ? '#ffffffa3' : '#ffffff42',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (currentMovieIndex > 0) {
+                    setSwipeAction({ direction: 'left', from: 'normal' });
+                    if (currentMovieIndex !== -1) {
+                      setCurrentMovieIndex(prevIndex => prevIndex - 1);
+                    }
+                  }
+                }}
+              />
+              <SwipeRightIcon
+                sx={{
+                  height: '1.3em',
+                  width: '1.3em',
+                  color: '#ffffffa3',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  setSwipeAction({ direction: 'right', from: 'normal' });
+
+                  // Si ni la dernière card, ni la card "plus aucun film" est affichée, on incrémente normalement
+                  if (currentMovieIndex !== movies.length - 1) {
+                    setCurrentMovieIndex(prevIndex => prevIndex + 1);
+                  }
+                  // Si la dernière card de movies est affichée, on définit l'index courant sur -1
+                  else {
+                    setCurrentMovieIndex(-1);
+                  }
+                }}
+              />
+            </Stack>
+            <SwipeContent
+              movieDetail={movieDetail}
+              movies={movies}
+              index={index}
+              showMovieInfos={showMovieInfos}
+              setShowMovieInfos={setShowMovieInfos}
+              moviesStatusUpdated={moviesStatusUpdated}
+              setMoviesStatusUpdated={setMoviesStatusUpdated}
+              currentMovieIndex={currentMovieIndex}
+              setCurrentMovieIndex={setCurrentMovieIndex}
+              swipeToTheRight={swipeToTheRight}
+              swipeType={swipeType}
+            />
+          </Stack>
+        )
       )}
     </AnimatedCard>
   );
@@ -392,20 +232,28 @@ const SwipeCard = ({
 
 SwipeCard.propTypes = {
   id: PropTypes.string.isRequired,
-  Item: PropTypes.elementType.isRequired,
-  index: PropTypes.number.isRequired,
   movies: PropTypes.array.isRequired,
-  moviesStatusUpdated: PropTypes.array.isRequired,
-  setMoviesStatusUpdated: PropTypes.func.isRequired,
   movieDetail: PropTypes.object.isRequired,
-  // generalRatings: PropTypes.number.isRequired,
   error: PropTypes.object.isRequired,
-  loading: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
   currentMovieIndex: PropTypes.number,
   setCurrentMovieIndex: PropTypes.func.isRequired,
-  setSwipeDirection: PropTypes.func.isRequired,
+  setSwipeAction: PropTypes.func.isRequired,
   cardProps: PropTypes.object.isRequired,
-  certification: PropTypes.object.isRequired,
+  moviesStatusUpdated: PropTypes.array.isRequired,
+  setMoviesStatusUpdated: PropTypes.func.isRequired,
+  swipeToTheRight: PropTypes.func.isRequired,
+  countryChosen: PropTypes.object,
+  setCountryChosen: PropTypes.func.isRequired,
+  genreChosen: PropTypes.object,
+  setGenreChosen: PropTypes.func.isRequired,
+  ratingChosen: PropTypes.object,
+  setRatingChosen: PropTypes.func.isRequired,
+  setIsFilterValidated: PropTypes.func.isRequired,
+  swipeType: PropTypes.string.isRequired,
+  setSwipeType: PropTypes.func.isRequired,
+  periodChosen: PropTypes.string.isRequired,
+  setPeriodChosen: PropTypes.func.isRequired,
 };
 
 export default SwipeCard;

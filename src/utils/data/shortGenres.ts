@@ -1,5 +1,9 @@
 // Liste des genres proposés
-export const genreMovieList = [
+export const shortGenresMovieList = [
+  {
+    id: null,
+    name: 'Tous',
+  },
   {
     id: 28,
     name: 'Action',
@@ -58,7 +62,7 @@ export const genreMovieList = [
   },
   {
     id: 878,
-    name: 'Science-Fiction',
+    name: 'SF',
   },
   {
     id: 10770,
@@ -79,7 +83,7 @@ export const genreMovieList = [
 ];
 
 // Liste des genres proposés
-export const genreSerieList = [
+export const shortGenresSerieList = [
   {
     id: 10759,
     name: 'Action & Adventure',

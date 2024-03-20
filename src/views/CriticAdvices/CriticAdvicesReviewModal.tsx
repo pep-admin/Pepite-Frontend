@@ -54,23 +54,27 @@ const CriticAdvicesReviewModal = ({
         }}
       >
         <Stack direction="row">
-          <UserAvatar
-            variant={'circular'}
-            userInfos={
-              type === 'new-critic' || type === 'new-advice'
-                ? loggedUserInfos
-                : criticUserInfos?.id &&
-                  criticUserInfos?.id !== loggedUserInfos.id
-                ? criticUserInfos
-                : loggedUserInfos
-            }
-            picWidth={100}
-            picHeight={100}
-            isOutlined={false}
-            outlineWidth={null}
-            relationType={null}
-            sx={{ order: '1' }}
-          />
+          {!isModify && (
+            <UserAvatar
+              variant={'circular'}
+              userInfos={
+                type === 'new-critic' || type === 'new-advice'
+                  ? loggedUserInfos
+                  : criticUserInfos?.id &&
+                    criticUserInfos?.id !== loggedUserInfos.id
+                  ? criticUserInfos
+                  : loggedUserInfos
+              }
+              picWidth={100}
+              picHeight={100}
+              isOutlined={false}
+              outlineWidth={null}
+              relationType={null}
+              sx={{ order: '1' }}
+              redirection={true}
+            />
+          )}
+
           <Box
             height="30px"
             width="30px"
@@ -79,7 +83,10 @@ const CriticAdvicesReviewModal = ({
             display="flex"
             alignItems="center"
             justifyContent="center"
-            sx={{ backgroundColor: '#e1e1e1' }}
+            sx={{
+              backgroundColor: '#e1e1e1',
+              borderRadius: '7px',
+            }}
             onClick={() => setShowReviewModal(false)}
           >
             <CloseIcon />
@@ -106,7 +113,9 @@ const CriticAdvicesReviewModal = ({
           <Stack
             direction="column"
             marginBottom={
-              type === 'new-critic' || type === 'new-advice' ? '10px' : 0
+              type === 'new-critic' || type === 'new-advice' || isModify
+                ? '10px'
+                : 0
             }
             rowGap="3px"
           >
@@ -151,9 +160,7 @@ const CriticAdvicesReviewModal = ({
               </Typography>
             </Stack>
           </Stack>
-          {type === 'old-critic' || type === 'old-advice' ? (
-            <Divider sx={{ margin: '12px 0' }} />
-          ) : null}
+          {!isModify ? <Divider sx={{ margin: '12px 0' }} /> : null}
           <Stack direction="column" flexGrow="1">
             {type === 'new-critic' || type === 'new-advice' || isModify ? (
               customTextarea('big')
@@ -171,7 +178,7 @@ const CriticAdvicesReviewModal = ({
                 <Typography
                   variant="body2"
                   component="cite"
-                  fontWeight="bold"
+                  fontWeight="600"
                   fontStyle="italic"
                 >
                   {`- ${criticUserInfos.first_name} ${criticUserInfos.last_name} -`}
@@ -180,25 +187,27 @@ const CriticAdvicesReviewModal = ({
             )}
           </Stack>
         </Box>
-        <Box
-          height="35px"
-          width="35px"
-          position="absolute"
-          top="80px"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          borderRadius="50%"
-          order="2"
-          zIndex="10"
-          sx={{
-            backgroundColor: '#24A5A5',
-            boxShadow:
-              '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
-          }}
-        >
-          <FormatQuoteIcon sx={{ color: '#fff', fontSize: '1.8em' }} />
-        </Box>
+        {!isModify && (
+          <Box
+            height="35px"
+            width="35px"
+            position="absolute"
+            top="80px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            borderRadius="50%"
+            order="2"
+            zIndex="10"
+            sx={{
+              backgroundColor: '#24A5A5',
+              boxShadow:
+                '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
+            }}
+          >
+            <FormatQuoteIcon sx={{ color: '#fff', fontSize: '1.8em' }} />
+          </Box>
+        )}
       </Stack>
     </Modal>
   );

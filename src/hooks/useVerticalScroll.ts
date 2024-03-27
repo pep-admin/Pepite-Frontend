@@ -5,7 +5,7 @@ const useVerticalScroll = (
   firstRender,
   loadDataFunction,
   displayType,
-  setData,
+  setCritics,
 ) => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -19,7 +19,12 @@ const useVerticalScroll = (
     console.log(`chargement... page n°${pageRef.current}`);
 
     setLoading(true); // chargement en cours
-    const hasMoreData = await loadDataFunction(pageRef.current); // Vérifie si des données sont encore disponibles
+    const hasMoreData = await loadDataFunction(
+      pageRef.current,
+      id,
+      displayType,
+      setCritics,
+    ); // Vérifie si des données sont encore disponibles
 
     pageRef.current++; // incrémente le numéro de la page après chaque chargement de données
 
@@ -49,9 +54,12 @@ const useVerticalScroll = (
 
   // Réinitialise la pagination et recharger les données en fonction des dépendances
   useEffect(() => {
+    if (firstRender.current) return;
+    console.log('reset');
+
     pageRef.current = 1;
     setHasMore(true);
-    setData([]);
+    setCritics([]);
     loadMore();
   }, [displayType, id]);
 

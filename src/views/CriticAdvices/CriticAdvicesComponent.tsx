@@ -6,7 +6,7 @@ import {
   Button,
   SwipeableDrawer,
 } from '@mui/material';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 
@@ -21,29 +21,25 @@ import CriticAdvicesContent from './CriticAdvicesContent';
 import CriticAdvicesFooter from './CriticAdvicesFooter';
 import CommentsComponent from '@views/Comments/CommentsComponent';
 import CriticAdvicesModal from './CriticAdvicesModal';
-import CustomAlert from '@utils/components/CustomAlert';
 import CriticAdvicesPoster from './CriticAdvicesPoster';
 import CriticAdvicesReview from './CriticAdvicesReview';
-import CriticAdvicesHeader2 from './CriticAdvicesHeader2';
+import CriticAdvicesHeader from './CriticAdvicesHeader';
 
 // Import des requêtes
 import { addNewCritic } from '@utils/request/critics/postCritic';
-import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
-import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
-import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
-import { getUser } from '@utils/request/users/getUser';
 import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
 import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
 import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
 
 // Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
+import { addNewQuickRating } from '@utils/request/quickRatings/addNewQuickRating';
+import { performUpdatePostProcessing } from '@utils/functions/criticsAdvicesActions';
 
 const CriticAdvicesComponent = ({
   page,
-  criticIndex,
   type,
   chosenMovie,
   data,
@@ -52,10 +48,13 @@ const CriticAdvicesComponent = ({
   infos,
   loggedUserInfos,
   chosenUser,
+  setChosenUser,
   haveMoreCritics,
   isLast,
+  inputChoice,
+  openSnackbar,
 }) => {
-  console.log('rendu');
+  // console.log('rendu');
 
   const { id } = useParams(); // Id de l'utilisateur du profil visité
 
@@ -69,7 +68,6 @@ const CriticAdvicesComponent = ({
   const [showPoster, setShowPoster] = useState(false);
   const [comments, setComments] = useState([]);
   const [displayRatings, setDisplayRatings] = useState(null);
-  const [criticUserInfos, setCriticUserInfos] = useState({});
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState({
     state: null,
@@ -86,60 +84,17 @@ const CriticAdvicesComponent = ({
   */
   const cardsToShow = useCardsToShowHorizontal(95, 6, 3);
 
-  // Fonction pour effectuer les mises à jour après la modification
-  const performUpdatePostProcessing = async (
-    type,
-    userId,
-    displayType,
-    isNewEntity,
-  ) => {
-    console.log('action après envoi', page);
-
-    const message = isNewEntity
-      ? `${
-          type === 'critic' ? 'Critique ajoutée' : 'Conseil ajouté'
-        } avec succès !`
-      : `${
-          type === 'critic' ? 'Critique modifiée' : 'Conseil modifié'
-        } avec succès !`;
-
-    setAlertSeverity({
-      state: 'success',
-      message: message,
-      content: null,
-    });
-
-    const newData =
-      type === 'critic'
-        ? await getCriticsOfUser(userId, displayType, 1, 5)
-        : await getAdvicesReceived(id, displayType, 1, 5);
-
-    setData(newData);
-
-    if (page === 'profil' && isProfilUserLogged) {
-      const response = await getAllGoldNuggetsOfUser(
-        displayType,
-        userId,
-        cardsToShow,
-        1,
-      );
-      console.log('les pépites', response.data.goldenMovies);
-
-      setGoldenMovies(response.data.goldenMovies);
-    }
-
-    setIsModify(false);
-
-    setChosenMovieId(null);
-    setChosenMovie(null);
-  };
+  const handleCriticTextChange = useCallback(text => {
+    setNewCriticText(text);
+  }, []);
 
   // ****** Ajouter une nouvelle critique / conseil ****** //
   const submitNewReview = async type => {
     try {
+      const action = 'submit';
+
       let alertMessage = '';
       let entityExists = { exists: false, id: null };
-      const userId = localStorage.getItem('user_id');
 
       if (type === 'critic') {
         entityExists = await checkIfCriticExistsRequest(
@@ -189,10 +144,37 @@ const CriticAdvicesComponent = ({
           newCriticText,
           isGoldNugget,
         );
+      } else if (type === 'quick-rating') {
+        await addNewQuickRating(
+          chosenMovie.id,
+          displayType,
+          newRating,
+          isGoldNugget,
+          isTurnip,
+        );
       }
 
       // Appelle la fonction de post-traitement pour gérer les opérations communes après l'ajout
-      await performUpdatePostProcessing(type, userId, displayType, true);
+      await performUpdatePostProcessing(
+        page,
+        type,
+        id,
+        isProfilUserLogged,
+        displayType,
+        action,
+        openSnackbar,
+        setData,
+        cardsToShow,
+        setGoldenMovies,
+        setIsModify,
+        setChosenMovie,
+        setChosenMovieId,
+      );
+
+      if (type === 'quick-rating') {
+        setChosenMovieId(null);
+        setChosenMovie(null);
+      }
     } catch (error) {
       setAlertSeverity({
         state: 'error',
@@ -205,8 +187,8 @@ const CriticAdvicesComponent = ({
   // Modifier une critique / un conseil
   const updateReview = async (overwrite, type) => {
     try {
-      const userId = localStorage.getItem('user_id');
       const entityId = overwrite ? alertSeverity.content : infos[`${type}_id`];
+      const action = 'update';
 
       if (type === 'critic') {
         await modifyCritic(
@@ -228,23 +210,25 @@ const CriticAdvicesComponent = ({
         );
       }
 
-      await performUpdatePostProcessing(type, userId, displayType, false);
+      // Appelle la fonction de post-traitement pour gérer les opérations communes après l'ajout
+      await performUpdatePostProcessing(
+        page,
+        type,
+        loggedUserInfos.id,
+        isProfilUserLogged,
+        displayType,
+        action,
+        openSnackbar,
+        setData,
+        cardsToShow,
+        setGoldenMovies,
+        setIsModify,
+        setChosenMovie,
+        setChosenMovieId,
+      );
     } catch (error) {
       setAlertSeverity({ state: 'error', message: error, content: null });
     }
-  };
-
-  const getCriticUserInfos = async (id, criticIndex) => {
-    const userInfos = await getUser(id);
-    // Mettez à jour la critique spécifique pour indiquer que le chargement est terminé
-    setData(existingCritics =>
-      existingCritics.map((critic, index) =>
-        index === criticIndex
-          ? { ...critic, criticUserInfos: userInfos, isLoadingUser: false }
-          : critic,
-      ),
-    );
-    setCriticUserInfos(userInfos);
   };
 
   // Fonction pour gérer l'ouverture du SwipeableDrawer des commentaires
@@ -267,38 +251,8 @@ const CriticAdvicesComponent = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModify]);
 
-  useEffect(() => {
-    if (type === 'old-critic') {
-      getCriticUserInfos(infos.user_id, criticIndex);
-    } else if (type === 'old-advice') {
-      getCriticUserInfos(infos.sender_id, criticIndex);
-    }
-  }, []);
-
   return (
     <>
-      {showPoster ? (
-        <CriticAdvicesModal
-          page={page}
-          showPoster={showPoster}
-          setShowPoster={setShowPoster}
-          infos={infos}
-          loggedUserInfos={loggedUserInfos}
-          criticUserInfos={criticUserInfos}
-          chosenUser={chosenUser}
-          from={'critic'}
-        />
-      ) : null}
-      {alertSeverity.state ? (
-        <CustomAlert
-          criticOrAdvice={type}
-          alertType={alertSeverity.state}
-          message={alertSeverity.message}
-          setOnAlert={setAlertSeverity}
-          confirmation={updateReview}
-          // usage={'overwrite'}
-        />
-      ) : null}
       <Item
         marginbottom={
           type === 'old-critic' || type === 'old-advice' ? '15px' : '0'
@@ -306,7 +260,7 @@ const CriticAdvicesComponent = ({
       >
         <Stack height="100%">
           <Stack direction="column" position="relative">
-            <CriticAdvicesHeader2
+            <CriticAdvicesHeader
               page={page}
               type={type}
               ratingsHeaderRef={ratingsHeaderRef}
@@ -323,7 +277,10 @@ const CriticAdvicesComponent = ({
               isTurnip={isTurnip}
               setIsTurnip={setIsTurnip}
               chosenUser={chosenUser}
-              criticUserInfos={criticUserInfos}
+              setChosenUser={setChosenUser}
+              cardsToShow={cardsToShow}
+              setGoldenMovies={setGoldenMovies}
+              openSnackbar={openSnackbar}
             />
           </Stack>
           <Stack padding="12px 8px">
@@ -363,15 +320,17 @@ const CriticAdvicesComponent = ({
               !isModify ? null : (
                 <CriticAdvicesReview
                   type={type}
-                  newCriticText={newCriticText}
-                  setNewCriticText={setNewCriticText}
+                  onCriticTextChange={handleCriticTextChange}
                   infos={infos}
                   isModify={isModify}
                   newRating={newRating}
-                  criticUserInfos={criticUserInfos}
+                  inputChoice={inputChoice}
                 />
               )}
-              {type === 'new-critic' || type === 'new-advice' || isModify ? (
+              {type === 'new-critic' ||
+              type === 'new-advice' ||
+              type === 'new-quick-rating' ||
+              isModify ? (
                 <Stack direction="row" flexBasis="100%" justifyContent="center">
                   <Button
                     variant="contained"
@@ -397,7 +356,11 @@ const CriticAdvicesComponent = ({
                         // Si l'utilisateur a choisi au minimum une note on publie la critique || le conseil
                       } else if (newRating !== null && !isModify) {
                         submitNewReview(
-                          type === 'new-critic' ? 'critic' : 'advice',
+                          type === 'new-critic'
+                            ? 'critic'
+                            : type === 'new-advice'
+                            ? 'advice'
+                            : 'quick-rating',
                         );
                       } else if (newRating !== null && infos && isModify) {
                         updateReview(
@@ -412,6 +375,8 @@ const CriticAdvicesComponent = ({
                         ? 'Modifier'
                         : type === 'new-advice'
                         ? 'Conseiller'
+                        : type === 'new-quick-rating'
+                        ? 'Noter'
                         : 'Publier'}
                     </Typography>
                   </Button>
@@ -429,6 +394,17 @@ const CriticAdvicesComponent = ({
           )}
         </Stack>
       </Item>
+      {showPoster ? (
+        <CriticAdvicesModal
+          page={page}
+          showPoster={showPoster}
+          setShowPoster={setShowPoster}
+          infos={infos}
+          loggedUserInfos={loggedUserInfos}
+          chosenUser={chosenUser}
+          from={'critic'}
+        />
+      ) : null}
       {(type === 'old-critic' || type === 'old-advice') && (
         <SwipeableDrawer
           anchor="bottom" // Pour que le tiroir s'ouvre du bas
@@ -466,7 +442,7 @@ const CriticAdvicesComponent = ({
 
 CriticAdvicesComponent.propTypes = {
   page: PropTypes.string.isRequired,
-  criticIndex: PropTypes.number.isRequired,
+  criticIndex: PropTypes.number,
   type: PropTypes.string.isRequired,
   chosenMovie: PropTypes.oneOfType([PropTypes.object, PropTypes.oneOf([null])]),
   data: PropTypes.array.isRequired,
@@ -475,8 +451,11 @@ CriticAdvicesComponent.propTypes = {
   infos: PropTypes.object,
   loggedUserInfos: PropTypes.object.isRequired,
   chosenUser: PropTypes.object,
+  setChosenUser: PropTypes.func,
   haveMoreCritics: PropTypes.bool,
   isLast: PropTypes.bool,
+  inputChoice: PropTypes.string,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 export default React.memo(CriticAdvicesComponent);

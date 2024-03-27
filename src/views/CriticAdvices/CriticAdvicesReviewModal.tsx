@@ -23,10 +23,8 @@ const CriticAdvicesReviewModal = ({
   isModify,
   customTextarea,
   newRating,
-  criticUserInfos,
 }) => {
   const { displayType, chosenMovie } = useData();
-  // const navigate = useNavigate();
 
   // Utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
@@ -60,9 +58,9 @@ const CriticAdvicesReviewModal = ({
               userInfos={
                 type === 'new-critic' || type === 'new-advice'
                   ? loggedUserInfos
-                  : criticUserInfos?.id &&
-                    criticUserInfos?.id !== loggedUserInfos.id
-                  ? criticUserInfos
+                  : infos?.criticUserInfos?.id &&
+                    infos?.criticUserInfos?.id !== loggedUserInfos.id
+                  ? infos?.criticUserInfos
                   : loggedUserInfos
               }
               picWidth={100}
@@ -181,7 +179,7 @@ const CriticAdvicesReviewModal = ({
                   fontWeight="600"
                   fontStyle="italic"
                 >
-                  {`- ${criticUserInfos.first_name} ${criticUserInfos.last_name} -`}
+                  {`- ${infos?.criticUserInfos.first_name} ${infos?.criticUserInfos.last_name} -`}
                 </Typography>
               </Typography>
             )}

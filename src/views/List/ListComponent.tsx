@@ -49,10 +49,34 @@ const ListComponent2 = () => {
               onChange={handleChange}
               aria-label="Platform"
               fullWidth
+              sx={{
+                height: '50px',
+              }}
             >
-              <ToggleButton value="À voir">{'À voir'}</ToggleButton>
-              <ToggleButton value="À noter">{'À noter'}</ToggleButton>
-              <ToggleButton value="Notés">{'Notés'}</ToggleButton>
+              <ToggleButton
+                value="À voir"
+                sx={{
+                  lineHeight: 'normal',
+                }}
+              >
+                {'À voir'}
+              </ToggleButton>
+              <ToggleButton
+                value="À noter"
+                sx={{
+                  lineHeight: 'normal',
+                }}
+              >
+                {'À noter'}
+              </ToggleButton>
+              <ToggleButton
+                value="Notés"
+                sx={{
+                  lineHeight: 'normal',
+                }}
+              >
+                {'Notés'}
+              </ToggleButton>
             </ToggleButtonGroup>
           </Stack>
           <Stack marginTop="10px" padding="0 4%">
@@ -81,7 +105,7 @@ const ListComponent2 = () => {
               // chosenUser={chosenUser}
             />
             <Stack width="100vw" padding="0 4%" marginTop="73px">
-              <Stack>
+              <Stack marginBottom="5px">
                 <Typography
                   component="h4"
                   variant="body2"

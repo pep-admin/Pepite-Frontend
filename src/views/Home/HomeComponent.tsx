@@ -1,13 +1,11 @@
 // Import des libs externes
 import { useEffect, useRef, useState } from 'react';
-import { Box, Container, Modal, Stack, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Box, Container, Snackbar, Stack, Typography } from '@mui/material';
 
 // Import des composants internes
 import Header from '@utils/components/Header';
 import TopContributors from '@views/Contacts/TopContributors';
 import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets';
-import SearchBar from '@utils/components/SearchBar';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
@@ -20,43 +18,54 @@ import { useData } from '@hooks/DataContext';
 import useVerticalScroll from '@hooks/useVerticalScroll';
 
 // Import des requêtes
-import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
+import ProfilInputChoice from '@views/Profil/ProfilInputChoice';
+import { getCriticsAndUserInfos } from '@utils/functions/criticsAdvicesActions';
+
+interface Picture {
+  id: number;
+  user_id: number;
+  filePath: string;
+  uploaded_at: string;
+  isActive: number;
+}
+
+interface User {
+  coverPics: Picture[];
+  create_datetime: string;
+  email: string;
+  first_name: string;
+  id: number;
+  last_name: string;
+  last_login_date: string;
+  profilPics: Picture[];
+  rank: string;
+  relation_type: string;
+}
 
 const HomeComponent = () => {
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
-  const { displayType, chosenMovie, setChosenMovie } = useData();
-  const { id } = useParams();
+  const { displayType } = useData();
 
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites des amis et suivis de l'utilisateur
   const [criticsOfAcquaintances, setCriticsOfAcquaintances] = useState([]); // Les critiques des connaissances de l'utilisateur
+  const [chosenUser, setChosenUser] = useState<User | null>(null); // Les informations de l'utilisateur autre que celui connecté
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+  });
+
+  const openSnackbar = message => {
+    setSnackbar({ open: true, message });
+  };
 
   const firstRender = useRef(true);
   const scrollContainerRef = useRef(null);
 
-  const getCritics = async page => {
-    const critics = await getAllCriticsOfAcquaintances(
-      loggedUserInfos.id,
-      displayType,
-      page,
-    );
-    // Ajout d'une clé de vérification de chargement des données utilisateur
-    const criticsWithLoading = critics.map(critic => ({
-      ...critic,
-      isLoadingUser: true,
-    }));
-    setCriticsOfAcquaintances(existingCritics => [
-      ...existingCritics,
-      ...criticsWithLoading,
-    ]);
-
-    return critics.length >= 5;
-  };
-
   const { observerRef, loading, hasMore } = useVerticalScroll(
-    id,
+    loggedUserInfos.id,
     firstRender,
-    getCritics,
+    getCriticsAndUserInfos,
     displayType,
     setCriticsOfAcquaintances,
   );
@@ -65,36 +74,16 @@ const HomeComponent = () => {
     firstRender.current = false;
   }, []);
 
+  useEffect(() => {
+    console.log(
+      'les putains de critiques avec loading',
+      criticsOfAcquaintances,
+    );
+  }, [criticsOfAcquaintances]);
+
   return (
     <>
       <Header page={'home'} />
-      <Modal
-        open={chosenMovie !== null}
-        onClose={() => setChosenMovie(null)}
-        aria-labelledby={
-          loggedUserInfos.id === parseInt(id, 10)
-            ? 'Nouvelle critique'
-            : 'Nouveau conseil'
-        }
-        aria-describedby="modal-modal-description"
-      >
-        <Stack height="100vh" padding="0 6px" justifyContent="center">
-          <CriticAdvicesComponent
-            criticIndex={null}
-            page={'home'}
-            type={'new-critic'}
-            chosenMovie={chosenMovie}
-            data={criticsOfAcquaintances}
-            setData={setCriticsOfAcquaintances}
-            setGoldenMovies={setGoldenMovies}
-            loggedUserInfos={loggedUserInfos}
-            chosenUser={null}
-            infos={null}
-            haveMoreCritics={null}
-            isLast={null}
-          />
-        </Stack>
-      </Modal>
       <Container
         maxWidth="xl"
         sx={{
@@ -226,21 +215,19 @@ const HomeComponent = () => {
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
               loggedUserInfos={loggedUserInfos}
-              // chosenUser={chosenUser}
+              chosenUser={chosenUser}
             />
-            <Stack padding="0 4%" marginTop="80px">
-              <Stack>
-                <Typography
-                  component="h4"
-                  variant="body1"
-                  fontWeight="600"
-                  color="#383838"
-                >
-                  {'Publier une critique'}
-                </Typography>
-              </Stack>
-              <SearchBar page={'home'} loggedUserInfos={loggedUserInfos} />
-            </Stack>
+            <ProfilInputChoice
+              page={'home'}
+              isProfilUserLogged={true}
+              loggedUserInfos={loggedUserInfos}
+              chosenUser={chosenUser}
+              setChosenUser={setChosenUser}
+              criticsAndAdvices={criticsOfAcquaintances}
+              setCriticsAndAdvices={setCriticsOfAcquaintances}
+              setGoldenMovies={setGoldenMovies}
+              openSnackbar={openSnackbar}
+            />
             <Stack padding="0 4%" marginTop="20px">
               <Stack marginBottom="6px">
                 <Typography
@@ -269,6 +256,8 @@ const HomeComponent = () => {
                       chosenUser={null}
                       haveMoreCritics={hasMore}
                       isLast={criticsOfAcquaintances.length - 1 === index}
+                      inputChoice={null}
+                      openSnackbar={openSnackbar}
                     />
                   );
                 })
@@ -284,6 +273,12 @@ const HomeComponent = () => {
               )}
             </Stack>
             {hasMore && !loading && <div ref={observerRef}></div>}
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={3000}
+              onClose={() => setSnackbar({ ...snackbar, open: false })}
+              message={snackbar.message}
+            />
           </Box>
         </Stack>
       </Container>

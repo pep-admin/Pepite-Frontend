@@ -82,6 +82,7 @@ const ModalAcquaintancesInfos = ({
               outlineWidth={goldNuggetUserInfos.length > 1 ? '2.5px' : '3.5px'}
               relationType={userInfos.relation_type}
               sx={{ marginBottom: '15px' }}
+              redirection={false}
             />
           );
         })}

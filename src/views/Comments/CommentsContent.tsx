@@ -48,6 +48,7 @@ const CommentsContent = ({
   getComments,
   userInfos,
   isFirst,
+  isLast,
 }) => {
   const { displayType } = useData();
 
@@ -88,7 +89,7 @@ const CommentsContent = ({
         minHeight="67px"
         padding="0 10px"
         flexShrink="0"
-        margin={isFirst ? '0 0 10px 0' : '10px 0'}
+        margin={isFirst ? '0 0 10px 0' : isLast ? '10px 0 20px 0' : '10px 0'}
       >
         <Stack direction="column" flexGrow={1}>
           <Stack
@@ -132,8 +133,12 @@ const CommentsContent = ({
                   parent={'comment'}
                   infos={comment}
                   setData={setData}
+                  chosenUser={null}
                   isModify={isModify}
                   setIsModify={setIsModify}
+                  openSnackbar={null}
+                  cardsToShow={null}
+                  setGoldenMovies={null}
                 />
               ) : null}
             </Stack>
@@ -206,6 +211,7 @@ CommentsContent.propTypes = {
   getComments: PropTypes.func.isRequired,
   userInfos: PropTypes.object.isRequired,
   isFirst: PropTypes.bool.isRequired,
+  isLast: PropTypes.bool.isRequired,
 };
 
 export default CommentsContent;

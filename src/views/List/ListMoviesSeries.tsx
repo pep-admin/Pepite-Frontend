@@ -54,8 +54,8 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
   };
 
   const getRated = async () => {
-    const ratedMov = await getCriticsOfUser(id, 'movie', 1, 5);
-    const ratedSer = await getCriticsOfUser(id, 'tv', 1, 5);
+    const ratedMov = await getCriticsOfUser(id, 'movie', 1, 'all');
+    const ratedSer = await getCriticsOfUser(id, 'tv', 1, 'all');
     console.log('les films notés', ratedMov);
 
     setRatedMovies(ratedMov);

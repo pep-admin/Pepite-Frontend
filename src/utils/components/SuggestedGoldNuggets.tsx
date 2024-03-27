@@ -22,6 +22,7 @@ const SuggestedGoldNuggets = ({
   loggedUserInfos,
   goldenMovies,
   setGoldenMovies,
+  chosenUser,
 }) => {
   const { displayType } = useData();
   const { id } = useParams();
@@ -99,7 +100,7 @@ const SuggestedGoldNuggets = ({
     }
   }, [cardsToShow]);
 
-  // Réinitialisation des pépites si l'utilisateur change le type (film ou série)
+  // Réinitialisation des pépites si on change de profil utilisateur
   useEffect(() => {
     // Ignore le premier rendu
     if (isFirstRender.current) {
@@ -123,7 +124,7 @@ const SuggestedGoldNuggets = ({
           setShowPoster={setShowGoldenMovie}
           infos={goldenMovieInfos}
           loggedUserInfos={loggedUserInfos} // Les infos de l'utilisateur connecté
-          // chosenUser={chosenUser} // Les infos de l'utilisateur visité
+          chosenUser={chosenUser} // Les infos de l'utilisateur visité
           from={'suggested'}
         />
       )}
@@ -194,6 +195,7 @@ SuggestedGoldNuggets.propTypes = {
   loggedUserInfos: PropTypes.object.isRequired,
   goldenMovies: PropTypes.array.isRequired,
   setGoldenMovies: PropTypes.func.isRequired,
+  chosenUser: PropTypes.object,
 };
 
 export default SuggestedGoldNuggets;

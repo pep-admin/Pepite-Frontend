@@ -27,7 +27,6 @@ const ModalPosterContent = ({
   from,
   infos,
   loggedUserInfos,
-  criticUserInfos,
   chosenUser,
   goldNuggetUserInfos,
   setShowUserInfos,
@@ -52,6 +51,8 @@ const ModalPosterContent = ({
       getRatings(infos.serie_id);
     }
   }, [infos, from]);
+
+  console.log('utilisateur choisi', chosenUser);
 
   return (
     <Stack
@@ -127,12 +128,14 @@ const ModalPosterContent = ({
                           (page === 'profil' &&
                             chosenUser?.relation_type === 'close_friend') ||
                           (page === 'home' &&
-                            criticUserInfos?.relation_type === 'close_friend')
+                            infos?.criticUserInfos.relation_type ===
+                              'close_friend')
                             ? '#ff7b00'
                             : (page === 'profil' &&
                                 chosenUser?.relation_type === 'friend') ||
                               (page === 'home' &&
-                                criticUserInfos?.relation_type === 'friend')
+                                infos?.criticUserInfos.relation_type ===
+                                  'friend')
                             ? '#F29E50'
                             : '#24A5A5',
                         fontWeight: 'bold',
@@ -140,7 +143,7 @@ const ModalPosterContent = ({
                     >
                       {page === 'profil'
                         ? `${chosenUser.first_name} ${chosenUser.last_name}`
-                        : `${criticUserInfos.first_name} ${criticUserInfos.last_name}`}
+                        : `${infos?.criticUserInfos.first_name} ${infos?.criticUserInfos.last_name}`}
                     </span>
                     {` a noté le ${convertDate(infos.critic_date)}`}
                   </>

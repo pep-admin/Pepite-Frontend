@@ -79,6 +79,7 @@ const CommentsComponent = ({
         sx={{
           overflow: 'auto', // Active le défilement si le contenu dépasse la hauteur
           maxHeight: 'calc(75vh - 63px)', // Ajustez la hauteur maximale selon vos besoins
+          marginBottom: comments.length ? '0' : '35px',
         }}
       >
         <Stack margin="15px 0">
@@ -112,6 +113,7 @@ const CommentsComponent = ({
                   getComments={getComments}
                   userInfos={user_infos}
                   isFirst={index === 0}
+                  isLast={index === comments.length - 1}
                 />
               );
             })

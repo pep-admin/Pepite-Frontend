@@ -54,7 +54,6 @@ const CriticAdvicesModal = ({
   setShowPoster,
   infos,
   loggedUserInfos,
-  criticUserInfos,
   chosenUser,
   from,
 }) => {
@@ -198,7 +197,6 @@ const CriticAdvicesModal = ({
                 infos={infos}
                 loggedUserInfos={loggedUserInfos}
                 chosenUser={chosenUser}
-                criticUserInfos={criticUserInfos}
                 goldNuggetUserInfos={goldNuggetUserInfos}
                 relationshipStatus={relationshipStatus}
                 setShowUserInfos={setShowUserInfos}

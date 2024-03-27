@@ -31,7 +31,12 @@ const CriticAdvicesContent = ({ type, chosenMovie, infos }) => {
 
   // Informations sur le titre du film ou de la série
   const title = useMemo(() => {
-    if (chosenMovie && (type === 'new-critic' || type === 'new-advice'))
+    if (
+      chosenMovie &&
+      (type === 'new-critic' ||
+        type === 'new-advice' ||
+        type === 'new-quick-rating')
+    )
       return chosenMovie.title || chosenMovie.name;
     if (infos && (type === 'old-critic' || type === 'old-advice'))
       return infos.title || infos.name;
@@ -40,14 +45,22 @@ const CriticAdvicesContent = ({ type, chosenMovie, infos }) => {
 
   // Note du film ou de la série
   const originalScore = useMemo(() => {
-    if (type === 'new-critic' || type === 'new-advice') {
+    if (
+      type === 'new-critic' ||
+      type === 'new-advice' ||
+      type === 'new-quick-rating'
+    ) {
       return chosenMovie ? chosenMovie.vote_average / 2 : 0;
     }
     return infos ? infos.vote_average / 2 : 0;
   }, [type, chosenMovie, infos]);
 
   const overview = useMemo(() => {
-    if (type === 'new-critic' || type === 'new-advice') {
+    if (
+      type === 'new-critic' ||
+      type === 'new-advice' ||
+      type === 'new-quick-rating'
+    ) {
       return chosenMovie.overview;
     } else {
       return infos.overview;

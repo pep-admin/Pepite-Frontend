@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -24,25 +24,28 @@ const CriticAdvicesReview = ({
   infos,
   type,
   isModify,
-  newCriticText,
-  setNewCriticText,
+  onCriticTextChange,
   newRating,
-  criticUserInfos,
+  inputChoice,
 }) => {
+  const { id } = useParams();
+
   // Utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
-  const { id } = useParams();
+  const isProfilUserLogged = loggedUserInfos.id === parseInt(id, 10); // Vérifie si le profil affiché est celui de l'utilisateur connecté
 
   const [showReviewModal, setShowReviewModal] = useState(false); // Booleen pour l'affichage de la modale de texte
 
-  useEffect(() => {
-    if (isModify) {
-      setNewCriticText(infos.text);
-    } else {
-      setNewCriticText('');
-    }
-  }, [isModify]);
+  const [localCriticText, setLocalCriticText] = useState('');
+
+  const handleChange = event => {
+    const newText = event.target.value;
+    console.log('new-text', newText);
+
+    setLocalCriticText(newText);
+    onCriticTextChange(newText); // Remonte le changement d'état au parent
+  };
 
   function customTextArea(size) {
     return (
@@ -85,23 +88,24 @@ const CriticAdvicesReview = ({
             },
           }}
         >
-          {loggedUserInfos.id === parseInt(id, 10)
-            ? 'Votre critique'
-            : 'Votre conseil'}
+          {!isProfilUserLogged || inputChoice === 'advice'
+            ? 'Votre conseil'
+            : 'Votre critique'}
         </InputLabel>
         <OutlinedInput
           id="custom-outlined-input"
           label={
-            loggedUserInfos.id === parseInt(id, 10)
-              ? 'Votre critique'
-              : 'Votre conseil'
+            !isProfilUserLogged || inputChoice === 'advice'
+              ? 'Votre conseil'
+              : 'Votre critique'
           }
           placeholder={`Vous pouvez rédiger ${
-            loggedUserInfos.id === parseInt(id, 10)
-              ? 'une nouvelle critique'
-              : 'un nouveau conseil'
+            !isProfilUserLogged || inputChoice === 'advice'
+              ? 'un nouveau conseil'
+              : 'une nouvelle critique'
           }`}
-          value={newCriticText}
+          value={localCriticText}
+          onChange={handleChange}
           multiline
           minRows={'4'}
           sx={{
@@ -126,7 +130,7 @@ const CriticAdvicesReview = ({
               padding: '0',
             },
           }}
-          onChange={e => setNewCriticText(e.target.value)}
+          // onChange={e => setNewCriticText(e.target.value)}
         />
         {size === 'big' ? (
           <Button
@@ -164,12 +168,11 @@ const CriticAdvicesReview = ({
           isModify={isModify}
           customTextarea={customTextArea}
           newRating={newRating}
-          criticUserInfos={criticUserInfos}
         />
       )}
       {type === 'new-critic' || type === 'new-advice' || isModify ? (
         customTextArea('small')
-      ) : (
+      ) : type === 'new-quick-rating' ? null : (
         <Stack
           bgcolor="#f2f2f2"
           flexGrow="1"
@@ -203,13 +206,12 @@ const CriticAdvicesReview = ({
 };
 
 CriticAdvicesReview.propTypes = {
-  infos: PropTypes.object.isRequired,
+  infos: PropTypes.object,
   type: PropTypes.string.isRequired,
   isModify: PropTypes.bool.isRequired,
-  newCriticText: PropTypes.string.isRequired,
-  setNewCriticText: PropTypes.func.isRequired,
+  onCriticTextChange: PropTypes.func.isRequired,
   newRating: PropTypes.number,
-  criticUserInfos: PropTypes.object.isRequired,
+  inputChoice: PropTypes.string,
 };
 
-export default CriticAdvicesReview;
+export default React.memo(CriticAdvicesReview);

@@ -50,8 +50,8 @@ const CriticAdvicesPoster = ({
       ((type === 'new-critic' || type === 'new-advice' || isModify) &&
         (isGoldNugget || isTurnip)) ? (
         <Box
-          width="25px"
-          height="25px"
+          width="35px"
+          height="35px"
           position="absolute"
           top="3px"
           right="3px"
@@ -68,6 +68,8 @@ const CriticAdvicesPoster = ({
               src="/images/gold_right_top_outlined.svg"
               alt="pépite d'or"
               style={{
+                width: '37px',
+                height: '37px',
                 position: 'relative',
                 top: '0.2px',
               }}
@@ -75,10 +77,10 @@ const CriticAdvicesPoster = ({
           ) : (infos?.is_turnip && !isModify) || (!isGoldNugget && isTurnip) ? (
             <TurnipIcon
               sx={{
-                fontSize: '1.2em',
+                fontSize: '1.8em',
                 position: 'relative',
-                top: '0.2px',
-                right: '0.1px',
+                top: '-2px',
+                right: '-1px',
               }}
             />
           ) : null}

@@ -1,18 +1,17 @@
 import axios from 'axios';
 import { apiBaseUrl } from '../config';
 
-// Ajout d'une nouvelle critique
-export const addNewCritic = async (
+// Ajout d'une nouvelle notation rapide
+export const addNewQuickRating = async (
   movieId,
   type,
   rating,
-  text,
   isGoldNugget,
   isTurnip,
 ) => {
   await axios.post(
-    `${apiBaseUrl}/critics/add`,
-    { movie_id: movieId, type: type, rating, text, isGoldNugget, isTurnip },
+    `${apiBaseUrl}/quick_ratings/add`,
+    { movie_id: movieId, type: type, rating, isGoldNugget, isTurnip },
     { withCredentials: true },
   );
 };

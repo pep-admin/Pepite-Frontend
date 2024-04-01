@@ -13,7 +13,7 @@ import { getFriendRequestList } from '@utils/request/friendship/getFriendRequest
 import { getFriendsList } from '@utils/request/friendship/getFriendsList';
 import { getFollowedList } from '@utils/request/followed/getFollowedList';
 
-const ContactsComponent2 = () => {
+const ContactsComponent = () => {
   const { id } = useParams();
 
   const [friendRequestList, setFriendRequestList] = useState([]); // Liste des demandes d'amitié
@@ -129,4 +129,4 @@ const ContactsComponent2 = () => {
   );
 };
 
-export default ContactsComponent2;
+export default ContactsComponent;

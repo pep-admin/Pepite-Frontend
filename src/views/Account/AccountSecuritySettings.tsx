@@ -1,86 +1,40 @@
 // Import des libs externes
-import {
-  Stack,
-  Typography,
-  FormControlLabel,
-  Switch,
-  Input,
-} from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 
-// Import des icônes
-import EditIcon from '@mui/icons-material/Edit';
+// Import du composant Paper customisé
+import { Item } from '@utils/components/styledComponent';
 
 const AccountSecuritySettings = ({ setShowPasswordModal }) => {
   return (
-    <Stack direction="column" spacing={1} padding="6px 0">
-      <Stack
-        direction="row"
-        height="30px"
-        padding="0 13px"
-        alignItems="center"
-        columnGap="10px"
-      >
-        <Typography fontSize="1em" component="p" color="#094B4B">
-          {'Mot de passe : '}
+    <Item>
+      <Stack spacing={2} padding="10px">
+        <Typography
+          align="left"
+          fontSize="1em"
+          component="p"
+          fontWeight="500"
+          color="#0E6666"
+        >
+          {'Modification du mot de passe'}
         </Typography>
-        <Input disabled defaultValue="********" sx={{ bgcolor: '#ececec' }} />
-        <EditIcon
-          sx={{ fontSize: '20px', color: '#b5b5b5', cursor: 'pointer' }}
+        <Button
+          fullWidth
+          variant="contained"
+          sx={{
+            height: '35px',
+            background:
+              'linear-gradient(315deg, rgba(51, 170, 91, 1) 0%, rgba(36, 165, 165, 1) 100%)',
+            color: '#fff',
+            lineHeight: 'normal',
+            padding: '2px 0 0 0',
+          }}
           onClick={() => setShowPasswordModal(true)}
-        />
+        >
+          {'Modifier'}
+        </Button>
       </Stack>
-      <Stack
-        direction="row"
-        height="30px"
-        padding="0 13px"
-        alignItems="center"
-        columnGap="10px"
-      >
-        <Typography fontSize="1em" component="p" color="#094B4B">
-          {"Autoriser les demandes d'amitié : "}
-        </Typography>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label={
-            <span
-              style={{
-                fontSize: '0.9em',
-                fontWeight: 'bold',
-                color: '#5AC164',
-              }}
-            >
-              {'Activé'}
-            </span>
-          }
-        />
-      </Stack>
-      <Stack
-        direction="row"
-        height="30px"
-        padding="0 13px"
-        alignItems="center"
-        columnGap="10px"
-      >
-        <Typography fontSize="1em" component="p" color="#094B4B">
-          {'Autoriser les suivis : '}
-        </Typography>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label={
-            <span
-              style={{
-                fontSize: '0.9em',
-                fontWeight: 'bold',
-                color: '#5AC164',
-              }}
-            >
-              {'Activé'}
-            </span>
-          }
-        />
-      </Stack>
-    </Stack>
+    </Item>
   );
 };
 

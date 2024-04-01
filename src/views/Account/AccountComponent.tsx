@@ -5,11 +5,11 @@ import { useState } from 'react';
 // Import des composants internes
 import Header from '@utils/components/Header';
 import UserAvatar from '@utils/components/UserAvatar';
-import AccountPersonalInfos2 from './AccountPersonalInfos2';
-import AccountSecuritySettings2 from './AccountSecuritySettings2';
+import AccountPersonalInfos from './AccountPersonalInfos';
+import AccountSecuritySettings from './AccountSecuritySettings';
 import AccountUpdatePassword from './AccountUpdatePassword';
 import AccountUpdatePic from './AccountUpdatePic';
-import AccountDisplaySettings2 from './AccountDisplaySettings2';
+import AccountDisplaySettings from './AccountDisplaySettings';
 
 // Import des icônes
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
@@ -148,7 +148,7 @@ const AccountComponent = () => {
               >
                 {'Informations personnelles'}
               </Typography>
-              <AccountPersonalInfos2 />
+              <AccountPersonalInfos />
             </Stack>
             <Stack marginTop="20px">
               <Typography
@@ -160,7 +160,7 @@ const AccountComponent = () => {
               >
                 {"Paramètres d'affichage"}
               </Typography>
-              <AccountDisplaySettings2 />
+              <AccountDisplaySettings />
             </Stack>
             <Stack marginTop="20px">
               <Typography
@@ -172,7 +172,7 @@ const AccountComponent = () => {
               >
                 {'Confidentialité & sécurité'}
               </Typography>
-              <AccountSecuritySettings2
+              <AccountSecuritySettings
                 setShowPasswordModal={setShowPasswordModal}
               />
             </Stack>

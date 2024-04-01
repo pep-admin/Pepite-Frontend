@@ -74,13 +74,6 @@ const HomeComponent = () => {
     firstRender.current = false;
   }, []);
 
-  useEffect(() => {
-    console.log(
-      'les putains de critiques avec loading',
-      criticsOfAcquaintances,
-    );
-  }, [criticsOfAcquaintances]);
-
   return (
     <>
       <Header page={'home'} />

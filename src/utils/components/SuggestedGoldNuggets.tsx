@@ -68,7 +68,9 @@ const SuggestedGoldNuggets = ({
 
       const { data } = await fetchData();
 
-      setGoldenMovies(prev => [...prev, ...data.goldenMovies]);
+      console.log('les données ...', data);
+
+      setGoldenMovies(prev => [...prev, ...data.goldenNuggets]);
 
       if (!data.hasMore) {
         console.log('plus aucune pépite à récup');
@@ -143,7 +145,7 @@ const SuggestedGoldNuggets = ({
             goldenMovies.map(movie => {
               return (
                 <SuggestedGoldNuggetsCards
-                  key={movie.movie_id}
+                  key={'movie_id' in movie ? movie.movie_id : movie.serie_id}
                   movie={movie}
                   setGoldenMovieInfos={setGoldenMovieInfos}
                   setShowGoldenMovie={setShowGoldenMovie}

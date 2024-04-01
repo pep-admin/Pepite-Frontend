@@ -7,7 +7,6 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des icônes
@@ -21,10 +20,10 @@ import { ratings } from '@utils/data/ratings';
 import { useData } from '@hooks/DataContext';
 
 // Import des requêtes
-import { addNewCritic } from '@utils/request/critics/postCritic';
 import { getUserMovieStatusRequest } from '@utils/request/list/getUserMovieStatusRequest';
 import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
+import { addNewQuickRating } from '@utils/request/quickRatings/addNewQuickRating';
 
 const RatingMenu = ({
   utility,
@@ -51,10 +50,8 @@ const RatingMenu = ({
   };
 
   const quicklyRateMovie = async rating => {
-    const text = '';
-
+    // Vérifie si l'utilisateur souhaite voir le film, l'a déjà vu, ou l'a déjà noté
     const movieState = await getUserMovieStatusRequest(infos.id, displayType);
-    console.log('statut du film', movieState);
 
     // Si le film était dans la liste des films à voir, on le supprime de cette même liste
     if (movieState.isWanted) {
@@ -66,18 +63,14 @@ const RatingMenu = ({
       await removeWatchedMovieRequest(infos.id, displayType);
     }
 
-    // Ajout dans la liste des films notés
-    await addNewCritic(
+    // Ajout dans la liste des notations rapides
+    await addNewQuickRating(
       infos.id,
       displayType,
       rating,
-      text,
       isGoldNugget,
       isTurnip,
     );
-
-    /* Pour ne pas perturber l'UX lors de la notation rapide, 
-    on ne récupère pas les nouvelles données dynamiquement */
 
     setIsQuicklyRated(true);
     setOpenSnackbar(true);
@@ -85,10 +78,6 @@ const RatingMenu = ({
     handleCloseNoteMenu();
     closeQuickNoteMenu();
   };
-
-  useEffect(() => {
-    console.log('pépite ?', isGoldNugget);
-  }, [isGoldNugget]);
 
   return (
     <Menu

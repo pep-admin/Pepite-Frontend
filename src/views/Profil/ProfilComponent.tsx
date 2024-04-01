@@ -1,11 +1,10 @@
 // Import des libs externes
-import { Box, Container, Modal, Stack, Typography } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Container, Snackbar, Stack, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import des composants internes
 import Header from '@utils/components/Header';
-import SearchBar from '@utils/components/SearchBar';
 import UserAvatar from '@utils/components/UserAvatar';
 import ProfilRank from '@views/Profil/ProfilRank';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
@@ -13,6 +12,7 @@ import GradientBtn from '@views/CriticAdvices/GradientBtn';
 import SuggestedGoldNuggets from '@utils/components/SuggestedGoldNuggets';
 import NoCriticAdvice from '@views/CriticAdvices/NoCriticAdvice';
 import SkeletonCard from '@views/CriticAdvices/SkeletonCard';
+import ProfilInputChoice from './ProfilInputChoice';
 
 // Import du contexte
 import { useData } from '@hooks/DataContext';
@@ -21,11 +21,10 @@ import { useData } from '@hooks/DataContext';
 import useVerticalScroll from '@hooks/useVerticalScroll';
 
 // Import des requêtes
-import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
-import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 import { getUser } from '@utils/request/users/getUser';
 import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
+import { getCriticsAdvices } from '@utils/functions/criticsAdvicesActions';
 
 interface Picture {
   id: number;
@@ -49,7 +48,7 @@ interface User {
 }
 
 const ProfilComponent = () => {
-  const { displayType, chosenMovie, setChosenMovie } = useData();
+  const { displayType } = useData();
   const { id } = useParams();
 
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos')); // Les infos de l'utilisateur connecté
@@ -60,8 +59,16 @@ const ProfilComponent = () => {
   const [goldenMovies, setGoldenMovies] = useState([]); // Toutes les pépites de l'utilisateur du profil
   const [chosenUser, setChosenUser] = useState<User | null>(null); // Les informations de l'utilisateur autre que celui connecté
   const [isChosenUserLoaded, setIsChosenUserLoaded] = useState(false); // Etat de chargement des informations de l'utilisateur extérieur
-  const [criticsNumber, setCriticsNumber] = useState(0);
-  const [goldNuggetsNumber, setGoldNuggetsNumber] = useState(0);
+  const [criticsNumber, setCriticsNumber] = useState(0); // Le nombre de critiques de l'utilisateur du profil
+  const [goldNuggetsNumber, setGoldNuggetsNumber] = useState(0); // Le nombre de pépites de l'utilisateur du profil
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+  });
+
+  const openSnackbar = message => {
+    setSnackbar({ open: true, message });
+  };
 
   const firstRender = useRef(true);
 
@@ -85,54 +92,6 @@ const ProfilComponent = () => {
     }
   };
 
-  // Récupère les critiques et conseils de l'utilisateur du profil
-  const getCriticsAndAdvices = useCallback(
-    async page => {
-      try {
-        let hasMoreCritics = true;
-        let hasMoreAdvices = true;
-
-        const criticsData = await getCriticsOfUser(id, displayType, page, 5);
-        if (criticsData.length < 5) {
-          console.log('plus de critiques à récupérer');
-
-          // Si les critiques reçues sont inférieures à 5
-          hasMoreCritics = false;
-        }
-
-        const advicesData = await getAdvicesReceived(id, displayType, page, 5);
-        if (advicesData.length < 5) {
-          // Si les conseils reçus sont inférieurs à 5
-          hasMoreAdvices = false;
-        }
-
-        const combinedData = [...criticsData, ...advicesData];
-
-        // Tri des données combinées du plus récent au plus ancien
-        const sortedCombinedData = combinedData.sort((a, b) => {
-          const dateA = a.critic_date || a.advice_date;
-          const dateB = b.critic_date || b.advice_date;
-          return new Date(dateB).getTime() - new Date(dateA).getTime(); // Tri décroissant
-        });
-
-        // Ajout d'une clé de vérification de chargement des données utilisateur
-        const dataWithLoading = sortedCombinedData.map(item => ({
-          ...item,
-          isLoadingUser: true,
-        }));
-
-        // console.log('les critiques et conseils', dataWithLoading);
-        setCriticsAndAdvices(prevData => [...prevData, ...dataWithLoading]);
-
-        // Retourne true s'il reste des critiques ou des conseils à charger
-        return hasMoreCritics || hasMoreAdvices;
-      } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
-      }
-    },
-    [id, displayType],
-  );
-
   // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
   const fetchChosenUser = async user_id => {
     setIsChosenUserLoaded(false);
@@ -145,11 +104,12 @@ const ProfilComponent = () => {
   const { observerRef, loading, hasMore } = useVerticalScroll(
     id,
     firstRender,
-    getCriticsAndAdvices,
+    getCriticsAdvices,
     displayType,
     setCriticsAndAdvices,
   );
 
+  // Compte le nombre de critiques et le nombre de pépites de l'utilisateur
   useEffect(() => {
     const fetchCounts = async () => {
       const { criticsNumber, goldNuggetsNumber } =
@@ -167,7 +127,7 @@ const ProfilComponent = () => {
     }
 
     firstRender.current = false;
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     console.log('les conseils et critiques =>', criticsAndAdvices);
@@ -176,31 +136,6 @@ const ProfilComponent = () => {
   return (
     <>
       <Header page={'profil'} />
-      <Modal
-        open={chosenMovie !== null}
-        onClose={() => setChosenMovie(null)}
-        aria-labelledby={
-          isProfilUserLogged ? 'Nouvelle critique' : 'Nouveau conseil'
-        }
-        aria-describedby="modal-modal-description"
-      >
-        <Stack height="100vh" padding="0 6px" justifyContent="center">
-          <CriticAdvicesComponent
-            page={'profil'}
-            criticIndex={null}
-            type={isProfilUserLogged ? 'new-critic' : 'new-advice'}
-            chosenMovie={chosenMovie}
-            data={criticsAndAdvices}
-            setData={setCriticsAndAdvices}
-            setGoldenMovies={setGoldenMovies}
-            loggedUserInfos={loggedUserInfos}
-            chosenUser={chosenUser}
-            infos={null}
-            haveMoreCritics={null}
-            isLast={null}
-          />
-        </Stack>
-      </Modal>
       <Container
         maxWidth="xl"
         sx={{
@@ -312,26 +247,19 @@ const ProfilComponent = () => {
               loggedUserInfos={loggedUserInfos}
               goldenMovies={goldenMovies}
               setGoldenMovies={setGoldenMovies}
+              chosenUser={chosenUser}
             />
-            <Stack padding="0 4%" marginTop="80px">
-              <Stack>
-                <Typography
-                  component="h4"
-                  variant="body1"
-                  fontWeight="600"
-                  color="#383838"
-                >
-                  {isProfilUserLogged
-                    ? 'Publiez une critique'
-                    : 'Conseillez quelque chose'}
-                </Typography>
-              </Stack>
-              <SearchBar
-                page={'profil'}
-                loggedUserInfos={loggedUserInfos}
-                chosenUser={chosenUser}
-              />
-            </Stack>
+            <ProfilInputChoice
+              page={'profil'}
+              isProfilUserLogged={isProfilUserLogged}
+              loggedUserInfos={loggedUserInfos}
+              chosenUser={chosenUser}
+              setChosenUser={setChosenUser}
+              criticsAndAdvices={criticsAndAdvices}
+              setCriticsAndAdvices={setCriticsAndAdvices}
+              setGoldenMovies={setGoldenMovies}
+              openSnackbar={openSnackbar}
+            />
             <Stack padding="0 4%" marginTop="20px">
               <Stack marginBottom="6px">
                 <Typography
@@ -360,6 +288,8 @@ const ProfilComponent = () => {
                       loggedUserInfos={loggedUserInfos}
                       infos={infos}
                       chosenUser={chosenUser}
+                      inputChoice={null}
+                      openSnackbar={openSnackbar}
                     />
                   );
                 })
@@ -375,6 +305,12 @@ const ProfilComponent = () => {
               )}
             </Stack>
             {hasMore && !loading && <div ref={observerRef}></div>}
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={3000}
+              onClose={() => setSnackbar({ ...snackbar, open: false })}
+              message={snackbar.message}
+            />
           </Box>
         </Stack>
       </Container>

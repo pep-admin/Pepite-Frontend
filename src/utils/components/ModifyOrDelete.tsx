@@ -9,10 +9,14 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+// Import des composants internes
+import CustomAlert from './CustomAlert';
+
 // Import des icônes
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import ClearIcon from '@mui/icons-material/Clear';
 
@@ -23,20 +27,33 @@ import { useData } from '@hooks/DataContext';
 import { deleteCritic } from '../request/critics/deleteCritic';
 import { deleteCriticComment } from '../request/comments/deleteCriticComment';
 import { getAllCriticComments } from '../request/comments/getAllCriticComments';
-import { getCriticsOfUser } from '../request/critics/getCritics';
-import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 import { deleteAdviceComment } from '@utils/request/comments/deleteAdviceComment';
 import { getAllAdviceComments } from '@utils/request/comments/getAllAdviceComments';
+import { performUpdatePostProcessing } from '@utils/functions/criticsAdvicesActions';
+import { deleteAdvice } from '@utils/request/advices/deleteAdvice';
 
 const ModifyOrDelete = ({
   page,
   parent,
   infos,
   setData,
+  chosenUser,
   isModify,
   setIsModify,
+  openSnackbar,
+  cardsToShow,
+  setGoldenMovies,
 }) => {
-  const { displayType } = useData();
+  const { displayType, setChosenMovieId, setChosenMovie } = useData();
+
+  const { id } = useParams();
+
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos')); // Les infos de l'utilisateur connecté
+
+  const isProfilUserLogged = loggedUserInfos.id === parseInt(id, 10); // Vérifie si le profil affiché est celui de l'utilisateur connecté
+
+  const [showDeleteCriticAdviceModal, setShowDeleteCriticAdviceModal] =
+    useState(false);
 
   // Menu des outils pour modifier / supprimer
   const [displayTools, setDisplayTools] = useState(null);
@@ -46,27 +63,36 @@ const ModifyOrDelete = ({
   };
 
   const handleTools = async tool => {
-    const userId = localStorage.getItem('user_id');
-
     // TO DO : faire apparaitre une modale
-    if (tool === 'delete' && parent === 'critic') {
-      let newCriticsData;
+    if (
+      tool === 'delete' &&
+      (parent === 'old-critic' || parent === 'old-advice')
+    ) {
+      const action = 'delete';
 
-      await deleteCritic(infos.critic_id, displayType);
+      const userId = page === 'home' ? loggedUserInfos.id : id;
 
-      if (page === 'home') {
-        newCriticsData = await getAllCriticsOfAcquaintances(
-          userId,
-          displayType,
-          1,
-        );
-      } else if (page === 'profil') {
-        newCriticsData = await getCriticsOfUser(userId, displayType, 1, 5);
+      if (parent === 'old-critic') {
+        await deleteCritic(infos.critic_id, displayType);
       } else {
-        return;
+        await deleteAdvice(infos.advice_id, displayType);
       }
 
-      setData(newCriticsData);
+      performUpdatePostProcessing(
+        page,
+        parent,
+        userId,
+        isProfilUserLogged,
+        displayType,
+        action,
+        openSnackbar,
+        setData,
+        cardsToShow,
+        setGoldenMovies,
+        setIsModify,
+        setChosenMovie,
+        setChosenMovieId,
+      );
     } else if (tool === 'delete' && parent === 'comment') {
       let newCommentsData;
 
@@ -85,13 +111,17 @@ const ModifyOrDelete = ({
       }
 
       setData(newCommentsData.data);
+      setDisplayTools(null);
     }
   };
 
   return (
     <>
-      <EditNoteIcon
-        sx={{ position: 'relative', left: '4px', cursor: 'pointer' }}
+      <MoreHorizIcon
+        sx={{
+          color: 'gray',
+          cursor: 'pointer',
+        }}
         onClick={handleToolsMenu}
       />
       <Menu
@@ -116,6 +146,7 @@ const ModifyOrDelete = ({
         >
           <MenuItem
             onClick={() => {
+              handleTools('modify');
               setIsModify(!isModify);
               setDisplayTools(null);
             }}
@@ -137,7 +168,7 @@ const ModifyOrDelete = ({
           <Divider />
           <MenuItem
             onClick={() => {
-              handleTools('delete');
+              setShowDeleteCriticAdviceModal(true);
               setDisplayTools(null);
             }}
             sx={{ padding: '0', minHeight: 'auto' }}
@@ -158,6 +189,32 @@ const ModifyOrDelete = ({
           </MenuItem>
         </Stack>
       </Menu>
+      {showDeleteCriticAdviceModal ? (
+        <CustomAlert
+          alertType="warning"
+          message={
+            parent === 'old-critic' ? (
+              <span>
+                {'Êtes vous sûr(e) de vouloir supprimer '}
+                <strong> {infos.title} </strong>
+                {'de vos critiques ?'}
+              </span>
+            ) : (
+              <span>
+                {'Êtes vous sûr(e) de ne plus vouloir conseiller '}
+                <strong> {infos.title} </strong>
+                {'à'}
+                <strong>
+                  {' '}
+                  {`${chosenUser.first_name} ${chosenUser.last_name} ?`}{' '}
+                </strong>
+              </span>
+            )
+          }
+          setShowModal={setShowDeleteCriticAdviceModal}
+          confirmation={handleTools}
+        />
+      ) : null}
     </>
   );
 };
@@ -169,6 +226,10 @@ ModifyOrDelete.propTypes = {
   isModify: PropTypes.bool.isRequired,
   setIsModify: PropTypes.func.isRequired,
   parent: PropTypes.string.isRequired,
+  chosenUser: PropTypes.object,
+  openSnackbar: PropTypes.func,
+  cardsToShow: PropTypes.number,
+  setGoldenMovies: PropTypes.func,
 };
 
 export default ModifyOrDelete;

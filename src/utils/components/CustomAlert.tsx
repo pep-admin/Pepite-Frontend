@@ -8,7 +8,6 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const CustomAlert = ({
   alertType,
-  criticOrAdvice,
   message,
   setOnAlert,
   setShowModal,
@@ -75,12 +74,7 @@ const CustomAlert = ({
           {alertType === 'warning' ? (
             <Stack direction="row" justifyContent="center">
               <Button
-                onClick={() =>
-                  confirmation(
-                    true,
-                    criticOrAdvice === 'new-critic' ? 'critic' : 'advice',
-                  )
-                }
+                onClick={() => confirmation('delete')}
                 sx={{
                   color: '#D66506',
                 }}

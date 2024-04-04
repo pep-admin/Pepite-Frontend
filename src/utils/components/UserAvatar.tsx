@@ -1,4 +1,5 @@
 import { Avatar } from '@mui/material';
+import { findRelationColor } from '@utils/functions/findRelationColor';
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -28,22 +29,21 @@ const UserAvatar = ({
     }
   };
 
-  const findRelationColor = relationType => {
-    if (!isOutlined) return 'transparent';
+  // const findRelationColor = relationType => {
 
-    switch (relationType) {
-      case 'close_friend':
-        return '#ff7b00';
-      case 'friend':
-        return '#f29e50';
-      case 'followed':
-        return '#24a5a5';
-      case 'self':
-        return '#FDFDFD';
-      default:
-        return '#FDFDFD';
-    }
-  };
+  //   switch (relationType) {
+  //     case 'close_friend':
+  //       return '#ff7b00';
+  //     case 'friend':
+  //       return '#f29e50';
+  //     case 'followed':
+  //       return '#24a5a5';
+  //     case 'self':
+  //       return '#FDFDFD';
+  //     default:
+  //       return '#FDFDFD';
+  //   }
+  // };
 
   return (
     <Avatar
@@ -56,7 +56,7 @@ const UserAvatar = ({
         border: 'none !important',
         outlineWidth: isOutlined ? outlineWidth : 'medium',
         outlineStyle: 'solid',
-        outlineColor: findRelationColor(relationType),
+        outlineColor: !isOutlined ? 'transparent' : findRelationColor(relationType),
         cursor: 'pointer',
         ...sx,
       }}

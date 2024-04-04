@@ -3,7 +3,7 @@ import { Container, Stack, Typography, Box } from '@mui/material';
 import { useState } from 'react';
 
 // Import des composants internes
-import Header from '@utils/components/Header';
+import Header from '@utils/components/header/Header';
 import UserAvatar from '@utils/components/UserAvatar';
 import AccountPersonalInfos from './AccountPersonalInfos';
 import AccountSecuritySettings from './AccountSecuritySettings';

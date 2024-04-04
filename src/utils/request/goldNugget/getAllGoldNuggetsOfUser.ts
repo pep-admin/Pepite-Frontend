@@ -17,8 +17,6 @@ export const getAllGoldNuggetsOfUser = async (
       },
     );
 
-    console.log('la réponse', response);
-
     return response;
   } catch (error) {
     console.log('erreur dans la récupération des pépites', error);

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Box, Container, Snackbar, Stack, Typography } from '@mui/material';
 
 // Import des composants internes
-import Header from '@utils/components/Header';
+import Header from '@utils/components/header/Header';
 import TopContributors from '@views/Contacts/TopContributors';
 import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';

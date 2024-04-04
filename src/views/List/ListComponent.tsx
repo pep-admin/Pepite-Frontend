@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 
 // Import des composants internes
-import Header from '@utils/components/Header';
+import Header from '@utils/components/header/Header';
 import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets';
 import ListMoviesSeries from './ListMoviesSeries';
 

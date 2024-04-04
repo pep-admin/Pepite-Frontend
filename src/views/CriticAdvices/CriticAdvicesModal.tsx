@@ -27,6 +27,7 @@ import { getRelationStatusRequest } from '@utils/request/friendship/getRelationS
 
 // Import des composants internes
 import ModalPosterContent from './ModalPosterContent';
+import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 interface Picture {
   id: number;
@@ -48,6 +49,53 @@ interface User {
   rank: string;
 }
 
+type Genre = {
+  id: number;
+  name: string;
+};
+
+type ProductionCountry = {
+  iso_3166_1: string;
+  name: string;
+};
+
+type ReleaseDateEntry = {
+  iso_3166_1: string;
+};
+
+type Movie = {
+  friends_and_followed_critics?: undefined;
+  genres: Array<Genre>;
+  id: number;
+  overview: string;
+  poster_path: string;
+  production_countries: Array<ProductionCountry>;
+  release_date: string;
+  release_dates: {
+    results: Array<ReleaseDateEntry>;
+  };
+  title: string;
+  vote_average: number;
+  wanted_date?: string;
+  watched_date?: string;
+};
+
+// Valeur initiale basée sur la structure de votre objet
+const initialMovie: Movie = {
+  friends_and_followed_critics: undefined,
+  genres: [],
+  id: 0, 
+  overview: '',
+  poster_path: '',
+  production_countries: [],
+  release_date: '',
+  release_dates: { results: [] },
+  title: '',
+  vote_average: 0,
+  wanted_date: undefined,
+  watched_date: undefined,
+};
+
 const CriticAdvicesModal = ({
   page,
   showPoster,
@@ -64,26 +112,56 @@ const CriticAdvicesModal = ({
   const [goldNuggetUserInfos, setGoldNuggetUserInfos] = useState<User[]>([]);
   const [showUserInfos, setShowUserInfos] = useState(true);
   const [relationshipStatus, setRelationshipStatus] = useState({});
+  const [movieInfos, setMovieInfos] = useState<Movie>(initialMovie);
 
   const opts = {
     height: '100%',
     width: '100%',
   };
 
-  // Récupère la bande annonce youtube
-  const fetchTrailerUrl = async () => {
-    let movieId;
-
-    if (from === 'critic') {
-      movieId = infos.id;
-    } else if (from === 'suggested' && displayType === 'movie') {
+  const getMovieInfos = async() => {
+    let movieId = 0;
+    let type = '';
+    
+    if('movie_id' in infos) {
       movieId = infos.movie_id;
-    } else if (from === 'suggested' && displayType === 'tv') {
+      type = 'movie';
+      
+    } else {
       movieId = infos.serie_id;
+      type = 'tv';
+      
     }
 
+    const response = await getMovieDetails(type, movieId);
+    const movieWithDetails = {...response, ...infos};
+    setMovieInfos(movieWithDetails);
+    console.log('les infos du film', movieWithDetails);
+    
+  }
+
+  // Récupère la bande annonce youtube
+  const fetchTrailerUrl = async() => {
+    let movieId = 0;
+    let type = '';
+    console.log('les infos', infos);
+    
+
+    if (from === 'old-critic' || from === 'old-advice') {
+      movieId = infos.id;
+    } else if ('movie_id' in infos) {
+      movieId = infos.movie_id;
+      type = 'movie';
+    } else if ('serie_id' in infos) {
+      movieId = infos.serie_id;
+      type = 'tv';
+    }
+
+    console.log(movieId, type);
+    
+
     try {
-      const response = await getVideo(displayType, movieId);
+      const response = await getVideo(type, movieId);
       const data = response.data;
       if (data.results.length === 0) {
         setVideoId('no-video');
@@ -129,19 +207,27 @@ const CriticAdvicesModal = ({
   };
 
   useEffect(() => {
+    if(from === 'notifications') return;
+
     // Statut des relations entre les utilisateurs qui ont choisi le film en pépite
     for (const i in infos.users) {
       getRelationStatus(infos.users[i]);
     }
 
     // Informations des utilisateurs qui ont choisi le film en pépite
-    if (from !== 'critic' && infos.users) {
+    if (from !== 'old-critic' && infos.users) {
       getGoldNuggetUsersInfos(infos.users);
     }
 
     // Récupère la bande annonce (si existante) du film choisi
     fetchTrailerUrl();
-  }, [infos]);
+  }, [infos, from]);
+
+  useEffect(() => {
+    if(from !== 'notifications') return;
+
+    getMovieInfos();
+  }, [from])
 
   return (
     <Modal
@@ -170,7 +256,7 @@ const CriticAdvicesModal = ({
             alignItems="center"
             justifyContent="center"
             sx={{
-              backgroundColor: '#3b3b3b',
+              backgroundColor: '#1c1c1c',
               borderRadius: '4px',
             }}
             onClick={() => setShowPoster(null)}
@@ -182,8 +268,13 @@ const CriticAdvicesModal = ({
           <Stack position="relative">
             <CardMedia
               component="img"
-              image={`https://image.tmdb.org/t/p/w500/${infos.poster_path}`}
-              alt="green iguana"
+              image={
+                from === 'notifications' ?
+                `https://image.tmdb.org/t/p/w500/${movieInfos.poster_path}`
+                :
+                `https://image.tmdb.org/t/p/w500/${infos.poster_path}`
+              }
+              alt={`poster du film`}
               sx={{
                 height: 'auto',
                 width: '80vw',
@@ -194,7 +285,12 @@ const CriticAdvicesModal = ({
               <ModalPosterContent
                 page={page}
                 from={from}
-                infos={infos}
+                infos={
+                  from === 'notifications' ?
+                    movieInfos
+                  :
+                    infos
+                }
                 loggedUserInfos={loggedUserInfos}
                 chosenUser={chosenUser}
                 goldNuggetUserInfos={goldNuggetUserInfos}
@@ -240,7 +336,7 @@ const CriticAdvicesModal = ({
             marginTop: '15px',
             display: 'flex',
             justifyContent: 'center',
-            backgroundColor: '#3b3b3b',
+            backgroundColor: '#1c1c1c',
           }}
         >
           <ToggleButton
@@ -285,7 +381,7 @@ const CriticAdvicesModal = ({
 CriticAdvicesModal.propTypes = {
   showPoster: PropTypes.bool.isRequired,
   setShowPoster: PropTypes.func.isRequired,
-  infos: PropTypes.object.isRequired,
+  infos: PropTypes.object,
   loggedUserInfos: PropTypes.object.isRequired,
   criticUserInfos: PropTypes.object,
   chosenUser: PropTypes.object,

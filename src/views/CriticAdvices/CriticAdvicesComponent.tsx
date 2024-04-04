@@ -402,7 +402,7 @@ const CriticAdvicesComponent = ({
           infos={infos}
           loggedUserInfos={loggedUserInfos}
           chosenUser={chosenUser}
-          from={'critic'}
+          from={type}
         />
       ) : null}
       {(type === 'old-critic' || type === 'old-advice') && (

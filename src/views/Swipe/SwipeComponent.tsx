@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
-import Header from '@utils/components/Header';
+import Header from '@utils/components/header/Header';
 import { Item } from '@utils/components/styledComponent';
 import LastCard from './LastCard';
 

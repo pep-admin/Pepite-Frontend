@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Import des composants internes
-import Header from '@utils/components/Header';
+import Header from '@utils/components/header/Header';
 import TopContributors from './TopContributors';
 import ContactsFriendsFollowed from './ContactsFriendsFollowed';
 

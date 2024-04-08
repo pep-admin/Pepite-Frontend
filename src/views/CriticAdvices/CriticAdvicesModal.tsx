@@ -12,9 +12,6 @@ import { useState, useEffect } from 'react';
 import YouTube from 'react-youtube';
 import PropTypes from 'prop-types';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
-
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -84,7 +81,7 @@ type Movie = {
 const initialMovie: Movie = {
   friends_and_followed_critics: undefined,
   genres: [],
-  id: 0, 
+  id: 0,
   overview: '',
   poster_path: '',
   production_countries: [],
@@ -105,8 +102,6 @@ const CriticAdvicesModal = ({
   chosenUser,
   from,
 }) => {
-  const { displayType } = useData();
-
   const [showVideo, setShowVideo] = useState(false);
   const [videoId, setVideoId] = useState(null);
   const [goldNuggetUserInfos, setGoldNuggetUserInfos] = useState<User[]>([]);
@@ -119,37 +114,39 @@ const CriticAdvicesModal = ({
     width: '100%',
   };
 
-  const getMovieInfos = async() => {
+  const getMovieInfos = async () => {
     let movieId = 0;
     let type = '';
-    
-    if('movie_id' in infos) {
+
+    if ('movie_id' in infos) {
       movieId = infos.movie_id;
       type = 'movie';
-      
     } else {
       movieId = infos.serie_id;
       type = 'tv';
-      
     }
 
     const response = await getMovieDetails(type, movieId);
-    const movieWithDetails = {...response, ...infos};
+    const movieWithDetails = { ...response, ...infos };
     setMovieInfos(movieWithDetails);
     console.log('les infos du film', movieWithDetails);
-    
-  }
+  };
 
   // Récupère la bande annonce youtube
-  const fetchTrailerUrl = async() => {
+  const fetchTrailerUrl = async () => {
     let movieId = 0;
     let type = '';
     console.log('les infos', infos);
-    
 
     if (from === 'old-critic' || from === 'old-advice') {
       movieId = infos.id;
-    } else if ('movie_id' in infos) {
+      if ('release_date' in infos) {
+        type = 'movie';
+      } else {
+        type = 'tv';
+      }
+    }
+    if ('movie_id' in infos) {
       movieId = infos.movie_id;
       type = 'movie';
     } else if ('serie_id' in infos) {
@@ -158,7 +155,6 @@ const CriticAdvicesModal = ({
     }
 
     console.log(movieId, type);
-    
 
     try {
       const response = await getVideo(type, movieId);
@@ -207,7 +203,7 @@ const CriticAdvicesModal = ({
   };
 
   useEffect(() => {
-    if(from === 'notifications') return;
+    if (from === 'notifications') return;
 
     // Statut des relations entre les utilisateurs qui ont choisi le film en pépite
     for (const i in infos.users) {
@@ -224,10 +220,11 @@ const CriticAdvicesModal = ({
   }, [infos, from]);
 
   useEffect(() => {
-    if(from !== 'notifications') return;
+    if (from !== 'notifications') return;
 
     getMovieInfos();
-  }, [from])
+    fetchTrailerUrl();
+  }, [from]);
 
   return (
     <Modal
@@ -269,10 +266,9 @@ const CriticAdvicesModal = ({
             <CardMedia
               component="img"
               image={
-                from === 'notifications' ?
-                `https://image.tmdb.org/t/p/w500/${movieInfos.poster_path}`
-                :
-                `https://image.tmdb.org/t/p/w500/${infos.poster_path}`
+                from === 'notifications'
+                  ? `https://image.tmdb.org/t/p/w500/${movieInfos.poster_path}`
+                  : `https://image.tmdb.org/t/p/w500/${infos.poster_path}`
               }
               alt={`poster du film`}
               sx={{
@@ -285,12 +281,7 @@ const CriticAdvicesModal = ({
               <ModalPosterContent
                 page={page}
                 from={from}
-                infos={
-                  from === 'notifications' ?
-                    movieInfos
-                  :
-                    infos
-                }
+                infos={from === 'notifications' ? movieInfos : infos}
                 loggedUserInfos={loggedUserInfos}
                 chosenUser={chosenUser}
                 goldNuggetUserInfos={goldNuggetUserInfos}
@@ -310,7 +301,7 @@ const CriticAdvicesModal = ({
                     fontSize="large"
                     sx={{
                       color: '#fff',
-                      marginTop: '83.96px',
+                      marginTop: '73.6px',
                       cursor: 'pointer',
                       opacity: '0.3',
                     }}

@@ -1,6 +1,13 @@
 // Import des libs externes
-import { Divider, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
+import {
+  Divider,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import HomeIcon from '@mui/icons-material/Home';
@@ -10,8 +17,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 
-const PagesMenu = ({ anchorElNav, handleCloseNavMenu}) => {
-
+const PagesMenu = ({ anchorElNav, handleCloseNavMenu }) => {
   // Infos de l'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
@@ -88,6 +94,11 @@ const PagesMenu = ({ anchorElNav, handleCloseNavMenu}) => {
       ])}
     </Menu>
   );
+};
+
+PagesMenu.propTypes = {
+  anchorElNav: PropTypes.object,
+  handleCloseNavMenu: PropTypes.func.isRequired,
 };
 
 export default PagesMenu;

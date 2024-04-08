@@ -23,11 +23,14 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 // Import des requêtes
 import { MagnifyingGlassIcon } from '../styledComponent';
 import { getNotificationsRequest } from '@utils/request/notifications/getNotificationsRequest';
-import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
 
 type Notification = {
-  type: 'friendRequest' | 'acceptedFriendRequest' | 'movieAdvice' | 'serieAdvice';
-  date: string; 
+  type:
+    | 'friendRequest'
+    | 'acceptedFriendRequest'
+    | 'movieAdvice'
+    | 'serieAdvice';
+  date: string;
 };
 
 type Notifications = Notification[];
@@ -38,13 +41,15 @@ const Header = ({ page }) => {
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
-  ); 
+  );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null,
   );
 
   const [notifications, setNotifications] = React.useState<Notifications>([]);
-  const [anchorElNotif, setAnchorElNotif] = React.useState<null | HTMLElement>(null);
+  const [anchorElNotif, setAnchorElNotif] = React.useState<null | HTMLElement>(
+    null,
+  );
 
   const openNotif = Boolean(anchorElNotif);
 
@@ -69,7 +74,7 @@ const Header = ({ page }) => {
   };
 
   // Détermine l'ancre pour le menu des notifications
-  const handleOpenNotifMenu= (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenNotifMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorElNotif(event.currentTarget);
   };
 
@@ -88,14 +93,35 @@ const Header = ({ page }) => {
     const response = await getNotificationsRequest();
 
     // Extraire chaque type de notification de la réponse
-    const { friendRequests, acceptedFriendRequests, movieAdvices, seriesAdvices } = response.data;
+    const {
+      friendRequests,
+      acceptedFriendRequests,
+      movieAdvices,
+      seriesAdvices,
+    } = response.data;
 
     // Combine toutes les notifications dans un seul tableau, en normalisant la clé de date
     const allNotifications = [
-        ...friendRequests.map(notif => ({ ...notif, type: 'friendRequest', date: notif.sent_date })),
-        ...acceptedFriendRequests.map(notif => ({ ...notif, type: 'acceptedFriendRequest', date: notif.sent_date })),
-        ...movieAdvices.map(notif => ({ ...notif, type: 'movieAdvice', date: notif.advice_date })),
-        ...seriesAdvices.map(notif => ({ ...notif, type: 'serieAdvice', date: notif.advice_date }))
+      ...friendRequests.map(notif => ({
+        ...notif,
+        type: 'friendRequest',
+        date: notif.sent_date,
+      })),
+      ...acceptedFriendRequests.map(notif => ({
+        ...notif,
+        type: 'acceptedFriendRequest',
+        date: notif.sent_date,
+      })),
+      ...movieAdvices.map(notif => ({
+        ...notif,
+        type: 'movieAdvice',
+        date: notif.advice_date,
+      })),
+      ...seriesAdvices.map(notif => ({
+        ...notif,
+        type: 'serieAdvice',
+        date: notif.advice_date,
+      })),
     ];
 
     // Trier toutes les notifications par date, du plus récent au plus ancien
@@ -108,7 +134,7 @@ const Header = ({ page }) => {
     });
 
     // Mettre à jour l'état avec les notifications triées
-    setNotifications(sortedNotifications); 
+    setNotifications(sortedNotifications);
   }
 
   React.useEffect(() => {
@@ -140,10 +166,7 @@ const Header = ({ page }) => {
             justifyContent: 'space-between',
           }}
         >
-          <Stack
-            direction='row'
-            spacing={3}
-          >
+          <Stack direction="row" spacing={3}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -154,7 +177,7 @@ const Header = ({ page }) => {
             >
               <MenuIcon />
             </IconButton>
-            <Badge 
+            <Badge
               badgeContent={notifications.length}
               color="secondary"
               max={99}
@@ -163,7 +186,7 @@ const Header = ({ page }) => {
                   right: 0,
                   top: 3,
                 },
-              }}  
+              }}
             >
               <IconButton
                 size="large"
@@ -176,11 +199,11 @@ const Header = ({ page }) => {
                 <NotificationsIcon />
               </IconButton>
             </Badge>
-            <PagesMenu 
+            <PagesMenu
               anchorElNav={anchorElNav}
               handleCloseNavMenu={handleCloseNavMenu}
             />
-            <NotificationsMenu 
+            <NotificationsMenu
               page={page}
               anchorElNotif={anchorElNotif}
               openNotif={openNotif}
@@ -200,7 +223,7 @@ const Header = ({ page }) => {
               {'pépite.'}
             </Typography>
           </Stack>
-          <Stack direction='row' spacing={3}>
+          <Stack direction="row" spacing={3}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -232,7 +255,7 @@ const Header = ({ page }) => {
                 )}
               />
             </IconButton>
-            <SettingsMenu 
+            <SettingsMenu
               anchorElUser={anchorElUser}
               handleCloseUserMenu={handleCloseUserMenu}
             />
@@ -240,7 +263,6 @@ const Header = ({ page }) => {
         </Toolbar>
       </AppBar>
     </>
-    
   );
 };
 

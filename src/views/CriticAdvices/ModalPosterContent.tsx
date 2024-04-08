@@ -35,15 +35,13 @@ const ModalPosterContent = ({
   setShowUserInfos,
   relationshipStatus,
 }) => {
-
   const { displayType } = useData();
   const { id } = useParams();
 
-  const isContentFromLoggedUser = 
-    from === 'old-critic' || from === 'suggested' ? 
-      infos.user_id === loggedUserInfos.id
-    :
-      infos.sender_id === loggedUserInfos.id
+  const isContentFromLoggedUser =
+    from === 'old-critic' || from === 'suggested'
+      ? infos.user_id === loggedUserInfos.id
+      : infos.sender_id === loggedUserInfos.id;
 
   const [relationsRatings, setRelationsRatings] = useState(null);
   const [showMovieInfos, setShowMovieInfos] = useState(false);
@@ -54,47 +52,54 @@ const ModalPosterContent = ({
   };
 
   useEffect(() => {
-    if (from === 'old-critic' || from === 'notifications') return;
+    if (
+      from === 'old-critic' ||
+      from === 'old-advice' ||
+      from === 'notifications'
+    )
+      return;
 
-    let movieId;
+    let id: number;
 
-    if('movie_id' in infos) {
-      movieId = infos.movie_id;
-    } else if('serie_id' in infos) {
-      movieId = infos.serie_id;
+    if ('movie_id' in infos) {
+      id = infos.movie_id;
+    } else if ('serie_id' in infos) {
+      id = infos.serie_id;
     }
 
-    getRatings(infos.movie_id);
+    getRatings(id);
   }, [infos, from]);
-
-  console.log('d\'où vient le truc => ', from);
-  console.log('les infos à fix =>', infos)
 
   const generateText = () => {
     // Si la modale vient d'une critique OU des pépites suggérées de l'utilisateur connecté
-    if((from === 'old-critic' || from === 'suggested') && infos.user_id === loggedUserInfos.id) {
-      return(
+    if (
+      (from === 'old-critic' || from === 'suggested') &&
+      infos.user_id === loggedUserInfos.id
+    ) {
+      return (
         <>
           {'Vous avez noté le '}
           <span style={{ color: '#24a5a5' }}>{`${convertDate(
             infos.critic_date,
           )}`}</span>
         </>
-      )
+      );
     }
     // Si la modale vient d'une critique OU des pépites suggérées d'un autre utilisateur
-    else if((from === 'old-critic' || from === 'suggested') && infos.user_id !== loggedUserInfos.id) {
+    else if (
+      (from === 'old-critic' || from === 'suggested') &&
+      infos.user_id !== loggedUserInfos.id
+    ) {
+      const userInfos =
+        page === 'home'
+          ? infos.criticUserInfos
+          : page === 'profil'
+          ? chosenUser
+          : infos;
 
-      const userInfos = 
-        page === 'home' ?
-          infos.criticUserInfos
-        : page === 'profil' ?
-          chosenUser
-        : infos
-
-      return(
+      return (
         <>
-          <strong style={{ color: findRelationColor(userInfos.relation_type)}}>
+          <strong style={{ color: findRelationColor(userInfos.relation_type) }}>
             {`${userInfos.first_name} ${userInfos.last_name}`}
           </strong>
           {' a noté le '}
@@ -102,13 +107,17 @@ const ModalPosterContent = ({
             infos.critic_date,
           )}`}</span>
         </>
-      )
+      );
     }
     // Si la modale vient d'un conseil d'un ami
-    else if(from === 'old-advice' && !isContentFromLoggedUser) {
-      return(
+    else if (from === 'old-advice' && !isContentFromLoggedUser) {
+      return (
         <>
-          <strong style={{ color: findRelationColor(infos?.criticUserInfos.relation_type)}}>
+          <strong
+            style={{
+              color: findRelationColor(infos?.criticUserInfos.relation_type),
+            }}
+          >
             {`${infos?.criticUserInfos.first_name} ${infos?.criticUserInfos.last_name}`}
           </strong>
           {' vous a conseillé '}
@@ -117,14 +126,16 @@ const ModalPosterContent = ({
             infos.advice_date,
           )}`}</span> */}
         </>
-      )
+      );
     }
     // Si la modale vient d'un conseil de l'utilisateur connecté
-    else if(from === 'old-advice' && isContentFromLoggedUser ) {
-      return(
+    else if (from === 'old-advice' && isContentFromLoggedUser) {
+      return (
         <>
           {'Vous avez conseillé à '}
-          <strong style={{ color: findRelationColor(chosenUser.relation_type)}}>
+          <strong
+            style={{ color: findRelationColor(chosenUser.relation_type) }}
+          >
             {`${chosenUser.first_name} ${chosenUser.last_name}`}
           </strong>
           {/* <br />
@@ -132,9 +143,20 @@ const ModalPosterContent = ({
             infos.advice_date,
           )}`}</span> */}
         </>
-      )
+      );
     }
-  }
+    // Si la modale vient d'un conseil des notifications
+    else if (from === 'notifications') {
+      return (
+        <>
+          <strong style={{ color: '#f29e50' }}>
+            {`${infos.first_name} ${infos.last_name}`}
+          </strong>
+          {' vous a conseillé'}
+        </>
+      );
+    }
+  };
 
   return (
     <Stack
@@ -184,143 +206,62 @@ const ModalPosterContent = ({
           }}
           onClick={() => setShowUserInfos(false)}
         />
-        { showMovieInfos ?
-            <Stack order="8" marginTop="10px">
-              <Typography
-                align="justify"
-                variant="body2"
-                color="#fff"
-                marginTop="10px"
-                fontWeight="300"
-                lineHeight="1.7"
-              >
-                {`${infos?.overview}`}
-              </Typography>
+        {showMovieInfos ? (
+          <Stack order="8" marginTop="10px">
+            <Typography
+              align="justify"
+              variant="body2"
+              color="#fff"
+              marginTop="10px"
+              fontWeight="300"
+              lineHeight="1.7"
+            >
+              {`${infos?.overview}`}
+            </Typography>
           </Stack>
-          : page === 'home' && from === 'suggested' ?
+        ) : (page === 'home' || page === 'list') && from === 'suggested' ? (
           <ModalAcquaintancesInfos
             goldNuggetUserInfos={goldNuggetUserInfos}
             relationshipStatus={relationshipStatus}
             relationsRatings={relationsRatings}
           />
-          :
+        ) : (
           <>
             <UserAvatar
-              variant='circular'
+              variant="circular"
               userInfos={
-                isContentFromLoggedUser ?
-                  loggedUserInfos
-                : page === 'profil' && loggedUserInfos.id !== parseInt(id, 10) ?
-                  chosenUser
-                : infos.criticUserInfos
+                isContentFromLoggedUser
+                  ? loggedUserInfos
+                  : from === 'notifications'
+                  ? infos
+                  : page === 'profil' && loggedUserInfos.id !== parseInt(id, 10)
+                  ? chosenUser
+                  : infos.criticUserInfos
               }
               picWidth={90}
               picHeight={90}
               isOutlined={true}
-              outlineWidth='3.5px'
+              outlineWidth="3.5px"
               relationType={
-                isContentFromLoggedUser ?
-                  'self'
-                : page === 'profil' && loggedUserInfos.id !== parseInt(id, 10) ?
-                  chosenUser.relation_type
-                : infos.criticUserInfos.relation_type
+                isContentFromLoggedUser
+                  ? 'self'
+                  : from === 'notifications'
+                  ? 'friend'
+                  : page === 'profil' && loggedUserInfos.id !== parseInt(id, 10)
+                  ? chosenUser.relation_type
+                  : infos.criticUserInfos.relation_type
               }
               sx={{
                 order: '2',
-                marginBottom: '15px'
+                marginBottom: '15px',
               }}
               redirection={false}
             />
-            <Typography
-              variant="body1"
-              fontWeight="400"
-              color="#fff"
-              order="2"
-            >
+            <Typography variant="body1" fontWeight="400" color="#fff" order="2">
               {generateText()}
             </Typography>
           </>
-          
-        }
-        {/* <Typography
-          variant="body1"
-          fontWeight="400"
-          color="#fff"
-          order="2"
-          marginBottom="10px"
-        >
-          {generateText()}
-        </Typography> */}
-        {/* {          
-          // Si la modale affichée vient de la page de profil ou directement des critiques
-          !showMovieInfos && (page === 'profil' || from === 'old-critic') ? (
-            <Typography
-              variant="body1"
-              fontWeight="400"
-              color="#fff"
-              order="2"
-              marginBottom="10px"
-            >
-              {loggedUserInfos.id === (infos.user_id || infos.sender_id) ? (
-                <>
-                  {'Vous avez noté le '}
-                  <span style={{ color: '#24a5a5' }}>{`${convertDate(
-                    infos.critic_date,
-                  )}`}</span>
-                </>
-              ) : (
-                <>
-                  <span
-                    style={{
-                      color:
-                        (page === 'profil' &&
-                          chosenUser?.relation_type === 'close_friend') ||
-                        (page === 'home' &&
-                          infos?.criticUserInfos.relation_type ===
-                            'close_friend')
-                          ? '#ff7b00'
-                          : (page === 'profil' &&
-                              chosenUser?.relation_type === 'friend') ||
-                            (page === 'home' &&
-                              infos?.criticUserInfos.relation_type ===
-                                'friend')
-                          ? '#F29E50'
-                          : '#24A5A5',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    { from === 'notifications'
-                      ? `${infos.first_name} ${infos.last_name}`
-                      : page === 'profil'
-                      ? `${chosenUser.first_name} ${chosenUser.last_name}`
-                      : `${infos?.criticUserInfos.first_name} ${infos?.criticUserInfos.last_name}`}
-                  </span>
-                  {` a noté le ${convertDate(infos.critic_date)}`}
-                </>
-              )}
-            </Typography>
-          ) : // Si la modale affichée vient de la page home, on affichera toutes les connaissances qui ont noté le film
-          !showMovieInfos && (page === 'home' || page === 'list') ? (
-            <ModalAcquaintancesInfos
-              goldNuggetUserInfos={goldNuggetUserInfos}
-              relationshipStatus={relationshipStatus}
-              relationsRatings={relationsRatings}
-            />
-          ) : (
-            <Stack order="8" marginTop="10px">
-              <Typography
-                align="justify"
-                variant="body2"
-                color="#fff"
-                marginTop="10px"
-                fontWeight="300"
-                lineHeight="1.7"
-              >
-                {`${infos?.overview}`}
-              </Typography>
-            </Stack>
-          )
-        } */}
+        )}
         <Stack
           direction="row"
           alignItems="center"
@@ -352,12 +293,15 @@ const ModalPosterContent = ({
             />
           </Typography>
         </Stack>
-        {/* {(relationsRatings?.average_rating || infos?.rating) && (
+        {(relationsRatings?.average_rating || infos?.rating) && (
           <Stack direction="row" alignItems="center" order="7">
             <OrangeRating
               name="half-rating-read"
               value={parseFloat(
-                page === 'profil' || from === 'critic' || from === 'notifications'
+                page === 'profil' ||
+                  from === 'old-critic' ||
+                  from === 'old-advice' ||
+                  from === 'notifications'
                   ? infos.rating
                   : relationsRatings.average_rating,
               )}
@@ -376,13 +320,16 @@ const ModalPosterContent = ({
               paddingTop="3px"
             >
               {`${formatRating(
-                page === 'profil' || from === 'critic' || from === 'notifications'
+                page === 'profil' ||
+                  from === 'old-critic' ||
+                  from === 'old-advice' ||
+                  from === 'notifications'
                   ? infos.rating
                   : relationsRatings.average_rating,
               )} / 5`}
             </Typography>
           </Stack>
-        )} */}
+        )}
       </Stack>
     </Stack>
   );

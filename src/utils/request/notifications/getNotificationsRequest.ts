@@ -10,12 +10,9 @@ import { apiBaseUrl } from '../config';
 
 export const getNotificationsRequest = async () => {
   try {
-    const response = await axios.get(
-      `${apiBaseUrl}/notifications/all`,
-      {
-        withCredentials: true,
-      },
-    );
+    const response = await axios.get(`${apiBaseUrl}/notifications/all`, {
+      withCredentials: true,
+    });
 
     return response;
   } catch (error) {

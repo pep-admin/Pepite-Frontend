@@ -16,7 +16,6 @@ import { convertDate } from '@utils/functions/convertDate';
 import { modifyUserName } from '@utils/request/users/modifyUsername';
 
 const AccountPersonalInfos = () => {
-
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos')); // Les infos de l'utilisateur connecté
 
   const [handleFirstName, setHandleFirstName] = useState({

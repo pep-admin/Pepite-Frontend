@@ -1,16 +1,25 @@
-import { Divider, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
+// Import des libs externes
+import {
+  Divider,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+
+// Import de la fonction de déconnexion
 import { handleLogout } from '@utils/request/authRequest';
-import { useNavigate } from 'react-router-dom';
 
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const SettingsMenu = ({ anchorElUser, handleCloseUserMenu}) => {
-
+const SettingsMenu = ({ anchorElUser, handleCloseUserMenu }) => {
   // Infos de l'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
@@ -84,6 +93,11 @@ const SettingsMenu = ({ anchorElUser, handleCloseUserMenu}) => {
       ])}
     </Menu>
   );
+};
+
+SettingsMenu.propTypes = {
+  anchorElUser: PropTypes.object,
+  handleCloseUserMenu: PropTypes.func.isRequired,
 };
 
 export default SettingsMenu;

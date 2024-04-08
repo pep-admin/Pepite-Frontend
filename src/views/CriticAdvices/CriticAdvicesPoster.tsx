@@ -42,7 +42,11 @@ const CriticAdvicesPoster = ({
           borderRadius: '5px',
           boxShadow: '5px 4px 0px #e9e9e9',
         }}
-        onClick={type === 'old-critic' || type === 'old-advice' ? () => setShowPoster(true) : null}
+        onClick={
+          type === 'old-critic' || type === 'old-advice'
+            ? () => setShowPoster(true)
+            : null
+        }
       />
       {((type === 'old-critic' || type === 'old-advice') &&
         !isModify &&

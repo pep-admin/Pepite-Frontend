@@ -1,5 +1,4 @@
-export const findRelationColor = (relationType) => {
-
+export const findRelationColor = relationType => {
   switch (relationType) {
     case 'close_friend':
       return '#ff7b00';

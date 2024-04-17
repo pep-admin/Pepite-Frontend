@@ -122,7 +122,7 @@ const ListMoviesSeries = ({ movieOrSerie, alignment }) => {
         listArray.map((movie, index) => {
           return (
             <MainItemList
-              key={movie.id}
+              key={movie.movie_id || movie.serie_id}
               movieOrSerie={movieOrSerie}
               type={
                 alignment === 'À voir'

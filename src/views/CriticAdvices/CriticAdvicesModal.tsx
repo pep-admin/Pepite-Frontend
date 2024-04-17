@@ -115,28 +115,26 @@ const CriticAdvicesModal = ({
   };
 
   const getMovieInfos = async () => {
-    let movieId = 0;
     let type = '';
+    let id;
 
-    if ('movie_id' in infos) {
-      movieId = infos.movie_id;
+    if (infos.type === 'movie_advice') {
       type = 'movie';
+      id = infos.movie_id;
     } else {
-      movieId = infos.serie_id;
       type = 'tv';
+      id = infos.serie_id;
     }
 
-    const response = await getMovieDetails(type, movieId);
+    const response = await getMovieDetails(type, id);
     const movieWithDetails = { ...response, ...infos };
     setMovieInfos(movieWithDetails);
-    console.log('les infos du film', movieWithDetails);
   };
 
   // Récupère la bande annonce youtube
   const fetchTrailerUrl = async () => {
     let movieId = 0;
     let type = '';
-    console.log('les infos', infos);
 
     if (from === 'old-critic' || from === 'old-advice') {
       movieId = infos.id;
@@ -146,6 +144,7 @@ const CriticAdvicesModal = ({
         type = 'tv';
       }
     }
+
     if ('movie_id' in infos) {
       movieId = infos.movie_id;
       type = 'movie';
@@ -153,8 +152,6 @@ const CriticAdvicesModal = ({
       movieId = infos.serie_id;
       type = 'tv';
     }
-
-    console.log(movieId, type);
 
     try {
       const response = await getVideo(type, movieId);

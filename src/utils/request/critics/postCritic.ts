@@ -10,9 +10,13 @@ export const addNewCritic = async (
   isGoldNugget,
   isTurnip,
 ) => {
-  await axios.post(
-    `${apiBaseUrl}/critics/add`,
-    { movie_id: movieId, type: type, rating, text, isGoldNugget, isTurnip },
-    { withCredentials: true },
-  );
+  try {
+    await axios.post(
+      `${apiBaseUrl}/critics/add`,
+      { movie_id: movieId, type: type, rating, text, isGoldNugget, isTurnip },
+      { withCredentials: true },
+    );
+  } catch (error) {
+    console.log("erreur dans l'ajout de la critique :", error);
+  }
 };

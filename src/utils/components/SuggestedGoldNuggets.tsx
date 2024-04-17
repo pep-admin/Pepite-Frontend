@@ -68,8 +68,6 @@ const SuggestedGoldNuggets = ({
 
       const { data } = await fetchData();
 
-      console.log('les données ...', data);
-
       setGoldenMovies(prev => [...prev, ...data.goldenNuggets]);
 
       if (!data.hasMore) {
@@ -108,7 +106,7 @@ const SuggestedGoldNuggets = ({
     if (isFirstRender.current) {
       isFirstRender.current = false;
     } else {
-      console.log('reinit pépites');
+      console.log(' === reinitialisation des pépites === ');
 
       setGoldenMovies([]);
       hasMoreDataRef.current = true;

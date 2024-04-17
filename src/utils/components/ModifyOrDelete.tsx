@@ -80,6 +80,7 @@ const ModifyOrDelete = ({
 
       performUpdatePostProcessing(
         page,
+        1,
         parent,
         userId,
         isProfilUserLogged,
@@ -89,7 +90,7 @@ const ModifyOrDelete = ({
         setData,
         cardsToShow,
         setGoldenMovies,
-        setIsModify,
+        setShowDeleteCriticAdviceModal,
         setChosenMovie,
         setChosenMovieId,
       );

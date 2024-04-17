@@ -18,7 +18,9 @@ const CriticAdvicesContent = ({ type, chosenMovie, infos }) => {
   // Informations sur les genres du film ou série
   const genres = useMemo(() => {
     const item = chosenMovie || infos;
-    return item ? item.genres.map(genre => genre.name).join(', ') : '';
+    return item && item.genres
+      ? item.genres.map(genre => genre.name).join(', ')
+      : 'Genre non spécifié';
   }, [chosenMovie, infos]);
 
   // Informations sur l'année de sortie du film ou du premier épisode de la série
@@ -50,11 +52,14 @@ const CriticAdvicesContent = ({ type, chosenMovie, infos }) => {
       type === 'new-advice' ||
       type === 'new-quick-rating'
     ) {
-      return chosenMovie ? chosenMovie.vote_average / 2 : 0;
+      return chosenMovie && chosenMovie?.vote_average
+        ? chosenMovie.vote_average / 2
+        : 0;
     }
     return infos ? infos.vote_average / 2 : 0;
   }, [type, chosenMovie, infos]);
 
+  // Synopsis
   const overview = useMemo(() => {
     if (
       type === 'new-critic' ||
@@ -128,7 +133,7 @@ const CriticAdvicesContent = ({ type, chosenMovie, infos }) => {
                 }}
               />
               <Typography variant="body2" fontWeight="bold" component="p">
-                {`${roundedScore}` + ' / 5'}
+                {roundedScore ? `${roundedScore}` + ' / 5' : '∅ / 5'}
               </Typography>
             </Stack>
           </Stack>

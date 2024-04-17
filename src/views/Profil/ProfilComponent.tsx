@@ -21,10 +21,10 @@ import { useData } from '@hooks/DataContext';
 import useVerticalScroll from '@hooks/useVerticalScroll';
 
 // Import des requêtes
-import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 import { getUser } from '@utils/request/users/getUser';
 import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
 import { getCriticsAdvices } from '@utils/functions/criticsAdvicesActions';
+import { getCoverPic } from '@utils/functions/getCoverPic';
 
 interface Picture {
   id: number;
@@ -72,26 +72,6 @@ const ProfilComponent = () => {
 
   const firstRender = useRef(true);
 
-  // Récupération de la photo de couverture
-  const getCoverPic = () => {
-    // Si profil de l'utilisateur connecté et qu'une photo de couverture a été choisie
-    if (isProfilUserLogged && loggedUserInfos.coverPics.length) {
-      return `${apiBaseUrl}/uploads/${
-        loggedUserInfos.coverPics.find(pic => pic.isActive === 1).filePath
-      }`;
-    }
-    // Si profil d'un autre utilisateur et qu'une photo de couverture a été choisie
-    else if (!isProfilUserLogged && chosenUser?.coverPics.length) {
-      return `${apiBaseUrl}/uploads/${
-        chosenUser.coverPics.find(pic => pic.isActive === 1).filePath
-      }`;
-    }
-    // Si aucune photo de couverture n'a été choisie
-    else {
-      return `${assetsBaseUrl}/images/default_cover_pic_pietro_jeng.jpg`;
-    }
-  };
-
   // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
   const fetchChosenUser = async user_id => {
     setIsChosenUserLoaded(false);
@@ -121,6 +101,7 @@ const ProfilComponent = () => {
     fetchCounts();
   }, [id, criticsAndAdvices]);
 
+  // Récupération des informations utilisateur si profil autre que celui de l'utilisateur connecté
   useEffect(() => {
     if (!isProfilUserLogged) {
       fetchChosenUser(id);
@@ -129,9 +110,9 @@ const ProfilComponent = () => {
     firstRender.current = false;
   }, [id]);
 
-  useEffect(() => {
-    console.log('les conseils et critiques =>', criticsAndAdvices);
-  }, [criticsAndAdvices]);
+  // useEffect(() => {
+  //   console.log('les conseils et critiques =>', criticsAndAdvices);
+  // }, [criticsAndAdvices]);
 
   return (
     <>
@@ -152,7 +133,11 @@ const ProfilComponent = () => {
               width="100vw"
               justifyContent="flex-end"
               sx={{
-                backgroundImage: `url(${getCoverPic()})`,
+                backgroundImage: `url(${getCoverPic(
+                  isProfilUserLogged,
+                  loggedUserInfos,
+                  chosenUser,
+                )})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 maskImage: "url('/images/rounded_mask.svg')",
@@ -274,13 +259,21 @@ const ProfilComponent = () => {
                 </Typography>
               </Stack>
               {criticsAndAdvices.length ? (
-                criticsAndAdvices.map((infos, index) => {
+                criticsAndAdvices.map(infos => {
+                  let key;
+                  if ('movie_id' in infos) {
+                    key = `${infos.type}-${infos.movie_id}`;
+                  } else {
+                    key = `${infos.type}-${infos.serie_id}`;
+                  }
+
                   return (
                     <CriticAdvicesComponent
-                      key={`${infos.type}-${infos.id}`}
-                      criticIndex={index}
+                      key={key}
+                      // criticIndex={index}
                       page={'profil'}
                       type={infos.critic_id ? 'old-critic' : 'old-advice'}
+                      movieOrTv={infos.movie_id ? 'movie' : 'tv'}
                       data={criticsAndAdvices}
                       setData={setCriticsAndAdvices}
                       setGoldenMovies={setGoldenMovies}

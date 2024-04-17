@@ -11,6 +11,8 @@ export const searchMoviesSeries = async (
       `${apiBaseUrl}/search/movie-serie?query=${query}&displayType=${displayType}`,
       { withCredentials: true },
     );
+    console.log('réponse de la recherche', response.data);
+
     return response.data.results;
   } catch (error) {
     console.log(error);

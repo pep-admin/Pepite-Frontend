@@ -53,7 +53,7 @@ const CommentsInput = ({
     >
       <Avatar
         variant={'square'}
-        alt={`Affiche de ${infos.title}`}
+        alt={`Affiche de ${infos.title || infos.name}`}
         src={`https://image.tmdb.org/t/p/w500/${infos.poster_path}`}
         sx={{
           width: 95,
@@ -74,7 +74,7 @@ const CommentsInput = ({
           marginBottom="4px"
         >
           <Typography variant="body2" fontWeight="600" align="left">
-            {`${infos.title}`}
+            {`${infos.title || infos.name}`}
           </Typography>
           <CloseIcon
             fontSize="small"

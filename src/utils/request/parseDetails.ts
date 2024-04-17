@@ -2,6 +2,10 @@
 export const parseDatabaseData = (data, displayType, requestType) => {
   const loggedUserId = JSON.parse(localStorage.getItem('user_infos'));
 
+  // console.log('les données à parse ==>', data);
+  const isMovie = 'movie_id' in data;
+  const isSerie = 'serie_id' in data;
+
   // Informations générales
   const genres = JSON.parse(data.genres);
   const production_countries = JSON.parse(data.production_countries);
@@ -10,15 +14,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   const vote_average = parseFloat(data.vote_average);
   const friends_and_followed_critics = data.friends_and_followed_critics;
 
-  let id;
-
-  if (displayType === 'movie') {
-    id = Number(data.movie_id);
-  } else if (displayType === 'tv') {
-    id = Number(data.serie_id);
-  }
-
   // Films
+  let movie_id;
   let release_date;
   let release_dates;
   let title;
@@ -27,11 +24,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   // let friends_and_followed_critics = null;
 
   // Dans le cas où on veut parser les infos pour un FILM qui n'a pas été noté par les utilisateurs
-  if (
-    displayType === 'movie' &&
-    requestType !== 'critic' &&
-    requestType !== 'advice'
-  ) {
+  if (isMovie && requestType !== 'critic' && requestType !== 'advice') {
+    movie_id = data.movie_id;
     release_date = data.release_date; // date de sortie
     release_dates = JSON.parse(data.release_dates); // certifications (-10, -12...),
     title = data.title; // titre du film
@@ -42,7 +36,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     return {
       genres,
       production_countries,
-      id,
+      movie_id,
       overview,
       poster_path,
       release_date,
@@ -56,16 +50,14 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   }
 
   // Séries
+  let serie_id;
   let first_air_date;
   let content_ratings;
   let name;
 
   // Dans le cas où on veut parser les infos pour une SERIE qui n'a pas été noté par les utilisateurs
-  if (
-    displayType === 'tv' &&
-    requestType !== 'critic' &&
-    requestType !== 'advice'
-  ) {
+  if (isSerie && requestType !== 'critic' && requestType !== 'advice') {
+    serie_id = data.serie_id;
     first_air_date = data.first_air_date; // date du premier épisode
     content_ratings = JSON.parse(data.content_ratings); // certifications
     name = data.name; // nom de la série
@@ -76,7 +68,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
     return {
       genres,
       production_countries,
-      id,
+      serie_id,
       overview,
       poster_path,
       first_air_date,
@@ -104,10 +96,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   let relation_type = null;
 
   // Dans le cas où on veut parser des infos pour un FILM qui a été noté par les utilisateurs ( critiques et conseils )
-  if (
-    displayType === 'movie' &&
-    (requestType === 'critic' || requestType === 'advice')
-  ) {
+  if (isMovie && (requestType === 'critic' || requestType === 'advice')) {
+    movie_id = Number(data.movie_id);
     release_date = data.release_date;
     release_dates = JSON.parse(data.release_dates);
     title = data.title;
@@ -128,7 +118,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
         critic_id,
         friends_and_followed_critics,
         genres,
-        id,
+        movie_id,
         is_gold_nugget,
         is_turnip,
         overview,
@@ -155,7 +145,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
         advice_id,
         // friends_and_followed_critics
         genres,
-        id,
+        movie_id,
         is_gold_nugget,
         is_turnip,
         overview,
@@ -175,10 +165,8 @@ export const parseDatabaseData = (data, displayType, requestType) => {
   }
 
   // Dans le cas où on veut parser des infos pour une SERIE qui a été noté par les utilisateurs ( critiques et conseils )
-  if (
-    displayType === 'tv' &&
-    (requestType === 'critic' || requestType === 'advice')
-  ) {
+  if (isSerie && (requestType === 'critic' || requestType === 'advice')) {
+    serie_id = Number(data.serie_id);
     first_air_date = data.first_air_date;
     content_ratings = JSON.parse(data.content_ratings);
     name = data.name;
@@ -200,7 +188,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
         critic_id,
         friends_and_followed_critics,
         genres,
-        id,
+        serie_id,
         is_gold_nugget,
         is_turnip,
         overview,
@@ -227,7 +215,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
         content_ratings,
         // friends_and_followed_critics
         genres,
-        id,
+        serie_id,
         is_gold_nugget,
         is_turnip,
         overview,

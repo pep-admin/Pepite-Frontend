@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import DOMPurify from 'dompurify';
 
 // Import des composants internes
 import CriticAdvicesModal from '@views/CriticAdvices/CriticAdvicesModal';
@@ -32,51 +33,6 @@ const NotificationsMenu = ({
   const [showPoster, setShowPoster] = useState(false);
   const [recommendedMovie, setRecommendedMovie] = useState({});
 
-  console.log('les notifs', notifications);
-
-  const generateContent = (notificationType, firstName, lastName) => {
-    switch (notificationType) {
-      case 'friendRequest':
-        return (
-          <span>
-            <strong>
-              {firstName} {lastName}
-            </strong>
-            {" souhaite vous ajouter à sa liste d'amis."}
-          </span>
-        );
-      case 'acceptedFriendRequest':
-        return (
-          <span>
-            <strong>
-              {firstName} {lastName}
-            </strong>
-            {" a accepté votre demande d'amitié."}
-          </span>
-        );
-      case 'movieAdvice':
-        return (
-          <span>
-            <strong>
-              {firstName} {lastName}
-            </strong>
-            {' vous a conseillé un nouveau film.'}
-          </span>
-        );
-      case 'serieAdvice':
-        return (
-          <span>
-            <strong>
-              {firstName} {lastName}
-            </strong>
-            {' vous a conseillé une nouvelle série.'}
-          </span>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <>
       <Menu
@@ -93,54 +49,70 @@ const NotificationsMenu = ({
           },
         }}
       >
-        {notifications.map((notif, index) => {
-          const key = `${notif.type}_${notif.id}`;
+        {notifications.length ? (
+          notifications.map((notif, index) => {
+            const key = `${notif.type}_${notif.id}`;
 
-          return (
-            <MenuItem
-              key={key}
-              onClick={
-                notif.type === 'acceptedFriendRequest'
-                  ? () => {
-                      navigate(`/profil/${notif.receiver_id}`);
-                      handleCloseNotifMenu();
-                    }
-                  : notif.type === 'movieAdvice' || notif.type === 'serieAdvice'
-                  ? () => {
-                      setRecommendedMovie(notif);
-                      setShowPoster(true);
-                      handleCloseNotifMenu();
-                    }
-                  : handleCloseNotifMenu
-              }
-              sx={{
-                whiteSpace: 'normal',
-                flexWrap: 'wrap',
-              }}
-            >
-              <Stack direction="row" spacing={2}>
-                <Avatar
-                  variant="circular"
-                  src={`${apiBaseUrl}/uploads/${notif.profil_pic}`}
-                  alt={`photo de profil de ${notif.first_name} ${notif.last_name}`}
-                  sx={{ height: 40, width: 40 }}
-                />
-                <Stack>
-                  <Typography variant="body2" maxWidth="200px">
-                    {generateContent(
-                      notif.type,
-                      notif.first_name,
-                      notif.last_name,
-                    )}
-                  </Typography>
+            // Nettoyage du message HTML avant de l'injecter pour éviter les attaques XSS
+            const cleanMessage = DOMPurify.sanitize(notif.message);
+
+            return (
+              <MenuItem
+                key={key}
+                onClick={
+                  notif.type === 'friend_accept'
+                    ? () => {
+                        navigate(`/profil/${notif.receiver_id}`);
+                        // handleCloseNotifMenu();
+                      }
+                    : notif.type === 'movie_advice' ||
+                      notif.type === 'serie_advice'
+                    ? () => {
+                        setRecommendedMovie(notif);
+                        setShowPoster(true);
+                        // handleCloseNotifMenu();
+                      }
+                    : handleCloseNotifMenu
+                }
+                sx={{
+                  whiteSpace: 'normal',
+                  flexWrap: 'wrap',
+                  padding: '0 4%',
+                }}
+              >
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <Avatar
+                    variant="circular"
+                    src={`${apiBaseUrl}/uploads/${notif.profil_pic}`}
+                    alt={`photo de profil de ${notif.first_name} ${notif.last_name}`}
+                    sx={{ height: 45, width: 45 }}
+                  />
+                  <Stack>
+                    <Typography
+                      fontSize="0.8em"
+                      lineHeight="1.3"
+                      maxWidth="175px"
+                      dangerouslySetInnerHTML={{ __html: cleanMessage }}
+                    />
+                  </Stack>
                 </Stack>
-              </Stack>
-              {index !== notifications.length - 1 && (
-                <Divider sx={{ width: '100%', margin: '8px 0' }} />
-              )}
-            </MenuItem>
-          );
-        })}
+                {index !== notifications.length - 1 && (
+                  <Divider light sx={{ width: '100%', margin: '8px 0' }} />
+                )}
+              </MenuItem>
+            );
+          })
+        ) : (
+          <MenuItem
+            sx={{
+              whiteSpace: 'normal',
+            }}
+          >
+            <Typography fontSize="0.85em" lineHeight="1.3" maxWidth="175px">
+              {'Aucune notification pour le moment.'}
+            </Typography>
+          </MenuItem>
+        )}
       </Menu>
       {showPoster && (
         <CriticAdvicesModal

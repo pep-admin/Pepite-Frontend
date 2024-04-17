@@ -27,6 +27,7 @@ const ProfilInputChoice = ({
   const { chosenMovie, setChosenMovie } = useData();
 
   const [inputChoice, setInputChoice] = useState('critic'); // Critique publique, notation privée, conseil à un ami
+  const [isMovieOrTv, setIsMovieOrTv] = useState(null);
 
   const handleChangeInputChoice = () => {
     setInputChoice(currentChoice => {
@@ -43,8 +44,14 @@ const ProfilInputChoice = ({
   };
 
   useEffect(() => {
-    console.log(inputChoice);
-  }, [inputChoice]);
+    if (!chosenMovie) return;
+
+    if ('movie_id' in chosenMovie) {
+      setIsMovieOrTv('movie');
+    } else {
+      setIsMovieOrTv('tv');
+    }
+  }, [chosenMovie]);
 
   return (
     <>
@@ -103,7 +110,7 @@ const ProfilInputChoice = ({
         <Stack height="100vh" padding="0 6px" justifyContent="center">
           <CriticAdvicesComponent
             page={page}
-            criticIndex={null}
+            // criticIndex={null}
             type={
               !isProfilUserLogged || inputChoice === 'advice'
                 ? 'new-advice'
@@ -111,6 +118,7 @@ const ProfilInputChoice = ({
                 ? 'new-critic'
                 : 'new-quick-rating'
             }
+            movieOrTv={isMovieOrTv}
             chosenMovie={chosenMovie}
             data={criticsAndAdvices}
             setData={setCriticsAndAdvices}

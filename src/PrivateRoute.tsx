@@ -8,7 +8,7 @@ const PrivateRoute = ({ children }) => {
   if (isLoading) {
     return null; // Affichez un indicateur de chargement ou tout autre contenu approprié
   }
-  console.log('authentifié ?', isAuthenticated);
+  // console.log('authentifié ?', isAuthenticated);
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };

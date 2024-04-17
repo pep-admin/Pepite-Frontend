@@ -30,8 +30,8 @@ import { addNewCritic } from '@utils/request/critics/postCritic';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
 import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
-import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
-import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
+// import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
+// import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
 
 // Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
@@ -41,10 +41,11 @@ import { performUpdatePostProcessing } from '@utils/functions/criticsAdvicesActi
 const CriticAdvicesComponent = ({
   page,
   type,
-  chosenMovie,
+  movieOrTv,
   data,
   setData,
   setGoldenMovies,
+  chosenMovie,
   infos,
   loggedUserInfos,
   chosenUser,
@@ -93,61 +94,73 @@ const CriticAdvicesComponent = ({
     try {
       const action = 'submit';
 
-      let alertMessage = '';
-      let entityExists = { exists: false, id: null };
+      // let alertMessage = '';
+      // let entityExists = { exists: false, id: null };
+      let movie_id: number;
+      let movie_name: string;
 
-      if (type === 'critic') {
-        entityExists = await checkIfCriticExistsRequest(
-          chosenMovie.id,
-          displayType,
-        );
-        alertMessage = `Vous avez déjà publié une critique pour ${
-          displayType === 'movie' ? 'le film' : 'la série'
-        } "${chosenMovie.title}". Confirmer malgré tout ?`;
-      } else if (type === 'advice') {
-        entityExists = await checkIfAdviceExistsRequest(
-          chosenMovie.id,
-          displayType,
-        );
-        alertMessage = `Vous avez déjà conseillé ${
-          displayType === 'movie' ? 'le film' : 'la série'
-        } "${chosenMovie.title}" à ${chosenUser.first_name} ${
-          chosenUser.last_name
-        }. Confirmer malgré tout ?`;
+      if ('movie_id' in chosenMovie) {
+        movie_id = chosenMovie.movie_id || chosenMovie.id;
+        movie_name = chosenMovie.title;
+      } else {
+        movie_id = chosenMovie.serie_id || chosenMovie.id;
+        movie_name = chosenMovie.name;
       }
+
+      // ======> TODO: Vérifier l'existence des critiques et conseils
+
+      // Vérifie si une critique existe déjà pour ce film
+      // if (type === 'critic') {
+      //   entityExists = await checkIfCriticExistsRequest(movie_id, displayType);
+      //   alertMessage = `Vous avez déjà publié une critique pour ${
+      //     displayType === 'movie' ? 'le film' : 'la série'
+      //   } "${chosenMovie.title}". Confirmer malgré tout ?`;
+      // }
+      // // Vérifie si le film / série a déjà été conseillé
+      // else if (type === 'advice') {
+      //   entityExists = await checkIfAdviceExistsRequest(movie_id, displayType);
+      //   alertMessage = `Vous avez déjà conseillé ${
+      //     displayType === 'movie' ? 'le film' : 'la série'
+      //   } "${chosenMovie.title}" à ${chosenUser.first_name} ${
+      //     chosenUser.last_name
+      //   }. Confirmer malgré tout ?`;
+      // }
 
       // Si une critique ou un conseil existe déjà, affiche une alerte
-      if (entityExists.exists) {
-        setAlertSeverity({
-          state: 'warning',
-          message: alertMessage,
-          content: entityExists.id,
-        });
-        return;
-      }
+      // if (entityExists.exists) {
+      //   setAlertSeverity({
+      //     state: 'warning',
+      //     message: alertMessage,
+      //     content: entityExists.id,
+      //   });
+      //   return;
+      // }
 
       if (type === 'critic') {
         await addNewCritic(
-          chosenMovie.id,
-          displayType,
+          movie_id,
+          movieOrTv,
           newRating,
           newCriticText,
           isGoldNugget,
           isTurnip,
         );
       } else if (type === 'advice') {
+        console.log('movieOrTv =>', movieOrTv);
+
         await addNewAdvice(
           chosenUser.id,
-          chosenMovie.id,
-          displayType,
+          movie_id,
+          movie_name,
+          movieOrTv,
           newRating,
           newCriticText,
           isGoldNugget,
         );
       } else if (type === 'quick-rating') {
         await addNewQuickRating(
-          chosenMovie.id,
-          displayType,
+          movie_id,
+          movieOrTv,
           newRating,
           isGoldNugget,
           isTurnip,
@@ -157,6 +170,7 @@ const CriticAdvicesComponent = ({
       // Appelle la fonction de post-traitement pour gérer les opérations communes après l'ajout
       await performUpdatePostProcessing(
         page,
+        1,
         type,
         id,
         isProfilUserLogged,
@@ -213,6 +227,7 @@ const CriticAdvicesComponent = ({
       // Appelle la fonction de post-traitement pour gérer les opérations communes après l'ajout
       await performUpdatePostProcessing(
         page,
+        1,
         type,
         loggedUserInfos.id,
         isProfilUserLogged,
@@ -456,6 +471,7 @@ CriticAdvicesComponent.propTypes = {
   isLast: PropTypes.bool,
   inputChoice: PropTypes.string,
   openSnackbar: PropTypes.func.isRequired,
+  movieOrTv: PropTypes.string,
 };
 
 export default React.memo(CriticAdvicesComponent);

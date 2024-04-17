@@ -6,7 +6,7 @@ import { getUser } from '@utils/request/users/getUser';
 
 // PAGE DE PROFIL : Récupère les critiques et conseils
 export const getCriticsAdvices = async (
-  page,
+  pagination,
   id,
   displayType,
   setCritics,
@@ -16,7 +16,7 @@ export const getCriticsAdvices = async (
     let hasMoreCritics = true;
     let hasMoreAdvices = true;
 
-    const criticsData = await getCriticsOfUser(id, displayType, page, 5);
+    const criticsData = await getCriticsOfUser(id, displayType, pagination, 5);
     if (criticsData.length < 5) {
       console.log('plus de critiques à récupérer');
 
@@ -24,13 +24,20 @@ export const getCriticsAdvices = async (
       hasMoreCritics = false;
     }
 
-    const advicesData = await getAdvicesReceived(id, displayType, page, 5);
+    const advicesData = await getAdvicesReceived(
+      id,
+      displayType,
+      pagination,
+      5,
+    );
     if (advicesData.length < 5) {
       // Si les conseils reçus sont inférieurs à 5
       hasMoreAdvices = false;
     }
 
     const combinedData = [...criticsData, ...advicesData];
+
+    console.log('les données récup =>', combinedData);
 
     // Tri des données combinées du plus récent au plus ancien
     const sortedCombinedData = combinedData.sort((a, b) => {
@@ -76,15 +83,14 @@ export const getCriticsAdvices = async (
 
 // PAGE HOME : Récupère les critiques de l'utilisateur, des amis et suivis
 export const getCriticsAndUserInfos = async (
-  page,
+  pagination,
   id,
   displayType,
   setCritics,
   reset,
 ) => {
   // Récupération des critiques
-  let critics = await getAllCriticsOfAcquaintances(page, id, displayType);
-  console.log('les critics', critics);
+  let critics = await getAllCriticsOfAcquaintances(pagination, id, displayType);
 
   // Ajout de la clé isLoadingUser: true pour afficher le skeleton
   critics = critics.map(critic => ({ ...critic, isLoadingUser: true }));
@@ -114,6 +120,7 @@ export const getCriticsAndUserInfos = async (
 // Fonction pour effectuer les mises à jour après la modification
 export const performUpdatePostProcessing = async (
   page,
+  pagination,
   type,
   id,
   isProfilUserLogged,
@@ -123,7 +130,7 @@ export const performUpdatePostProcessing = async (
   setCritics,
   cardsToShow,
   setGoldenMovies,
-  setIsModify,
+  setShowModal,
   setChosenMovie,
   setChosenMovieId,
 ) => {
@@ -159,9 +166,9 @@ export const performUpdatePostProcessing = async (
   if (type === 'quick-rating') return;
 
   if (page === 'home') {
-    await getCriticsAndUserInfos(page, id, displayType, setCritics, true);
+    await getCriticsAndUserInfos(pagination, id, displayType, setCritics, true);
   } else {
-    await getCriticsAdvices(page, id, displayType, setCritics, true);
+    await getCriticsAdvices(pagination, id, displayType, setCritics, true);
   }
 
   if (
@@ -175,14 +182,11 @@ export const performUpdatePostProcessing = async (
       cardsToShow,
       1,
     );
-    console.log('les pépites', response.data.goldenMovies);
-    console.log('la page', page);
 
-    setGoldenMovies(response.data.goldenMovies);
+    setGoldenMovies(response.data.goldenNuggets);
   }
 
-  setIsModify(false);
-
+  setShowModal(false);
   setChosenMovieId(null);
   setChosenMovie(null);
 };

@@ -9,8 +9,6 @@ export const getAdvicesReceived = async (userId, type, page, limit) => {
     withCredentials: true,
   });
 
-  console.log('la réponse', response.data);
-
   if (!Array.isArray(response.data)) {
     return [];
   }

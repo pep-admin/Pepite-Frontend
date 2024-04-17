@@ -14,7 +14,7 @@ export const getNotificationsRequest = async () => {
       withCredentials: true,
     });
 
-    return response;
+    return response.data.notifications;
   } catch (error) {
     console.log('erreur dans la récupération des notifications', error);
   }

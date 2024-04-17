@@ -23,6 +23,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 // Import des requêtes
 import { MagnifyingGlassIcon } from '../styledComponent';
 import { getNotificationsRequest } from '@utils/request/notifications/getNotificationsRequest';
+import { markNotificationsAsRead } from '@utils/request/notifications/markNotificationsAsRead';
 
 type Notification = {
   type:
@@ -76,11 +77,13 @@ const Header = ({ page }) => {
   // Détermine l'ancre pour le menu des notifications
   const handleOpenNotifMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorElNotif(event.currentTarget);
+    markNotificationsAsRead(); // Marque les notifications comme lues
   };
 
   // Ferme le menu des notifications
   const handleCloseNotifMenu = () => {
     setAnchorElNotif(null);
+    getNotifications(); // Fait disparaitre le Badge des notifications
   };
 
   function stringAvatar(name) {
@@ -92,46 +95,16 @@ const Header = ({ page }) => {
   async function getNotifications() {
     const response = await getNotificationsRequest();
 
-    // Extraire chaque type de notification de la réponse
-    const {
-      friendRequests,
-      acceptedFriendRequests,
-      movieAdvices,
-      seriesAdvices,
-    } = response.data;
-
-    // Combine toutes les notifications dans un seul tableau, en normalisant la clé de date
-    const allNotifications = [
-      ...friendRequests.map(notif => ({
-        ...notif,
-        type: 'friendRequest',
-        date: notif.sent_date,
-      })),
-      ...acceptedFriendRequests.map(notif => ({
-        ...notif,
-        type: 'acceptedFriendRequest',
-        date: notif.sent_date,
-      })),
-      ...movieAdvices.map(notif => ({
-        ...notif,
-        type: 'movieAdvice',
-        date: notif.advice_date,
-      })),
-      ...seriesAdvices.map(notif => ({
-        ...notif,
-        type: 'serieAdvice',
-        date: notif.advice_date,
-      })),
-    ];
-
     // Trier toutes les notifications par date, du plus récent au plus ancien
-    const sortedNotifications = allNotifications.sort((a, b) => {
+    const sortedNotifications = response.sort((a, b) => {
       // Convertit les dates en timestamps pour la comparaison
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
 
       return dateB - dateA; // Tri du plus récent au plus ancien
     });
+
+    console.log('la réponse des notifs', sortedNotifications);
 
     // Mettre à jour l'état avec les notifications triées
     setNotifications(sortedNotifications);

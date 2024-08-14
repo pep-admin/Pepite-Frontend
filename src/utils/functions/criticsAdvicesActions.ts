@@ -124,7 +124,7 @@ export const performUpdatePostProcessing = async (
   type,
   id,
   isProfilUserLogged,
-  displayType,
+  movieOrTv,
   action,
   openSnackbar,
   setCritics,
@@ -166,9 +166,9 @@ export const performUpdatePostProcessing = async (
   if (type === 'quick-rating') return;
 
   if (page === 'home') {
-    await getCriticsAndUserInfos(pagination, id, displayType, setCritics, true);
+    await getCriticsAndUserInfos(pagination, id, movieOrTv, setCritics, true);
   } else {
-    await getCriticsAdvices(pagination, id, displayType, setCritics, true);
+    await getCriticsAdvices(pagination, id, movieOrTv, setCritics, true);
   }
 
   if (
@@ -177,7 +177,7 @@ export const performUpdatePostProcessing = async (
     (type === 'critic' || type === 'old-critic')
   ) {
     const response = await getAllGoldNuggetsOfUser(
-      displayType,
+      movieOrTv,
       id,
       cardsToShow,
       1,

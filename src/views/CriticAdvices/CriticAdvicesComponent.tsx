@@ -30,13 +30,15 @@ import { addNewCritic } from '@utils/request/critics/postCritic';
 import { modifyCritic } from '@utils/request/critics/modifyCritic';
 import { addNewAdvice } from '@utils/request/advices/postAdvice';
 import { modifyAdvice } from '@utils/request/advices/modifyAdvice';
-// import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
-// import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
+import { checkIfAdviceExistsRequest } from '@utils/request/advices/checkIfAdviceExistsRequest';
+import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCriticExistsRequest';
 
 // Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
 import { addNewQuickRating } from '@utils/request/quickRatings/addNewQuickRating';
 import { performUpdatePostProcessing } from '@utils/functions/criticsAdvicesActions';
+import CustomAlert from '@utils/components/CustomAlert';
+import CustomAlert2 from '@utils/components/CustomAlert2';
 
 const CriticAdvicesComponent = ({
   page,
@@ -72,8 +74,10 @@ const CriticAdvicesComponent = ({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState({
     state: null,
+    contentType: null,
     message: null,
     content: null,
+    confirmation: null
   }); // Message de succès, d'info, d'erreur
 
   const ratingsHeaderRef = useRef(null);
@@ -90,12 +94,12 @@ const CriticAdvicesComponent = ({
   }, []);
 
   // ****** Ajouter une nouvelle critique / conseil ****** //
-  const submitNewReview = async type => {
+  const submitNewReview = async (type) => {
     try {
       const action = 'submit';
 
-      // let alertMessage = '';
-      // let entityExists = { exists: false, id: null };
+      let alertMessage = '';
+      let entityExists = { exists: false, id: null };
       let movie_id: number;
       let movie_name: string;
 
@@ -110,31 +114,35 @@ const CriticAdvicesComponent = ({
       // ======> TODO: Vérifier l'existence des critiques et conseils
 
       // Vérifie si une critique existe déjà pour ce film
-      // if (type === 'critic') {
-      //   entityExists = await checkIfCriticExistsRequest(movie_id, displayType);
-      //   alertMessage = `Vous avez déjà publié une critique pour ${
-      //     displayType === 'movie' ? 'le film' : 'la série'
-      //   } "${chosenMovie.title}". Confirmer malgré tout ?`;
-      // }
-      // // Vérifie si le film / série a déjà été conseillé
-      // else if (type === 'advice') {
-      //   entityExists = await checkIfAdviceExistsRequest(movie_id, displayType);
-      //   alertMessage = `Vous avez déjà conseillé ${
-      //     displayType === 'movie' ? 'le film' : 'la série'
-      //   } "${chosenMovie.title}" à ${chosenUser.first_name} ${
-      //     chosenUser.last_name
-      //   }. Confirmer malgré tout ?`;
-      // }
+      if (type === 'critic') {
+        entityExists = await checkIfCriticExistsRequest(movie_id, movieOrTv);
+        alertMessage = `Vous avez déjà publié une critique pour ${
+          movieOrTv === 'movie' ? `le film "${chosenMovie.title}".` : `la série "${chosenMovie.name}".`
+        } Confirmer malgré tout ?`;
+      }
+      // Vérifie si le film / série a déjà été conseillé
+      else if (type === 'advice') {
+        entityExists = await checkIfAdviceExistsRequest(movie_id, movieOrTv);
+        alertMessage = `Vous avez déjà conseillé ${
+          movieOrTv === 'movie' ? 'le film' : 'la série'
+        } "${chosenMovie.title}" à ${chosenUser.first_name} ${
+          chosenUser.last_name
+        }. Confirmer malgré tout ?`;
+      }
 
       // Si une critique ou un conseil existe déjà, affiche une alerte
-      // if (entityExists.exists) {
-      //   setAlertSeverity({
-      //     state: 'warning',
-      //     message: alertMessage,
-      //     content: entityExists.id,
-      //   });
-      //   return;
-      // }
+      if (entityExists.exists) {
+        console.log('la critique existe déjà =>', entityExists);
+        
+        setAlertSeverity({
+          state: 'warning',
+          contentType: type,
+          message: alertMessage,
+          content: entityExists.id,
+          confirmation: updateReview
+        });
+        return;
+      }
 
       if (type === 'critic') {
         await addNewCritic(
@@ -192,22 +200,26 @@ const CriticAdvicesComponent = ({
     } catch (error) {
       setAlertSeverity({
         state: 'error',
+        contentType: null,
         message: error.response.data,
         content: null,
+        confirmation: null
       });
     }
   };
 
   // Modifier une critique / un conseil
-  const updateReview = async (overwrite, type) => {
+  const updateReview = async (overwrite, type, id) => {
     try {
-      const entityId = overwrite ? alertSeverity.content : infos[`${type}_id`];
+      const entityId = overwrite ? id : infos[`${type}_id`];
       const action = 'update';
+      console.log('id à modifier', entityId);
+      
 
       if (type === 'critic') {
         await modifyCritic(
           entityId,
-          displayType,
+          movieOrTv,
           newRating,
           newCriticText,
           isGoldNugget,
@@ -216,7 +228,7 @@ const CriticAdvicesComponent = ({
       } else if (type === 'advice') {
         await modifyAdvice(
           entityId,
-          displayType,
+          movieOrTv,
           newRating,
           newCriticText,
           isGoldNugget,
@@ -229,9 +241,9 @@ const CriticAdvicesComponent = ({
         page,
         1,
         type,
-        loggedUserInfos.id,
+        id,
         isProfilUserLogged,
-        displayType,
+        movieOrTv,
         action,
         openSnackbar,
         setData,
@@ -242,7 +254,13 @@ const CriticAdvicesComponent = ({
         setChosenMovieId,
       );
     } catch (error) {
-      setAlertSeverity({ state: 'error', message: error, content: null });
+      setAlertSeverity({ 
+        state: 'error', 
+        contentType: null,
+        message: error, 
+        content: null,
+        confirmation: null
+      });
     }
   };
 
@@ -375,12 +393,13 @@ const CriticAdvicesComponent = ({
                             ? 'critic'
                             : type === 'new-advice'
                             ? 'advice'
-                            : 'quick-rating',
+                            : 'quick-rating'
                         );
                       } else if (newRating !== null && infos && isModify) {
                         updateReview(
                           null,
                           type === 'old-critic' ? 'critic' : 'advice',
+                          null
                         );
                       }
                     }}
@@ -451,6 +470,16 @@ const CriticAdvicesComponent = ({
           </Stack>
         </Item>
       )}
+      {alertSeverity.state &&
+        <CustomAlert2
+          alertType={alertSeverity.state}
+          contentType={alertSeverity.contentType}
+          message={alertSeverity.message}
+          content={alertSeverity.content}
+          confirmation={alertSeverity.confirmation}
+          setAlertSeverity={setAlertSeverity}
+        />
+      }
     </>
   );
 };

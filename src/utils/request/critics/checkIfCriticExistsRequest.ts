@@ -11,6 +11,9 @@ export const checkIfCriticExistsRequest = async (movieId, type) => {
       },
     );
 
+    console.log('la réponse', response.data);
+    
+
     return {
       exists: response.data.exists,
       id: response.data.criticId,

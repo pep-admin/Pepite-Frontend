@@ -34,7 +34,8 @@ const SwipeContent = ({
   swipeType,
 }) => {
   const getTitle = movie => {
-    if (movie && movie.id === movies[index].id) {
+    
+    if (movie && movie.movie_id === movies[index].id) {
       if ('title' in movie) {
         return movie.title;
       }
@@ -45,11 +46,11 @@ const SwipeContent = ({
   };
 
   const currentTitle = getTitle(movieDetail.current);
-  const nextTitle = getTitle(movieDetail.next);
+  const nextTitle = getTitle(movieDetail.next);  
 
   // Fonction pour obtenir les genres raccourcis du film
   const getGenres = movie => {
-    if (movie && movie.id === movies[index].id) {
+    if (movie && movie.movie_id === movies[index].id) {
       let shortGenres;
 
       if (swipeType === 'movie') {

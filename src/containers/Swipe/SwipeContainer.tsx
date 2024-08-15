@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 // Import des composants internes
 import SwipeComponent from '@views/Swipe/SwipeComponent';
+import SwipeComponent2 from '@views/Swipe/SwipeComponent2';
 
 // Import des requêtes
 import { fetchTwentyMovies } from '@utils/request/swipe/getMoviesSwipe';
@@ -14,9 +15,9 @@ const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]); // Copie du tableau des films / séries + les status "unwanted", "watched", "wanted"
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
-  const [currentMovieIndex, setCurrentMovieIndex] = useState(0); // Index du film affiché
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
-  const [moviePage, setMoviePage] = useState(1); // Numéro de la page de l'API
+  const [moviePage, setMoviePage] = useState(null); // Numéro de la page de l'API
   const [swipeAction, setSwipeAction] = useState({
     direction: null,
     from: null,
@@ -84,82 +85,81 @@ const SwipeContainer = () => {
   };
 
   // Récupère les détails d'un film (genre, année...)
-  const fetchMovieDetails = async movieId => {
-    try {
-      const details = await getMovieDetails(swipeType, movieId);
+  // const fetchMovieDetails = async movieId => {
+  //   try {
+  //     const details = await getMovieDetails(swipeType, movieId);
 
-      return details;
-    } catch (err) {
-      console.log(err);
-      setError({
-        message: 'Erreur dans la récupération des détails du film.',
-        error: err,
-      });
-    }
-  };
+  //     return details;
+  //   } catch (err) {
+  //     console.log(err);
+  //     setError({
+  //       message: 'Erreur dans la récupération des détails du film.',
+  //       error: err,
+  //     });
+  //   }
+  // };
 
   // Récupère les détails du film affiché ainsi que les détails du suivant
-  const loadMoviesDetails = async () => {
-    try {
-      if (!movies[currentMovieIndex]) return;
+  // const loadMoviesDetails = async () => {
+  //   try {
+  //     if (!movies[currentMovieIndex]) return;
 
-      const nextIndex =
-        currentMovieIndex + 1 < movies.length ? currentMovieIndex + 1 : null;
-      const movieIdsToFetch = [movies[currentMovieIndex].id];
-      if (nextIndex !== null) {
-        movieIdsToFetch.push(movies[nextIndex].id);
-      }
-      console.log('les ids à fetch', movieIdsToFetch);
+  //     const nextIndex =
+  //       currentMovieIndex + 1 < movies.length ? currentMovieIndex + 1 : null;
+  //     const movieIdsToFetch = [movies[currentMovieIndex].id];
+  //     if (nextIndex !== null) {
+  //       movieIdsToFetch.push(movies[nextIndex].id);
+  //     }
+  //     console.log('les ids à fetch', movieIdsToFetch);
 
-      // Récupérer les détails pour les deux films simultanément
-      const detailsDataArray = await Promise.all(
-        movieIdsToFetch.map(id => fetchMovieDetails(id)),
-      );
+  //     // Récupérer les détails pour les deux films simultanément
+  //     const detailsDataArray = await Promise.all(
+  //       movieIdsToFetch.map(id => fetchMovieDetails(id)),
+  //     );
 
-      // Mettre à jour l'état avec les détails du film actuel
-      setMovieDetail({
-        current: detailsDataArray[0],
-        next: detailsDataArray[1],
-      });
-    } catch (err) {
-      console.error(
-        'Erreur lors de la récupération des détails des films',
-        err,
-      );
-      setError(err);
-    } finally {
-      setLoading(prevLoading => ({ ...prevLoading, details: false }));
-    }
-  };
+  //     // Mettre à jour l'état avec les détails du film actuel
+  //     setMovieDetail({
+  //       current: detailsDataArray[0],
+  //       next: detailsDataArray[1],
+  //     });
+  //   } catch (err) {
+  //     console.error(
+  //       'Erreur lors de la récupération des détails des films',
+  //       err,
+  //     );
+  //     setError(err);
+  //   } finally {
+  //     setLoading(prevLoading => ({ ...prevLoading, details: false }));
+  //   }
+  // };
 
-  useEffect(() => {
-    if (movies.length === 0 || currentMovieIndex === -1) return;
+  // useEffect(() => {
+  //   if (movies.length === 0 || currentMovieIndex === -1) return;
 
-    loadMoviesDetails();
-  }, [movies, currentMovieIndex]);
+  //   loadMoviesDetails();
+  // }, [movies, currentMovieIndex]);
 
   // Si l'utilisateur change de film à série, ou filtre le swipe : RESET
-  useEffect(() => {
-    if (!isFilterValidated) return;
+  // useEffect(() => {
+  //   if (!isFilterValidated) return;
 
-    console.log('pays choisi => ', countryChosen);
+  //   console.log('pays choisi => ', countryChosen);
 
-    setLoading({ movies: true, details: true });
-    setMovies([]); // Réinitialisation des données liées aux films/séries
-    setMoviePage(1); // Réinitialisation à la page à 1
-    setCurrentMovieIndex(0); // Réinitialisation l'index courant à 0
-    setSwipeAction({ direction: null, from: null });
-    getMovies(1, countryChosen, genreChosen.id); // Recharger les films/séries
-    setIsFilterValidated(false);
-  }, [isFilterValidated]);
+  //   setLoading({ movies: true, details: true });
+  //   setMovies([]); // Réinitialisation des données liées aux films/séries
+  //   setMoviePage(1); // Réinitialisation à la page à 1
+  //   setCurrentMovieIndex(0); // Réinitialisation l'index courant à 0
+  //   setSwipeAction({ direction: null, from: null });
+  //   getMovies(1, countryChosen, genreChosen.id); // Recharger les films/séries
+  //   setIsFilterValidated(false);
+  // }, [isFilterValidated]);
 
   // Ajoute 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
     const thresholdReload = 3;
     if (
-      swipeAction.direction === 'right' &&
       movies.length !== 0 &&
-      movies.length - currentMovieIndex <= thresholdReload &&
+      movies.length - currentIndex <= thresholdReload &&
       hasMoreMovies
     ) {
       console.log('recharge !!!');
@@ -167,7 +167,7 @@ const SwipeContainer = () => {
       setMoviePage(newPage);
       getMovies(newPage, countryChosen, genreChosen.id);
     }
-  }, [swipeAction.direction, movies.length, currentMovieIndex]);
+  }, [currentIndex]);
 
   useEffect(() => {
     if (Object.keys(movieDetail).length !== 0) {
@@ -176,33 +176,18 @@ const SwipeContainer = () => {
   }, [movieDetail]);
 
   useEffect(() => {
-    getMovies(1, countryChosen, genreChosen.id);
+    const randomPage = Math.floor(Math.random() * 500) + 1;
+    setMoviePage(randomPage);
+    getMovies(randomPage, countryChosen, genreChosen.id);
   }, []);
 
   return (
-    <SwipeComponent
+    !loading.movies &&
+    <SwipeComponent2 
       movies={movies}
-      movieDetail={movieDetail}
-      error={error}
-      loading={loading}
-      currentMovieIndex={currentMovieIndex}
-      setCurrentMovieIndex={setCurrentMovieIndex}
-      swipeAction={swipeAction}
-      setSwipeAction={setSwipeAction}
-      countryChosen={countryChosen}
-      setCountryChosen={setCountryChosen}
-      hasMoreMovies={hasMoreMovies}
-      genreChosen={genreChosen}
-      setGenreChosen={setGenreChosen}
-      moviesStatusUpdated={moviesStatusUpdated}
-      setMoviesStatusUpdated={setMoviesStatusUpdated}
-      ratingChosen={ratingChosen}
-      setRatingChosen={setRatingChosen}
-      periodChosen={periodChosen}
-      setPeriodChosen={setPeriodChosen}
-      setIsFilterValidated={setIsFilterValidated}
       swipeType={swipeType}
-      setSwipeType={setSwipeType}
+      currentIndex={currentIndex}
+      setCurrentIndex={setCurrentIndex}
     />
   );
 };

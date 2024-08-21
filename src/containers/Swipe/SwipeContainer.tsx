@@ -11,7 +11,6 @@ import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContainer = () => {
-  const [swipeType, setSwipeType] = useState('movie'); // Films ou séries pour le swipe
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]); // Copie du tableau des films / séries + les status "unwanted", "watched", "wanted"
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
@@ -22,34 +21,41 @@ const SwipeContainer = () => {
     direction: null,
     from: null,
   }); // Gauche ou droite
+
+  // Etats de filtres
+  const [typeChosen, setTypeChosen] = useState('movie'); // Films ou séries pour le swipe
   const [countryChosen, setCountryChosen] = useState({
     name: 'États-Unis',
     code: 'US',
   });
-  const [genreChosen, setGenreChosen] = useState({ name: null, id: null });
+  const [genreChosen, setGenreChosen] = useState({ id: 0, name: 'Tous' });
   const [ratingChosen, setRatingChosen] = useState({
     number: null,
     value: null,
   }); // Note générale
-  const [periodChosen, setPeriodChosen] = useState('Toutes'); // Période de productions des films / séries
+  const [periodChosen, setPeriodChosen] = useState({ id: 0, name: 'Toutes' }); // Période de productions des films / séries
+  const [isFilterValidated, setIsFilterValidated] = useState(false);
+
   const [loading, setLoading] = useState({ movies: true, details: true }); // Premier chargement
   const [error, setError] = useState({ message: null, error: null }); // Erreur lors du chargement
-  const [isFilterValidated, setIsFilterValidated] = useState(false);
 
   // Récupère 20 films selon la page
   const getMovies = async (moviePage, countryChosen, genreChosen) => {
     try {
+      
       // Minimum d'affichage du Skeleton pendant 2 secondes
-      const loadingTimer = new Promise(resolve => setTimeout(resolve, 2000));
+      // const loadingTimer = new Promise(resolve => setTimeout(resolve, 2000));
 
       const elligibleMovies = await fetchTwentyMovies(
         moviePage,
-        swipeType,
+        typeChosen,
         countryChosen,
         genreChosen,
         ratingChosen.number,
-        periodChosen,
+        periodChosen.name,
       );
+
+      console.log('les films ! ', elligibleMovies);
 
       if (elligibleMovies.length < 20) {
         setHasMoreMovies(false);
@@ -70,7 +76,7 @@ const SwipeContainer = () => {
         ...moviesWithOptions,
       ]);
 
-      await Promise.all([elligibleMovies, loadingTimer]);
+      // await Promise.all([elligibleMovies, loadingTimer]);
     } catch (err) {
       setError({
         message: 'Erreur dans la récupération de la page de films.',
@@ -87,7 +93,7 @@ const SwipeContainer = () => {
   // Récupère les détails d'un film (genre, année...)
   // const fetchMovieDetails = async movieId => {
   //   try {
-  //     const details = await getMovieDetails(swipeType, movieId);
+  //     const details = await getMovieDetails(typeChosen, movieId);
 
   //     return details;
   //   } catch (err) {
@@ -171,7 +177,7 @@ const SwipeContainer = () => {
 
   useEffect(() => {
     if (Object.keys(movieDetail).length !== 0) {
-      storeDetailsData(movieDetail, swipeType);
+      storeDetailsData(movieDetail, typeChosen);
     }
   }, [movieDetail]);
 
@@ -185,9 +191,18 @@ const SwipeContainer = () => {
     !loading.movies &&
     <SwipeComponent2 
       movies={movies}
-      swipeType={swipeType}
       currentIndex={currentIndex}
       setCurrentIndex={setCurrentIndex}
+      typeChosen={typeChosen}
+      setTypeChosen={setTypeChosen}
+      countryChosen={countryChosen}
+      setCountryChosen={setCountryChosen}
+      genreChosen={genreChosen}
+      setGenreChosen={setGenreChosen}
+      ratingChosen={ratingChosen}
+      setRatingChosen={setRatingChosen}
+      periodChosen={periodChosen}
+      setPeriodChosen={setPeriodChosen}
     />
   );
 };

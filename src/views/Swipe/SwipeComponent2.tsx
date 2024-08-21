@@ -6,8 +6,25 @@ import SwipeCard2 from './SwipeCard2';
 import Header from '@utils/components/Header';
 import { CustomButton } from './CustomBtn';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import SwipeFilter2 from './SwipeFilter2';
 
-const SwipeComponent2 = ({ movies, swipeType, currentIndex, setCurrentIndex }) => {
+const SwipeComponent2 = ({ 
+  movies, 
+  currentIndex, 
+  setCurrentIndex,
+  typeChosen, 
+  setTypeChosen, 
+  countryChosen,
+  setCountryChosen,
+  genreChosen,
+  setGenreChosen,
+  ratingChosen,
+  setRatingChosen,
+  periodChosen,
+  setPeriodChosen
+}) => {
+  console.log('les films =>', movies);
+  
   const [areFiltersOpen, setAreFiltersOpen] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(null);
 
@@ -86,7 +103,18 @@ const SwipeComponent2 = ({ movies, swipeType, currentIndex, setCurrentIndex }) =
                 },
               }}
             >
-              {/* Drawer content */}
+              <SwipeFilter2 
+                typeChosen={typeChosen} 
+                setTypeChosen={setTypeChosen} 
+                countryChosen={countryChosen}
+                setCountryChosen={setCountryChosen}
+                genreChosen={genreChosen} 
+                setGenreChosen={setGenreChosen}  
+                ratingChosen={ratingChosen}
+                setRatingChosen={setRatingChosen}
+                periodChosen={periodChosen}
+                setPeriodChosen={setPeriodChosen}
+              />
             </SwipeableDrawer>
           )}
         </Stack>
@@ -105,7 +133,7 @@ const SwipeComponent2 = ({ movies, swipeType, currentIndex, setCurrentIndex }) =
             >
               <SwipeCard2 
                 movie={movie} 
-                swipeType={swipeType}
+                typeChosen={typeChosen}
                 position={index === currentIndex ? 'center' : index < currentIndex ? 'left' : 'right'} 
                 openSnackbar={memoizedSetOpenSnackbar}
                 setOpenSnackbar={setOpenSnackbar}

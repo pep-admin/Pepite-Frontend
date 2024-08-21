@@ -26,15 +26,15 @@ interface SwipeCard2Props {
     vote_average: number;
     vote_count: number;
   };
-  swipeType: string;
+  typeChosen: string;
   position: string;
   openSnackbar: (message: string) => void;
   setOpenSnackbar: (open: boolean) => void;
 }
 
-const SwipeCard2 : FC<SwipeCard2Props> = React.memo(({ movie, swipeType, position, openSnackbar, setOpenSnackbar }) => {
+const SwipeCard2 : FC<SwipeCard2Props> = React.memo(({ movie, typeChosen, position, openSnackbar, setOpenSnackbar }) => {
 
-  // console.log('Rendu SwipeCard ...', movie);
+  console.log('Rendu SwipeCard ...', movie);
 
   const [showMovieInfos, setShowMovieInfos] = useState(false);
   // const [areFiltersOpen, setAreFiltersOpen] = useState(false);
@@ -83,10 +83,9 @@ const SwipeCard2 : FC<SwipeCard2Props> = React.memo(({ movie, swipeType, positio
       
       <SwipeContent2
         movie={movie}
-        swipeType={swipeType}
+        typeChosen={typeChosen}
         showMovieInfos={showMovieInfos}
         setShowMovieInfos={setShowMovieInfos}
-        openSnackbar={openSnackbar}
         setOpenSnackbar={setOpenSnackbar}
       />
     </Card>

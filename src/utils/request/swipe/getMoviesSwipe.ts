@@ -9,8 +9,9 @@ export const fetchTwentyMovies = async (
   countryChosen,
   genreChosen: null | number,
   ratingChosen: null | number,
-  periodChosen: null | string,
+  periodChosen: string,
 ) => {
+  
   let countryString;
   let genreString;
   let ratingString;
@@ -22,13 +23,19 @@ export const fetchTwentyMovies = async (
     )}`;
   } else countryString = '';
 
-  if (genreChosen !== null) genreString = `&with_genres=${genreChosen}`;
+  if (genreChosen) genreString = `&with_genres=${genreChosen}`;
   else genreString = '';
 
   if (ratingChosen) ratingString = `&vote_average=${ratingChosen * 2}`;
   else ratingString = '';
 
+  console.log('le genre choisie!', genreChosen);
+  
+
   switch (periodChosen) {
+    case 'Toutes':
+      periodString = '';
+      break;
     case 'Avant 1950':
       periodString = `&primary_release_date_to=1949-12-31`;
       break;
@@ -58,12 +65,12 @@ export const fetchTwentyMovies = async (
       break;
     default:
       periodString = '';
-  }
+  }  
 
   const response = await axios.get(
     `${apiBaseUrl}/movies/all?page=${moviePage}&type=${swipeType}${countryString}${genreString}${ratingString}${periodString}`,
     { withCredentials: true },
-  );
+  );  
 
   return response.data.elligible;
 };

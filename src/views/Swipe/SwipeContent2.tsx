@@ -24,10 +24,9 @@ import { useEffect, useState } from 'react';
 
 const SwipeContent2 = ({
   movie,
-  swipeType,
+  typeChosen,
   showMovieInfos,
   setShowMovieInfos,
-  openSnackbar,
   setOpenSnackbar
 }) => {
 
@@ -90,7 +89,7 @@ const SwipeContent2 = ({
   // Récupère les détails d'un film (genre, année...)
   const fetchMovieDetails = async movieId => {
     try {
-      const details = await getMovieDetails(swipeType, movieId);
+      const details = await getMovieDetails(typeChosen, movieId);
       console.log('les détails =>', details);
       
       setMovieDetails(details);
@@ -405,7 +404,6 @@ const SwipeContent2 = ({
         <ChoiceBtn2
           choice={'unwanted'}
           movie={movie}
-          openSnackbar={openSnackbar}
           setOpenSnackbar={setOpenSnackbar}
           // moviesStatusUpdated={moviesStatusUpdated}
           // setMoviesStatusUpdated={setMoviesStatusUpdated}
@@ -417,7 +415,6 @@ const SwipeContent2 = ({
         <ChoiceBtn2
           choice={'wanted'}
           movie={movie}
-          openSnackbar={openSnackbar}
           setOpenSnackbar={setOpenSnackbar}
           // moviesStatusUpdated={moviesStatusUpdated}
           // setMoviesStatusUpdated={setMoviesStatusUpdated}
@@ -429,7 +426,6 @@ const SwipeContent2 = ({
         <ChoiceBtn2
           choice={'watched'}
           movie={movie}
-          openSnackbar={openSnackbar}
           setOpenSnackbar={setOpenSnackbar}
           // moviesStatusUpdated={moviesStatusUpdated}
           // setMoviesStatusUpdated={setMoviesStatusUpdated}
@@ -454,7 +450,7 @@ SwipeContent2.propTypes = {
   moviesStatusUpdated: PropTypes.array.isRequired,
   setMoviesStatusUpdated: PropTypes.func.isRequired,
   swipeToTheRight: PropTypes.func.isRequired,
-  swipeType: PropTypes.string.isRequired,
+  typeChosen: PropTypes.string.isRequired,
 };
 
 export default SwipeContent2;

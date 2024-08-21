@@ -22,7 +22,6 @@ import { useRef, useState } from 'react';
 const ChoiceBtn2 = ({
   choice,
   movie,
-  openSnackbar,
   setOpenSnackbar
 }) => {
 

@@ -12,7 +12,7 @@ export const findFrenchNameCountry = countries => {
       const findCountry = countriesList.find(
         country => country.iso_3166_1 === iso_3166_1,
       );
-      return findCountry ? findCountry.native_name : iso_3166_1;
+      return findCountry ? findCountry.name : iso_3166_1;
     });
   }
 

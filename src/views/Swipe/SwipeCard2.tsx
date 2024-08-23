@@ -27,14 +27,14 @@ interface SwipeCard2Props {
     vote_count: number;
   };
   typeChosen: string;
-  position: string;
+  // position: string;
   openSnackbar: (message: string) => void;
   setOpenSnackbar: (open: boolean) => void;
 }
 
-const SwipeCard2 : FC<SwipeCard2Props> = React.memo(({ movie, typeChosen, position, openSnackbar, setOpenSnackbar }) => {
+const SwipeCard2 : FC<SwipeCard2Props> = React.memo(({ movie, typeChosen, openSnackbar, setOpenSnackbar }) => {
 
-  console.log('Rendu SwipeCard ...', movie);
+  // console.log('Rendu SwipeCard ...', movie);
 
   const [showMovieInfos, setShowMovieInfos] = useState(false);
   // const [areFiltersOpen, setAreFiltersOpen] = useState(false);
@@ -59,7 +59,7 @@ const SwipeCard2 : FC<SwipeCard2Props> = React.memo(({ movie, typeChosen, positi
         flexDirection: 'column',
         justifyContent: 'flex-end',
         // transform: position === 'center' ? 'scale(1)' : 'scale(0.9)',
-        opacity: position === 'center' ? 1 : 0.7,
+        // opacity: position === 'center' ? 1 : 0.7,
         backgroundImage: `linear-gradient(
           to top,
           ${

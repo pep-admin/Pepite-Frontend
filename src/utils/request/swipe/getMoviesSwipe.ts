@@ -27,10 +27,7 @@ export const fetchTwentyMovies = async (
   else genreString = '';
 
   if (ratingChosen) ratingString = `&vote_average=${ratingChosen * 2}`;
-  else ratingString = '';
-
-  console.log('le genre choisie!', genreChosen);
-  
+  else ratingString = '';  
 
   switch (periodChosen) {
     case 'Toutes':

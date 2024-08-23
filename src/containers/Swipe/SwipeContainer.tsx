@@ -12,15 +12,11 @@ import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContainer = () => {
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
-  const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]); // Copie du tableau des films / séries + les status "unwanted", "watched", "wanted"
+  // const [moviesStatusUpdated, setMoviesStatusUpdated] = useState([]); // Copie du tableau des films / séries + les status "unwanted", "watched", "wanted"
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [movieDetail, setMovieDetail] = useState({}); // Informations détaillées sur le film affiché
+  const [isSwiping, setIsSwiping] = useState(false);
   const [moviePage, setMoviePage] = useState(null); // Numéro de la page de l'API
-  const [swipeAction, setSwipeAction] = useState({
-    direction: null,
-    from: null,
-  }); // Gauche ou droite
 
   // Etats de filtres
   const [typeChosen, setTypeChosen] = useState('movie'); // Films ou séries pour le swipe
@@ -42,7 +38,8 @@ const SwipeContainer = () => {
   // Récupère 20 films selon la page
   const getMovies = async (moviePage, countryChosen, genreChosen) => {
     try {
-      
+      setIsSwiping(true); // Désactiver temporairement le swipe pendant le chargement
+
       // Minimum d'affichage du Skeleton pendant 2 secondes
       // const loadingTimer = new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -54,8 +51,6 @@ const SwipeContainer = () => {
         ratingChosen.number,
         periodChosen.name,
       );
-
-      console.log('les films ! ', elligibleMovies);
 
       if (elligibleMovies.length < 20) {
         setHasMoreMovies(false);
@@ -71,10 +66,10 @@ const SwipeContainer = () => {
       }));
 
       setMovies(prevMovies => [...prevMovies, ...moviesWithOptions]);
-      setMoviesStatusUpdated(prevMovies => [
-        ...prevMovies,
-        ...moviesWithOptions,
-      ]);
+      // setMoviesStatusUpdated(prevMovies => [
+      //   ...prevMovies,
+      //   ...moviesWithOptions,
+      // ]);
 
       // await Promise.all([elligibleMovies, loadingTimer]);
     } catch (err) {
@@ -87,78 +82,9 @@ const SwipeContainer = () => {
         movies: false,
         details: prevLoading.details,
       }));
+      setIsSwiping(false); // Réactiver le swipe après le chargement
     }
   };
-
-  // Récupère les détails d'un film (genre, année...)
-  // const fetchMovieDetails = async movieId => {
-  //   try {
-  //     const details = await getMovieDetails(typeChosen, movieId);
-
-  //     return details;
-  //   } catch (err) {
-  //     console.log(err);
-  //     setError({
-  //       message: 'Erreur dans la récupération des détails du film.',
-  //       error: err,
-  //     });
-  //   }
-  // };
-
-  // Récupère les détails du film affiché ainsi que les détails du suivant
-  // const loadMoviesDetails = async () => {
-  //   try {
-  //     if (!movies[currentMovieIndex]) return;
-
-  //     const nextIndex =
-  //       currentMovieIndex + 1 < movies.length ? currentMovieIndex + 1 : null;
-  //     const movieIdsToFetch = [movies[currentMovieIndex].id];
-  //     if (nextIndex !== null) {
-  //       movieIdsToFetch.push(movies[nextIndex].id);
-  //     }
-  //     console.log('les ids à fetch', movieIdsToFetch);
-
-  //     // Récupérer les détails pour les deux films simultanément
-  //     const detailsDataArray = await Promise.all(
-  //       movieIdsToFetch.map(id => fetchMovieDetails(id)),
-  //     );
-
-  //     // Mettre à jour l'état avec les détails du film actuel
-  //     setMovieDetail({
-  //       current: detailsDataArray[0],
-  //       next: detailsDataArray[1],
-  //     });
-  //   } catch (err) {
-  //     console.error(
-  //       'Erreur lors de la récupération des détails des films',
-  //       err,
-  //     );
-  //     setError(err);
-  //   } finally {
-  //     setLoading(prevLoading => ({ ...prevLoading, details: false }));
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (movies.length === 0 || currentMovieIndex === -1) return;
-
-  //   loadMoviesDetails();
-  // }, [movies, currentMovieIndex]);
-
-  // Si l'utilisateur change de film à série, ou filtre le swipe : RESET
-  // useEffect(() => {
-  //   if (!isFilterValidated) return;
-
-  //   console.log('pays choisi => ', countryChosen);
-
-  //   setLoading({ movies: true, details: true });
-  //   setMovies([]); // Réinitialisation des données liées aux films/séries
-  //   setMoviePage(1); // Réinitialisation à la page à 1
-  //   setCurrentMovieIndex(0); // Réinitialisation l'index courant à 0
-  //   setSwipeAction({ direction: null, from: null });
-  //   getMovies(1, countryChosen, genreChosen.id); // Recharger les films/séries
-  //   setIsFilterValidated(false);
-  // }, [isFilterValidated]);
 
   // Ajoute 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
@@ -176,10 +102,8 @@ const SwipeContainer = () => {
   }, [currentIndex]);
 
   useEffect(() => {
-    if (Object.keys(movieDetail).length !== 0) {
-      storeDetailsData(movieDetail, typeChosen);
-    }
-  }, [movieDetail]);
+    console.log('Current Index:', currentIndex);
+  }, [currentIndex]);
 
   useEffect(() => {
     const randomPage = Math.floor(Math.random() * 500) + 1;
@@ -191,8 +115,10 @@ const SwipeContainer = () => {
     !loading.movies &&
     <SwipeComponent2 
       movies={movies}
-      currentIndex={currentIndex}
+      // currentIndex={currentIndex}
       setCurrentIndex={setCurrentIndex}
+      // isSwiping={isSwiping}
+      // setIsSwiping={setIsSwiping}
       typeChosen={typeChosen}
       setTypeChosen={setTypeChosen}
       countryChosen={countryChosen}

@@ -440,17 +440,16 @@ const SwipeContent2 = ({
 };
 
 SwipeContent2.propTypes = {
-  movieDetail: PropTypes.object.isRequired,
-  movies: PropTypes.array.isRequired,
-  index: PropTypes.number.isRequired,
-  currentMovieIndex: PropTypes.number.isRequired,
-  setCurrentMovieIndex: PropTypes.func.isRequired,
-  showMovieInfos: PropTypes.bool.isRequired,
-  setShowMovieInfos: PropTypes.func.isRequired,
-  moviesStatusUpdated: PropTypes.array.isRequired,
-  setMoviesStatusUpdated: PropTypes.func.isRequired,
-  swipeToTheRight: PropTypes.func.isRequired,
-  typeChosen: PropTypes.string.isRequired,
+  // movieDetail: PropTypes.object.isRequired,
+  // movies: PropTypes.array.isRequired,
+  // index: PropTypes.number.isRequired,
+  // currentMovieIndex: PropTypes.number.isRequired,
+  // setCurrentMovieIndex: PropTypes.func.isRequired,
+  // showMovieInfos: PropTypes.bool.isRequired,
+  // setShowMovieInfos: PropTypes.func.isRequired,
+  // moviesStatusUpdated: PropTypes.array.isRequired,
+  // setMoviesStatusUpdated: PropTypes.func.isRequired,
+  // typeChosen: PropTypes.string.isRequired,
 };
 
 export default SwipeContent2;

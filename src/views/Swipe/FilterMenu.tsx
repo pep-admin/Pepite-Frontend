@@ -1,11 +1,9 @@
 // Import des libs externes
 import { Menu, MenuItem, Fade, Divider } from '@mui/material';
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
 import ColoredRating from '@utils/components/ColoredRating';
-import LanguageIcon from '@mui/icons-material/Language';
 
 // Import de la liste de tous les pays
 import { countriesList } from '@utils/data/countries';
@@ -30,7 +28,6 @@ const FilterMenu = ({
   state,
   setState,
 }) => {
-  const [menuAnchor, setMenuAnchor] = useState(null); // Ancre du menu des continents
 
   // Fonction utilitaire pour générer des MenuItems avec un Divider optionnel
   const generateMenuItems = (items, isSelected, onClick, keyExtractor = item => item.name, textExtractor = item => item.name) => {    
@@ -171,7 +168,7 @@ const FilterMenu = ({
         },
       }}
     >
-      {displaySubFilters()}
+      {openMenu && displaySubFilters()}
     </Menu>
   );
 };

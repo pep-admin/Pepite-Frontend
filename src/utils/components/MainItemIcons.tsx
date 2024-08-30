@@ -15,7 +15,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
 import { handleCloseFriendRequest } from '@utils/request/friendship/handleCloseFriend';
 import { declineFriendship } from '@utils/request/friendship/declineFriendship';
-import { addWatchedMovieRequest } from '../request/list/addWatchedMovieRequest';
+import { handleWatchedMovieRequest } from '../request/list/handleWatchedMovieRequest';
 
 const MainItemIcons = ({
   type,
@@ -64,7 +64,7 @@ const MainItemIcons = ({
 
   // Ajoute le film à la liste des films déjà vus (à noter)
   const addWatchedMovie = async () => {
-    await addWatchedMovieRequest(data.id, movieOrSerie);
+    await handleWatchedMovieRequest(data.id, movieOrSerie, true);
     getRequest(); // Supprime le film de la liste des films à voir
   };
 

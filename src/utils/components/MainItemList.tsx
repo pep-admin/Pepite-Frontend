@@ -13,9 +13,9 @@ import { useData } from '@hooks/DataContext';
 // Import des requêtes
 import { removeFriendRequest } from '@utils/request/friendship/removeFriendRequest';
 import { unfollowSomeone } from '@utils/request/followed/unfollowSomeone';
-import { removeWantedMovieRequest } from '../request/list/removeWantedMovieRequest';
+// import { removeWantedMovieRequest } from '../request/list/removeWantedMovieRequest';
 import { removeWatchedMovieRequest } from '../request/list/removeWatchedMovieRequest';
-import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
+import { handleWantedMovieRequest } from '@utils/request/list/handleWantedMovieRequest';
 import MainItemIcons from './MainItemIcons';
 
 const MainItemList = ({
@@ -47,7 +47,7 @@ const MainItemList = ({
 
   // Supprime un film de la liste à voir
   const removeWantedMovie = async () => {
-    await removeWantedMovieRequest(data.id, displayType);
+    await handleWantedMovieRequest(data.id, displayType, false);
     getRequest(); // Met à jour la liste des films / séries à voir
   };
 
@@ -58,7 +58,7 @@ const MainItemList = ({
     getRequest();
     if (choice === 'cancel') {
       console.log('annulation');
-      await addWantedMovieRequest(data.id, movieOrSerie);
+      await handleWantedMovieRequest(data.id, movieOrSerie, false);
     }
   };
 

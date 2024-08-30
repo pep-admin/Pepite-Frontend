@@ -1,14 +1,10 @@
 // Import des libs externes
 import { Stack, Typography, Divider, CardContent } from '@mui/material';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-
-// Import des composants internes
-import ChoiceBtn2 from './ChoiceBtn2';
-import ColoredRating from '@utils/components/ColoredRating';
 
 // Import des fonctions utilitaires
 import { convertRating } from '@utils/functions/convertRating';
-import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
 
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
@@ -19,18 +15,21 @@ import {
   shortGenresMovieList,
   shortGenresSerieList,
 } from '@utils/data/shortGenres';
+
+// Import des requêtes 
 import { getMovieDetails } from '@utils/request/getMovieDetails';
-import { useEffect, useState } from 'react';
+import AcquaintancesRatings from './AcquaintancesRatings';
+import SwipeCredits from './SwipeCredits';
 
 const SwipeContent2 = ({
   movie,
   typeChosen,
   showMovieInfos,
   setShowMovieInfos,
-  setOpenSnackbar
+  setError
 }) => {
 
-  console.log('rendu SwipeContent !', movie);
+  // console.log('rendu SwipeContent !', movie);
   const [movieDetails, setMovieDetails] = useState(null);
   
   const getTitle = () => {
@@ -95,29 +94,13 @@ const SwipeContent2 = ({
       setMovieDetails(details);
 
     } catch (err) {
-      console.log(err);
-      // setError({
-      //   message: 'Erreur dans la récupération des détails du film.',
-      //   error: err,
-      // });
+      
+      setError({
+        state: true,
+        message: 'Erreur dans la récupération des détails du film.',
+      });
     }
   };
-
-  const findDirectorName = (crew) => {
-    const director = crew.find(member => member.job === "Director");
-    return director ? director.name : "Réalisateur inconnu";
-  };
-
-  const findTopActors = (cast) => {
-    // Trie les acteurs par popularité décroissante
-    const sortedCast = cast.sort((a, b) => b.popularity - a.popularity);
-  
-    // Sélectionne les trois premiers acteurs
-    const topActors = sortedCast.slice(0, 3).map(actor => actor.name);
-  
-    // Vérifie si le nombre d'acteurs dépasse trois
-    return topActors.join(', ');
-  };  
 
   useEffect(() => {
     if(showMovieInfos) {
@@ -132,6 +115,7 @@ const SwipeContent2 = ({
           height: 'auto',
           width: '100%',
           padding: '0 !important',
+          marginBottom: '100px'
         }}
       >
         <Stack>
@@ -252,76 +236,7 @@ const SwipeContent2 = ({
             marginBottom={!showMovieInfos ? '23px' : '0'}
           >
             {!showMovieInfos ? (
-              <>
-                <Stack>
-                  <Typography fontSize="2.4vh" color="#fff">
-                    Moyenne des
-                    <span style={{ color: '#DD8C28', fontWeight: '500' }}>
-                      {' '}
-                      amis
-                    </span>
-                  </Typography>
-                  <Stack
-                    height="15px"
-                    direction="row"
-                    alignItems="center"
-                    position="relative"
-                    left="2.5px"
-                  >
-                    <ColoredRating
-                      color="#DD8C28"
-                      emptyColor="#B9B9B9"
-                      value={4.3}
-                      readOnly={true}
-                      precision={0.1}
-                    />
-                    <Typography
-                      fontSize="2.4vh"
-                      component="span"
-                      sx={{
-                        color: '#DD8C28',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {'4.3'}
-                    </Typography>
-                  </Stack>
-                </Stack>
-                <Stack>
-                  <Typography fontSize="2.4vh" color="#fff">
-                    Moyenne des
-                    <span style={{ color: '#24A5A5', fontWeight: '500' }}>
-                      {' '}
-                      suivis
-                    </span>
-                  </Typography>
-                  <Stack
-                    height="15px"
-                    direction="row"
-                    alignItems="center"
-                    position="relative"
-                    left="2.5px"
-                  >
-                    <ColoredRating
-                      color="#24A5A5"
-                      emptyColor="#B9B9B9"
-                      value={4.1}
-                      readOnly={true}
-                      precision={0.1}
-                    />
-                    <Typography
-                      fontSize="2.4vh"
-                      component="span"
-                      sx={{
-                        color: '#24A5A5',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {'4.1'}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </>
+              <AcquaintancesRatings />
             ) : (
               <Stack
                 direction="row"
@@ -335,121 +250,23 @@ const SwipeContent2 = ({
               </Stack>
             )}
           </Stack>
-          <Stack
-            sx={{
-              display: !showMovieInfos ? 'none' : 'flex',
-              opacity: !showMovieInfos ? '0' : '1',
-              transition: !showMovieInfos
-                ? 'opacity 0ms ease-in-out'
-                : 'opacity 600ms ease-in-out',
-            }}
-          >
-            <Stack
-              maxHeight="27vh"
-              sx={{
-                overflowY: 'scroll',
-              }}
-            >
-              <Typography
-                color="primary"
-                fontWeight="300"
-                lineHeight="1.6"
-                fontSize="2.1vh"
-              >
-                {movie.overview === null
-                  ? "Désolé, il n'y a pas de synopsis disponible pour ce film..."
-                  : movie.overview}
-              </Typography>
-            </Stack>
-            <Stack
-              height="15vh"
-              justifyContent="space-evenly"
-              margin="7px 0 10px 0"
-            >
-              <Stack direction="row" columnGap="10px">
-                <Typography color="secondary" fontWeight="500">
-                  {'Pays :'}
-                </Typography>
-                <Typography color="primary" fontWeight="300">
-                  { movieDetails && findFrenchNameCountry(movieDetails.production_countries).join(', ') }
-                </Typography>
-              </Stack>
-              <Stack direction="row" columnGap="10px">
-                <Typography color="secondary" fontWeight="500">
-                  {'Réalisation :'}
-                </Typography>
-                <Typography color="primary" fontWeight="300">
-                  { movieDetails && findDirectorName(movieDetails.crew) }
-                </Typography>
-              </Stack>
-              <Stack direction="row" columnGap="10px">
-                <Typography color="secondary" fontWeight="500">
-                  {'Acteurs :'}
-                </Typography>
-                <Typography color="primary" fontWeight="300" width='66vw' overflow='hidden' whiteSpace='nowrap' textOverflow='ellipsis'>
-                  { movieDetails && findTopActors(movieDetails.cast) }
-                </Typography>
-              </Stack>
-            </Stack>
-          </Stack>
+          {
+            !showMovieInfos ?
+              null
+            :
+              <SwipeCredits movie={movie} movieDetails={movieDetails} />
+          }
         </Stack>
       </CardContent>
-      <Stack
-        height="100px"
-        width="100%"
-        direction="row"
-        justifyContent="space-between"
-        padding="0 5% 15px 5%"
-      >
-        <ChoiceBtn2
-          choice={'unwanted'}
-          movie={movie}
-          setOpenSnackbar={setOpenSnackbar}
-          // moviesStatusUpdated={moviesStatusUpdated}
-          // setMoviesStatusUpdated={setMoviesStatusUpdated}
-          // index={index}
-          // currentMovieIndex={currentMovieIndex}
-          // setCurrentMovieIndex={setCurrentMovieIndex}
-          // swipeToTheRight={swipeToTheRight}
-        />
-        <ChoiceBtn2
-          choice={'wanted'}
-          movie={movie}
-          setOpenSnackbar={setOpenSnackbar}
-          // moviesStatusUpdated={moviesStatusUpdated}
-          // setMoviesStatusUpdated={setMoviesStatusUpdated}
-          // index={index}
-          // currentMovieIndex={currentMovieIndex}
-          // setCurrentMovieIndex={setCurrentMovieIndex}
-          // swipeToTheRight={null}
-        />
-        <ChoiceBtn2
-          choice={'watched'}
-          movie={movie}
-          setOpenSnackbar={setOpenSnackbar}
-          // moviesStatusUpdated={moviesStatusUpdated}
-          // setMoviesStatusUpdated={setMoviesStatusUpdated}
-          // index={index}
-          // currentMovieIndex={currentMovieIndex}
-          // setCurrentMovieIndex={setCurrentMovieIndex}
-          // swipeToTheRight={swipeToTheRight}
-        />
-      </Stack>
     </>
   );
 };
 
 SwipeContent2.propTypes = {
-  // movieDetail: PropTypes.object.isRequired,
-  // movies: PropTypes.array.isRequired,
-  // index: PropTypes.number.isRequired,
-  // currentMovieIndex: PropTypes.number.isRequired,
-  // setCurrentMovieIndex: PropTypes.func.isRequired,
-  // showMovieInfos: PropTypes.bool.isRequired,
-  // setShowMovieInfos: PropTypes.func.isRequired,
-  // moviesStatusUpdated: PropTypes.array.isRequired,
-  // setMoviesStatusUpdated: PropTypes.func.isRequired,
-  // typeChosen: PropTypes.string.isRequired,
+  movie: PropTypes.object.isRequired,
+  typeChosen: PropTypes.string.isRequired,
+  showMovieInfos: PropTypes.bool.isRequired,
+  setShowMovieInfos: PropTypes.func.isRequired,
 };
 
 export default SwipeContent2;

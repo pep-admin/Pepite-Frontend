@@ -36,6 +36,7 @@
     "react-spring": "^9.7.3",
     "react-swipeable": "^7.0.1",
     "react-youtube": "^10.1.0",
+    "uuid": "^10.0.0",
     "yup": "^1.2.0"
   },
   "devDependencies": {

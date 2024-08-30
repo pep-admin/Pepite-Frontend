@@ -1,5 +1,5 @@
-import { Divider, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Button, Divider, Stack, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 
 // Import des icônes
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
@@ -19,16 +19,20 @@ const SwipeFilter2 = ({
   ratingChosen,
   setRatingChosen,
   periodChosen,
-  setPeriodChosen
+  setPeriodChosen,
+  setIsFilterValidated,
+  setAreFiltersOpened
 }) => {
-  console.log('e type choisi', typeChosen);
-  
   
   const [typeFilter, setTypeFilter] = useState(null);
   const [countryFilter, setCountryFilter] = useState(null);
   const [genreFilter, setGenreFilter] = useState(null);
   const [ratingFilter, setRatingFilter] = useState(null);
   const [periodFilter, setPeriodFilter] = useState(null);
+
+  const [isButtonVisible, setIsButtonVisible] = useState(false); // Bouton de validation des filtres
+
+  const isFirstRender = useRef(true);
 
   const openTypeFilter = Boolean(typeFilter);
   const openCountryFilter = Boolean(countryFilter);
@@ -46,6 +50,7 @@ const SwipeFilter2 = ({
     ) {
       return;
     }
+    event.stopPropagation();
 
     switch (filterType) {
       case 'type':
@@ -68,6 +73,32 @@ const SwipeFilter2 = ({
     }
   };
   
+  useEffect(() => {
+    // Ignorer le premier rendu
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Si l'un des filtres change, on affiche le bouton de validation
+    if (
+      typeChosen ||
+      countryChosen.name ||
+      genreChosen.name ||
+      ratingChosen.value ||
+      periodChosen.name
+    ) {
+      setIsButtonVisible(true);
+    } else {
+      setIsButtonVisible(false);
+    }
+  }, [
+    typeChosen,
+    countryChosen.name,
+    genreChosen.name,
+    ratingChosen.value,
+    periodChosen.name,
+  ]);
 
   return (
     <Stack>
@@ -102,10 +133,7 @@ const SwipeFilter2 = ({
           filterName={'type'}
           anchorEl={typeFilter}
           openMenu={openTypeFilter}
-          // filter={null}
           setFilter={setTypeFilter}
-          // continentChosen={null}
-          // setContinentChosen={null}
           state={typeChosen}
           setState={setTypeChosen}
         />
@@ -139,10 +167,7 @@ const SwipeFilter2 = ({
           filterName={'country'}
           anchorEl={countryFilter}
           openMenu={openCountryFilter}
-          // filter={countryFilter}
           setFilter={setCountryFilter}
-          // continentChosen={continentChosen}
-          // setContinentChosen={setContinentChosen}
           state={countryChosen}
           setState={setCountryChosen}
         />
@@ -175,10 +200,7 @@ const SwipeFilter2 = ({
           filterName={'genre'}
           anchorEl={genreFilter}
           openMenu={openGenreFilter}
-          // filter={genreFilter}
           setFilter={setGenreFilter}
-          continentChosen={null}
-          setContinentChosen={null}
           state={genreChosen}
           setState={setGenreChosen}
         />
@@ -211,10 +233,7 @@ const SwipeFilter2 = ({
           filterName={'rating'}
           anchorEl={ratingFilter}
           openMenu={openRatingFilter}
-          // filter={ratingFilter}
           setFilter={setRatingFilter}
-          // continentChosen={null}
-          // setContinentChosen={null}
           state={ratingChosen}
           setState={setRatingChosen}
         />
@@ -247,26 +266,23 @@ const SwipeFilter2 = ({
           filterName={'period'}
           anchorEl={periodFilter}
           openMenu={openPeriodFilter}
-          // filter={periodFilter}
           setFilter={setPeriodFilter}
-          // continentChosen={null}
-          // setContinentChosen={null}
           state={periodChosen}
           setState={setPeriodChosen}
         />
       </Stack>
-      {/* {isButtonVisible && (
+      {isButtonVisible && (
         <Stack marginTop="20px">
           <Button
             onClick={() => {
               setIsFilterValidated(true);
-              setAreFiltersOpen(false);
+              setAreFiltersOpened(false);
             }}
           >
             {'Valider'}
           </Button>
         </Stack>
-      )} */}
+      )}
     </Stack>
   );
 };

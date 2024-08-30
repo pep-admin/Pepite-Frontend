@@ -41,6 +41,8 @@ const SwipeComponent2 = ({
 
   const handleSwipe = (direction) => {
     if (isSwiping) return;    
+    console.log(direction);
+    
     
     // Vérification des limites
     if (direction === 'left' && currentIndexSwipe >= movies.length - 1) {
@@ -219,7 +221,7 @@ const SwipeComponent2 = ({
           {nextMovie && direction === 'left' && (
             <motion.div
               key={nextMovie.id}
-              initial={{ x: '100vw', opacity: 1 }}
+              initial={{ x: '100vw', opacity: 0 }}
               animate={{
                 x: isSwiping ? '0vw' : '100vw',
                 opacity: 1,

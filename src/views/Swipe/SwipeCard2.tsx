@@ -1,7 +1,5 @@
 import React, { FC, useState, useCallback } from 'react';
-import { Badge, Card, Stack, SwipeableDrawer } from '@mui/material';
-import { CustomButton } from './CustomBtn';
-// import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import { Card } from '@mui/material';
 import { assetsBaseUrl } from '@utils/request/config';
 import SwipeContent2 from './SwipeContent2';
 
@@ -34,21 +32,7 @@ interface SwipeCard2Props {
 
 const SwipeCard2 : FC<SwipeCard2Props> = React.memo(({ movie, typeChosen, openSnackbar, setOpenSnackbar }) => {
 
-  // console.log('Rendu SwipeCard ...', movie);
-
   const [showMovieInfos, setShowMovieInfos] = useState(false);
-  // const [areFiltersOpen, setAreFiltersOpen] = useState(false);
-
-  // const toggleFilters = useCallback((open) => (event) => {
-  //   if (
-  //     event &&
-  //     event.type === 'keydown' &&
-  //     (event.key === 'Tab' || event.key === 'Shift')
-  //   ) {
-  //     return;
-  //   }
-  //   setAreFiltersOpen(open);
-  // }, []);
 
   return (
     <Card 

@@ -1,37 +1,58 @@
 // Import des libs externes
-import { Stack, Typography, Divider, CardContent } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Stack, Typography, Divider, CardContent, Box } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.css';
 import PropTypes from 'prop-types';
+
+// Import des composants internes
+import AcquaintancesRatings from '@views/Swipe/AcquaintancesRatings';
+import SwipeCredits from '@views/Swipe/SwipeCredits';
+import SwipeTrailer from '@views/Swipe/SwipeTrailer';
 
 // Import des fonctions utilitaires
 import { convertRating } from '@utils/functions/convertRating';
+import { getShortGenres, getYear } from '@utils/functions/getSwipeMovieInfos';
 
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
 import CircleIcon from '@mui/icons-material/Circle';
 
-// Import des noms des genres raccourcis
-import {
-  shortGenresMovieList,
-  shortGenresSerieList,
-} from '@utils/data/shortGenres';
-
-// Import des requêtes 
+// Import des requêtes
 import { getMovieDetails } from '@utils/request/getMovieDetails';
-import AcquaintancesRatings from './AcquaintancesRatings';
-import SwipeCredits from './SwipeCredits';
 
 const SwipeContent2 = ({
   movie,
   typeChosen,
   showMovieInfos,
   setShowMovieInfos,
-  setError
+  showTrailer,
+  setShowTrailer,
+  isTrailerFullscreen,
+  setIsTrailerFullscreen,
+  setError,
 }) => {
-
   // console.log('rendu SwipeContent !', movie);
-  const [movieDetails, setMovieDetails] = useState(null);
-  
+
+  const [movieDetails, setMovieDetails] = useState(null); // Les noms du réal, des acteurs...
+  const [secondSlideHeight, setSecondSlideHeight] = useState('0px');
+
+  const swiperRef = useRef(null);
+  const firstSlideRef = useRef(null);
+  const secondSlideRef = useRef(null);
+
+  useEffect(() => {
+    if (!showMovieInfos) return;
+
+    if (firstSlideRef.current) {
+      const firstHeight = firstSlideRef.current.offsetHeight;
+
+      if (secondSlideRef.current) {
+        setSecondSlideHeight(`${firstHeight}px`);
+      }
+    }
+  }, [showMovieInfos]);
+
   const getTitle = () => {
     if ('title' in movie) {
       return movie.title;
@@ -41,60 +62,13 @@ const SwipeContent2 = ({
     }
   };
 
-  // Fonction pour obtenir les genres raccourcis du film
-  const getShortGenres = () => {
-    let shortGenres = [];
-
-    if (movie.genre_ids.length) {
-      if ('release_date' in movie) {
-        shortGenres = shortGenresMovieList;
-      } else {
-        shortGenres = shortGenresSerieList;
-      }
-
-      // Utilisation de map pour transformer genre_ids en noms de genres
-      const genreNames = movie.genre_ids
-        .map((genre) => {
-          const genreObj = shortGenres.find(sg => sg.id === genre);
-          return genreObj ? genreObj.name : null;
-        })
-        .filter(Boolean) // Retire les genres non trouvés (null)
-        .join(', '); // Convertir le tableau de noms en une chaîne de caractères
-
-      return genreNames || 'Non spécifié';
-
-    } else {
-      return 'Non spécifié';
-    }
-  };
-
-  // Fonction pour extraire l'année à partir d'une date
-  const getYear = () => {
-
-    let date = null;
-
-    if('release_date' in movie) {
-      date = movie.release_date;
-    }
-    else if('first_air_date' in movie) {
-      date = movie.first_air_date;
-    } else {
-      return 'Non spécifié';
-    }
-
-    return date ? date.split('-')[0] : 'Non spécifié';
-  };
-
   // Récupère les détails d'un film (genre, année...)
   const fetchMovieDetails = async movieId => {
     try {
       const details = await getMovieDetails(typeChosen, movieId);
-      console.log('les détails =>', details);
-      
-      setMovieDetails(details);
 
+      setMovieDetails(details);
     } catch (err) {
-      
       setError({
         state: true,
         message: 'Erreur dans la récupération des détails du film.',
@@ -103,10 +77,21 @@ const SwipeContent2 = ({
   };
 
   useEffect(() => {
-    if(showMovieInfos) {
+    if (showMovieInfos) {
       fetchMovieDetails(movie.id);
     }
-  }, [showMovieInfos])
+  }, [showMovieInfos]);
+
+  useEffect(() => {
+    console.log('plein écran ?? =>', isTrailerFullscreen);
+  }, [isTrailerFullscreen]);
+
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.allowTouchMove = !isTrailerFullscreen;
+      swiperRef.current.swiper.update();
+    }
+  }, [isTrailerFullscreen]);
 
   return (
     <>
@@ -115,7 +100,7 @@ const SwipeContent2 = ({
           height: 'auto',
           width: '100%',
           padding: '0 !important',
-          marginBottom: '100px'
+          // marginBottom: '100px',
         }}
       >
         <Stack>
@@ -127,7 +112,7 @@ const SwipeContent2 = ({
             >
               <Typography
                 component="h1"
-                fontSize="6.5vh"
+                fontSize={getTitle().length > 30 ? '5.5vh' : '6.5vh'} // Ajuste la taille de la police en fonction de la longueur du titre
                 fontFamily="League Spartan"
                 fontWeight="700"
                 color="primary.main"
@@ -149,7 +134,10 @@ const SwipeContent2 = ({
                 lineHeight="0.9"
                 position="relative"
                 top="5px"
-                onClick={() => setShowMovieInfos(!showMovieInfos)}
+                onClick={() => {
+                  setShowMovieInfos(!showMovieInfos);
+                  setShowTrailer(false);
+                }}
               >
                 {!showMovieInfos ? '+' : '-'}
               </Typography>
@@ -182,7 +170,7 @@ const SwipeContent2 = ({
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
-                {getShortGenres()}
+                {getShortGenres(movie)}
               </Typography>
               <Divider
                 orientation="vertical"
@@ -200,7 +188,7 @@ const SwipeContent2 = ({
                 fontWeight="500"
                 color="secondary.main"
               >
-                {getYear()}
+                {getYear(movie)}
               </Typography>
               <Divider
                 orientation="vertical"
@@ -233,9 +221,9 @@ const SwipeContent2 = ({
             direction={!showMovieInfos ? 'row' : 'column'}
             justifyContent="space-between"
             padding={!showMovieInfos ? '23px 0' : '0'}
-            marginBottom={!showMovieInfos ? '23px' : '0'}
+            marginBottom={!showMovieInfos ? '115px' : '0'}
           >
-            {!showMovieInfos ? (
+            {!showMovieInfos && !showTrailer ? (
               <AcquaintancesRatings />
             ) : (
               <Stack
@@ -245,17 +233,73 @@ const SwipeContent2 = ({
                 flexBasis="100%"
                 columnGap="5px"
               >
-                <CircleIcon color="primary" sx={{ fontSize: '1vh' }} />
-                <CircleIcon color="primary" sx={{ fontSize: '1vh' }} />
+                <CircleIcon
+                  sx={{
+                    fontSize: '1vh',
+                    color: !showTrailer ? 'orange' : '#fff',
+                  }}
+                />
+                <CircleIcon
+                  sx={{
+                    fontSize: '1vh',
+                    color: showTrailer ? 'orange' : '#fff',
+                  }}
+                />
               </Stack>
             )}
           </Stack>
-          {
-            !showMovieInfos ?
-              null
-            :
-              <SwipeCredits movie={movie} movieDetails={movieDetails} />
-          }
+          {!showMovieInfos ? null : (
+            <Box
+              // minHeight="250px"
+              width="100%"
+              overflow="hidden"
+              sx={{
+                position: isTrailerFullscreen ? 'absolute' : 'static',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+              }}
+            >
+              <Swiper
+                ref={swiperRef}
+                spaceBetween={6 * (window.innerWidth / 100)} // Espace entre les slides, ici 6vw
+                slidesPerView={1} // Affiche une seule slide à la fois en pleine largeur
+                centeredSlides={false} // Les slides ne sont pas centrés
+                onSlideChange={swiper => {
+                  if (swiper.activeIndex === 1) {
+                    setShowTrailer(true);
+                  } else {
+                    setShowTrailer(false);
+                  }
+                }}
+                allowTouchMove={!isTrailerFullscreen}
+                style={{ height: '100%', width: '100%' }}
+              >
+                <SwiperSlide style={{ width: '88vw' }}>
+                  <div ref={firstSlideRef}>
+                    <SwipeCredits movie={movie} movieDetails={movieDetails} />
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide
+                  style={{
+                    height: isTrailerFullscreen ? '100%' : secondSlideHeight,
+                    minHeight: '250px',
+                    width: isTrailerFullscreen ? '100%' : '88vw',
+                  }}
+                >
+                  <div ref={secondSlideRef} style={{ height: '100%' }}>
+                    <SwipeTrailer
+                      movie={movie}
+                      showTrailer={showTrailer}
+                      isTrailerFullscreen={isTrailerFullscreen}
+                      setIsTrailerFullscreen={setIsTrailerFullscreen}
+                    />
+                  </div>
+                </SwiperSlide>
+              </Swiper>
+            </Box>
+          )}
         </Stack>
       </CardContent>
     </>
@@ -267,6 +311,11 @@ SwipeContent2.propTypes = {
   typeChosen: PropTypes.string.isRequired,
   showMovieInfos: PropTypes.bool.isRequired,
   setShowMovieInfos: PropTypes.func.isRequired,
+  showTrailer: PropTypes.bool,
+  setShowTrailer: PropTypes.func,
+  isTrailerFullscreen: PropTypes.bool,
+  setIsTrailerFullscreen: PropTypes.func,
+  setError: PropTypes.func,
 };
 
 export default SwipeContent2;

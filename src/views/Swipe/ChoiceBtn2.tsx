@@ -1,6 +1,7 @@
 // Import des libs externes
 import { Stack } from '@mui/material';
 import React, { FC } from 'react';
+import PropTypes from 'prop-types';
 
 // Import des composants internes
 import { CustomButton } from './CustomBtn';
@@ -25,47 +26,52 @@ interface ChoiceBtn2Props {
   error: ErrorState;
 }
 
-const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(({
-  choice,
-  isActive,
-  handleActions,
-  error,
-}) => {  
-
-  return (
-    <>
-      <Stack alignItems="center" justifyContent='center'>
-        <CustomButton
-          variant="contained"
-          btntype={'others'}
-          choice={choice}
-          isactive={isActive}
-          // iswanted={isWanted}
-          // iswatched={isWatched}
-          errorstate={error.state}
-          onClick={() => handleActions(choice)}
-
-        >
-          {choice === 'unwanted' ? (
-            isActive ?
-              <DeleteForeverOutlinedIcon fontSize="large" />
-            :
-              <DeleteOutlinedIcon fontSize='large' />
-          ) : choice === 'wanted' ? (
-            isActive ?
-              <PlaylistAddCheckOutlinedIcon sx={{ fontSize: '2.5em', position: 'relative', left: '1px' }} />
-            :
-              <PlaylistAddOutlinedIcon sx={{ fontSize: '2.5em', position: 'relative', left: '1px' }} />
-          ) : (
-            isActive ?
+const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
+  ({ choice, isActive, handleActions, error }) => {
+    return (
+      <>
+        <Stack alignItems="center" justifyContent="center">
+          <CustomButton
+            variant="contained"
+            btntype={'others'}
+            choice={choice}
+            isactive={isActive}
+            errorstate={error.state}
+            onClick={() => handleActions(choice)}
+          >
+            {choice === 'unwanted' ? (
+              isActive ? (
+                <DeleteForeverOutlinedIcon fontSize="large" />
+              ) : (
+                <DeleteOutlinedIcon fontSize="large" />
+              )
+            ) : choice === 'wanted' ? (
+              isActive ? (
+                <PlaylistAddCheckOutlinedIcon
+                  sx={{ fontSize: '2.5em', position: 'relative', left: '1px' }}
+                />
+              ) : (
+                <PlaylistAddOutlinedIcon
+                  sx={{ fontSize: '2.5em', position: 'relative', left: '1px' }}
+                />
+              )
+            ) : isActive ? (
               <VisibilityOutlinedIcon fontSize="large" />
-            :
+            ) : (
               <VisibilityOffOutlinedIcon fontSize="large" />
-          )}
-        </CustomButton>
-      </Stack>
-    </>
-  );
-});
+            )}
+          </CustomButton>
+        </Stack>
+      </>
+    );
+  },
+);
+
+ChoiceBtn2.propTypes = {
+  choice: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  handleActions: PropTypes.func.isRequired,
+  // error: PropTypes.object.isRequired
+}
 
 export default ChoiceBtn2;

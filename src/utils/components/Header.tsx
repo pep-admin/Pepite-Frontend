@@ -31,7 +31,7 @@ import { handleLogout } from '../request/authRequest';
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = ({ page }) => {
+const Header = ({ page, isTrailerFullscreen }) => {
   // Infos de l'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
@@ -84,6 +84,7 @@ const Header = ({ page }) => {
           : 'fixed'
       }
       sx={{
+        visibility: isTrailerFullscreen ? 'hidden' : 'visible',
         height: '50px',
         justifyContent: 'center',
         backgroundColor: 'rgba(1, 18, 18, 0.9)',
@@ -286,6 +287,7 @@ const Header = ({ page }) => {
 
 Header.propTypes = {
   page: PropTypes.string.isRequired,
+  isTrailerFullscreen: PropTypes.bool.isRequired,
 };
 
 export default Header;

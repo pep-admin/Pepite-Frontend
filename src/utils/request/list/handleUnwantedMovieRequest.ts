@@ -5,11 +5,10 @@ import { apiBaseUrl } from '../config';
 export const handleUnwantedMovieRequest = async (
   movieId: number,
   type: string,
-  unwanted: boolean
+  unwanted: boolean,
 ) => {
   try {
-
-    if(unwanted) {
+    if (unwanted) {
       await axios.post(
         `${apiBaseUrl}/list/unwanted`,
         { movie_id: movieId, type: type },
@@ -22,9 +21,8 @@ export const handleUnwantedMovieRequest = async (
       });
     }
 
-    return {error: null}
-    
+    return { error: null };
   } catch {
-    return {error: 'Erreur serveur : Impossible d\'effectuer l\'action.'};  
+    return { error: "Erreur serveur : Impossible d'effectuer l'action." };
   }
 };

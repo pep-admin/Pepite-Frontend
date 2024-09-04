@@ -2,10 +2,13 @@ import axios from 'axios';
 import { apiBaseUrl } from '../config';
 
 // Insertion d'un film dans la liste des déjà vus
-export const handleWatchedMovieRequest = async (movieId: number, type: string, watched: boolean) => {
+export const handleWatchedMovieRequest = async (
+  movieId: number,
+  type: string,
+  watched: boolean,
+) => {
   try {
-
-    if(watched) {
+    if (watched) {
       await axios.post(
         `${apiBaseUrl}/list/watched/add`,
         { movie_id: movieId, type: type },
@@ -18,9 +21,8 @@ export const handleWatchedMovieRequest = async (movieId: number, type: string, w
       });
     }
 
-    return { error: null }
-    
+    return { error: null };
   } catch {
-    return {error: 'Erreur serveur : Impossible d\'effectuer l\'action.'};  
+    return { error: "Erreur serveur : Impossible d'effectuer l'action." };
   }
 };

@@ -1,5 +1,6 @@
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 
 // Import des icônes
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
@@ -9,21 +10,20 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import FilterMenu from './FilterMenu';
 
-const SwipeFilter2 = ({ 
-  typeChosen, 
-  setTypeChosen, 
-  countryChosen, 
-  setCountryChosen, 
-  genreChosen, 
+const SwipeFilter2 = ({
+  typeChosen,
+  setTypeChosen,
+  countryChosen,
+  setCountryChosen,
+  genreChosen,
   setGenreChosen,
   ratingChosen,
   setRatingChosen,
   periodChosen,
   setPeriodChosen,
   setIsFilterValidated,
-  setAreFiltersOpened
+  setAreFiltersOpened,
 }) => {
-  
   const [typeFilter, setTypeFilter] = useState(null);
   const [countryFilter, setCountryFilter] = useState(null);
   const [genreFilter, setGenreFilter] = useState(null);
@@ -72,7 +72,7 @@ const SwipeFilter2 = ({
         break;
     }
   };
-  
+
   useEffect(() => {
     // Ignorer le premier rendu
     if (isFirstRender.current) {
@@ -114,13 +114,9 @@ const SwipeFilter2 = ({
         <LocalMoviesIcon fontSize="medium" />
         <Stack>
           <Typography component="h3">{'Type'}</Typography>
-          <Typography 
-            variant="body2" 
-            color={
-              typeChosen && typeChosen !== 'all'
-                ? 'secondary'
-                : '#7b7b7b'
-            }
+          <Typography
+            variant="body2"
+            color={typeChosen && typeChosen !== 'all' ? 'secondary' : '#7b7b7b'}
           >
             {typeChosen === 'movie'
               ? 'Films'
@@ -285,6 +281,21 @@ const SwipeFilter2 = ({
       )}
     </Stack>
   );
+};
+
+SwipeFilter2.propTypes = {
+  typeChosen: PropTypes.string.isRequired,
+  setTypeChosen: PropTypes.func.isRequired,
+  countryChosen: PropTypes.object.isRequired,
+  setCountryChosen: PropTypes.func.isRequired,
+  genreChosen: PropTypes.object.isRequired,
+  setGenreChosen: PropTypes.func.isRequired,
+  ratingChosen: PropTypes.object.isRequired,
+  setRatingChosen: PropTypes.func.isRequired,
+  periodChosen: PropTypes.object.isRequired,
+  setPeriodChosen: PropTypes.func.isRequired,
+  setIsFilterValidated: PropTypes.func.isRequired,
+  setAreFiltersOpened: PropTypes.func.isRequired,
 };
 
 export default SwipeFilter2;

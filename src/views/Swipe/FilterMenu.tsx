@@ -17,7 +17,11 @@ import { ratings } from '@utils/data/ratings';
 // Import des périodes de sorties
 import { periodMenu } from '@utils/data/periods';
 
-const typeMenu = [{ id: 0 , name: 'Tous' }, { id: 1 , name: 'Films' }, { id: 2, name: 'Séries' }];
+const typeMenu = [
+  { id: 0, name: 'Tous' },
+  { id: 1, name: 'Films' },
+  { id: 2, name: 'Séries' },
+];
 
 const FilterMenu = ({
   filterName,
@@ -28,10 +32,14 @@ const FilterMenu = ({
   state,
   setState,
 }) => {
-
   // Fonction utilitaire pour générer des MenuItems avec un Divider optionnel
-  const generateMenuItems = (items, isSelected, onClick, keyExtractor = item => item.name, textExtractor = item => item.name) => {    
-    
+  const generateMenuItems = (
+    items,
+    isSelected,
+    onClick,
+    keyExtractor = item => item.name,
+    textExtractor = item => item.name,
+  ) => {
     return items.flatMap((item, index) => {
       const menuItem = (
         <MenuItem
@@ -67,24 +75,32 @@ const FilterMenu = ({
 
   const displaySubFilters = () => {
     console.log('nom du filtre =>', filterName);
-    
+
     console.log('state =>', state);
-    
+
     if (filterName === 'type') {
       return generateMenuItems(
         typeMenu,
-        type => (state === 'movie' && type.name === 'Films') || (state === 'tv' && type.name === 'Séries'),
+        type =>
+          (state === 'movie' && type.name === 'Films') ||
+          (state === 'tv' && type.name === 'Séries'),
         type => {
-          setState(type.name === 'Films' ? 'movie' : type.name === 'Séries' ? 'tv' : 'all');
+          setState(
+            type.name === 'Films'
+              ? 'movie'
+              : type.name === 'Séries'
+              ? 'tv'
+              : 'all',
+          );
           setFilter(null);
-        }
+        },
       );
     } else if (filterName === 'country') {
       const allCountriesList = [
-        { name: 'Tous', iso_3166_1: null },  // Ajoute l'option "Tous" en début de liste
-        ...countriesList 
+        { name: 'Tous', iso_3166_1: null }, // Ajoute l'option "Tous" en début de liste
+        ...countriesList,
       ];
-      
+
       return generateMenuItems(
         allCountriesList,
         country => state.name === country.name,
@@ -92,9 +108,8 @@ const FilterMenu = ({
           setState({ name: country.name, code: country.iso_3166_1 });
           setFilter(null);
         },
-        country => country.name
+        country => country.name,
       );
-      
     } else if (filterName === 'genre') {
       return generateMenuItems(
         shortGenresMovieList,
@@ -103,7 +118,7 @@ const FilterMenu = ({
           setState({ name: genre.name, id: genre.id });
           setFilter(null);
         },
-        genre => genre.id
+        genre => genre.id,
       );
     } else if (filterName === 'rating') {
       return generateMenuItems(
@@ -113,7 +128,7 @@ const FilterMenu = ({
         rating => rating.number,
         rating => (
           <>
-            { rating.number !== null &&
+            {rating.number !== null && (
               <ColoredRating
                 color={state.number === rating.number ? '#111111' : 'secondary'}
                 emptyColor={state.number === rating.number ? '#fff' : '#bababa'}
@@ -121,16 +136,16 @@ const FilterMenu = ({
                 readOnly={true}
                 precision={0.5}
               />
-            }
+            )}
             {rating.value}
           </>
-        )
+        ),
       );
     } else if (filterName === 'period') {
       return generateMenuItems(
         periodMenu,
         period => state.name === period.name,
-        period => setState(period)
+        period => setState(period),
       );
     }
   };
@@ -143,9 +158,7 @@ const FilterMenu = ({
       }}
       anchorEl={anchorEl}
       open={openMenu}
-      onClose={() =>
-        setFilter(null)
-      }
+      onClose={() => setFilter(null)}
       TransitionComponent={Fade}
       anchorOrigin={{
         vertical: 'top',

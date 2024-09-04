@@ -10,10 +10,7 @@ const AcquaintancesRatings = () => {
       <Stack>
         <Typography fontSize="2.4vh" color="#fff">
           Moyenne des
-          <span style={{ color: '#DD8C28', fontWeight: '500' }}>
-            {' '}
-            amis
-          </span>
+          <span style={{ color: '#DD8C28', fontWeight: '500' }}> amis</span>
         </Typography>
         <Stack
           height="15px"
@@ -44,10 +41,7 @@ const AcquaintancesRatings = () => {
       <Stack>
         <Typography fontSize="2.4vh" color="#fff">
           Moyenne des
-          <span style={{ color: '#24A5A5', fontWeight: '500' }}>
-            {' '}
-            suivis
-          </span>
+          <span style={{ color: '#24A5A5', fontWeight: '500' }}> suivis</span>
         </Typography>
         <Stack
           height="15px"

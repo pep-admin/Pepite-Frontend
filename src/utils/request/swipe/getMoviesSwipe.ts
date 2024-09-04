@@ -11,7 +11,6 @@ export const getMoviesSwipe = async (
   ratingChosen: null | number,
   periodChosen: string,
 ) => {
-  
   try {
     let countryString;
     let genreString;
@@ -19,16 +18,14 @@ export const getMoviesSwipe = async (
     let periodString;
 
     if (countryChosen !== 'Tous') {
-      countryString = `&with_origin_country=${findIsoCountry(
-        countryChosen,
-      )}`;
+      countryString = `&with_origin_country=${findIsoCountry(countryChosen)}`;
     } else countryString = '';
 
     if (genreChosen) genreString = `&with_genres=${genreChosen}`;
     else genreString = '';
 
     if (ratingChosen) ratingString = `&vote_average=${ratingChosen * 2}`;
-    else ratingString = '';  
+    else ratingString = '';
 
     switch (periodChosen) {
       case 'Toutes':
@@ -63,17 +60,15 @@ export const getMoviesSwipe = async (
         break;
       default:
         periodString = '';
-    }  
+    }
 
     const response = await axios.get(
       `${apiBaseUrl}/movies/all?page=${moviePage}&type=${typeChosen}${countryString}${genreString}${ratingString}${periodString}`,
       { withCredentials: true },
-    );  
+    );
 
     return response.data.elligible;
-
   } catch (error) {
     throw error;
   }
-  
 };

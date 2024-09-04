@@ -11,9 +11,6 @@ export const getVideo = async (type, movieId) => {
 
     return response;
   } catch (error) {
-    console.log(
-      'erreur dans la récupération des commentaires de critique :',
-      error,
-    );
+    console.log('erreur dans la récupération de la vidéo :', error);
   }
 };

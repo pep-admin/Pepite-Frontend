@@ -1,8 +1,8 @@
-import { number } from "prop-types";
+import { number } from 'prop-types';
 
 // Légende des notes
 export const ratings = [
-  { 
+  {
     number: null,
     value: 'Toutes',
   },

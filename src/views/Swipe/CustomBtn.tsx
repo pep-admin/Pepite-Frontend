@@ -30,10 +30,10 @@ const hoverColors = {
 };
 
 const getGradientColor = (
-  choice: string, 
-  isactive: boolean, 
-  errorstate: null | boolean, 
-  lockColor: boolean
+  choice: string,
+  isactive: boolean,
+  errorstate: null | boolean,
+  lockColor: boolean,
 ) => {
   // Bloque le changement couleur si lockColor est activé
   if (lockColor) return bgGradient.others;
@@ -52,32 +52,28 @@ const getGradientColor = (
 // Bouton rond de gradient personnalisé
 export const CustomButton = styled(Button, {
   shouldForwardProp: prop =>
-    prop !== 'isactive' &&
-    prop !== 'btntype' &&
-    prop !== 'errorstate',  
-})<CustomButtonProps>(
-  ({ choice, btntype, isactive, errorstate }) => {
-    const [lockColor, setLockColor] = useState(false);
+    prop !== 'isactive' && prop !== 'btntype' && prop !== 'errorstate',
+})<CustomButtonProps>(({ choice, btntype, isactive, errorstate }) => {
+  const [lockColor, setLockColor] = useState(false);
 
-    useEffect(() => {
-      // Si une erreur est détectée, verrouillez la couleur
-      if (errorstate) {
-        setLockColor(true);
-      }
-    }, [errorstate]);
+  useEffect(() => {
+    // Si une erreur est détectée, verrouillez la couleur
+    if (errorstate) {
+      setLockColor(true);
+    }
+  }, [errorstate]);
 
-    return {
-      height: btnSize[btntype],
-      width: btnSize[btntype],
-      minWidth: 'auto',
-      padding: '0',
-      background:
-        btntype === 'filter'
-          ? bgGradient.filter
-          : getGradientColor(choice, isactive, errorstate, lockColor),
-      color: '#fff',
-      borderRadius: '50%',
-      boxShadow: 'inset 4.5px 4px 4px rgba(31, 170, 179, 0.25) !important',
-    };
-  }
-);
+  return {
+    height: btnSize[btntype],
+    width: btnSize[btntype],
+    minWidth: 'auto',
+    padding: '0',
+    background:
+      btntype === 'filter'
+        ? bgGradient.filter
+        : getGradientColor(choice, isactive, errorstate, lockColor),
+    color: '#fff',
+    borderRadius: '50%',
+    boxShadow: 'inset 4.5px 4px 4px rgba(31, 170, 179, 0.25) !important',
+  };
+});

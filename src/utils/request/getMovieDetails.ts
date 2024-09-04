@@ -8,7 +8,6 @@ import { apiBaseUrl } from './config';
 
 // Récupération des informations détaillées d'un film
 export const getMovieDetails = async (displayType: string, movieId: number) => {
-  
   try {
     let certification = '';
 
@@ -29,14 +28,12 @@ export const getMovieDetails = async (displayType: string, movieId: number) => {
     //   // console.log('requête DB pour', movieId);
     //   parsedData = parseDatabaseData(response.data, displayType, null);
     // } else {
-      // console.log('requête TMDB pour', movieId);
-      parsedData = response.data;
+    // console.log('requête TMDB pour', movieId);
+    parsedData = response.data;
     // }
 
     return parsedData;
-
   } catch (error) {
     throw error;
   }
-  
 };

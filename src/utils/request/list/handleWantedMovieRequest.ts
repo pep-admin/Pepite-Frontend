@@ -3,14 +3,12 @@ import { apiBaseUrl } from '../config';
 
 // Insertion d'un film dans la liste des films souhaités
 export const handleWantedMovieRequest = async (
-  movieId: number, 
+  movieId: number,
   type: string,
-  wanted: boolean
+  wanted: boolean,
 ) => {
-
   try {
-    
-    if(wanted) {
+    if (wanted) {
       await axios.post(
         `${apiBaseUrl}/list/add_wanted`,
         { movie_id: movieId, type: type },
@@ -23,9 +21,8 @@ export const handleWantedMovieRequest = async (
       });
     }
 
-    return {error: null}
-    
+    return { error: null };
   } catch {
-    return {error: 'Erreur serveur : Impossible d\'effectuer l\'action.'};  
+    return { error: "Erreur serveur : Impossible d'effectuer l'action." };
   }
 };

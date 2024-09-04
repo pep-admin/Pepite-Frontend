@@ -10,7 +10,6 @@ import { getMoviesSwipe } from '@utils/request/swipe/getMoviesSwipe';
 // import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContainer = () => {
-
   // Gestions des films
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviePage, setMoviePage] = useState(null); // Numéro de la page de l'API
@@ -21,18 +20,18 @@ const SwipeContainer = () => {
 
   // Gestion des filtres
   const [typeChosen, setTypeChosen] = useState('movie'); // Films ou séries
-  const [countryChosen, setCountryChosen] = useState({ 
+  const [countryChosen, setCountryChosen] = useState({
     name: 'États-Unis',
     code: 'US',
   });
-  const [genreChosen, setGenreChosen] = useState({ 
-    id: 0, 
-    name: 'Tous' 
+  const [genreChosen, setGenreChosen] = useState({
+    id: 0,
+    name: 'Tous',
   });
   const [ratingChosen, setRatingChosen] = useState({
     number: null,
     value: null,
-  }); 
+  });
   const [periodChosen, setPeriodChosen] = useState({ id: 0, name: 'Toutes' }); // Période de productions des films / séries
   const [isFilterValidated, setIsFilterValidated] = useState(false);
 
@@ -41,10 +40,9 @@ const SwipeContainer = () => {
   const [error, setError] = useState({ state: null, message: null }); // Erreur lors du chargement
 
   // Récupère 20 films selon la page
-  const getMovies = async (moviePage) => {
+  const getMovies = async moviePage => {
     try {
-
-      // Récupère 20 films / séries dont l'utilisateur n'a pas interagi 
+      // Récupère 20 films / séries dont l'utilisateur n'a pas interagi
       const elligibleMovies = await getMoviesSwipe(
         moviePage,
         typeChosen,
@@ -67,24 +65,22 @@ const SwipeContainer = () => {
         is_watched: false,
         is_rated: false,
       }));
-      
+
       // Si l'utilisateur a choisi des filtres, on écrase le tableau
-      if(isFilterValidated) {
+      if (isFilterValidated) {
         setMovies(moviesWithOptions);
         setIsFilterValidated(false);
-
       } else {
         setMovies(prevMovies => [...prevMovies, ...moviesWithOptions]);
       }
 
       console.log('les films !', moviesWithOptions);
-
     } catch (err) {
       console.log('erreur !', err);
-      
+
       setError({
         state: true,
-        message: 'Erreur dans la récupération des films.'
+        message: 'Erreur dans la récupération des films.',
       });
       return;
     } finally {
@@ -117,33 +113,34 @@ const SwipeContainer = () => {
 
   // Recharge de nouveaux films en cas de filtrage
   useEffect(() => {
-    if(isFilterValidated) {
+    if (isFilterValidated) {
       getMovies(1);
       setMoviePage(1);
     }
-  }, [isFilterValidated])
+  }, [isFilterValidated]);
 
   return (
-    !loading &&
-    <SwipeComponent3
-      movies={movies}
-      setMovies={setMovies}
-      currentIndex={currentIndex}
-      setCurrentIndex={setCurrentIndex}
-      typeChosen={typeChosen}
-      setTypeChosen={setTypeChosen}
-      countryChosen={countryChosen}
-      setCountryChosen={setCountryChosen}
-      genreChosen={genreChosen}
-      setGenreChosen={setGenreChosen}
-      ratingChosen={ratingChosen}
-      setRatingChosen={setRatingChosen}
-      periodChosen={periodChosen}
-      setPeriodChosen={setPeriodChosen}
-      setIsFilterValidated={setIsFilterValidated}
-      error={error}
-      setError={setError}
-    />
+    !loading && (
+      <SwipeComponent3
+        movies={movies}
+        setMovies={setMovies}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+        typeChosen={typeChosen}
+        setTypeChosen={setTypeChosen}
+        countryChosen={countryChosen}
+        setCountryChosen={setCountryChosen}
+        genreChosen={genreChosen}
+        setGenreChosen={setGenreChosen}
+        ratingChosen={ratingChosen}
+        setRatingChosen={setRatingChosen}
+        periodChosen={periodChosen}
+        setPeriodChosen={setPeriodChosen}
+        setIsFilterValidated={setIsFilterValidated}
+        error={error}
+        setError={setError}
+      />
+    )
   );
 };
 

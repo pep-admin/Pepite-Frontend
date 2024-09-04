@@ -1,4 +1,10 @@
-export const countActiveFiltersSwipe = ( typeChosen, countryChosen, genreChosen, ratingChosen, periodChosen ) => {
+export const countActiveFiltersSwipe = (
+  typeChosen,
+  countryChosen,
+  genreChosen,
+  ratingChosen,
+  periodChosen,
+) => {
   let count = 0;
 
   if (typeChosen !== 'all') count++; // Par défaut, c'est 'all'

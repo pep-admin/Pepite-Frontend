@@ -1,5 +1,5 @@
 // Import des libs externes
-import { CircularProgress, LinearProgress, Stack } from '@mui/material';
+import { CircularProgress, LinearProgress, Skeleton, Stack, Typography } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import YouTube from 'react-youtube';
 import PropTypes from 'prop-types';
@@ -17,7 +17,9 @@ const SwipeTrailer = ({
   isTrailerFullscreen,
   setIsTrailerFullscreen,
 }) => {
+
   const [videoId, setVideoId] = useState(null);
+  const [trailer, setTrailer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPaused, setIsPaused] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -38,6 +40,8 @@ const SwipeTrailer = ({
     },
   };
 
+  const getCountryFlagUrl = (countryCode) => `https://flagsapi.com/${countryCode}/shiny/24.png`;
+
   const fetchTrailerUrl = async () => {
     if (!isLoading) return;
 
@@ -56,9 +60,12 @@ const SwipeTrailer = ({
       const trailer = data.results.find(
         video => video.type === 'Trailer' && video.site === 'YouTube',
       );
+      console.log('trailer', trailer);
+      
 
       if (trailer) {
         setVideoId(trailer.key);
+        setTrailer(trailer);
       }
     } catch (error) {
       console.error(
@@ -89,10 +96,6 @@ const SwipeTrailer = ({
 
   const toggleFullscreen = event => {
     event.stopPropagation();
-
-    // if (!isTrailerFullscreen) {
-    //   handlePlayPause();
-    // }
 
     setIsTrailerFullscreen(!isTrailerFullscreen);
   };
@@ -144,99 +147,138 @@ const SwipeTrailer = ({
     }
   }, [showTrailer]);
 
+  useEffect(() => {
+    console.log('plein écran ? =>', isTrailerFullscreen);
+    
+  }, [isTrailerFullscreen])
+
   return (
-    <Stack
-      ref={containerRef}
-      height="100%"
-      width={isTrailerFullscreen ? '100%' : '88vw'}
-      flexShrink="0"
-    >
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        style={{
-          height: '100%',
-          width: '100%',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {videoId !== null && !isLoading ? (
-          <>
-            <YouTube
-              ref={playerRef}
-              videoId={videoId}
-              opts={opts}
-              style={{
-                height: '100%',
-                width: '100%',
-              }}
-              onPause={() => setIsPaused(true)}
-              onPlay={() => setIsPaused(false)}
-            />
-            {/* Overlay pour les icônes en plein écran */}
-            <Stack
-              ref={overlayRef}
-              justifyContent="flex-end"
-              style={{
-                position: 'fixed',
-                zIndex: 9999, // Positionne l'overlay au-dessus de tout
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: isPaused
-                  ? 'rgba(0, 0, 0, 0.5)'
-                  : 'rgba(0, 0, 0, 0)',
-              }}
-              onClick={handlePlayPause}
-            >
-              <Stack 
-                direction='row' 
-                alignItems='center' 
-                height='50px' 
-                bgcolor='#000'
+    <Stack spacing={2} height='100%' >
+      <Stack direction='row' spacing={2} display={ isTrailerFullscreen ? 'none' : 'flex' }>
+        <Typography color="secondary" fontWeight="500" whiteSpace="nowrap">
+            {'Bande-annonce :'}
+        </Typography>
+        <Stack direction='row' spacing={1} alignItems='center' >
+          {
+            trailer ?
+            <>
+              <img
+                src={getCountryFlagUrl(`${trailer.iso_3166_1}`)}
+                alt={`Drapeau de france`}
+              />
+              <Typography
+                color="primary"
+                fontWeight="400"
+                whiteSpace="nowrap"
               >
-                <PlayArrowIcon
-                  onClick={handlePlayPause}
-                  style={{
-                    fontSize: '32px',
-                    color: 'white',
-                    margin: '0 10px',
-                  }}
-                />
-                {/* Barre de progression cliquable */}
-                <LinearProgress
-                  ref={progressBarRef}
-                  variant="determinate"
-                  value={progress}
-                  onClick={handleProgressClick} // Ajout du gestionnaire de clic
-                  sx={{
-                    width: '100%',
-                    height: '4px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    cursor: 'pointer', // Ajout d'un curseur pour indiquer que c'est cliquable
-                    '& .MuiLinearProgress-bar': {
-                      backgroundColor: '#E7AE1A',
-                    },
-                  }}
-                />
-                <FullscreenIcon
-                  onClick={e => toggleFullscreen(e)}
-                  style={{
-                    fontSize: '32px',
-                    color: 'white',
-                    margin: '0 10px',
-                  }}
-                />
+                {`${trailer.iso_3166_1}`}
+              </Typography>
+            </>
+            :
+            <Skeleton
+              variant="text"
+              width="46px"
+              sx={{ fontSize: '1em', bgcolor: 'rgb(56 56 56)' }}
+            />
+          }
+          
+        </Stack>
+      </Stack>
+      <Stack
+        ref={containerRef}
+        height={ isTrailerFullscreen ? '100%' : '250px' } 
+        width={ isTrailerFullscreen ? '100%' : '88vw' }
+        flexShrink="0"
+        marginTop={ isTrailerFullscreen ? '0 !important' : '12px' }
+      >
+        <Stack
+          justifyContent="center"
+          alignItems="center"
+          style={{
+            height: '100%',
+            width: '100%',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          {videoId !== null && !isLoading ? (
+            <>
+              <YouTube
+                ref={playerRef}
+                videoId={videoId}
+                opts={opts}
+                style={{
+                  height: '100%',
+                  width: '100%',
+                }}
+                onPause={() => setIsPaused(true)}
+                onPlay={() => setIsPaused(false)}
+              />
+              {/* Overlay pour les icônes en plein écran */}
+              <Stack
+                ref={overlayRef}
+                justifyContent="flex-end"
+                style={{
+                  position: 'absolute',
+                  zIndex: 9999, // Positionne l'overlay au-dessus de tout
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: isPaused
+                    ? 'rgba(0, 0, 0, 0.5)'
+                    : 'rgba(0, 0, 0, 0)',
+                }}
+                onClick={handlePlayPause}
+              >
+                <Stack 
+                  direction='row' 
+                  alignItems='center' 
+                  height='50px' 
+                  bgcolor={ isTrailerFullscreen && !isPaused ? 'transparent' : '#000' }
+                >
+                  <PlayArrowIcon
+                    onClick={handlePlayPause}
+                    style={{
+                      fontSize: '32px',
+                      color: 'white',
+                      margin: '0 10px',
+                    }}
+                  />
+                  {/* Barre de progression cliquable */}
+                  <LinearProgress
+                    ref={progressBarRef}
+                    variant="determinate"
+                    value={progress}
+                    onClick={handleProgressClick} // Ajout du gestionnaire de clic
+                    sx={{
+                      width: '100%',
+                      height: '4px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      cursor: 'pointer', // Ajout d'un curseur pour indiquer que c'est cliquable
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: '#E7AE1A',
+                      },
+                    }}
+                  />
+                  <FullscreenIcon
+                    onClick={e => toggleFullscreen(e)}
+                    style={{
+                      fontSize: '32px',
+                      color: 'white',
+                      margin: '0 10px',
+                    }}
+                  />
+                </Stack>
               </Stack>
-            </Stack>
-          </>
-        ) : (
-          <CircularProgress sx={{ color: '#E7AE1A' }} />
-        )}
+            </>
+          ) : (
+            <CircularProgress sx={{ color: '#E7AE1A' }} />
+          )}
+        </Stack>
       </Stack>
     </Stack>
+    
   );
 };
 

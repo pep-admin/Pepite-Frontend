@@ -2,7 +2,7 @@ import { countriesList } from '@utils/data/countries';
 
 // Récupération des noms en Français de pays producteurs du film
 export const findFrenchNameCountry = countries => {
-  let frenchCountryNames;
+  let frenchCountryNames;  
 
   if (countries?.length === 0) {
     frenchCountryNames = ['Non spécifié'];

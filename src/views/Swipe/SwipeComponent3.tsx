@@ -354,7 +354,7 @@ const SwipeComponent3 = ({
               setZIndexForSwipe={setZIndexForSwipe}
               showTrailer={null}
               setShowTrailer={null}
-              isTrailerFullscreen={null}
+              isTrailerFullscreen={isTrailerFullscreen}
               setIsTrailerFullscreen={null}
               setError={null}
             />
@@ -394,7 +394,7 @@ const SwipeComponent3 = ({
               setZIndexForSwipe={setZIndexForSwipe}
               showTrailer={null}
               setShowTrailer={null}
-              isTrailerFullscreen={null}
+              isTrailerFullscreen={isTrailerFullscreen}
               setIsTrailerFullscreen={null}
               setError={null}
             />
@@ -420,15 +420,23 @@ const SwipeComponent3 = ({
               handleActions={handleActions}
               error={error}
             />
+            <Stack direction='row' spacing={5}>
+              <ChoiceBtn2
+                choice={'watched'}
+                isActive={isWatched}
+                handleActions={handleActions}
+                error={error}
+              />
+              <ChoiceBtn2
+                choice={'quick_rating'}
+                isActive={isWatched}
+                handleActions={handleActions}
+                error={error}
+              />
+            </Stack>
             <ChoiceBtn2
               choice={'wanted'}
               isActive={isWanted}
-              handleActions={handleActions}
-              error={error}
-            />
-            <ChoiceBtn2
-              choice={'watched'}
-              isActive={isWatched}
               handleActions={handleActions}
               error={error}
             />

@@ -21,6 +21,8 @@ const SwipeCredits = ({ movie, movieDetails }) => {
     // Vérifie si le nombre d'acteurs dépasse trois
     return topActors.join(', ');
   };
+  console.log('les détails =>', movieDetails);
+  
 
   return (
     <Stack width="88vw" flexShrink="0" marginBottom='100px' >

@@ -7,9 +7,9 @@ import SwipeComponent3 from '@views/Swipe/SwipeComponent3';
 // Import des requêtes
 import { getMoviesSwipe } from '@utils/request/swipe/getMoviesSwipe';
 // import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
-// import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContainer = () => {
+
   // Gestions des films
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviePage, setMoviePage] = useState(null); // Numéro de la page de l'API

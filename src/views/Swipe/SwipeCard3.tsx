@@ -106,7 +106,7 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
         onAnimationStart={() => setIsSwiping(true)}
         onAnimationEnd={() => setIsSwiping(false)}
         drag={isCurrent || !isSwiping ? 'x' : false}
-        dragElastic={0.2}
+        dragElastic={0.3} // Réduire l'élasticité pour que le swipe soit plus naturel
         onDrag={(_, info) => {
           if ((isFirstCard && info.offset.x > 0) || showMovieInfos) {
             motionValue.set(0); // Empêche le swipe à gauche si c'est la première carte
@@ -122,31 +122,34 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
           if ((isFirstCard && info.offset.x > 0) || showMovieInfos) {
             return;
           }
-
+        
           // Si le swipe est validé
           if (Math.abs(info.offset.x) > swipeThreshold) {
-            // Pas d'animation, on appelle directement onSwipeComplete
             onSwipeComplete(info.offset.x < 0 ? 'left' : 'right');
             dragDirectionRef.current = null;
           } else {
-            // Si le swipe n'est pas validé, on réanime la carte vers sa position initiale
+            // Animation de retour plus douce et naturelle
             animate(motionValue, 0, {
               type: 'spring',
-              stiffness: 150,
-              damping: 25,
+              stiffness: 100, 
+              damping: 30, 
+              mass: 1.5, 
             });
             animate(rotateValue, 0, {
               type: 'spring',
-              stiffness: 150,
-              damping: 25,
+              stiffness: 100,
+              damping: 30,
+              mass: 1.5,
             });
             animate(opacityValue, 1, {
               type: 'spring',
-              stiffness: 150,
-              damping: 25,
+              stiffness: 100,
+              damping: 30,
+              mass: 1.5,
             });
           }
         }}
+        
       >
         <Card
           elevation={0}

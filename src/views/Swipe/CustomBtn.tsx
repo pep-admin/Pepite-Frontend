@@ -4,14 +4,15 @@ import { useEffect, useState } from 'react';
 
 interface CustomButtonProps extends ButtonProps {
   choice?: string;
-  btntype?: 'filter' | 'others';
+  btntype?: 'filter' | 'side' | 'center';
   isactive?: boolean;
   errorstate?: null | boolean;
 }
 
 const btnSize = {
   filter: '55px',
-  others: '70px',
+  side: '50px',
+  center: '60px',
 };
 
 const bgGradient = {

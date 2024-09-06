@@ -35,23 +35,10 @@ const SwipeContent2 = ({
   // console.log('rendu SwipeContent !', movie);
 
   const [movieDetails, setMovieDetails] = useState(null); // Les noms du réal, des acteurs...
-  const [secondSlideHeight, setSecondSlideHeight] = useState('0px');
 
   const swiperRef = useRef(null);
   const firstSlideRef = useRef(null);
   const secondSlideRef = useRef(null);
-
-  useEffect(() => {
-    if (!showMovieInfos) return;
-
-    if (firstSlideRef.current) {
-      const firstHeight = firstSlideRef.current.offsetHeight;
-
-      if (secondSlideRef.current) {
-        setSecondSlideHeight(`${firstHeight}px`);
-      }
-    }
-  }, [showMovieInfos]);
 
   const getTitle = () => {
     if ('title' in movie) {
@@ -112,7 +99,7 @@ const SwipeContent2 = ({
             >
               <Typography
                 component="h1"
-                fontSize={getTitle().length > 30 ? '5.5vh' : '6.5vh'} // Ajuste la taille de la police en fonction de la longueur du titre
+                fontSize={getTitle().length > 30 ? '5.5vh' : getTitle().length > 35 ? '5vh' : '6.5vh'} // Taille de la police ajustée en fonction de la longueur du titre
                 fontFamily="League Spartan"
                 fontWeight="700"
                 color="primary.main"
@@ -283,12 +270,12 @@ const SwipeContent2 = ({
                 </SwiperSlide>
                 <SwiperSlide
                   style={{
-                    height: isTrailerFullscreen ? '100%' : secondSlideHeight,
+                    height: isTrailerFullscreen ? '100%' : 'auto',
                     minHeight: '250px',
                     width: isTrailerFullscreen ? '100%' : '88vw',
                   }}
                 >
-                  <div ref={secondSlideRef} style={{ height: '100%' }}>
+                  <div ref={secondSlideRef} style={{ height: '100%', minHeight: '300px' }}>
                     <SwipeTrailer
                       movie={movie}
                       showTrailer={showTrailer}

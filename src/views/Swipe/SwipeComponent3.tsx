@@ -22,6 +22,7 @@ import { countActiveFiltersSwipe } from '@utils/functions/countActiveFiltersSwip
 import { handleUnwantedMovieRequest } from '@utils/request/list/handleUnwantedMovieRequest';
 import { handleWantedMovieRequest } from '@utils/request/list/handleWantedMovieRequest';
 import { handleWatchedMovieRequest } from '@utils/request/list/handleWatchedMovieRequest';
+import { handleRatingRequest } from '@utils/request/quickRatings/handleRatingRequest';
 
 const SwipeComponent3 = ({
   movies,
@@ -49,11 +50,16 @@ const SwipeComponent3 = ({
   const [previousCardKey, setPreviousCardKey] = useState(uuidv4());
   const [nextCardKey, setNextCardKey] = useState(uuidv4());
 
+  // Gestion des actions utilisateur
   const [isUnwanted, setIsUnwanted] = useState(
     movies[currentIndex]?.is_unwanted,
   );
   const [isWanted, setIsWanted] = useState(movies[currentIndex]?.is_wanted);
   const [isWatched, setIsWatched] = useState(movies[currentIndex]?.is_watched);
+  const [isRated, setIsRated] = useState(Boolean(movies[currentIndex]?.is_rated));
+
+  const [isGoldNugget, setIsGoldNugget] = useState(movies[currentIndex]?.is_gold_nugget);
+  const [isTurnip, setIsTurnip] = useState(movies[currentIndex]?.is_turnip);
 
   // Gestion de l'ouverture du panneau des filtres
   const [areFiltersOpened, setAreFiltersOpened] = useState(false);
@@ -156,12 +162,23 @@ const SwipeComponent3 = ({
           );
         }
         break;
+      case 'rated':
+        if (!isRated) {
+          handleOpenSnackbar(
+            `Vous avez noté "${movies[currentIndex].title}"`,
+          );
+        } else {
+          handleOpenSnackbar(
+            `Vous avez retiré votre note pour "${movies[currentIndex].title}"`,
+          );
+        }
+        break;
       default:
         break;
     }
   };
 
-  const handleChoice = (btnChoice: string) => {
+  const handleChoice = (btnChoice: string, rating: number) => {
     const updatedMovies = [...movies];
     const currentMovie = updatedMovies[currentIndex];
 
@@ -177,13 +194,16 @@ const SwipeComponent3 = ({
       currentMovie.is_watched = !currentMovie.is_watched;
       currentMovie.is_unwanted = false; // Réinitialiser "unwanted"
       currentMovie.is_wanted = false; // Réinitialiser "wanted"
+    } else if (btnChoice === 'rated') {
+      currentMovie.is_rated = !currentMovie.is_rated;
+      currentMovie.user_rating = rating;
     }
 
     setMovies(updatedMovies); // Mettre à jour l'état avec les modifications
   };
 
   // Gestion des actions des boutons
-  const handleActions = async (btnChoice: string) => {
+  const handleActions = async (btnChoice: string, rating: number | undefined, isGoldNugget: boolean | undefined, isTurnip: boolean | undefined) => {
     if (isSnackbarVisibleRef.current) {
       return;
     }
@@ -191,7 +211,7 @@ const SwipeComponent3 = ({
     const movie = movies[currentIndex];
     const movieOrSerie = 'release_date' in movie ? 'movie' : 'tv';
 
-    let response = null;
+    let response = null;    
 
     switch (btnChoice) {
       case 'unwanted':
@@ -215,6 +235,16 @@ const SwipeComponent3 = ({
           !isWatched,
         );
         break;
+      case 'rated':        
+        response = await handleRatingRequest(
+          movie.id,
+          movieOrSerie,
+          rating,
+          isGoldNugget,
+          isTurnip,
+          !isRated,
+        );
+        break;
       default:
         break;
     }
@@ -222,7 +252,7 @@ const SwipeComponent3 = ({
     if (response.error) {
       setError({ state: true, message: response.error });
     } else {
-      handleChoice(btnChoice);
+      handleChoice(btnChoice, rating);
       handleSnackbarMessage(btnChoice);
     }
   };
@@ -248,9 +278,15 @@ const SwipeComponent3 = ({
   useEffect(() => {
     if (movies.length <= 0) return;
 
-    setIsUnwanted(movies[currentIndex].is_unwanted);
-    setIsWanted(movies[currentIndex].is_wanted);
-    setIsWatched(movies[currentIndex].is_watched);
+    const currentMovie = movies[currentIndex];
+
+    setIsUnwanted(currentMovie.is_unwanted);
+    setIsWanted(currentMovie.is_wanted);
+    setIsWatched(currentMovie.is_watched);
+    setIsGoldNugget(currentMovie.is_gold_nugget);
+    setIsTurnip(currentMovie.is_turnip);
+    // setIsRated(currentMovie.is_rated);
+
   }, [currentIndex, movies]);
 
   return (
@@ -338,6 +374,7 @@ const SwipeComponent3 = ({
             height: '100%',
             width: '100%',
             position: 'relative',
+            // filter: anchorRatingBtn ? 'brightness(0.5)' : 'brightness(1)'
           }}
         >
           {/* Carte Précédente */}
@@ -416,28 +453,64 @@ const SwipeComponent3 = ({
           >
             <ChoiceBtn2
               choice={'unwanted'}
+              movies={null}
+              setMovies={null}
+              currentIndex={null}
               isActive={isUnwanted}
               handleActions={handleActions}
+              isGoldNugget={null}
+              setIsGoldNugget={null}
+              isTurnip={null}
+              setIsTurnip={null}
+              isRated={null}
+              setIsRated={null}
               error={error}
             />
             <Stack direction='row' spacing={5}>
               <ChoiceBtn2
                 choice={'watched'}
+                movies={null}
+                setMovies={null}
+                currentIndex={null}
                 isActive={isWatched}
                 handleActions={handleActions}
+                isGoldNugget={null}
+                setIsGoldNugget={null}
+                isTurnip={null}
+                setIsTurnip={null}
+                isRated={null}
+                setIsRated={null}
                 error={error}
               />
               <ChoiceBtn2
                 choice={'quick_rating'}
-                isActive={isWatched}
+                movies={movies}
+                setMovies={setMovies}
+                currentIndex={currentIndex}
+                isActive={isRated}
                 handleActions={handleActions}
+                isGoldNugget={isGoldNugget}
+                setIsGoldNugget={setIsGoldNugget}
+                isTurnip={isTurnip}
+                setIsTurnip={setIsTurnip}
+                isRated={isRated}
+                setIsRated={setIsRated}
                 error={error}
               />
             </Stack>
             <ChoiceBtn2
               choice={'wanted'}
+              movies={null}
+              setMovies={null}
+              currentIndex={null}
               isActive={isWanted}
               handleActions={handleActions}
+              isGoldNugget={null}
+              setIsGoldNugget={null}
+              isTurnip={null}
+              setIsTurnip={null}
+              isRated={null}
+              setIsRated={null}
               error={error}
             />
           </Stack>

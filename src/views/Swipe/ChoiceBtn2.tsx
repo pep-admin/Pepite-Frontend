@@ -1,6 +1,6 @@
 // Import des libs externes
 import { Stack } from '@mui/material';
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Import des composants internes
@@ -15,6 +15,31 @@ import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOu
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
+import StarIcon from '@mui/icons-material/Star';
+
+interface Movie {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  is_rated: boolean;
+  is_unwanted: boolean;
+  is_wanted: boolean;
+  is_watched: boolean;
+  is_gold_nugget: boolean;
+  is_turnip: boolean;
+  user_rating: number | null;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
 
 interface ErrorState {
   state: boolean | null;
@@ -22,14 +47,37 @@ interface ErrorState {
 }
 
 interface ChoiceBtn2Props {
+  movies: Array<Movie>;
+  setMovies: React.Dispatch<React.SetStateAction<Movie | null>>
+  currentIndex: number | null;
   choice: string;
   isActive: boolean;
-  handleActions: (btnChoice: string) => void;
+  handleActions: (btnChoice: string, rating: number | undefined, isGoldNugget: boolean | undefined, isTurnip: boolean | undefined) => void;
+  isGoldNugget: boolean;
+  setIsGoldNugget: React.Dispatch<React.SetStateAction<boolean | null>>;
+  isTurnip: boolean;
+  setIsTurnip: React.Dispatch<React.SetStateAction<boolean | null>>;
+  isRated: boolean;
+  setIsRated: React.Dispatch<React.SetStateAction<boolean | null>>;
   error: ErrorState;
 }
 
 const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
-  ({ choice, isActive, handleActions, error }) => {
+  ({ 
+    movies,
+    setMovies,
+    currentIndex,
+    choice, 
+    isActive, 
+    handleActions,  
+    isGoldNugget,
+    setIsGoldNugget,
+    isTurnip,
+    setIsTurnip,
+    isRated,
+    setIsRated,
+    error 
+  }) => {
 
     const [anchorRatingBtn, setAnchorRatingBtn] = useState<HTMLButtonElement | null>(null);
 
@@ -55,7 +103,11 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
             choice={choice}
             isactive={isActive}
             errorstate={error.state}
-            onClick={ choice !== 'quick_rating' ? () => handleActions(choice) : (e) => handleClick(e)}
+            onClick={ 
+              choice !== 'quick_rating' ? 
+                () => handleActions(choice, undefined, undefined, undefined) 
+              : (e) => handleClick(e)
+            }
           >
             {choice === 'unwanted' ? (
               isActive ? (
@@ -84,16 +136,36 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
                 />
               )
             )
-              :
+              : (
+                isActive ?
+                <StarIcon
+                  sx={{ fontSize: '2em', color: '#E7AE1A' }}
+                />
+                :
                 <StarBorderOutlinedIcon
                   sx={{ fontSize: '2em', color: '#E7AE1A' }}
                 />
+              )
             }
           </CustomButton>
         </Stack>
         {
           choice === 'quick_rating' &&
-          <SwipeQuickRating openPopover={openPopover} anchorRatingBtn={anchorRatingBtn} closePopover={closePopover} />
+          <SwipeQuickRating 
+            movies={movies}
+            setMovies={setMovies}
+            currentIndex={currentIndex}
+            openPopover={openPopover} 
+            anchorRatingBtn={anchorRatingBtn} 
+            closePopover={closePopover} 
+            handleActions={handleActions}
+            isGoldNugget={isGoldNugget}
+            setIsGoldNugget={setIsGoldNugget}
+            isTurnip={isTurnip}
+            setIsTurnip={setIsTurnip}
+            isRated={isRated}
+            setIsRated={setIsRated}
+          />
         }
       </>
     );

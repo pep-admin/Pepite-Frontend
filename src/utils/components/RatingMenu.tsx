@@ -23,7 +23,7 @@ import { useData } from '@hooks/DataContext';
 import { getUserMovieStatusRequest } from '@utils/request/list/getUserMovieStatusRequest';
 import { handleWatchedMovieRequest } from '@utils/request/list/handleWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
-import { addNewQuickRating } from '@utils/request/quickRatings/addNewQuickRating';
+import { handleRatingRequest } from '@utils/request/quickRatings/handleRatingRequest';
 
 const RatingMenu = ({
   utility,
@@ -64,12 +64,13 @@ const RatingMenu = ({
     }
 
     // Ajout dans la liste des notations rapides
-    await addNewQuickRating(
+    await handleRatingRequest(
       infos.id,
       displayType,
       rating,
       isGoldNugget,
       isTurnip,
+      true
     );
 
     setIsQuicklyRated(true);

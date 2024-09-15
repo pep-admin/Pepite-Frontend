@@ -25,6 +25,9 @@ interface Movie {
   is_unwanted: boolean;
   is_wanted: boolean;
   is_watched: boolean;
+  is_gold_nugget: boolean;
+  is_turnip: boolean;
+  user_rating: number | null;
   original_language: string;
   original_title: string;
   overview: string;
@@ -74,7 +77,7 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
     setIsTrailerFullscreen,
     setError,
   }) => {
-    console.log(movie);
+    console.log('swipe card');
 
     const [showMovieInfos, setShowMovieInfos] = useState(false);
     const [isSwiping, setIsSwiping] = useState(false);

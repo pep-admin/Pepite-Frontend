@@ -35,7 +35,7 @@ import { checkIfCriticExistsRequest } from '@utils/request/critics/checkIfCritic
 
 // Import du hook customisé pour calculer le nombre de cards à afficher en fonction de la largeur du viewport
 import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
-import { addNewQuickRating } from '@utils/request/quickRatings/addNewQuickRating';
+import { handleRatingRequest } from '@utils/request/quickRatings/handleRatingRequest';
 import { performUpdatePostProcessing } from '@utils/functions/criticsAdvicesActions';
 
 const CriticAdvicesComponent = ({
@@ -145,12 +145,13 @@ const CriticAdvicesComponent = ({
           isGoldNugget,
         );
       } else if (type === 'quick-rating') {
-        await addNewQuickRating(
+        await handleRatingRequest(
           chosenMovie.id,
           displayType,
           newRating,
           isGoldNugget,
           isTurnip,
+          true
         );
       }
 

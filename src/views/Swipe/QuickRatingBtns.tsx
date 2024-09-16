@@ -2,6 +2,7 @@ import { Button, keyframes } from '@mui/material';
 import GoldNuggetIcon from '@utils/components/GoldNuggetIcon';
 import { TurnipIcon } from '@utils/components/styledComponent';
 import DoneIcon from '@mui/icons-material/Done';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const QuickRatingBtns = ({ btnType, handleBtnAction }) => {
 
@@ -24,7 +25,9 @@ const QuickRatingBtns = ({ btnType, handleBtnAction }) => {
       case 'gold':
         return { gradient: 'linear-gradient(135deg, rgba(206,142,5,1) 0%, rgba(54,21,0,1) 76%, rgba(54,21,0,1) 100%)', shadow: 'inset 2px 4px 4px rgba(167, 155, 30, 1)'};
       case 'validate':
-        return { gradient: 'linear-gradient(135deg, rgb(26 119 34) 0%, rgb(2 2 2) 100%)' };
+        return { gradient: 'linear-gradient(135deg, rgb(26 119 34) 0%, rgb(2 2 2) 100%)', shadow: 'none' };
+      case 'cancel':
+        return { gradient: 'linear-gradient(135deg, rgb(119 26 26) 0%, rgb(2 2 2) 100%)', shadow: 'none' };
       default:
         break;
     }
@@ -33,15 +36,15 @@ const QuickRatingBtns = ({ btnType, handleBtnAction }) => {
   return (
     <Button
       sx={{
-        height: '50px',
-        width: '50px',
+        height: '47px',
+        width: '47px',
         minWidth: 'auto',
         background: getGradientColor().gradient,
         padding: '0',
         borderRadius: '50%',
-        outline: btnType !== 'validate' ? '1px solid #151515' : 'none',
-        animation: btnType !== 'validate' ? `${slideInAnimation} 1s ease-out` : 'none',
-        boxShadow: btnType !== 'validate' ? getGradientColor().shadow : 'none'
+        outline: (btnType !== 'validate' && btnType !== 'cancel') ? '1px solid #151515' : 'none',
+        animation: (btnType !== 'validate' && btnType !== 'cancel') ? `${slideInAnimation} 1s ease-out` : 'none',
+        boxShadow: getGradientColor().shadow
       }}
       onClick={ () => handleBtnAction(btnType) }  
     >
@@ -58,8 +61,12 @@ const QuickRatingBtns = ({ btnType, handleBtnAction }) => {
             isShadowed={false} 
             strokeWidth='3px' 
           />
-        :
+        : btnType === 'validate' ?
           <DoneIcon 
+            sx={{ fontSize: '30px'}} 
+          />  
+        :
+          <ClearIcon
             sx={{ fontSize: '30px'}} 
           />  
       }

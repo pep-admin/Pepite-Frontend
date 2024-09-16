@@ -1,7 +1,6 @@
 // Import des libs externes
-import { Stack } from '@mui/material';
+import { Badge, Stack } from '@mui/material';
 import React, { FC, useState } from 'react';
-import PropTypes from 'prop-types';
 
 // Import des composants internes
 import { CustomButton } from '@views/Swipe/CustomBtn';
@@ -15,7 +14,6 @@ import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOu
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
-import StarIcon from '@mui/icons-material/Star';
 
 interface Movie {
   adult: boolean;
@@ -51,14 +49,18 @@ interface ChoiceBtn2Props {
   setMovies: React.Dispatch<React.SetStateAction<Movie | null>>
   currentIndex: number | null;
   choice: string;
-  isActive: boolean;
-  handleActions: (btnChoice: string, rating: number | undefined, isGoldNugget: boolean | undefined, isTurnip: boolean | undefined) => void;
+  isActive: boolean | null;
+  handleActions: (
+    btnChoice: string, 
+    rating: number | undefined, 
+    isGoldNugget: boolean | undefined, 
+    isTurnip: boolean | undefined, 
+    validateOrCancel: string | undefined
+  ) => void;
   isGoldNugget: boolean;
   setIsGoldNugget: React.Dispatch<React.SetStateAction<boolean | null>>;
   isTurnip: boolean;
   setIsTurnip: React.Dispatch<React.SetStateAction<boolean | null>>;
-  isRated: boolean;
-  setIsRated: React.Dispatch<React.SetStateAction<boolean | null>>;
   error: ErrorState;
 }
 
@@ -74,9 +76,7 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
     setIsGoldNugget,
     isTurnip,
     setIsTurnip,
-    isRated,
-    setIsRated,
-    error 
+    error,
   }) => {
 
     const [anchorRatingBtn, setAnchorRatingBtn] = useState<HTMLButtonElement | null>(null);
@@ -105,7 +105,7 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
             errorstate={error.state}
             onClick={ 
               choice !== 'quick_rating' ? 
-                () => handleActions(choice, undefined, undefined, undefined) 
+                () => handleActions(choice, undefined, undefined, undefined, undefined) 
               : (e) => handleClick(e)
             }
           >
@@ -137,14 +137,23 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
               )
             )
               : (
-                isActive ?
-                <StarIcon
-                  sx={{ fontSize: '2em', color: '#E7AE1A' }}
-                />
-                :
-                <StarBorderOutlinedIcon
-                  sx={{ fontSize: '2em', color: '#E7AE1A' }}
-                />
+                <Badge 
+                  badgeContent={movies[currentIndex].user_rating} 
+                  invisible={!movies[currentIndex].user_rating}
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      top: '-10px', 
+                      height: '19px',
+                      backgroundColor: '#E7AE1A', 
+                      color: '#000',
+                      fontWeight: 'bold'
+                    },
+                  }}
+                >
+                  <StarBorderOutlinedIcon
+                    sx={{ fontSize: '2em', color: '#E7AE1A' }}
+                  />
+                </Badge>
               )
             }
           </CustomButton>
@@ -163,20 +172,11 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
             setIsGoldNugget={setIsGoldNugget}
             isTurnip={isTurnip}
             setIsTurnip={setIsTurnip}
-            isRated={isRated}
-            setIsRated={setIsRated}
           />
         }
       </>
     );
   },
 );
-
-ChoiceBtn2.propTypes = {
-  choice: PropTypes.string.isRequired,
-  isActive: PropTypes.bool.isRequired,
-  handleActions: PropTypes.func.isRequired,
-  // error: PropTypes.object.isRequired
-}
 
 export default ChoiceBtn2;

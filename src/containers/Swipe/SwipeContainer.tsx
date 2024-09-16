@@ -63,7 +63,6 @@ const SwipeContainer = () => {
         is_wanted: false,
         is_unwanted: false,
         is_watched: false,
-        is_rated: false,
         user_rating: null,
         is_gold_nugget: false,
         is_turnip: false

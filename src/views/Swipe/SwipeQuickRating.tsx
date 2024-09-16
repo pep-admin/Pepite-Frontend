@@ -15,12 +15,9 @@ const SwipeQuickRating = ({
   setIsGoldNugget,
   isTurnip,
   setIsTurnip,
-  isRated,
-  setIsRated
  }) => {  
 
   const [ratingValue, setRatingValue] = useState(movies[currentIndex].user_rating);
-  console.log('la note du film =>', ratingValue);
 
   const handleSliderChange = (_: Event, newValue: number | number[]) => {
     setRatingValue(newValue as number);
@@ -42,33 +39,69 @@ const SwipeQuickRating = ({
     const updatedMovies = [...movies];
     const currentMovie = updatedMovies[currentIndex];
 
+    // Clic sur le bouton "navet"
     if(btnType === 'turnip') {
       setIsTurnip(!isTurnip);
       setIsGoldNugget(false);
       currentMovie.is_turnip = !isTurnip;
       currentMovie.is_gold_nugget = false;
-      
-    } else if(btnType === 'gold') {
+    } 
+
+    // Clic sur le bouton "pépite"
+    else if(btnType === 'gold') {
       setIsGoldNugget(!isGoldNugget);
       setIsTurnip(false);
       currentMovie.is_turnip = false;
       currentMovie.is_gold_nugget = !isGoldNugget;
+    } 
 
-    } else if(btnType === 'validate') {
-      console.log('pépite =>', isGoldNugget);
-      console.log('navet =>', isTurnip);
-      currentMovie.user_rating = ratingValue;
-      handleActions('rated', ratingValue, isGoldNugget, isTurnip);
-      setMovies(updatedMovies); // Mettre à jour l'état avec les modifications
-      setIsRated(!isRated);
+    // Clic sur le bouton de validation
+    else if(btnType === 'validate') {
+      let initialRating = 2.5; // Note affichée par défaut
+      let finalRating: null | number;
+
+      // Si pépite ou navet, on désactive la notation
+      if(isTurnip || isGoldNugget) {
+        console.log('note désactivée');
+        
+        currentMovie.user_rating = null;
+        finalRating = null;
+      }
+      
+      // Si l'utilisateur n'a pas interagi avec le slider
+      else if(!ratingValue) {
+        currentMovie.user_rating = initialRating;
+        finalRating = initialRating; // note initiale
+      } 
+
+      // Si l'utilisateur a interagi avec le slider
+      else {
+        currentMovie.user_rating = ratingValue;
+        finalRating = ratingValue; // note choisie
+      }
+
+      setMovies(updatedMovies); // Met à jour l'état des films avec les modifications
+      handleActions('rated', finalRating, isGoldNugget, isTurnip, 'validate'); // Envoie la requête à la DB
+      closePopover(); // Ferme le popover
+
+    } 
+    // Si l'utilisateur annule sa note
+    else {
+      currentMovie.user_rating = null;
+      setMovies(updatedMovies);
+      handleActions('rated', null, null, null, 'cancel');
       closePopover();
     }
   };
 
   useEffect(() => {
     setRatingValue(movies[currentIndex].user_rating);
-    setIsRated(movies[currentIndex].is_rated);
   }, [currentIndex]);
+
+  useEffect(() => {
+    console.log('la valeur de la note =>', ratingValue);
+    
+  }, [ratingValue])
 
   return (
     <Popover
@@ -93,7 +126,7 @@ const SwipeQuickRating = ({
       }}
     >
       <Stack direction='row' height='180px' columnGap='20px' >
-        <Stack justifyContent='center' rowGap='20px'>
+        <Stack justifyContent='center' rowGap='25px'>
           <Box
             sx={{
               filter: isGoldNugget ? 'grayscale(1)' : 'grayscale(0)'
@@ -120,7 +153,7 @@ const SwipeQuickRating = ({
             height='100%'
             width='92px'
             sx={{
-              backgroundColor: '#1A1A1A',
+              backgroundColor: '#011717',
               borderRadius: '15px',
               filter: isTurnip || isGoldNugget ? 'grayscale(1)' : 'grayscale(0)'
             }}
@@ -178,7 +211,7 @@ const SwipeQuickRating = ({
                   min={0}
                   max={5}
                   step={0.5}
-                  disabled={isTurnip || isGoldNugget ? true : false}
+                  // disabled={isTurnip || isGoldNugget ? true : false}
                 />
               </Stack>
               <Typography
@@ -191,7 +224,14 @@ const SwipeQuickRating = ({
             </Stack>
           </Box>
         </Stack>
-        <Stack justifyContent='center' >
+        <Stack justifyContent='center' rowGap='25px' >
+          {
+            movies[currentIndex].user_rating &&
+            <QuickRatingBtns 
+              btnType={'cancel'} 
+              handleBtnAction={handleBtnAction}
+            />
+          }
           <QuickRatingBtns 
             btnType={'validate'} 
             handleBtnAction={handleBtnAction}

@@ -56,7 +56,6 @@ const SwipeComponent3 = ({
   );
   const [isWanted, setIsWanted] = useState(movies[currentIndex]?.is_wanted);
   const [isWatched, setIsWatched] = useState(movies[currentIndex]?.is_watched);
-  const [isRated, setIsRated] = useState(Boolean(movies[currentIndex]?.is_rated));
 
   const [isGoldNugget, setIsGoldNugget] = useState(movies[currentIndex]?.is_gold_nugget);
   const [isTurnip, setIsTurnip] = useState(movies[currentIndex]?.is_turnip);
@@ -126,50 +125,61 @@ const SwipeComponent3 = ({
 
   // Gestion des messages d'informations lors de l'action des boutons
   const handleSnackbarMessage = (btnChoice: string) => {
+    
+    const currentMovie = movies[currentIndex];
     isSnackbarVisibleRef.current = true;
-
+    
     switch (btnChoice) {
       case 'unwanted':
-        if (!isUnwanted) {
+        if (currentMovie.is_unwanted) {
           handleOpenSnackbar(
-            `"${movies[currentIndex].title}" ne vous sera plus proposé`,
+            `"${currentMovie.title}" ne vous sera plus proposé`,
           );
         } else {
           handleOpenSnackbar(
-            `"${movies[currentIndex].title}" pourra vous être proposé`,
+            `"${currentMovie.title}" pourra vous être proposé`,
           );
         }
         break;
       case 'wanted':
-        if (!isWanted) {
+        if (currentMovie.is_wanted) {
           handleOpenSnackbar(
-            `"${movies[currentIndex].title}" a été ajouté à votre liste`,
+            `"${currentMovie.title}" a été ajouté à votre liste`,
           );
         } else {
           handleOpenSnackbar(
-            `"${movies[currentIndex].title}" a été retiré de votre liste`,
+            `"${currentMovie.title}" a été retiré de votre liste`,
           );
         }
         break;
       case 'watched':
-        if (!isWatched) {
+        if (currentMovie.is_watched) {
           handleOpenSnackbar(
-            `Vous avez déjà vu "${movies[currentIndex].title}"`,
+            `Vous avez déjà vu "${currentMovie.title}"`,
           );
         } else {
           handleOpenSnackbar(
-            `Vous n'avez pas vu "${movies[currentIndex].title}"`,
+            `Vous n'avez pas vu "${currentMovie.title}"`,
           );
         }
         break;
       case 'rated':
-        if (!isRated) {
+        if (currentMovie.is_turnip) {
           handleOpenSnackbar(
-            `Vous avez noté "${movies[currentIndex].title}"`,
+            `Vous avez indiqué que "${currentMovie.title}" est un navet.`,
+          );
+        } else if (currentMovie.is_gold_nugget) {
+          handleOpenSnackbar(
+            `Vous avez indiqué que "${currentMovie.title}" est une pépite.`,
+          );
+        }
+        else if (currentMovie.user_rating) {
+          handleOpenSnackbar(
+            `Vous avez noté "${currentMovie.title}" ${currentMovie.user_rating} / 5.`,
           );
         } else {
           handleOpenSnackbar(
-            `Vous avez retiré votre note pour "${movies[currentIndex].title}"`,
+            `Vous avez retiré votre note pour "${currentMovie.title}"`,
           );
         }
         break;
@@ -195,7 +205,6 @@ const SwipeComponent3 = ({
       currentMovie.is_unwanted = false; // Réinitialiser "unwanted"
       currentMovie.is_wanted = false; // Réinitialiser "wanted"
     } else if (btnChoice === 'rated') {
-      currentMovie.is_rated = !currentMovie.is_rated;
       currentMovie.user_rating = rating;
     }
 
@@ -203,7 +212,14 @@ const SwipeComponent3 = ({
   };
 
   // Gestion des actions des boutons
-  const handleActions = async (btnChoice: string, rating: number | undefined, isGoldNugget: boolean | undefined, isTurnip: boolean | undefined) => {
+  const handleActions = async (
+    btnChoice: string, 
+    rating: number | undefined, 
+    isGoldNugget: boolean | undefined, 
+    isTurnip: boolean | undefined, 
+    validateOrCancel: string
+  ) => {
+    
     if (isSnackbarVisibleRef.current) {
       return;
     }
@@ -242,7 +258,7 @@ const SwipeComponent3 = ({
           rating,
           isGoldNugget,
           isTurnip,
-          !isRated,
+          validateOrCancel,
         );
         break;
       default:
@@ -285,7 +301,6 @@ const SwipeComponent3 = ({
     setIsWatched(currentMovie.is_watched);
     setIsGoldNugget(currentMovie.is_gold_nugget);
     setIsTurnip(currentMovie.is_turnip);
-    // setIsRated(currentMovie.is_rated);
 
   }, [currentIndex, movies]);
 
@@ -462,8 +477,6 @@ const SwipeComponent3 = ({
               setIsGoldNugget={null}
               isTurnip={null}
               setIsTurnip={null}
-              isRated={null}
-              setIsRated={null}
               error={error}
             />
             <Stack direction='row' spacing={5}>
@@ -478,8 +491,6 @@ const SwipeComponent3 = ({
                 setIsGoldNugget={null}
                 isTurnip={null}
                 setIsTurnip={null}
-                isRated={null}
-                setIsRated={null}
                 error={error}
               />
               <ChoiceBtn2
@@ -487,14 +498,12 @@ const SwipeComponent3 = ({
                 movies={movies}
                 setMovies={setMovies}
                 currentIndex={currentIndex}
-                isActive={isRated}
+                isActive={null}
                 handleActions={handleActions}
                 isGoldNugget={isGoldNugget}
                 setIsGoldNugget={setIsGoldNugget}
                 isTurnip={isTurnip}
                 setIsTurnip={setIsTurnip}
-                isRated={isRated}
-                setIsRated={setIsRated}
                 error={error}
               />
             </Stack>
@@ -509,8 +518,6 @@ const SwipeComponent3 = ({
               setIsGoldNugget={null}
               isTurnip={null}
               setIsTurnip={null}
-              isRated={null}
-              setIsRated={null}
               error={error}
             />
           </Stack>

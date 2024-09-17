@@ -25,9 +25,9 @@ const QuickRatingBtns = ({ btnType, handleBtnAction }) => {
       case 'gold':
         return { gradient: 'linear-gradient(135deg, rgba(206,142,5,1) 0%, rgba(54,21,0,1) 76%, rgba(54,21,0,1) 100%)', shadow: 'inset 2px 4px 4px rgba(167, 155, 30, 1)'};
       case 'validate':
-        return { gradient: 'linear-gradient(135deg, rgb(26 119 34) 0%, rgb(2 2 2) 100%)', shadow: 'none' };
+        return { gradient: 'linear-gradient(135deg, rgb(33 136 42) 0%, rgb(2 2 2) 100%)', shadow: 'none' };
       case 'cancel':
-        return { gradient: 'linear-gradient(135deg, rgb(119 26 26) 0%, rgb(2 2 2) 100%)', shadow: 'none' };
+        return { gradient: 'linear-gradient(135deg, rgb(151 37 37) 0%, rgb(2 2 2) 100%)', shadow: 'none' };
       default:
         break;
     }

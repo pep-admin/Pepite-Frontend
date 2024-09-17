@@ -153,7 +153,7 @@ const SwipeQuickRating = ({
             height='100%'
             width='92px'
             sx={{
-              backgroundColor: '#011717',
+              background: 'linear-gradient(333deg, #011111, #011717)',
               borderRadius: '15px',
               filter: isTurnip || isGoldNugget ? 'grayscale(1)' : 'grayscale(0)'
             }}
@@ -211,7 +211,7 @@ const SwipeQuickRating = ({
                   min={0}
                   max={5}
                   step={0.5}
-                  // disabled={isTurnip || isGoldNugget ? true : false}
+                  disabled={isTurnip || isGoldNugget ? true : false}
                 />
               </Stack>
               <Typography

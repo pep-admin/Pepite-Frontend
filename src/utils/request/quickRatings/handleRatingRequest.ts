@@ -10,6 +10,7 @@ export const handleRatingRequest = async (
   isTurnip: boolean | null,
   validateOrCancel: string
 ) => {
+  
   try {
     // Si l'utilisateur valide la note
     if(validateOrCancel === 'validate') {
@@ -21,11 +22,10 @@ export const handleRatingRequest = async (
     } 
     // Si l'utilisateur annule la note
     else {
-      // await axios.delete(
-      //   `${apiBaseUrl}/quick_ratings/add`,
-      //   { movie_id: movieId, type: type, rating, isGoldNugget, isTurnip },
-      //   { withCredentials: true },
-      // );
+      await axios.delete(`${apiBaseUrl}/quick_ratings/delete`, {
+        params: { movie_id: movieId, type: type },
+        withCredentials: true,
+      });
     }
 
     return { error: null };

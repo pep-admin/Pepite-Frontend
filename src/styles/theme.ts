@@ -26,12 +26,15 @@ const theme = createTheme({
     },
     primary: {
       main: '#fff',
-      dark: '#0E6666',
+      dark: '#052525',
       light: '#24A5A5',
     },
     secondary: {
       main: '#E7AE1A',
       contrastText: '#FEFEFE',
+    },
+    common: {
+      white: '#F1F1F1',
     },
     form: {
       main: '#034A4A',

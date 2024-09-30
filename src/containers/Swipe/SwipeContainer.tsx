@@ -42,6 +42,8 @@ const SwipeContainer = () => {
   // Récupère 20 films selon la page
   const getMovies = async moviePage => {
     try {
+      console.log('la page de films =>', moviePage);
+      
       // Récupère 20 films / séries dont l'utilisateur n'a pas interagi
       const elligibleMovies = await getMoviesSwipe(
         moviePage,
@@ -76,7 +78,6 @@ const SwipeContainer = () => {
         setMovies(prevMovies => [...prevMovies, ...moviesWithOptions]);
       }
 
-      console.log('les films !', moviesWithOptions);
     } catch (err) {
       console.log('erreur !', err);
 
@@ -108,9 +109,8 @@ const SwipeContainer = () => {
 
   // Attribue un numéro de page aléatoire pour ne pas proposer tout le temps les mêmes films (à améliorer)
   useEffect(() => {
-    const randomPage = Math.floor(Math.random() * 500) + 1;
-    getMovies(randomPage);
-    setMoviePage(randomPage);
+    getMovies(1);
+    setMoviePage(1);
   }, []);
 
   // Recharge de nouveaux films en cas de filtrage
@@ -122,7 +122,7 @@ const SwipeContainer = () => {
   }, [isFilterValidated]);
 
   useEffect(() => {
-    console.log('les films =>', movies);
+    console.log('les films !', movies);
     
   }, [movies])
 

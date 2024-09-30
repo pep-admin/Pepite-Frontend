@@ -15,15 +15,15 @@ export const handleRatingRequest = async (
     // Si l'utilisateur valide la note
     if(validateOrCancel === 'validate') {
       await axios.post(
-        `${apiBaseUrl}/quick_ratings/add`,
+        `${apiBaseUrl}/critics/add`,
         { movie_id: movieId, type: type, rating, isGoldNugget, isTurnip },
         { withCredentials: true },
       );
     } 
     // Si l'utilisateur annule la note
     else {
-      await axios.delete(`${apiBaseUrl}/quick_ratings/delete`, {
-        params: { movie_id: movieId, type: type },
+      await axios.delete(`${apiBaseUrl}/critics/delete/${movieId}`, {
+        params: { type: type },
         withCredentials: true,
       });
     }

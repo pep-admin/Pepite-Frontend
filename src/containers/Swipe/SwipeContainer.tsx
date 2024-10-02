@@ -2,14 +2,13 @@
 import { useState, useEffect } from 'react';
 
 // Import des composants internes
-import SwipeComponent3 from '@views/Swipe/SwipeComponent3';
+import SwipeComponent from '@views/Swipe/SwipeComponent';
 
 // Import des requêtes
 import { getMoviesSwipe } from '@utils/request/swipe/getMoviesSwipe';
 // import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 
 const SwipeContainer = () => {
-
   // Gestions des films
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviePage, setMoviePage] = useState(null); // Numéro de la page de l'API
@@ -43,7 +42,7 @@ const SwipeContainer = () => {
   const getMovies = async moviePage => {
     try {
       console.log('la page de films =>', moviePage);
-      
+
       // Récupère 20 films / séries dont l'utilisateur n'a pas interagi
       const elligibleMovies = await getMoviesSwipe(
         moviePage,
@@ -67,7 +66,7 @@ const SwipeContainer = () => {
         is_watched: false,
         user_rating: null,
         is_gold_nugget: false,
-        is_turnip: false
+        is_turnip: false,
       }));
 
       // Si l'utilisateur a choisi des filtres, on écrase le tableau
@@ -77,7 +76,6 @@ const SwipeContainer = () => {
       } else {
         setMovies(prevMovies => [...prevMovies, ...moviesWithOptions]);
       }
-
     } catch (err) {
       console.log('erreur !', err);
 
@@ -123,12 +121,11 @@ const SwipeContainer = () => {
 
   useEffect(() => {
     console.log('les films !', movies);
-    
-  }, [movies])
+  }, [movies]);
 
   return (
     !loading && (
-      <SwipeComponent3
+      <SwipeComponent
         movies={movies}
         setMovies={setMovies}
         currentIndex={currentIndex}

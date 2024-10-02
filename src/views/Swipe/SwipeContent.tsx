@@ -3,7 +3,6 @@ import { Stack, Typography, Divider, CardContent, Box } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
-import PropTypes from 'prop-types';
 
 // Import des composants internes
 import AcquaintancesRatings from '@views/Swipe/AcquaintancesRatings';
@@ -21,7 +20,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 // Import des requêtes
 import { getMovieDetails } from '@utils/request/getMovieDetails';
 
-const SwipeContent2 = ({
+const SwipeContent = ({
   movie,
   typeChosen,
   showMovieInfos,
@@ -99,7 +98,13 @@ const SwipeContent2 = ({
             >
               <Typography
                 component="h1"
-                fontSize={getTitle().length > 30 ? '5.5vh' : getTitle().length > 35 ? '5vh' : '6.5vh'} // Taille de la police ajustée en fonction de la longueur du titre
+                fontSize={
+                  getTitle().length > 30
+                    ? '5.5vh'
+                    : getTitle().length > 35
+                    ? '5vh'
+                    : '6.5vh'
+                } // Taille de la police ajustée en fonction de la longueur du titre
                 fontFamily="League Spartan"
                 fontWeight="700"
                 color="primary.main"
@@ -275,7 +280,10 @@ const SwipeContent2 = ({
                     width: isTrailerFullscreen ? '100%' : '88vw',
                   }}
                 >
-                  <div ref={secondSlideRef} style={{ height: '100%', minHeight: '300px' }}>
+                  <div
+                    ref={secondSlideRef}
+                    style={{ height: '100%', minHeight: '300px' }}
+                  >
                     <SwipeTrailer
                       movie={movie}
                       showTrailer={showTrailer}
@@ -293,16 +301,4 @@ const SwipeContent2 = ({
   );
 };
 
-SwipeContent2.propTypes = {
-  movie: PropTypes.object.isRequired,
-  typeChosen: PropTypes.string.isRequired,
-  showMovieInfos: PropTypes.bool.isRequired,
-  setShowMovieInfos: PropTypes.func.isRequired,
-  showTrailer: PropTypes.bool,
-  setShowTrailer: PropTypes.func,
-  isTrailerFullscreen: PropTypes.bool,
-  setIsTrailerFullscreen: PropTypes.func,
-  setError: PropTypes.func,
-};
-
-export default SwipeContent2;
+export default SwipeContent;

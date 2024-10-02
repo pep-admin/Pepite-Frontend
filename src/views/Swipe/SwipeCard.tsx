@@ -8,42 +8,16 @@ import React, {
 } from 'react';
 import { Card } from '@mui/material';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import PropTypes from 'prop-types';
 
 // Import des composants internes
-import SwipeContent2 from '@views/Swipe/SwipeContent2';
+import SwipeContent from '@views/Swipe/SwipeContent';
 
 // Import des variables d'environnement
 import { assetsBaseUrl } from '@utils/request/config';
 
-interface Movie {
-  adult: boolean;
-  backdrop_path: string;
-  genre_ids: number[];
-  id: number;
-  is_rated: boolean;
-  is_unwanted: boolean;
-  is_wanted: boolean;
-  is_watched: boolean;
-  is_gold_nugget: boolean;
-  is_turnip: boolean;
-  user_rating: number | null;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  release_date: string;
-  title: string;
-  video: boolean;
-  vote_average: number;
-  vote_count: number;
-}
-
-interface ErrorState {
-  state: boolean | null;
-  message: string | null;
-}
+// Import des types
+import { Movie } from 'types/interface';
+import { ErrorState } from 'types/interface';
 
 interface SwipeCard3Props {
   movie: Movie;
@@ -61,7 +35,7 @@ interface SwipeCard3Props {
   setError: Dispatch<SetStateAction<ErrorState>>;
 }
 
-const SwipeCard3: FC<SwipeCard3Props> = React.memo(
+const SwipeCard: FC<SwipeCard3Props> = React.memo(
   ({
     movie,
     typeChosen,
@@ -125,7 +99,7 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
           if ((isFirstCard && info.offset.x > 0) || showMovieInfos) {
             return;
           }
-        
+
           // Si le swipe est validé
           if (Math.abs(info.offset.x) > swipeThreshold) {
             onSwipeComplete(info.offset.x < 0 ? 'left' : 'right');
@@ -134,9 +108,9 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
             // Animation de retour plus douce et naturelle
             animate(motionValue, 0, {
               type: 'spring',
-              stiffness: 100, 
-              damping: 30, 
-              mass: 1.5, 
+              stiffness: 100,
+              damping: 30,
+              mass: 1.5,
             });
             animate(rotateValue, 0, {
               type: 'spring',
@@ -152,7 +126,6 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
             });
           }
         }}
-        
       >
         <Card
           elevation={0}
@@ -182,7 +155,7 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
             borderRadius: 0,
           }}
         >
-          <SwipeContent2
+          <SwipeContent
             movie={movie}
             typeChosen={typeChosen}
             showMovieInfos={showMovieInfos}
@@ -199,20 +172,6 @@ const SwipeCard3: FC<SwipeCard3Props> = React.memo(
   },
 );
 
-SwipeCard3.propTypes = {
-  // movie: PropTypes.object,
-  typeChosen: PropTypes.string.isRequired,
-  isCurrent: PropTypes.bool.isRequired,
-  onSwipeComplete: PropTypes.func.isRequired,
-  isFirstCard: PropTypes.bool.isRequired,
-  zIndex: PropTypes.number.isRequired,
-  setZIndexForSwipe: PropTypes.func.isRequired,
-  // dragDirectionRef: PropTypes.string,
-  showTrailer: PropTypes.bool,
-  setShowTrailer: PropTypes.func,
-  isTrailerFullscreen: PropTypes.bool,
-  setIsTrailerFullscreen: PropTypes.func,
-  // setError: PropTypes.object
-};
+SwipeCard.displayName = 'SwipeCard';
 
-export default SwipeCard3;
+export default SwipeCard;

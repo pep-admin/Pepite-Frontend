@@ -70,7 +70,7 @@ const RatingMenu = ({
       rating,
       isGoldNugget,
       isTurnip,
-      true
+      true,
     );
 
     setIsQuicklyRated(true);

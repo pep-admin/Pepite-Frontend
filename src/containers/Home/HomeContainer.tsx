@@ -1,8 +1,8 @@
 // import HomeComponent from '@views/Home/HomeComponent';
-import HomeComponent2 from '@views/Home/HomeComponent2';
+import HomeComponent from '@views/Home/HomeComponent';
 
 const HomeContainer = () => {
-  return <HomeComponent2 />;
+  return <HomeComponent />;
 };
 
 export default HomeContainer;

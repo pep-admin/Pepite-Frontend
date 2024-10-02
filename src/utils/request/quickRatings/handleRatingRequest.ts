@@ -8,18 +8,17 @@ export const handleRatingRequest = async (
   rating: number | null,
   isGoldNugget: boolean | null,
   isTurnip: boolean | null,
-  validateOrCancel: string
+  validateOrCancel: string,
 ) => {
-  
   try {
     // Si l'utilisateur valide la note
-    if(validateOrCancel === 'validate') {
+    if (validateOrCancel === 'validate') {
       await axios.post(
         `${apiBaseUrl}/critics/add`,
         { movie_id: movieId, type: type, rating, isGoldNugget, isTurnip },
         { withCredentials: true },
       );
-    } 
+    }
     // Si l'utilisateur annule la note
     else {
       await axios.delete(`${apiBaseUrl}/critics/delete/${movieId}`, {
@@ -29,10 +28,9 @@ export const handleRatingRequest = async (
     }
 
     return { error: null };
-
-  } catch (error) {    
+  } catch (error) {
     console.log(error);
-    
+
     return { error: "Erreur serveur : Impossible d'effectuer l'action." };
   }
 };

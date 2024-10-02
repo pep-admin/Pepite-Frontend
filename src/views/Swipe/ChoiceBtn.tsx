@@ -46,16 +46,16 @@ interface ErrorState {
 
 interface ChoiceBtn2Props {
   movies: Array<Movie>;
-  setMovies: React.Dispatch<React.SetStateAction<Movie | null>>
+  setMovies: React.Dispatch<React.SetStateAction<Movie | null>>;
   currentIndex: number | null;
   choice: string;
   isActive: boolean | null;
   handleActions: (
-    btnChoice: string, 
-    rating: number | undefined, 
-    isGoldNugget: boolean | undefined, 
-    isTurnip: boolean | undefined, 
-    validateOrCancel: string | undefined
+    btnChoice: string,
+    rating: number | undefined,
+    isGoldNugget: boolean | undefined,
+    isTurnip: boolean | undefined,
+    validateOrCancel: string | undefined,
   ) => void;
   isGoldNugget: boolean;
   setIsGoldNugget: React.Dispatch<React.SetStateAction<boolean | null>>;
@@ -64,24 +64,24 @@ interface ChoiceBtn2Props {
   error: ErrorState;
 }
 
-const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
-  ({ 
+const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
+  ({
     movies,
     setMovies,
     currentIndex,
-    choice, 
-    isActive, 
-    handleActions,  
+    choice,
+    isActive,
+    handleActions,
     isGoldNugget,
     setIsGoldNugget,
     isTurnip,
     setIsTurnip,
     error,
   }) => {
+    const [anchorRatingBtn, setAnchorRatingBtn] =
+      useState<HTMLButtonElement | null>(null);
 
-    const [anchorRatingBtn, setAnchorRatingBtn] = useState<HTMLButtonElement | null>(null);
-
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {      
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorRatingBtn(event.currentTarget);
     };
 
@@ -93,36 +93,56 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
 
     return (
       <>
-        <Stack 
-          alignItems="center" 
-          justifyContent="center"
-        >
+        <Stack alignItems="center" justifyContent="center">
           <CustomButton
             variant="contained"
-            btntype={ choice === 'unwanted' || choice === 'wanted' ? 'center' : 'side' }
+            btntype={
+              choice === 'unwanted' || choice === 'wanted' ? 'center' : 'side'
+            }
             choice={choice}
             isactive={isActive}
             errorstate={error.state}
-            onClick={ 
-              choice !== 'quick_rating' ? 
-                () => handleActions(choice, undefined, undefined, undefined, undefined) 
-              : (e) => handleClick(e)
+            onClick={
+              choice !== 'quick_rating'
+                ? () =>
+                    handleActions(
+                      choice,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                    )
+                : e => handleClick(e)
             }
           >
             {choice === 'unwanted' ? (
               isActive ? (
-                <DeleteForeverOutlinedIcon sx={{ fontSize: '2.5em', color: '#dd111b' }} />
+                <DeleteForeverOutlinedIcon
+                  sx={{ fontSize: '2.5em', color: '#dd111b' }}
+                />
               ) : (
-                <DeleteOutlinedIcon sx={{ fontSize: '2.5em', color: '#dd111b' }} />
+                <DeleteOutlinedIcon
+                  sx={{ fontSize: '2.5em', color: '#dd111b' }}
+                />
               )
             ) : choice === 'wanted' ? (
               isActive ? (
                 <PlaylistAddCheckOutlinedIcon
-                  sx={{ fontSize: '2.5em', position: 'relative', left: '1px', color: '#17db17' }}
+                  sx={{
+                    fontSize: '2.5em',
+                    position: 'relative',
+                    left: '1px',
+                    color: '#17db17',
+                  }}
                 />
               ) : (
                 <PlaylistAddOutlinedIcon
-                  sx={{ fontSize: '2.5em', position: 'relative', left: '1px', color: '#17db17' }}
+                  sx={{
+                    fontSize: '2.5em',
+                    position: 'relative',
+                    left: '1px',
+                    color: '#17db17',
+                  }}
                 />
               )
             ) : choice === 'watched' ? (
@@ -135,48 +155,47 @@ const ChoiceBtn2: FC<ChoiceBtn2Props> = React.memo(
                   sx={{ fontSize: '2em', color: '#0295c7' }}
                 />
               )
-            )
-              : (
-                <Badge 
-                  badgeContent={movies[currentIndex].user_rating} 
-                  invisible={!movies[currentIndex].user_rating}
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      top: '-10px', 
-                      height: '19px',
-                      backgroundColor: '#E7AE1A', 
-                      color: '#000',
-                      fontWeight: 'bold'
-                    },
-                  }}
-                >
-                  <StarBorderOutlinedIcon
-                    sx={{ fontSize: '2em', color: '#E7AE1A' }}
-                  />
-                </Badge>
-              )
-            }
+            ) : (
+              <Badge
+                badgeContent={movies[currentIndex].user_rating}
+                invisible={!movies[currentIndex].user_rating}
+                sx={{
+                  '& .MuiBadge-badge': {
+                    top: '-10px',
+                    height: '19px',
+                    backgroundColor: '#E7AE1A',
+                    color: '#000',
+                    fontWeight: 'bold',
+                  },
+                }}
+              >
+                <StarBorderOutlinedIcon
+                  sx={{ fontSize: '2em', color: '#E7AE1A' }}
+                />
+              </Badge>
+            )}
           </CustomButton>
         </Stack>
-        {
-          choice === 'quick_rating' &&
-          <SwipeQuickRating 
+        {choice === 'quick_rating' && (
+          <SwipeQuickRating
             movies={movies}
             setMovies={setMovies}
             currentIndex={currentIndex}
-            openPopover={openPopover} 
-            anchorRatingBtn={anchorRatingBtn} 
-            closePopover={closePopover} 
+            openPopover={openPopover}
+            anchorRatingBtn={anchorRatingBtn}
+            closePopover={closePopover}
             handleActions={handleActions}
             isGoldNugget={isGoldNugget}
             setIsGoldNugget={setIsGoldNugget}
             isTurnip={isTurnip}
             setIsTurnip={setIsTurnip}
           />
-        }
+        )}
       </>
     );
   },
 );
 
-export default ChoiceBtn2;
+ChoiceBtn.displayName = 'ChoiceBtn';
+
+export default ChoiceBtn;

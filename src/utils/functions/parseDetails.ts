@@ -1,8 +1,9 @@
-// Si récupération des détails des films depuis la DB, on parse les infos
-export const parseDatabaseData = (data, displayType, requestType) => {
+// import { Movie } from "types/interface";
 
+// Si récupération des détails des films depuis la DB, on parse les infos
+export const parseDatabaseData = data => {
   console.log('les données =>', data);
-  
+
   // Informations générales
   const isMovie = 'release_date' in data;
   const isSerie = 'first_air_date' in data;
@@ -37,7 +38,7 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       tmdb_vote_average,
       pepite_vote_average,
     };
-  } 
+  }
 
   if (isSerie) {
     const release_date = data.first_air_date;
@@ -60,5 +61,4 @@ export const parseDatabaseData = (data, displayType, requestType) => {
       pepite_vote_average,
     };
   }
-
 };

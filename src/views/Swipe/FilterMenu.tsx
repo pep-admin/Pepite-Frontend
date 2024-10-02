@@ -1,6 +1,5 @@
 // Import des libs externes
 import { Menu, MenuItem, Fade, Divider } from '@mui/material';
-import PropTypes from 'prop-types';
 
 // Import des composants internes
 import ColoredRating from '@utils/components/ColoredRating';
@@ -27,7 +26,6 @@ const FilterMenu = ({
   filterName,
   anchorEl,
   openMenu,
-  // filter,
   setFilter,
   state,
   setState,
@@ -184,18 +182,6 @@ const FilterMenu = ({
       {openMenu && displaySubFilters()}
     </Menu>
   );
-};
-
-FilterMenu.propTypes = {
-  filterName: PropTypes.string.isRequired,
-  anchorEl: PropTypes.instanceOf(Element),
-  openMenu: PropTypes.bool.isRequired,
-  filter: PropTypes.object,
-  setFilter: PropTypes.func.isRequired,
-  state: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  setState: PropTypes.func.isRequired,
-  continentChosen: PropTypes.string,
-  setContinentChosen: PropTypes.func,
 };
 
 export default FilterMenu;

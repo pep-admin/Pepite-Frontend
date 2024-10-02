@@ -151,7 +151,7 @@ const CriticAdvicesComponent = ({
           newRating,
           isGoldNugget,
           isTurnip,
-          true
+          true,
         );
       }
 

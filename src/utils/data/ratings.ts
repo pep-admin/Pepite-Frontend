@@ -1,5 +1,3 @@
-import { number } from 'prop-types';
-
 // Légende des notes
 export const ratings = [
   {

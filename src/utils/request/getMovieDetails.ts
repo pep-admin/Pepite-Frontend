@@ -8,32 +8,21 @@ import { apiBaseUrl } from './config';
 
 // Récupération des informations détaillées d'un film
 export const getMovieDetails = async (displayType: string, movieId: number) => {
-  try {
-    let certification = '';
+  const response = await axios.get(
+    `${apiBaseUrl}/movies/details/${movieId}?type=${displayType}`,
+    { withCredentials: true },
+  );
 
-    if (displayType === 'movie')
-      certification = '&append_to_response=release_dates';
-    else if (displayType === 'tv')
-      certification = '&append_to_response=content_ratings';
+  // On vérifie d'où proviennent les données et on parse en conséquence
+  // let parsedData;
 
-    const response = await axios.get(
-      `${apiBaseUrl}/movies/details/${movieId}?type=${displayType}${certification}`,
-      { withCredentials: true },
-    );
+  // if (isDataFromDatabase(response.data)) {
+  //   // console.log('requête DB pour', movieId);
+  //   parsedData = parseDatabaseData(response.data, displayType, null);
+  // } else {
+  // console.log('requête TMDB pour', movieId);
+  // parsedData = response.data;
+  // }
 
-    // On vérifie d'où proviennent les données et on parse en conséquence
-    let parsedData;
-
-    // if (isDataFromDatabase(response.data)) {
-    //   // console.log('requête DB pour', movieId);
-    //   parsedData = parseDatabaseData(response.data, displayType, null);
-    // } else {
-    // console.log('requête TMDB pour', movieId);
-    parsedData = response.data;
-    // }
-
-    return parsedData;
-  } catch (error) {
-    throw error;
-  }
+  return response.data;
 };

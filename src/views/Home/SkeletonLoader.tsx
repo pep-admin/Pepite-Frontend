@@ -1,7 +1,12 @@
-import { Box, Skeleton, useTheme } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-const SkeletonLoader = ({ containerWidth, containerHeight, cardWidth = 200, cardHeight = 300 }) => {
+const SkeletonLoader = ({
+  containerWidth,
+  containerHeight,
+  cardWidth = 200,
+  cardHeight = 300,
+}) => {
   const [skeletonCount, setSkeletonCount] = useState(0);
 
   useEffect(() => {

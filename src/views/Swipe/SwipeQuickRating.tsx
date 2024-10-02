@@ -3,21 +3,22 @@ import React, { useEffect, useState } from 'react';
 import StarIcon from '@mui/icons-material/Star';
 import QuickRatingBtns from './QuickRatingBtns';
 
-const SwipeQuickRating = ({ 
+const SwipeQuickRating = ({
   movies,
   setMovies,
   currentIndex,
-  openPopover, 
-  anchorRatingBtn, 
-  closePopover, 
+  openPopover,
+  anchorRatingBtn,
+  closePopover,
   handleActions,
   isGoldNugget,
   setIsGoldNugget,
   isTurnip,
   setIsTurnip,
- }) => {  
-
-  const [ratingValue, setRatingValue] = useState(movies[currentIndex].user_rating);
+}) => {
+  const [ratingValue, setRatingValue] = useState(
+    movies[currentIndex].user_rating,
+  );
 
   const handleSliderChange = (_: Event, newValue: number | number[]) => {
     setRatingValue(newValue as number);
@@ -35,44 +36,44 @@ const SwipeQuickRating = ({
     }
   };
 
-  const handleBtnAction = (btnType: string) => {    
+  const handleBtnAction = (btnType: string) => {
     const updatedMovies = [...movies];
     const currentMovie = updatedMovies[currentIndex];
 
     // Clic sur le bouton "navet"
-    if(btnType === 'turnip') {
+    if (btnType === 'turnip') {
       setIsTurnip(!isTurnip);
       setIsGoldNugget(false);
       currentMovie.is_turnip = !isTurnip;
       currentMovie.is_gold_nugget = false;
-    } 
+    }
 
     // Clic sur le bouton "pépite"
-    else if(btnType === 'gold') {
+    else if (btnType === 'gold') {
       setIsGoldNugget(!isGoldNugget);
       setIsTurnip(false);
       currentMovie.is_turnip = false;
       currentMovie.is_gold_nugget = !isGoldNugget;
-    } 
+    }
 
     // Clic sur le bouton de validation
-    else if(btnType === 'validate') {
-      let initialRating = 2.5; // Note affichée par défaut
+    else if (btnType === 'validate') {
+      const initialRating = 2.5; // Note affichée par défaut
       let finalRating: null | number;
 
       // Si pépite ou navet, on désactive la notation
-      if(isTurnip || isGoldNugget) {
+      if (isTurnip || isGoldNugget) {
         console.log('note désactivée');
-        
+
         currentMovie.user_rating = null;
         finalRating = null;
       }
-      
+
       // Si l'utilisateur n'a pas interagi avec le slider
-      else if(!ratingValue) {
+      else if (!ratingValue) {
         currentMovie.user_rating = initialRating;
         finalRating = initialRating; // note initiale
-      } 
+      }
 
       // Si l'utilisateur a interagi avec le slider
       else {
@@ -83,8 +84,7 @@ const SwipeQuickRating = ({
       setMovies(updatedMovies); // Met à jour l'état des films avec les modifications
       handleActions('rated', finalRating, isGoldNugget, isTurnip, 'validate'); // Envoie la requête à la DB
       closePopover(); // Ferme le popover
-
-    } 
+    }
     // Si l'utilisateur annule sa note
     else {
       currentMovie.user_rating = null;
@@ -100,8 +100,7 @@ const SwipeQuickRating = ({
 
   useEffect(() => {
     console.log('la valeur de la note =>', ratingValue);
-    
-  }, [ratingValue])
+  }, [ratingValue]);
 
   return (
     <Popover
@@ -122,64 +121,68 @@ const SwipeQuickRating = ({
         '& .MuiPopover-paper': {
           background: 'none',
           overflow: 'visible',
-        }
+        },
       }}
     >
-      <Stack direction='row' height='180px' columnGap='20px' >
-        <Stack justifyContent='center' rowGap='25px'>
+      <Stack direction="row" height="180px" columnGap="20px">
+        <Stack justifyContent="center" rowGap="25px">
           <Box
             sx={{
-              filter: isGoldNugget ? 'grayscale(1)' : 'grayscale(0)'
+              filter: isGoldNugget ? 'grayscale(1)' : 'grayscale(0)',
             }}
           >
-            <QuickRatingBtns 
-              btnType={'turnip'} 
+            <QuickRatingBtns
+              btnType={'turnip'}
               handleBtnAction={handleBtnAction}
             />
           </Box>
           <Box
             sx={{
-              filter: isTurnip ? 'grayscale(1)' : 'grayscale(0)'
+              filter: isTurnip ? 'grayscale(1)' : 'grayscale(0)',
             }}
           >
-            <QuickRatingBtns 
-              btnType={'gold'} 
+            <QuickRatingBtns
+              btnType={'gold'}
               handleBtnAction={handleBtnAction}
             />
           </Box>
         </Stack>
         <Stack>
           <Box
-            height='100%'
-            width='92px'
+            height="100%"
+            width="92px"
             sx={{
               background: 'linear-gradient(333deg, #011111, #011717)',
               borderRadius: '15px',
-              filter: isTurnip || isGoldNugget ? 'grayscale(1)' : 'grayscale(0)'
+              filter:
+                isTurnip || isGoldNugget ? 'grayscale(1)' : 'grayscale(0)',
             }}
           >
-            <Stack 
-              height='100%'
-              width='100%'  
-              justifyContent='space-between'
-              alignItems='center'
-              padding='16px 9px 8px 9px'
-              
+            <Stack
+              height="100%"
+              width="100%"
+              justifyContent="space-between"
+              alignItems="center"
+              padding="16px 9px 8px 9px"
             >
-              <Stack direction='row' alignItems='center' spacing={1}>
-                <Rating 
-                  name="half-rating-read" 
-                  value={!ratingValue ? 2.5 : ratingValue} 
-                  precision={0.5} 
-                  readOnly 
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <Rating
+                  name="half-rating-read"
+                  value={!ratingValue ? 2.5 : ratingValue}
+                  precision={0.5}
+                  readOnly
                   sx={{
                     '& .MuiRating-icon': {
                       fontSize: '1.5em',
                     },
-                    flexDirection: 'column-reverse'
+                    flexDirection: 'column-reverse',
                   }}
-                  icon={<StarIcon sx={{ color: '#E7AE1A'}} fontSize="inherit" />}
-                  emptyIcon={<StarIcon sx={{ color: '#627171'}} fontSize="inherit" />}
+                  icon={
+                    <StarIcon sx={{ color: '#E7AE1A' }} fontSize="inherit" />
+                  }
+                  emptyIcon={
+                    <StarIcon sx={{ color: '#627171' }} fontSize="inherit" />
+                  }
                 />
                 <Slider
                   sx={{
@@ -187,21 +190,21 @@ const SwipeQuickRating = ({
                     '& input[type="range"]': {
                       // WebkitAppearance: 'slider-vertical',
                       writingMode: 'vertical-lr',
-                      direction: 'rtl'
+                      direction: 'rtl',
                     },
                     '& .MuiSlider-valueLabel': {
                       left: '40px',
                       right: '0px',
                     },
                     '& .MuiSlider-valueLabel::before': {
-                      display: 'none'
+                      display: 'none',
                     },
                     '& .MuiSlider-track': {
                       color: '#E7AE1A',
                     },
                     '& .MuiSlider-thumb': {
-                      color: '#E7AE1A'
-                    }
+                      color: '#E7AE1A',
+                    },
                   }}
                   orientation="vertical"
                   aria-label="Rating"
@@ -217,29 +220,27 @@ const SwipeQuickRating = ({
               <Typography
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                color='#E7AE1A'
+                color="#E7AE1A"
               >
                 {`${!ratingValue ? '2.5' : ratingValue} / 5`}
               </Typography>
             </Stack>
           </Box>
         </Stack>
-        <Stack justifyContent='center' rowGap='25px' >
-          {
-            movies[currentIndex].user_rating &&
-            <QuickRatingBtns 
-              btnType={'cancel'} 
+        <Stack justifyContent="center" rowGap="25px">
+          {movies[currentIndex].user_rating && (
+            <QuickRatingBtns
+              btnType={'cancel'}
               handleBtnAction={handleBtnAction}
             />
-          }
-          <QuickRatingBtns 
-            btnType={'validate'} 
+          )}
+          <QuickRatingBtns
+            btnType={'validate'}
             handleBtnAction={handleBtnAction}
           />
         </Stack>
       </Stack>
-      
-    </Popover>    
+    </Popover>
   );
 };
 

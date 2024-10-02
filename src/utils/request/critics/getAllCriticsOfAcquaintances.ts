@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { parseDatabaseData } from '../parseDetails';
+import { parseDatabaseData } from '../../functions/parseDetails';
 import { apiBaseUrl } from '../config';
 
 // Récupération de toutes les critiques des connaissances d'un utilisateur

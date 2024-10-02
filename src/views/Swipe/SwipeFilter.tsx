@@ -1,6 +1,5 @@
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 
 // Import des icônes
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
@@ -10,7 +9,7 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import FilterMenu from './FilterMenu';
 
-const SwipeFilter2 = ({
+const SwipeFilter = ({
   typeChosen,
   setTypeChosen,
   countryChosen,
@@ -283,19 +282,4 @@ const SwipeFilter2 = ({
   );
 };
 
-SwipeFilter2.propTypes = {
-  typeChosen: PropTypes.string.isRequired,
-  setTypeChosen: PropTypes.func.isRequired,
-  countryChosen: PropTypes.object.isRequired,
-  setCountryChosen: PropTypes.func.isRequired,
-  genreChosen: PropTypes.object.isRequired,
-  setGenreChosen: PropTypes.func.isRequired,
-  ratingChosen: PropTypes.object.isRequired,
-  setRatingChosen: PropTypes.func.isRequired,
-  periodChosen: PropTypes.object.isRequired,
-  setPeriodChosen: PropTypes.func.isRequired,
-  setIsFilterValidated: PropTypes.func.isRequired,
-  setAreFiltersOpened: PropTypes.func.isRequired,
-};
-
-export default SwipeFilter2;
+export default SwipeFilter;

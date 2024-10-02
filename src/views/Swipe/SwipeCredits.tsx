@@ -1,6 +1,5 @@
 // Import des libs externes
 import { Skeleton, Stack, Typography } from '@mui/material';
-import PropTypes from 'prop-types';
 
 // Import des fonctions utilitaires
 import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
@@ -22,10 +21,9 @@ const SwipeCredits = ({ movie, movieDetails }) => {
     return topActors.join(', ');
   };
   console.log('les détails =>', movieDetails);
-  
 
   return (
-    <Stack width="88vw" flexShrink="0" marginBottom='100px' >
+    <Stack width="88vw" flexShrink="0" marginBottom="100px">
       <Stack
         maxHeight="27vh"
         sx={{
@@ -118,11 +116,6 @@ const SwipeCredits = ({ movie, movieDetails }) => {
       </Stack>
     </Stack>
   );
-};
-
-SwipeCredits.propTypes = {
-  movie: PropTypes.object.isRequired,
-  movieDetails: PropTypes.object,
 };
 
 export default SwipeCredits;

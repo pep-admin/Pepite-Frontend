@@ -1,8 +1,13 @@
 // Import des libs externes
-import { CircularProgress, LinearProgress, Skeleton, Stack, Typography } from '@mui/material';
+import {
+  CircularProgress,
+  LinearProgress,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import YouTube from 'react-youtube';
-import PropTypes from 'prop-types';
 
 // Import des icônes
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -17,7 +22,6 @@ const SwipeTrailer = ({
   isTrailerFullscreen,
   setIsTrailerFullscreen,
 }) => {
-
   const [videoId, setVideoId] = useState(null);
   const [trailer, setTrailer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +44,8 @@ const SwipeTrailer = ({
     },
   };
 
-  const getCountryFlagUrl = (countryCode) => `https://flagsapi.com/${countryCode}/shiny/24.png`;
+  const getCountryFlagUrl = countryCode =>
+    `https://flagsapi.com/${countryCode}/shiny/24.png`;
 
   const fetchTrailerUrl = async () => {
     if (!isLoading) return;
@@ -61,7 +66,6 @@ const SwipeTrailer = ({
         video => video.type === 'Trailer' && video.site === 'YouTube',
       );
       console.log('trailer', trailer);
-      
 
       if (trailer) {
         setVideoId(trailer.key);
@@ -149,47 +153,44 @@ const SwipeTrailer = ({
 
   useEffect(() => {
     console.log('plein écran ? =>', isTrailerFullscreen);
-    
-  }, [isTrailerFullscreen])
+  }, [isTrailerFullscreen]);
 
   return (
-    <Stack spacing={2} height='100%' >
-      <Stack direction='row' spacing={2} display={ isTrailerFullscreen ? 'none' : 'flex' }>
+    <Stack spacing={2} height="100%">
+      <Stack
+        direction="row"
+        spacing={2}
+        display={isTrailerFullscreen ? 'none' : 'flex'}
+      >
         <Typography color="secondary" fontWeight="500" whiteSpace="nowrap">
-            {'Bande-annonce :'}
+          {'Bande-annonce :'}
         </Typography>
-        <Stack direction='row' spacing={1} alignItems='center' >
-          {
-            trailer ?
+        <Stack direction="row" spacing={1} alignItems="center">
+          {trailer ? (
             <>
               <img
                 src={getCountryFlagUrl(`${trailer.iso_3166_1}`)}
                 alt={`Drapeau de france`}
               />
-              <Typography
-                color="primary"
-                fontWeight="400"
-                whiteSpace="nowrap"
-              >
+              <Typography color="primary" fontWeight="400" whiteSpace="nowrap">
                 {`${trailer.iso_3166_1}`}
               </Typography>
             </>
-            :
+          ) : (
             <Skeleton
               variant="text"
               width="46px"
               sx={{ fontSize: '1em', bgcolor: 'rgb(56 56 56)' }}
             />
-          }
-          
+          )}
         </Stack>
       </Stack>
       <Stack
         ref={containerRef}
-        height={ isTrailerFullscreen ? '100%' : '250px' } 
-        width={ isTrailerFullscreen ? '100%' : '88vw' }
+        height={isTrailerFullscreen ? '100%' : '250px'}
+        width={isTrailerFullscreen ? '100%' : '88vw'}
         flexShrink="0"
-        marginTop={ isTrailerFullscreen ? '0 !important' : '12px' }
+        marginTop={isTrailerFullscreen ? '0 !important' : '12px'}
       >
         <Stack
           justifyContent="center"
@@ -231,11 +232,13 @@ const SwipeTrailer = ({
                 }}
                 onClick={handlePlayPause}
               >
-                <Stack 
-                  direction='row' 
-                  alignItems='center' 
-                  height='50px' 
-                  bgcolor={ isTrailerFullscreen && !isPaused ? 'transparent' : '#000' }
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  height="50px"
+                  bgcolor={
+                    isTrailerFullscreen && !isPaused ? 'transparent' : '#000'
+                  }
                 >
                   <PlayArrowIcon
                     onClick={handlePlayPause}
@@ -278,15 +281,7 @@ const SwipeTrailer = ({
         </Stack>
       </Stack>
     </Stack>
-    
   );
-};
-
-SwipeTrailer.propTypes = {
-  movie: PropTypes.object.isRequired,
-  showTrailer: PropTypes.bool,
-  isTrailerFullscreen: PropTypes.bool,
-  setIsTrailerFullscreen: PropTypes.func,
 };
 
 export default SwipeTrailer;

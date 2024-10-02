@@ -1,16 +1,13 @@
 import axios from 'axios';
-import { parseDatabaseData } from '../parseDetails';
+import { parseDatabaseData } from '../../functions/parseDetails';
 import { apiBaseUrl } from '../config';
 
 // Récupération de toutes les critiques des connaissances d'un utilisateur
 export const getFollowedCriticsRequest = async (page: number, type: string) => {
-  const response = await axios.get(
-    `${apiBaseUrl}/critics/followed`,
-    {
-      params: { page: page, type: type },
-      withCredentials: true,
-    },
-  );
+  const response = await axios.get(`${apiBaseUrl}/critics/followed`, {
+    params: { page: page, type: type },
+    withCredentials: true,
+  });
 
   if (!Array.isArray(response.data)) {
     return [];

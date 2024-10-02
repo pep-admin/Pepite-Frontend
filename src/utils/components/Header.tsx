@@ -82,7 +82,7 @@ const Header = ({ page, isTrailerFullscreen }) => {
           ? 'static'
           : 'fixed'
       }
-      elevation={ page === 'swipe' ? 2 : 0}
+      elevation={page === 'swipe' ? 2 : 0}
       sx={{
         visibility: isTrailerFullscreen ? 'hidden' : 'visible',
         height: '56px',
@@ -97,7 +97,7 @@ const Header = ({ page, isTrailerFullscreen }) => {
           width: '100%',
           padding: '0 6%',
           justifyContent: 'space-between',
-          backgroundColor: 'inherit'
+          backgroundColor: 'inherit',
         }}
       >
         <Stack

@@ -1,105 +1,83 @@
 // Import des libs externes
-import { Stack, Typography, Divider, CardContent } from '@mui/material';
-import PropTypes from 'prop-types';
+import { Stack, Typography, Divider, CardContent, Box } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.css';
 
 // Import des composants internes
-import ChoiceBtn from './ChoiceBtn';
-import ColoredRating from '@utils/components/ColoredRating';
+import AcquaintancesRatings from '@views/Swipe/AcquaintancesRatings';
+import SwipeCredits from '@views/Swipe/SwipeCredits';
+import SwipeTrailer from '@views/Swipe/SwipeTrailer';
 
 // Import des fonctions utilitaires
 import { convertRating } from '@utils/functions/convertRating';
-import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
+import { getShortGenres, getYear } from '@utils/functions/getSwipeMovieInfos';
 
 // Import des icônes
 import StarIcon from '@mui/icons-material/Star';
 import CircleIcon from '@mui/icons-material/Circle';
 
-// Import des noms des genres raccourcis
-import {
-  shortGenresMovieList,
-  shortGenresSerieList,
-} from '@utils/data/shortGenres';
+// Import des requêtes
+import { getMovieDetails } from '@utils/request/getMovieDetails';
 
 const SwipeContent = ({
-  movieDetail,
-  movies,
-  index,
-  currentMovieIndex,
-  setCurrentMovieIndex,
+  movie,
+  typeChosen,
   showMovieInfos,
   setShowMovieInfos,
-  moviesStatusUpdated,
-  setMoviesStatusUpdated,
-  swipeToTheRight,
-  swipeType,
+  showTrailer,
+  setShowTrailer,
+  isTrailerFullscreen,
+  setIsTrailerFullscreen,
+  setError,
 }) => {
-  const getTitle = movie => {
-    if (movie && movie.id === movies[index].id) {
-      if ('title' in movie) {
-        return movie.title;
-      }
-      if ('name' in movie) {
-        return movie.name;
-      }
+  // console.log('rendu SwipeContent !', movie);
+
+  const [movieDetails, setMovieDetails] = useState(null); // Les noms du réal, des acteurs...
+
+  const swiperRef = useRef(null);
+  const firstSlideRef = useRef(null);
+  const secondSlideRef = useRef(null);
+
+  const getTitle = () => {
+    if ('title' in movie) {
+      return movie.title;
+    }
+    if ('name' in movie) {
+      return movie.name;
     }
   };
 
-  const currentTitle = getTitle(movieDetail.current);
-  const nextTitle = getTitle(movieDetail.next);
+  // Récupère les détails d'un film (genre, année...)
+  const fetchMovieDetails = async movieId => {
+    try {
+      const details = await getMovieDetails(typeChosen, movieId);
 
-  // Fonction pour obtenir les genres raccourcis du film
-  const getGenres = movie => {
-    if (movie && movie.id === movies[index].id) {
-      let shortGenres;
-
-      if (swipeType === 'movie') {
-        shortGenres = shortGenresMovieList;
-      } else {
-        shortGenres = shortGenresSerieList;
-      }
-
-      // Si des genres existent
-      return movie.genres.length
-        ? movie.genres
-            .map(genre => {
-              // Trouver le genre raccourci correspondant dans shortGenres
-              const genres = shortGenres.find(sg => sg.id === genre.id);
-              // Retourner le nom raccourci s'il existe, sinon retourner le nom original
-              return genres ? genres.name : genre.name;
-            })
-            .join(', ')
-        : 'Non spécifié';
+      setMovieDetails(details);
+    } catch (err) {
+      setError({
+        state: true,
+        message: 'Erreur dans la récupération des détails du film.',
+      });
     }
-    return null;
   };
 
-  // Vérification des genres pour le film affiché et le film suivant
-  const genresCurrent = getGenres(movieDetail.current);
-  const genresNext = getGenres(movieDetail.next);
+  useEffect(() => {
+    if (showMovieInfos) {
+      fetchMovieDetails(movie.id);
+    }
+  }, [showMovieInfos]);
 
-  // Fonction pour extraire l'année à partir d'une date
-  const getYear = date => {
-    return date ? date.split('-')[0] : 'Non spécifié';
-  };
+  useEffect(() => {
+    console.log('plein écran ?? =>', isTrailerFullscreen);
+  }, [isTrailerFullscreen]);
 
-  // Détermine la date à utiliser si l'utilisateur a choisi films ou séries
-  const date =
-    swipeType === 'movie'
-      ? movies[index].release_date
-      : movies[index].first_air_date;
-
-  // Sélectionner le bon détail de film (affiché ou suivant)
-  const movieToDisplay =
-    movieDetail.current && movieDetail.current.id === movies[index].id
-      ? movieDetail.current
-      : movieDetail.next && movieDetail.next.id === movies[index].id
-      ? movieDetail.next
-      : null;
-
-  // Récupère les noms français des pays de production
-  const productionCountries = movieToDisplay
-    ? findFrenchNameCountry(movieToDisplay.production_countries).join(', ')
-    : null;
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.allowTouchMove = !isTrailerFullscreen;
+      swiperRef.current.swiper.update();
+    }
+  }, [isTrailerFullscreen]);
 
   return (
     <>
@@ -108,6 +86,7 @@ const SwipeContent = ({
           height: 'auto',
           width: '100%',
           padding: '0 !important',
+          // marginBottom: '100px',
         }}
       >
         <Stack>
@@ -119,7 +98,13 @@ const SwipeContent = ({
             >
               <Typography
                 component="h1"
-                fontSize="6.5vh"
+                fontSize={
+                  getTitle().length > 30
+                    ? '5.5vh'
+                    : getTitle().length > 35
+                    ? '5vh'
+                    : '6.5vh'
+                } // Taille de la police ajustée en fonction de la longueur du titre
                 fontFamily="League Spartan"
                 fontWeight="700"
                 color="primary.main"
@@ -130,7 +115,7 @@ const SwipeContent = ({
                   WebkitTextStroke: '1px black',
                 }}
               >
-                {currentTitle || nextTitle}
+                {getTitle()}
               </Typography>
               <Typography
                 component="p"
@@ -141,7 +126,10 @@ const SwipeContent = ({
                 lineHeight="0.9"
                 position="relative"
                 top="5px"
-                onClick={() => setShowMovieInfos(!showMovieInfos)}
+                onClick={() => {
+                  setShowMovieInfos(!showMovieInfos);
+                  setShowTrailer(false);
+                }}
               >
                 {!showMovieInfos ? '+' : '-'}
               </Typography>
@@ -153,7 +141,7 @@ const SwipeContent = ({
                 fontWeight="500"
                 color="secondary.main"
               >
-                {'release_date' in movies[index] ? 'Film' : 'Série'}
+                {'release_date' in movie ? 'Film' : 'Série'}
               </Typography>
               <Divider
                 orientation="vertical"
@@ -174,7 +162,7 @@ const SwipeContent = ({
                 overflow="hidden"
                 textOverflow="ellipsis"
               >
-                {genresCurrent || genresNext}
+                {getShortGenres(movie)}
               </Typography>
               <Divider
                 orientation="vertical"
@@ -192,7 +180,7 @@ const SwipeContent = ({
                 fontWeight="500"
                 color="secondary.main"
               >
-                {getYear(date)}
+                {getYear(movie)}
               </Typography>
               <Divider
                 orientation="vertical"
@@ -215,7 +203,7 @@ const SwipeContent = ({
                   fontWeight="500"
                   color="secondary.main"
                 >
-                  {convertRating(movies[index].vote_average)}
+                  {convertRating(movie.vote_average)}
                 </Typography>
               </Stack>
             </Stack>
@@ -225,79 +213,10 @@ const SwipeContent = ({
             direction={!showMovieInfos ? 'row' : 'column'}
             justifyContent="space-between"
             padding={!showMovieInfos ? '23px 0' : '0'}
-            marginBottom={!showMovieInfos ? '23px' : '0'}
+            marginBottom={!showMovieInfos ? '115px' : '0'}
           >
-            {!showMovieInfos ? (
-              <>
-                <Stack>
-                  <Typography fontSize="2.4vh" color="#fff">
-                    Moyenne des
-                    <span style={{ color: '#DD8C28', fontWeight: '500' }}>
-                      {' '}
-                      amis
-                    </span>
-                  </Typography>
-                  <Stack
-                    height="15px"
-                    direction="row"
-                    alignItems="center"
-                    position="relative"
-                    left="2.5px"
-                  >
-                    <ColoredRating
-                      color="#DD8C28"
-                      emptyColor="#B9B9B9"
-                      value={4.3}
-                      readOnly={true}
-                      precision={0.1}
-                    />
-                    <Typography
-                      fontSize="2.4vh"
-                      component="span"
-                      sx={{
-                        color: '#DD8C28',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {'4.3'}
-                    </Typography>
-                  </Stack>
-                </Stack>
-                <Stack>
-                  <Typography fontSize="2.4vh" color="#fff">
-                    Moyenne des
-                    <span style={{ color: '#24A5A5', fontWeight: '500' }}>
-                      {' '}
-                      suivis
-                    </span>
-                  </Typography>
-                  <Stack
-                    height="15px"
-                    direction="row"
-                    alignItems="center"
-                    position="relative"
-                    left="2.5px"
-                  >
-                    <ColoredRating
-                      color="#24A5A5"
-                      emptyColor="#B9B9B9"
-                      value={4.1}
-                      readOnly={true}
-                      precision={0.1}
-                    />
-                    <Typography
-                      fontSize="2.4vh"
-                      component="span"
-                      sx={{
-                        color: '#24A5A5',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {'4.1'}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </>
+            {!showMovieInfos && !showTrailer ? (
+              <AcquaintancesRatings />
             ) : (
               <Stack
                 direction="row"
@@ -306,121 +225,80 @@ const SwipeContent = ({
                 flexBasis="100%"
                 columnGap="5px"
               >
-                <CircleIcon color="primary" sx={{ fontSize: '1vh' }} />
-                <CircleIcon color="primary" sx={{ fontSize: '1vh' }} />
+                <CircleIcon
+                  sx={{
+                    fontSize: '1vh',
+                    color: !showTrailer ? 'orange' : '#fff',
+                  }}
+                />
+                <CircleIcon
+                  sx={{
+                    fontSize: '1vh',
+                    color: showTrailer ? 'orange' : '#fff',
+                  }}
+                />
               </Stack>
             )}
           </Stack>
-          <Stack
-            sx={{
-              display: !showMovieInfos ? 'none' : 'flex',
-              opacity: !showMovieInfos ? '0' : '1',
-              transition: !showMovieInfos
-                ? 'opacity 0ms ease-in-out'
-                : 'opacity 600ms ease-in-out',
-            }}
-          >
-            <Stack
-              maxHeight="27vh"
+          {!showMovieInfos ? null : (
+            <Box
+              // minHeight="250px"
+              width="100%"
+              overflow="hidden"
               sx={{
-                overflowY: 'scroll',
+                position: isTrailerFullscreen ? 'absolute' : 'static',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
               }}
             >
-              <Typography
-                color="primary"
-                fontWeight="300"
-                lineHeight="1.6"
-                fontSize="2.1vh"
+              <Swiper
+                ref={swiperRef}
+                spaceBetween={6 * (window.innerWidth / 100)} // Espace entre les slides, ici 6vw
+                slidesPerView={1} // Affiche une seule slide à la fois en pleine largeur
+                centeredSlides={false} // Les slides ne sont pas centrés
+                onSlideChange={swiper => {
+                  if (swiper.activeIndex === 1) {
+                    setShowTrailer(true);
+                  } else {
+                    setShowTrailer(false);
+                  }
+                }}
+                allowTouchMove={!isTrailerFullscreen}
+                style={{ height: '100%', width: '100%' }}
               >
-                {movies[index].overview === null
-                  ? "Désolé, il n'y a pas de synopsis disponible pour ce film..."
-                  : movies[index].overview}
-              </Typography>
-            </Stack>
-            <Stack
-              height="15vh"
-              justifyContent="space-evenly"
-              margin="7px 0 10px 0"
-            >
-              <Stack direction="row" columnGap="10px">
-                <Typography color="secondary" fontWeight="500">
-                  {'Pays :'}
-                </Typography>
-                <Typography color="primary" fontWeight="300">
-                  {productionCountries}
-                </Typography>
-              </Stack>
-              <Stack direction="row" columnGap="10px">
-                <Typography color="secondary" fontWeight="500">
-                  {'Réalisation :'}
-                </Typography>
-                <Typography color="primary" fontWeight="300">
-                  {'Le nom du real'}
-                </Typography>
-              </Stack>
-              <Stack direction="row" columnGap="10px">
-                <Typography color="secondary" fontWeight="500">
-                  {'Acteurs :'}
-                </Typography>
-                <Typography color="primary" fontWeight="300">
-                  {'Le nom des acteurs'}
-                </Typography>
-              </Stack>
-            </Stack>
-          </Stack>
+                <SwiperSlide style={{ width: '88vw' }}>
+                  <div ref={firstSlideRef}>
+                    <SwipeCredits movie={movie} movieDetails={movieDetails} />
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide
+                  style={{
+                    height: isTrailerFullscreen ? '100%' : 'auto',
+                    minHeight: '250px',
+                    width: isTrailerFullscreen ? '100%' : '88vw',
+                  }}
+                >
+                  <div
+                    ref={secondSlideRef}
+                    style={{ height: '100%', minHeight: '300px' }}
+                  >
+                    <SwipeTrailer
+                      movie={movie}
+                      showTrailer={showTrailer}
+                      isTrailerFullscreen={isTrailerFullscreen}
+                      setIsTrailerFullscreen={setIsTrailerFullscreen}
+                    />
+                  </div>
+                </SwiperSlide>
+              </Swiper>
+            </Box>
+          )}
         </Stack>
       </CardContent>
-      <Stack
-        height="100px"
-        width="100%"
-        direction="row"
-        justifyContent="space-between"
-        padding="0 5% 15px 5%"
-      >
-        <ChoiceBtn
-          choice={'unwanted'}
-          moviesStatusUpdated={moviesStatusUpdated}
-          setMoviesStatusUpdated={setMoviesStatusUpdated}
-          index={index}
-          currentMovieIndex={currentMovieIndex}
-          setCurrentMovieIndex={setCurrentMovieIndex}
-          swipeToTheRight={swipeToTheRight}
-        />
-        <ChoiceBtn
-          choice={'wanted'}
-          moviesStatusUpdated={moviesStatusUpdated}
-          setMoviesStatusUpdated={setMoviesStatusUpdated}
-          index={index}
-          currentMovieIndex={currentMovieIndex}
-          setCurrentMovieIndex={setCurrentMovieIndex}
-          swipeToTheRight={null}
-        />
-        <ChoiceBtn
-          choice={'watched'}
-          moviesStatusUpdated={moviesStatusUpdated}
-          setMoviesStatusUpdated={setMoviesStatusUpdated}
-          index={index}
-          currentMovieIndex={currentMovieIndex}
-          setCurrentMovieIndex={setCurrentMovieIndex}
-          swipeToTheRight={swipeToTheRight}
-        />
-      </Stack>
     </>
   );
-};
-
-SwipeContent.propTypes = {
-  movieDetail: PropTypes.object.isRequired,
-  movies: PropTypes.array.isRequired,
-  index: PropTypes.number.isRequired,
-  currentMovieIndex: PropTypes.number.isRequired,
-  setCurrentMovieIndex: PropTypes.func.isRequired,
-  showMovieInfos: PropTypes.bool.isRequired,
-  setShowMovieInfos: PropTypes.func.isRequired,
-  moviesStatusUpdated: PropTypes.array.isRequired,
-  setMoviesStatusUpdated: PropTypes.func.isRequired,
-  swipeToTheRight: PropTypes.func.isRequired,
-  swipeType: PropTypes.string.isRequired,
 };
 
 export default SwipeContent;

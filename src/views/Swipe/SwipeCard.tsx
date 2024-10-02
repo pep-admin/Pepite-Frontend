@@ -1,259 +1,177 @@
 // Import des libs externes
-import { Alert, Stack, Badge, SwipeableDrawer } from '@mui/material';
-import { useState } from 'react';
-import PropTypes from 'prop-types';
-import { animated as a } from 'react-spring';
+import React, {
+  MutableRefObject,
+  FC,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from 'react';
+import { Card } from '@mui/material';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 
 // Import des composants internes
-import SwipeContent from './SwipeContent';
-import SwipeFilter from './SwipeFilter';
-import { CustomButton } from './CustomBtn';
+import SwipeContent from '@views/Swipe/SwipeContent';
 
-// Import des icônes
-import SwipeLeftIcon from '@mui/icons-material/SwipeLeft';
-import SwipeRightIcon from '@mui/icons-material/SwipeRight';
-import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-
-// Import des variables d'environnements
+// Import des variables d'environnement
 import { assetsBaseUrl } from '@utils/request/config';
 
-const SwipeCard = ({
-  id,
-  movies,
-  movieDetail,
-  error,
-  index,
-  currentMovieIndex,
-  setCurrentMovieIndex,
-  setSwipeAction,
-  cardProps,
-  moviesStatusUpdated,
-  setMoviesStatusUpdated,
-  swipeToTheRight,
-  countryChosen,
-  setCountryChosen,
-  genreChosen,
-  setGenreChosen,
-  ratingChosen,
-  setRatingChosen,
-  setIsFilterValidated,
-  periodChosen,
-  setPeriodChosen,
-  swipeType,
-  setSwipeType,
-}) => {
-  const AnimatedCard = a(Stack);
+// Import des types
+import { Movie } from 'types/interface';
+import { ErrorState } from 'types/interface';
 
-  const [showMovieInfos, setShowMovieInfos] = useState(false);
-  const [areFiltersOpen, setAreFiltersOpen] = useState(false);
-  const [continentChosen, setContinentChosen] = useState('Amérique'); // Continent choisi par l'utilisateur
+interface SwipeCard3Props {
+  movie: Movie;
+  typeChosen: string;
+  isCurrent: boolean;
+  onSwipeComplete: (direction: string) => void;
+  isFirstCard: boolean;
+  zIndex: number;
+  dragDirectionRef: MutableRefObject<string | null>;
+  setZIndexForSwipe: (direction: string) => void;
+  showTrailer: boolean;
+  setShowTrailer: Dispatch<SetStateAction<boolean>>;
+  isTrailerFullscreen: boolean;
+  setIsTrailerFullscreen: Dispatch<SetStateAction<boolean>>;
+  setError: Dispatch<SetStateAction<ErrorState>>;
+}
 
-  const toggleFilters = open => event => {
-    // Ignorer les événements qui ont été déclenchés par des éléments non souhaités
-    if (
-      event &&
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return;
-    }
+const SwipeCard: FC<SwipeCard3Props> = React.memo(
+  ({
+    movie,
+    typeChosen,
+    isCurrent,
+    onSwipeComplete,
+    isFirstCard,
+    zIndex,
+    dragDirectionRef,
+    setZIndexForSwipe,
+    showTrailer,
+    setShowTrailer,
+    isTrailerFullscreen,
+    setIsTrailerFullscreen,
+    setError,
+  }) => {
+    console.log('swipe card');
 
-    setAreFiltersOpen(open);
-  };
+    const [showMovieInfos, setShowMovieInfos] = useState(false);
+    const [isSwiping, setIsSwiping] = useState(false);
 
-  return (
-    <AnimatedCard
-      id={id}
-      style={cardProps}
-      sx={{
-        position: 'absolute',
-        height: '100vh',
-        width: '100vw',
-        boxShadow: 'none',
-      }}
-    >
-      {error.error !== null ? (
-        <Alert
-          severity="error"
+    const motionValue = useMotionValue(0); // Initialisation de l'animation à 0
+    const rotateValue = useTransform(motionValue, [-200, 200], [-50, 50]); // Tous les 200px sur l'axe des x, 50deg de rotation
+    const opacityValue = useTransform(
+      motionValue,
+      [-200, -150, 0, 150, 200],
+      [0, 0.8, 1, 0.8, 0],
+    ); // 0 d'opacité sur 200px sur l'axe des x
+
+    const swipeThreshold = 150; // Seuil à partir duquel on valide le swipe
+
+    return (
+      <motion.div
+        style={{
+          x: motionValue,
+          rotate: rotateValue,
+          opacity: opacityValue,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: zIndex, // zIndex qui change en fonction du sens de swipe
+          willChange: 'transform',
+        }}
+        onAnimationStart={() => setIsSwiping(true)}
+        onAnimationEnd={() => setIsSwiping(false)}
+        drag={isCurrent || !isSwiping ? 'x' : false}
+        dragElastic={0.3} // Réduire l'élasticité pour que le swipe soit plus naturel
+        onDrag={(_, info) => {
+          if ((isFirstCard && info.offset.x > 0) || showMovieInfos) {
+            motionValue.set(0); // Empêche le swipe à gauche si c'est la première carte
+            return;
+          }
+          if (info.offset.x < 0) {
+            setZIndexForSwipe('right'); // L'utilisateur souhaite voir le film suivant
+          } else {
+            setZIndexForSwipe('left'); // L'utilisateur souhaite revoir le film précédent
+          }
+        }}
+        onDragEnd={(_, info) => {
+          if ((isFirstCard && info.offset.x > 0) || showMovieInfos) {
+            return;
+          }
+
+          // Si le swipe est validé
+          if (Math.abs(info.offset.x) > swipeThreshold) {
+            onSwipeComplete(info.offset.x < 0 ? 'left' : 'right');
+            dragDirectionRef.current = null;
+          } else {
+            // Animation de retour plus douce et naturelle
+            animate(motionValue, 0, {
+              type: 'spring',
+              stiffness: 100,
+              damping: 30,
+              mass: 1.5,
+            });
+            animate(rotateValue, 0, {
+              type: 'spring',
+              stiffness: 100,
+              damping: 30,
+              mass: 1.5,
+            });
+            animate(opacityValue, 1, {
+              type: 'spring',
+              stiffness: 100,
+              damping: 30,
+              mass: 1.5,
+            });
+          }
+        }}
+      >
+        <Card
+          elevation={0}
           sx={{
+            width: '100%',
             height: '100%',
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            backgroundImage: `linear-gradient(
+            to top,
+            ${
+              !showMovieInfos
+                ? 'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 1) 20%, rgba(1, 18, 18, 0.6) 50%, rgba(1, 18, 18, 0) 100%'
+                : 'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 0.97) 30%, rgba(1, 18, 18, 0.5) 85%, rgba(1, 18, 18, 0) 100%'
+            }
+          ), url(${
+            movie.poster_path !== null
+              ? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
+              : `${assetsBaseUrl}/images/no_poster.jpg`
+          })`,
+            backgroundColor: '#011212',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            padding: '0 6vw',
+            borderRadius: 0,
           }}
         >
-          {error.message}
-        </Alert>
-      ) : (
-        movies[index] && (
-          <Stack
-            direction="column"
-            alignItems="center"
-            justifyContent="flex-end"
-            sx={{
-              height: '100%',
-              backgroundImage: `linear-gradient(
-                to top,
-                ${
-                  !showMovieInfos
-                    ? 'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 1) 20%, rgba(1, 18, 18, 0.6) 50%, rgba(1, 18, 18, 0) 100%'
-                    : 'rgba(1, 18, 18, 1) 0%, rgba(1, 18, 18, 0.97) 30%, rgba(1, 18, 18, 0.5) 85%, rgba(1, 18, 18, 0) 100%'
-                }
-              ), url(${
-                movies[index].poster_path !== null
-                  ? `https://image.tmdb.org/t/p/original/${movies[index].poster_path}`
-                  : `${assetsBaseUrl}/images/no_poster.jpg`
-              })`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              padding: '0 6%',
-            }}
-          >
-            <Stack position="absolute" top="75px" right="6%">
-              <Badge
-                badgeContent={0}
-                showZero
-                overlap="circular"
-                sx={{
-                  '& .MuiBadge-badge': {
-                    color: '#000',
-                    backgroundColor: 'secondary.main',
-                  },
-                }}
-              >
-                <CustomButton btntype={'filter'} onClick={toggleFilters(true)}>
-                  <TuneOutlinedIcon fontSize="medium" />
-                </CustomButton>
-              </Badge>
-              {areFiltersOpen && (
-                <SwipeableDrawer
-                  anchor="left"
-                  open={areFiltersOpen}
-                  onClose={toggleFilters(false)}
-                  onOpen={toggleFilters(true)}
-                  sx={{
-                    '& .MuiDrawer-paper': {
-                      height: 'calc(100% - 50px)',
-                      width: '35vw',
-                      bgcolor: '#101010',
-                      top: 'auto',
-                      bottom: '0',
-                    },
-                  }}
-                >
-                  <SwipeFilter
-                    swipeType={swipeType}
-                    setSwipeType={setSwipeType}
-                    continentChosen={continentChosen}
-                    setContinentChosen={setContinentChosen}
-                    countryChosen={countryChosen}
-                    setCountryChosen={setCountryChosen}
-                    genreChosen={genreChosen}
-                    setGenreChosen={setGenreChosen}
-                    ratingChosen={ratingChosen}
-                    setRatingChosen={setRatingChosen}
-                    periodChosen={periodChosen}
-                    setPeriodChosen={setPeriodChosen}
-                    setIsFilterValidated={setIsFilterValidated}
-                    setAreFiltersOpen={setAreFiltersOpen}
-                  />
-                </SwipeableDrawer>
-              )}
-            </Stack>
-            <Stack
-              direction="row"
-              width="100%"
-              justifyContent="space-between"
-              position="absolute"
-              top="50%"
-              padding="0 6%"
-              sx={{
-                transform: 'translateY(-50%)',
-                display: showMovieInfos ? 'none' : 'flex',
-              }}
-            >
-              <SwipeLeftIcon
-                color="error"
-                sx={{
-                  height: '1.3em',
-                  width: '1.3em',
-                  color: currentMovieIndex > 0 ? '#ffffffa3' : '#ffffff42',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  if (currentMovieIndex > 0) {
-                    setSwipeAction({ direction: 'left', from: 'normal' });
-                    if (currentMovieIndex !== -1) {
-                      setCurrentMovieIndex(prevIndex => prevIndex - 1);
-                    }
-                  }
-                }}
-              />
-              <SwipeRightIcon
-                sx={{
-                  height: '1.3em',
-                  width: '1.3em',
-                  color: '#ffffffa3',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  setSwipeAction({ direction: 'right', from: 'normal' });
+          <SwipeContent
+            movie={movie}
+            typeChosen={typeChosen}
+            showMovieInfos={showMovieInfos}
+            setShowMovieInfos={setShowMovieInfos}
+            showTrailer={showTrailer}
+            setShowTrailer={setShowTrailer}
+            isTrailerFullscreen={isTrailerFullscreen}
+            setIsTrailerFullscreen={setIsTrailerFullscreen}
+            setError={setError}
+          />
+        </Card>
+      </motion.div>
+    );
+  },
+);
 
-                  // Si ni la dernière card, ni la card "plus aucun film" est affichée, on incrémente normalement
-                  if (currentMovieIndex !== movies.length - 1) {
-                    setCurrentMovieIndex(prevIndex => prevIndex + 1);
-                  }
-                  // Si la dernière card de movies est affichée, on définit l'index courant sur -1
-                  else {
-                    setCurrentMovieIndex(-1);
-                  }
-                }}
-              />
-            </Stack>
-            <SwipeContent
-              movieDetail={movieDetail}
-              movies={movies}
-              index={index}
-              showMovieInfos={showMovieInfos}
-              setShowMovieInfos={setShowMovieInfos}
-              moviesStatusUpdated={moviesStatusUpdated}
-              setMoviesStatusUpdated={setMoviesStatusUpdated}
-              currentMovieIndex={currentMovieIndex}
-              setCurrentMovieIndex={setCurrentMovieIndex}
-              swipeToTheRight={swipeToTheRight}
-              swipeType={swipeType}
-            />
-          </Stack>
-        )
-      )}
-    </AnimatedCard>
-  );
-};
-
-SwipeCard.propTypes = {
-  id: PropTypes.string.isRequired,
-  movies: PropTypes.array.isRequired,
-  movieDetail: PropTypes.object.isRequired,
-  error: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  currentMovieIndex: PropTypes.number,
-  setCurrentMovieIndex: PropTypes.func.isRequired,
-  setSwipeAction: PropTypes.func.isRequired,
-  cardProps: PropTypes.object.isRequired,
-  moviesStatusUpdated: PropTypes.array.isRequired,
-  setMoviesStatusUpdated: PropTypes.func.isRequired,
-  swipeToTheRight: PropTypes.func.isRequired,
-  countryChosen: PropTypes.object,
-  setCountryChosen: PropTypes.func.isRequired,
-  genreChosen: PropTypes.object,
-  setGenreChosen: PropTypes.func.isRequired,
-  ratingChosen: PropTypes.object,
-  setRatingChosen: PropTypes.func.isRequired,
-  setIsFilterValidated: PropTypes.func.isRequired,
-  swipeType: PropTypes.string.isRequired,
-  setSwipeType: PropTypes.func.isRequired,
-  periodChosen: PropTypes.string.isRequired,
-  setPeriodChosen: PropTypes.func.isRequired,
-};
+SwipeCard.displayName = 'SwipeCard';
 
 export default SwipeCard;

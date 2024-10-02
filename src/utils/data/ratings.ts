@@ -1,6 +1,10 @@
 // Légende des notes
 export const ratings = [
   {
+    number: null,
+    value: 'Toutes',
+  },
+  {
     number: 0,
     value: '0 / 5',
   },

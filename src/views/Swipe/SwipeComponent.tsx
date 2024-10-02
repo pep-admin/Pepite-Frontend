@@ -1,369 +1,537 @@
 // Import des libs externes
-import { Container, Stack } from '@mui/material';
-import { useSpring } from 'react-spring';
-import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { Badge, Box, Snackbar, Stack, SwipeableDrawer } from '@mui/material';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // Import des composants internes
 import Header from '@utils/components/Header';
-import { Item } from '@utils/components/styledComponent';
-import LastCard from './LastCard';
+import SwipeCard from '@views/Swipe/SwipeCard';
+import SwipeFilter from '@views/Swipe/SwipeFilter';
+import { CustomButton } from '@views/Swipe/CustomBtn';
+import ChoiceBtn from '@views/Swipe/ChoiceBtn';
+import CustomAlert from '@utils/components/CustomAlert';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
-import SwipeCard from './SwipeCard';
+// Import de l'icône du filtre
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+
+// Import de la fonction pour compter les filtres actifs
+import { countActiveFiltersSwipe } from '@utils/functions/countActiveFiltersSwipe';
+
+// Import des requêtes
+import { handleUnwantedMovieRequest } from '@utils/request/list/handleUnwantedMovieRequest';
+import { handleWantedMovieRequest } from '@utils/request/list/handleWantedMovieRequest';
+import { handleWatchedMovieRequest } from '@utils/request/list/handleWatchedMovieRequest';
+import { handleRatingRequest } from '@utils/request/quickRatings/handleRatingRequest';
 
 const SwipeComponent = ({
   movies,
-  movieDetail,
-  error,
-  loading,
-  currentMovieIndex,
-  setCurrentMovieIndex,
-  swipeAction,
-  setSwipeAction,
+  setMovies,
+  currentIndex,
+  setCurrentIndex,
+  typeChosen,
+  setTypeChosen,
   countryChosen,
   setCountryChosen,
-  hasMoreMovies,
   genreChosen,
   setGenreChosen,
-  moviesStatusUpdated,
-  setMoviesStatusUpdated,
   ratingChosen,
   setRatingChosen,
   periodChosen,
   setPeriodChosen,
   setIsFilterValidated,
-  swipeType,
-  setSwipeType,
+  error,
+  setError,
 }) => {
-  const { displayType } = useData(); // Le choix de préférence de contenu qu'à choisi l'utilisateur (défault : 'all')
+  console.log('rendu swipe component !');
 
-  const prevDisplayTypeRef = useRef('movie');
-  const lastCardRef = useRef(null);
-  const isPepiteCardReached = useRef(false);
+  // Clés uniques pour chaque carte
+  const [currentCardKey, setCurrentCardKey] = useState(uuidv4());
+  const [previousCardKey, setPreviousCardKey] = useState(uuidv4());
+  const [nextCardKey, setNextCardKey] = useState(uuidv4());
 
-  // Bibilothèque react-spring pour gérer les animations
-  const [firstCardProps, setFirstCardProps] = useSpring(() => ({
-    opacity: 1,
-    transform: 'translateX(-100%)',
-    config: { duration: 300 },
-  }));
-  const [secondCardProps, setSecondCardProps] = useSpring(() => ({
-    transform: 'translateX(0%)',
-    opacity: 1,
-    config: { duration: 300 },
-  }));
-  const [thirdCardProps, setThirdCardProps] = useSpring(() => ({
-    transform: 'translateX(100%)',
-    opacity: 1,
-    config: { duration: 300 },
-  }));
+  // Gestion des actions utilisateur
+  const [isUnwanted, setIsUnwanted] = useState(
+    movies[currentIndex]?.is_unwanted,
+  );
+  const [isWanted, setIsWanted] = useState(movies[currentIndex]?.is_wanted);
+  const [isWatched, setIsWatched] = useState(movies[currentIndex]?.is_watched);
 
-  // Définition des 3 cards (précédente, courante, suivante)
-  const initialCards = [
-    {
-      id: 'card1',
-      index: currentMovieIndex - 1,
-      cardProps: firstCardProps,
-      setCardProps: setFirstCardProps,
-    },
-    {
-      id: 'card2',
-      index: currentMovieIndex,
-      cardProps: secondCardProps,
-      setCardProps: setSecondCardProps,
-    },
-    {
-      id: 'card3',
-      index:
-        movies.length === 1 ? currentMovieIndex - 1 : currentMovieIndex + 1,
-      cardProps: thirdCardProps,
-      setCardProps: setThirdCardProps,
-    },
-  ];
+  const [isGoldNugget, setIsGoldNugget] = useState(
+    movies[currentIndex]?.is_gold_nugget,
+  );
+  const [isTurnip, setIsTurnip] = useState(movies[currentIndex]?.is_turnip);
 
-  const [cards, setCards] = useState(initialCards);
+  // Gestion de l'ouverture du panneau des filtres
+  const [areFiltersOpened, setAreFiltersOpened] = useState(false);
 
-  // Réinitialisation des 3 cards
-  function reinitCards() {
-    setCards(initialCards);
-    setFirstCardProps.start({
-      opacity: 1,
-      transform: 'translateX(-100%)',
-      config: { duration: 0 },
-      reset: true,
-    });
-    setSecondCardProps.start({
-      opacity: 1,
-      transform: 'translateX(0%)',
-      config: { duration: 0 },
-      reset: true,
-    });
-    setThirdCardProps.start({
-      opacity: 1,
-      transform: 'translateX(100%)',
-      config: { duration: 0 },
-      reset: true,
-    });
-  }
+  // Gestion du message d'information lors du clic sur les boutons d'actions
+  const [openSnackbar, setOpenSnackbar] = useState(null);
+  const isSnackbarVisibleRef = useRef(false);
 
-  // *** SWIPE VERS LA DROITE *** //
+  // Gestion de superposition des cartes
+  const [zIndexes, setZIndexes] = useState({
+    current: 3,
+    previous: 1,
+    next: 2,
+  });
 
-  function swipeRightAnim() {
-    cards[0].setCardProps.start({
-      // Card de gauche => part tout à droite sans transition et sans effet
-      transform: 'translateX(100%)',
-      config: { duration: 0 },
-    });
-    cards[1].setCardProps.start({
-      // Card du milieu => part sur la gauche
-      transform: 'translateX(-100%)',
-      opacity: 0.0,
-      config: { duration: 300 },
-    });
-    cards[2].setCardProps.start({
-      // Card de droite => part au milieu
-      transform: 'translateX(0%)',
-      opacity: 1,
-      config: { duration: 300 },
-    });
-  }
+  // Gestion de la bande-annonce
+  const [showTrailer, setShowTrailer] = useState<boolean>(false);
+  const [isTrailerFullscreen, setIsTrailerFullscreen] = useState(false);
 
-  const swipeToTheRight = () => {
-    swipeRightAnim();
+  // Sens du swipe pour détecter la superposition des cartes
+  const dragDirectionRef = useRef<string | null>(null);
 
-    setCards(prevCards => {
-      const newCards = [...prevCards]; // On récupère les dernières cards
-      const firstCard = newCards.shift(); // On retire la première card et on la renvoie à firstCard
-      const lastCard = newCards.slice(-1); // On prend la deuxième card et on la place au milieu
-      newCards.push(firstCard); // On prend la card de gauche et on la place à droite
+  const currentMovie = movies[currentIndex];
+  const nextMovie =
+    currentIndex < movies.length - 1 ? movies[currentIndex + 1] : null;
+  const previousMovie = currentIndex > 0 ? movies[currentIndex - 1] : null;
 
-      /* Lorsqu'on arrive à la dernière card du tableau movies il reste 2 cards. On a besoin de définir la 3ème card(qui n'existe pas).
-        On attribue alors un index de -1 à la card de droite qui permettra de faire apparaitre la card "plus de films".
-      */
-      if (currentMovieIndex === movies.length - 1) {
-        firstCard.index = -1;
+  // Gère la superposition des cartes
+  const setZIndexForSwipe = direction => {
+    if (direction === 'right') {
+      if (dragDirectionRef.current !== 'right') {
+        dragDirectionRef.current = 'right';
+        setZIndexes({
+          current: 3,
+          previous: 1,
+          next: 2,
+        });
       }
-      // Si ce n'est pas l'avant dernière card on incrémente normalement
-      else {
-        firstCard.index = lastCard[0].index + 1;
+    } else if (direction === 'left') {
+      if (dragDirectionRef.current !== 'left') {
+        dragDirectionRef.current = 'left';
+        setZIndexes({
+          current: 3,
+          previous: 2,
+          next: 1,
+        });
       }
-      // Si le dernier film vient d'être vu et que l'utilisateur swipe à droite
-      if (currentMovieIndex === -1) {
-        isPepiteCardReached.current = true; //La card 'plus aucun film' a été atteinte
-        lastCardRef.current?.animateLastCard?.('left'); //On fait apparaitre la card 'plus aucun film'
-        firstCard.index = movies.length - 2; // On attribue à la card de droite l'index de l'avant dernière card
-      }
-
-      return newCards;
-    });
-  };
-
-  // *** SWIPE VERS LA GAUCHE *** //
-
-  function swipeLeftAnim() {
-    cards[0].setCardProps.start({
-      // Card de gauche => part au milieu
-      transform: 'translateX(0%)',
-      opacity: 1,
-      config: { duration: 300 },
-    });
-    cards[1].setCardProps.start({
-      // Card du milieu => part sur la droite
-      transform: 'translateX(100%)',
-      opacity: 0.0,
-      config: { duration: 300 },
-    });
-    cards[2].setCardProps.start({
-      // Card de droite => part tout à gauche sans transition
-      transform: 'translateX(-100%)',
-      config: { duration: 0 },
-    });
-  }
-
-  const swipeToTheLeft = () => {
-    swipeLeftAnim();
-
-    if (isPepiteCardReached.current) {
-      lastCardRef.current?.animateLastCard?.('right'); //La card 'plus aucun film' part sur la droite
-
-      cards[0].setCardProps.start({
-        // Card de gauche => part au milieu
-        transform: 'translateX(0%)',
-        opacity: 1,
-        config: { duration: 300 },
-      });
-    }
-
-    // Si l'index courant n'est pas égal à 0
-    if (currentMovieIndex !== 0) {
-      setCards(prevCards => {
-        const newCards = [...prevCards]; //On récupère les dernières cards
-        const lastCard = newCards.slice(-1); // On retire la dernière card et on la renvoie à lastCard
-        newCards.unshift(lastCard[0]); // On place la dernière card au début du tableau
-        newCards.pop(); //Supprime la dernière card en trop
-        lastCard[0].index = prevCards[0].index - 1;
-
-        return newCards;
-      });
-
-      if (currentMovieIndex !== -1) {
-        isPepiteCardReached.current = false;
-      }
-      // Si l'index courant est égal à 0, on réinitialise les cards
-    } else {
-      setCards(initialCards);
     }
   };
 
-  // Si l'utilisateur change de film à série et inversement, on reset les animations
-  useEffect(() => {
-    if (prevDisplayTypeRef.current !== displayType) {
-      reinitCards();
+  // Gère l'index selon le sens du swipe
+  const onSwipeComplete = direction => {
+    if (direction === 'left' && currentIndex < movies.length - 1) {
+      setCurrentIndex(prevIndex => prevIndex + 1);
+    } else if (direction === 'right' && currentIndex > 0) {
+      setCurrentIndex(prevIndex => prevIndex - 1);
     }
 
-    if (currentMovieIndex === 0) {
-      prevDisplayTypeRef.current = displayType;
-    }
-  }, [displayType, currentMovieIndex]);
+    // Générer de nouvelles clés pour chaque carte
+    setCurrentCardKey(uuidv4());
+    setPreviousCardKey(uuidv4());
+    setNextCardKey(uuidv4());
+  };
 
-  useEffect(() => {
-    if (loading.movies) {
-      lastCardRef.current?.animateLastCard?.('null');
-      reinitCards();
+  // Gestion des messages d'informations lors de l'action des boutons
+  const handleSnackbarMessage = (btnChoice: string) => {
+    const currentMovie = movies[currentIndex];
+    isSnackbarVisibleRef.current = true;
+
+    switch (btnChoice) {
+      case 'unwanted':
+        if (currentMovie.is_unwanted) {
+          handleOpenSnackbar(
+            `"${currentMovie.title}" ne vous sera plus proposé`,
+          );
+        } else {
+          handleOpenSnackbar(
+            `"${currentMovie.title}" pourra vous être proposé`,
+          );
+        }
+        break;
+      case 'wanted':
+        if (currentMovie.is_wanted) {
+          handleOpenSnackbar(
+            `"${currentMovie.title}" a été ajouté à votre liste`,
+          );
+        } else {
+          handleOpenSnackbar(
+            `"${currentMovie.title}" a été retiré de votre liste`,
+          );
+        }
+        break;
+      case 'watched':
+        if (currentMovie.is_watched) {
+          handleOpenSnackbar(`Vous avez déjà vu "${currentMovie.title}"`);
+        } else {
+          handleOpenSnackbar(`Vous n'avez pas vu "${currentMovie.title}"`);
+        }
+        break;
+      case 'rated':
+        if (currentMovie.is_turnip) {
+          handleOpenSnackbar(
+            `Vous avez indiqué que "${currentMovie.title}" est un navet.`,
+          );
+        } else if (currentMovie.is_gold_nugget) {
+          handleOpenSnackbar(
+            `Vous avez indiqué que "${currentMovie.title}" est une pépite.`,
+          );
+        } else if (currentMovie.user_rating) {
+          handleOpenSnackbar(
+            `Vous avez noté "${currentMovie.title}" ${currentMovie.user_rating} / 5.`,
+          );
+        } else {
+          handleOpenSnackbar(
+            `Vous avez retiré votre note pour "${currentMovie.title}"`,
+          );
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleChoice = (btnChoice: string, rating: number) => {
+    const updatedMovies = [...movies];
+    const currentMovie = updatedMovies[currentIndex];
+
+    if (btnChoice === 'unwanted') {
+      currentMovie.is_unwanted = !currentMovie.is_unwanted;
+      currentMovie.is_wanted = false; // Réinitialiser "wanted"
+      currentMovie.is_watched = false; // Réinitialiser "watched"
+    } else if (btnChoice === 'wanted') {
+      currentMovie.is_wanted = !currentMovie.is_wanted;
+      currentMovie.is_unwanted = false; // Réinitialiser "unwanted"
+      currentMovie.is_watched = false; // Réinitialiser "watched"
+    } else if (btnChoice === 'watched') {
+      currentMovie.is_watched = !currentMovie.is_watched;
+      currentMovie.is_unwanted = false; // Réinitialiser "unwanted"
+      currentMovie.is_wanted = false; // Réinitialiser "wanted"
+    } else if (btnChoice === 'rated') {
+      currentMovie.user_rating = rating;
+    }
+
+    setMovies(updatedMovies); // Mettre à jour l'état avec les modifications
+  };
+
+  // Gestion des actions des boutons
+  const handleActions = async (
+    btnChoice: string,
+    rating: number | undefined,
+    isGoldNugget: boolean | undefined,
+    isTurnip: boolean | undefined,
+    validateOrCancel: string,
+  ) => {
+    if (isSnackbarVisibleRef.current) {
       return;
-    } else {
-      // Si il n'y a aucun film / série à proposer
-      if (movies.length === 0) {
-        lastCardRef.current?.animateLastCard?.('left');
-      }
     }
-  }, [movies, loading.movies]);
+
+    const movie = movies[currentIndex];
+    const movieOrSerie = 'release_date' in movie ? 'movie' : 'tv';
+
+    let response = null;
+
+    switch (btnChoice) {
+      case 'unwanted':
+        response = await handleUnwantedMovieRequest(
+          movie.id,
+          movieOrSerie,
+          !isUnwanted,
+        );
+        break;
+      case 'wanted':
+        response = await handleWantedMovieRequest(
+          movie.id,
+          movieOrSerie,
+          !isWanted,
+        );
+        break;
+      case 'watched':
+        response = await handleWatchedMovieRequest(
+          movie.id,
+          movieOrSerie,
+          !isWatched,
+        );
+        break;
+      case 'rated':
+        response = await handleRatingRequest(
+          movie.id,
+          movieOrSerie,
+          rating,
+          isGoldNugget,
+          isTurnip,
+          validateOrCancel,
+        );
+        break;
+      default:
+        break;
+    }
+
+    if (response.error) {
+      setError({ state: true, message: response.error });
+    } else {
+      handleChoice(btnChoice, rating);
+      handleSnackbarMessage(btnChoice);
+    }
+  };
+
+  // Ouverture du message d'informations suite à une action de l'utilisateur
+  const handleOpenSnackbar = useCallback(
+    (message: string) => {
+      setOpenSnackbar(message);
+    },
+    [setOpenSnackbar],
+  );
+
+  // Fermeture du message d'informations
+  const handleCloseSnackbar = (_, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackbar(null);
+    isSnackbarVisibleRef.current = false;
+  };
 
   useEffect(() => {
-    // On bloque si l'utilisateur a cliqué sur un des boutons de choix
-    if (!swipeAction?.direction || swipeAction?.from === 'choice') return;
+    if (movies.length <= 0) return;
 
-    if (swipeAction.direction === 'right') {
-      swipeToTheRight();
-    }
+    const currentMovie = movies[currentIndex];
 
-    if (swipeAction.direction === 'left') {
-      swipeToTheLeft();
-    }
-  }, [swipeAction]);
-
-  // useEffect(() => {
-  //   console.log('les cards', cards);
-  // }, [cards]);
+    setIsUnwanted(currentMovie.is_unwanted);
+    setIsWanted(currentMovie.is_wanted);
+    setIsWatched(currentMovie.is_watched);
+    setIsGoldNugget(currentMovie.is_gold_nugget);
+    setIsTurnip(currentMovie.is_turnip);
+  }, [currentIndex, movies]);
 
   return (
     <>
-      <Header page={'swipe'} />
-      <Container
-        maxWidth="xl"
+      <Header page={'swipe'} isTrailerFullscreen={isTrailerFullscreen} />
+      <Box
         sx={{
-          padding: '0',
-          backgroundColor: '#101010',
+          overflow: 'hidden',
           height: '100vh',
           width: '100vw',
+          position: 'relative',
+          backgroundColor: '#011212',
         }}
       >
-        <Stack
-          direction="row"
-          height="100%"
-          position="relative"
-          overflow="hidden"
+        {movies.length > 0 && (
+          <Stack
+            position="absolute"
+            top="75px"
+            right="6%"
+            zIndex="1000"
+            visibility={isTrailerFullscreen ? 'hidden' : 'visible'}
+          >
+            <Badge
+              badgeContent={countActiveFiltersSwipe(
+                typeChosen,
+                countryChosen,
+                genreChosen,
+                ratingChosen,
+                periodChosen,
+              )}
+              showZero
+              overlap="circular"
+              sx={{
+                '& .MuiBadge-badge': {
+                  color: '#000',
+                  backgroundColor: 'secondary.main',
+                  fontWeight: '600',
+                },
+              }}
+            >
+              <CustomButton
+                btntype={'filter'}
+                onClick={() => setAreFiltersOpened(!areFiltersOpened)}
+              >
+                <TuneOutlinedIcon fontSize="medium" />
+              </CustomButton>
+            </Badge>
+            {areFiltersOpened && (
+              <SwipeableDrawer
+                anchor="left"
+                open={areFiltersOpened}
+                onClose={() => setAreFiltersOpened(false)}
+                onOpen={() => setAreFiltersOpened(true)}
+                sx={{
+                  '& .MuiDrawer-paper': {
+                    height: 'calc(100% - 50px)',
+                    width: '35vw',
+                    bgcolor: '#101010',
+                    top: 'auto',
+                    bottom: '0',
+                  },
+                }}
+              >
+                <SwipeFilter
+                  typeChosen={typeChosen}
+                  setTypeChosen={setTypeChosen}
+                  countryChosen={countryChosen}
+                  setCountryChosen={setCountryChosen}
+                  genreChosen={genreChosen}
+                  setGenreChosen={setGenreChosen}
+                  ratingChosen={ratingChosen}
+                  setRatingChosen={setRatingChosen}
+                  periodChosen={periodChosen}
+                  setPeriodChosen={setPeriodChosen}
+                  setIsFilterValidated={setIsFilterValidated}
+                  setAreFiltersOpened={setAreFiltersOpened}
+                />
+              </SwipeableDrawer>
+            )}
+          </Stack>
+        )}
+        <Box
+          sx={{
+            display: 'flex',
+            height: '100%',
+            width: '100%',
+            position: 'relative',
+            // filter: anchorRatingBtn ? 'brightness(0.5)' : 'brightness(1)'
+          }}
         >
-          {cards.map(card => (
+          {/* Carte Précédente */}
+          {previousMovie && (
             <SwipeCard
-              key={card.id}
-              id={card.id}
-              movies={movies}
-              movieDetail={movieDetail}
+              key={previousCardKey} // Utilisation d'une clé unique pour la carte précédente
+              movie={previousMovie}
+              typeChosen={typeChosen}
+              isCurrent={false}
+              zIndex={zIndexes.previous}
+              onSwipeComplete={onSwipeComplete}
+              isFirstCard={false}
+              dragDirectionRef={dragDirectionRef}
+              setZIndexForSwipe={setZIndexForSwipe}
+              showTrailer={null}
+              setShowTrailer={null}
+              isTrailerFullscreen={isTrailerFullscreen}
+              setIsTrailerFullscreen={null}
+              setError={null}
+            />
+          )}
+
+          {/* Carte Courante */}
+          {movies.length > 0 && (
+            <SwipeCard
+              key={currentCardKey} // Utilisation d'une clé unique pour la carte courante
+              movie={currentMovie}
+              typeChosen={typeChosen}
+              isCurrent={true}
+              zIndex={zIndexes.current}
+              onSwipeComplete={onSwipeComplete}
+              isFirstCard={currentIndex === 0}
+              dragDirectionRef={dragDirectionRef}
+              setZIndexForSwipe={setZIndexForSwipe}
+              showTrailer={showTrailer}
+              setShowTrailer={setShowTrailer}
+              isTrailerFullscreen={isTrailerFullscreen}
+              setIsTrailerFullscreen={setIsTrailerFullscreen}
+              setError={setError}
+            />
+          )}
+
+          {/* Carte Suivante */}
+          {nextMovie && (
+            <SwipeCard
+              key={nextCardKey} // Utilisation d'une clé unique pour la carte suivante
+              movie={nextMovie}
+              typeChosen={typeChosen}
+              isCurrent={false}
+              zIndex={zIndexes.next}
+              onSwipeComplete={onSwipeComplete}
+              isFirstCard={false}
+              dragDirectionRef={dragDirectionRef}
+              setZIndexForSwipe={setZIndexForSwipe}
+              showTrailer={null}
+              setShowTrailer={null}
+              isTrailerFullscreen={isTrailerFullscreen}
+              setIsTrailerFullscreen={null}
+              setError={null}
+            />
+          )}
+        </Box>
+        {movies.length > 0 && (
+          <Stack
+            height="100px"
+            width="100%"
+            direction="row"
+            position="absolute"
+            bottom="0"
+            left="0"
+            right="0"
+            zIndex="1100"
+            justifyContent="space-between"
+            padding="0 6% 15px 6%"
+            display={!showTrailer ? 'flex' : 'none'}
+          >
+            <ChoiceBtn
+              choice={'unwanted'}
+              movies={null}
+              setMovies={null}
+              currentIndex={null}
+              isActive={isUnwanted}
+              handleActions={handleActions}
+              isGoldNugget={null}
+              setIsGoldNugget={null}
+              isTurnip={null}
+              setIsTurnip={null}
               error={error}
-              index={card.index}
-              currentMovieIndex={currentMovieIndex}
-              setCurrentMovieIndex={setCurrentMovieIndex}
-              setSwipeAction={setSwipeAction}
-              cardProps={card.cardProps}
-              moviesStatusUpdated={moviesStatusUpdated}
-              setMoviesStatusUpdated={setMoviesStatusUpdated}
-              swipeToTheRight={swipeToTheRight}
-              countryChosen={countryChosen}
-              setCountryChosen={setCountryChosen}
-              genreChosen={genreChosen}
-              setGenreChosen={setGenreChosen}
-              ratingChosen={ratingChosen}
-              setRatingChosen={setRatingChosen}
-              periodChosen={periodChosen}
-              setPeriodChosen={setPeriodChosen}
-              setIsFilterValidated={setIsFilterValidated}
-              swipeType={swipeType}
-              setSwipeType={setSwipeType}
             />
-          ))}
-          {!hasMoreMovies && movies.length > 0 ? (
-            <LastCard
-              ref={lastCardRef}
-              type={'no-movies-anymore'}
-              Item={Item}
-              movies={movies}
-              currentMovieIndex={currentMovieIndex}
-              setCurrentMovieIndex={setCurrentMovieIndex}
-              setSwipeAction={setSwipeAction}
-              displayType={displayType}
-              countryChosen={countryChosen}
+            <Stack direction="row" spacing={5}>
+              <ChoiceBtn
+                choice={'watched'}
+                movies={null}
+                setMovies={null}
+                currentIndex={null}
+                isActive={isWatched}
+                handleActions={handleActions}
+                isGoldNugget={null}
+                setIsGoldNugget={null}
+                isTurnip={null}
+                setIsTurnip={null}
+                error={error}
+              />
+              <ChoiceBtn
+                choice={'quick_rating'}
+                movies={movies}
+                setMovies={setMovies}
+                currentIndex={currentIndex}
+                isActive={null}
+                handleActions={handleActions}
+                isGoldNugget={isGoldNugget}
+                setIsGoldNugget={setIsGoldNugget}
+                isTurnip={isTurnip}
+                setIsTurnip={setIsTurnip}
+                error={error}
+              />
+            </Stack>
+            <ChoiceBtn
+              choice={'wanted'}
+              movies={null}
+              setMovies={null}
+              currentIndex={null}
+              isActive={isWanted}
+              handleActions={handleActions}
+              isGoldNugget={null}
+              setIsGoldNugget={null}
+              isTurnip={null}
+              setIsTurnip={null}
+              error={error}
             />
-          ) : !hasMoreMovies && movies.length === 0 ? (
-            <LastCard
-              ref={lastCardRef}
-              type={'no-movies'}
-              Item={Item}
-              movies={movies}
-              currentMovieIndex={currentMovieIndex}
-              setCurrentMovieIndex={setCurrentMovieIndex}
-              setSwipeAction={null}
-              displayType={displayType}
-              countryChosen={countryChosen}
-            />
-          ) : null}
-        </Stack>
-      </Container>
+          </Stack>
+        )}
+      </Box>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={Boolean(openSnackbar)}
+        autoHideDuration={1500}
+        onClose={handleCloseSnackbar}
+        message={openSnackbar}
+      />
+      {error.state ? (
+        <CustomAlert
+          alertType="error"
+          message={error.message}
+          setOnAlert={setError}
+        />
+      ) : null}
     </>
   );
 };
 
-SwipeComponent.propTypes = {
-  movies: PropTypes.array.isRequired,
-  movieDetail: PropTypes.object.isRequired,
-  error: PropTypes.shape({
-    message: PropTypes.string,
-    error: PropTypes.object,
-  }).isRequired,
-  loading: PropTypes.shape({
-    movies: PropTypes.bool,
-    details: PropTypes.bool,
-  }).isRequired,
-  currentMovieIndex: PropTypes.number.isRequired,
-  setCurrentMovieIndex: PropTypes.func.isRequired,
-  swipeAction: PropTypes.object.isRequired,
-  setSwipeAction: PropTypes.func.isRequired,
-  countryChosen: PropTypes.object.isRequired,
-  setCountryChosen: PropTypes.func.isRequired,
-  hasMoreMovies: PropTypes.bool.isRequired,
-  genreChosen: PropTypes.object.isRequired,
-  setGenreChosen: PropTypes.func.isRequired,
-  moviesStatusUpdated: PropTypes.array.isRequired,
-  setMoviesStatusUpdated: PropTypes.func.isRequired,
-  ratingChosen: PropTypes.object,
-  setRatingChosen: PropTypes.func.isRequired,
-  setIsFilterValidated: PropTypes.func.isRequired,
-  swipeType: PropTypes.string.isRequired,
-  setSwipeType: PropTypes.func.isRequired,
-  periodChosen: PropTypes.string.isRequired,
-  setPeriodChosen: PropTypes.func.isRequired,
-};
-
-export default React.memo(SwipeComponent);
+export default SwipeComponent;

@@ -2,15 +2,12 @@ import axios from 'axios';
 import { parseDatabaseData } from '../../functions/parseDetails';
 import { apiBaseUrl } from '../config';
 
-// Récupération des informations des pépites en commun
-export const getCommonNuggetsRequest = async (targetUserId, type) => {
-  const response = await axios.get(
-    `${apiBaseUrl}/movies/common_nuggets/${targetUserId}`,
-    {
-      params: { type: type },
-      withCredentials: true,
-    },
-  );
+// Récupération de toutes les critiques des connaissances d'un utilisateur
+export const getFollowedCriticsRequest = async (page: number, type: string) => {
+  const response = await axios.get(`${apiBaseUrl}/critics/followed`, {
+    params: { page: page, type: type },
+    withCredentials: true,
+  });
 
   if (!Array.isArray(response.data)) {
     return [];

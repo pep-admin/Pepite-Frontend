@@ -66,7 +66,7 @@ const CustomAlert = ({
             textAlign: 'center',
             marginBottom: '0',
             borderRadius: '0',
-            bgcolor: '#032c2c',
+            bgcolor: '#5b1414',
             color: '#fff',
           }}
         >

@@ -1,7 +1,7 @@
 // Liste des genres proposés
 export const shortGenresMovieList = [
   {
-    id: null,
+    id: 0,
     name: 'Tous',
   },
   {

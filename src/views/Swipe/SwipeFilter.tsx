@@ -1,10 +1,5 @@
-// Import des libs externes
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-
-// Import des composants internes
-import FilterMenu from './FilterMenu';
 
 // Import des icônes
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
@@ -12,15 +7,11 @@ import FlagIcon from '@mui/icons-material/Flag';
 import StarIcon from '@mui/icons-material/Star';
 import MovieFilterIcon from '@mui/icons-material/MovieFilter';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-
-// Import du contexte
-import { useData } from '@hooks/DataContext';
+import FilterMenu from './FilterMenu';
 
 const SwipeFilter = ({
-  swipeType,
-  setSwipeType,
-  continentChosen,
-  setContinentChosen,
+  typeChosen,
+  setTypeChosen,
   countryChosen,
   setCountryChosen,
   genreChosen,
@@ -30,24 +21,20 @@ const SwipeFilter = ({
   periodChosen,
   setPeriodChosen,
   setIsFilterValidated,
-  setAreFiltersOpen,
+  setAreFiltersOpened,
 }) => {
-  const { displayType } = useData();
-
   const [typeFilter, setTypeFilter] = useState(null);
-  const [continentFilter, setContinentFilter] = useState({
-    anchor: null,
-    continent: continentChosen,
-  });
+  const [countryFilter, setCountryFilter] = useState(null);
   const [genreFilter, setGenreFilter] = useState(null);
   const [ratingFilter, setRatingFilter] = useState(null);
   const [periodFilter, setPeriodFilter] = useState(null);
-  const [isButtonVisible, setIsButtonVisible] = useState(false);
+
+  const [isButtonVisible, setIsButtonVisible] = useState(false); // Bouton de validation des filtres
 
   const isFirstRender = useRef(true);
 
   const openTypeFilter = Boolean(typeFilter);
-  const openContinentFilter = Boolean(continentFilter.anchor);
+  const openCountryFilter = Boolean(countryFilter);
   const openGenreFilter = Boolean(genreFilter);
   const openRatingFilter = Boolean(ratingFilter);
   const openPeriodFilter = Boolean(periodFilter);
@@ -55,23 +42,21 @@ const SwipeFilter = ({
   const handleTypeClick = (event, filterType) => {
     if (
       typeFilter ||
-      continentFilter.anchor ||
+      countryFilter ||
       genreFilter ||
       ratingFilter ||
       periodFilter
     ) {
       return;
     }
+    event.stopPropagation();
 
     switch (filterType) {
       case 'type':
         setTypeFilter(event.currentTarget);
         break;
-      case 'continent':
-        setContinentFilter({
-          anchor: event.currentTarget,
-          continent: continentChosen,
-        });
+      case 'country':
+        setCountryFilter(event.currentTarget);
         break;
       case 'genre':
         setGenreFilter(event.currentTarget);
@@ -96,23 +81,22 @@ const SwipeFilter = ({
 
     // Si l'un des filtres change, on affiche le bouton de validation
     if (
-      displayType ||
-      continentFilter.continent ||
+      typeChosen ||
+      countryChosen.name ||
       genreChosen.name ||
       ratingChosen.value ||
-      periodChosen
+      periodChosen.name
     ) {
       setIsButtonVisible(true);
     } else {
       setIsButtonVisible(false);
     }
   }, [
-    displayType,
-    swipeType,
-    continentFilter,
-    genreChosen,
-    ratingChosen,
-    periodChosen,
+    typeChosen,
+    countryChosen.name,
+    genreChosen.name,
+    ratingChosen.value,
+    periodChosen.name,
   ]);
 
   return (
@@ -129,24 +113,24 @@ const SwipeFilter = ({
         <LocalMoviesIcon fontSize="medium" />
         <Stack>
           <Typography component="h3">{'Type'}</Typography>
-          <Typography variant="body2" color="secondary">
-            {swipeType === 'movie'
+          <Typography
+            variant="body2"
+            color={typeChosen && typeChosen !== 'all' ? 'secondary' : '#7b7b7b'}
+          >
+            {typeChosen === 'movie'
               ? 'Films'
-              : swipeType === 'tv'
+              : typeChosen === 'tv'
               ? 'Séries'
-              : 'Films et séries'}
+              : 'Tous'}
           </Typography>
         </Stack>
         <FilterMenu
           filterName={'type'}
           anchorEl={typeFilter}
           openMenu={openTypeFilter}
-          filter={null}
           setFilter={setTypeFilter}
-          continentChosen={null}
-          setContinentChosen={null}
-          state={swipeType}
-          setState={setSwipeType}
+          state={typeChosen}
+          setState={setTypeChosen}
         />
       </Stack>
       <Divider sx={{ borderColor: '#404040' }} />
@@ -157,7 +141,7 @@ const SwipeFilter = ({
         columnGap="15px"
         alignItems="center"
         padding="0 5vw 0 3vw"
-        onClick={e => handleTypeClick(e, 'continent')}
+        onClick={e => handleTypeClick(e, 'country')}
       >
         <FlagIcon fontSize="medium" />
         <Stack>
@@ -175,13 +159,10 @@ const SwipeFilter = ({
           </Typography>
         </Stack>
         <FilterMenu
-          filterName={'continent'}
-          anchorEl={continentFilter.anchor}
-          openMenu={openContinentFilter}
-          filter={continentFilter}
-          setFilter={setContinentFilter}
-          continentChosen={continentChosen}
-          setContinentChosen={setContinentChosen}
+          filterName={'country'}
+          anchorEl={countryFilter}
+          openMenu={openCountryFilter}
+          setFilter={setCountryFilter}
           state={countryChosen}
           setState={setCountryChosen}
         />
@@ -214,10 +195,7 @@ const SwipeFilter = ({
           filterName={'genre'}
           anchorEl={genreFilter}
           openMenu={openGenreFilter}
-          filter={genreFilter}
           setFilter={setGenreFilter}
-          continentChosen={null}
-          setContinentChosen={null}
           state={genreChosen}
           setState={setGenreChosen}
         />
@@ -250,10 +228,7 @@ const SwipeFilter = ({
           filterName={'rating'}
           anchorEl={ratingFilter}
           openMenu={openRatingFilter}
-          filter={ratingFilter}
           setFilter={setRatingFilter}
-          continentChosen={null}
-          setContinentChosen={null}
           state={ratingChosen}
           setState={setRatingChosen}
         />
@@ -274,22 +249,19 @@ const SwipeFilter = ({
           <Typography
             variant="body2"
             color={
-              periodChosen && periodChosen !== 'Toutes'
+              periodChosen.name && periodChosen.name !== 'Toutes'
                 ? 'secondary'
                 : '#7b7b7b'
             }
           >
-            {periodChosen ? periodChosen : 'Toutes'}
+            {periodChosen.name}
           </Typography>
         </Stack>
         <FilterMenu
           filterName={'period'}
           anchorEl={periodFilter}
           openMenu={openPeriodFilter}
-          filter={periodFilter}
           setFilter={setPeriodFilter}
-          continentChosen={null}
-          setContinentChosen={null}
           state={periodChosen}
           setState={setPeriodChosen}
         />
@@ -299,7 +271,7 @@ const SwipeFilter = ({
           <Button
             onClick={() => {
               setIsFilterValidated(true);
-              setAreFiltersOpen(false);
+              setAreFiltersOpened(false);
             }}
           >
             {'Valider'}
@@ -308,23 +280,6 @@ const SwipeFilter = ({
       )}
     </Stack>
   );
-};
-
-SwipeFilter.propTypes = {
-  swipeType: PropTypes.string.isRequired,
-  setSwipeType: PropTypes.func.isRequired,
-  countryChosen: PropTypes.object,
-  setCountryChosen: PropTypes.func.isRequired,
-  genreChosen: PropTypes.object,
-  setGenreChosen: PropTypes.func.isRequired,
-  ratingChosen: PropTypes.object,
-  setRatingChosen: PropTypes.func.isRequired,
-  setIsFilterValidated: PropTypes.func.isRequired,
-  setAreFiltersOpen: PropTypes.func.isRequired,
-  continentChosen: PropTypes.string.isRequired,
-  setContinentChosen: PropTypes.func.isRequired,
-  periodChosen: PropTypes.string.isRequired,
-  setPeriodChosen: PropTypes.func.isRequired,
 };
 
 export default SwipeFilter;

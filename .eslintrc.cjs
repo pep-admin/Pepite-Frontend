@@ -27,6 +27,7 @@ module.exports = {
     'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
     'react/react-in-jsx-scope': 'off',
     'prettier/prettier': ['error', { endOfLine: 'crlf' }],
+    'react/prop-types': 'off', // Désactivation de la règle prop-types
   },
   settings: {
     react: { version: 'detect' },

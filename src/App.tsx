@@ -27,8 +27,8 @@ export function App() {
 
   return (
     <>
-      <CssBaseline />
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <DataProvider>
           <BrowserRouter>
             <ScrollToTop />

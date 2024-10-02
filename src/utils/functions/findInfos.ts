@@ -3,7 +3,7 @@ import { countriesList } from '@utils/data/countries';
 // Recherche du pays choisi par l'utilisateur
 export function findIsoCountry(country) {
   const findCountry = countriesList.find(
-    countryDetail => countryDetail.native_name === country,
+    countryDetail => countryDetail.name === country,
   );
   // Récupération du code ISO
   const isoCountry = findCountry.iso_3166_1;

@@ -30,11 +30,12 @@ import GoldFooter from './GoldFooter';
 // Import des requêtes internes
 import { getCriticCommentsNumber } from '@utils/request/comments/getCriticCommentsNumber';
 import { getUserMovieStatusRequest } from '@utils/request/list/getUserMovieStatusRequest';
-import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
-import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
-import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
+// import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
+// import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
+import { handleWatchedMovieRequest } from '@utils/request/list/handleWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
 import { getAdviceCommentsNumber } from '@utils/request/comments/getAdviceCommentsNumber';
+import { handleWantedMovieRequest } from '@utils/request/list/handleWantedMovieRequest';
 
 const CriticAdvicesFooter = ({ data, infos, toggleDrawer, comments }) => {
   const { displayType } = useData();
@@ -91,21 +92,21 @@ const CriticAdvicesFooter = ({ data, infos, toggleDrawer, comments }) => {
 
   // Ajoute le film à la liste des films souhaités
   const addWantedMovie = async () => {
-    await addWantedMovieRequest(infos.id, displayType);
+    await handleWantedMovieRequest(infos.id, displayType, true);
     handleCloseSeenMenu();
     getUserMovieStatus();
   };
 
   // Retire le film de la liste des films souhaités
   const removeWantedMovie = async () => {
-    await removeWantedMovieRequest(infos.id, displayType);
+    await handleWantedMovieRequest(infos.id, displayType, false);
     handleCloseSeenMenu();
     getUserMovieStatus();
   };
 
   // Ajoute le film à la liste des films déjà vus (à noter)
   const addWatchedMovie = async () => {
-    await addWatchedMovieRequest(infos.id, displayType);
+    await handleWatchedMovieRequest(infos.id, displayType, true);
     handleCloseSeenMenu();
     getUserMovieStatus();
   };

@@ -3,32 +3,33 @@ import axios from 'axios';
 import { apiBaseUrl } from '../config';
 
 // Récupération de 20 films pour le swipe
-export const fetchTwentyMovies = async (
+export const getMoviesSwipe = async (
   moviePage: number,
-  swipeType: string,
-  countryChosen,
+  typeChosen: string,
+  countryChosen: string,
   genreChosen: null | number,
   ratingChosen: null | number,
-  periodChosen: null | string,
+  periodChosen: string,
 ) => {
-  let countryString;
-  let genreString;
-  let ratingString;
-  let periodString;
+  let countryString: string;
+  let genreString: string;
+  let ratingString: string;
+  let periodString: string;
 
-  if (countryChosen.name !== 'Tous') {
-    countryString = `&with_origin_country=${findIsoCountry(
-      countryChosen.name,
-    )}`;
+  if (countryChosen !== 'Tous') {
+    countryString = `&with_origin_country=${findIsoCountry(countryChosen)}`;
   } else countryString = '';
 
-  if (genreChosen !== null) genreString = `&with_genres=${genreChosen}`;
+  if (genreChosen) genreString = `&with_genres=${genreChosen}`;
   else genreString = '';
 
   if (ratingChosen) ratingString = `&vote_average=${ratingChosen * 2}`;
   else ratingString = '';
 
   switch (periodChosen) {
+    case 'Toutes':
+      periodString = '';
+      break;
     case 'Avant 1950':
       periodString = `&primary_release_date_to=1949-12-31`;
       break;
@@ -61,7 +62,7 @@ export const fetchTwentyMovies = async (
   }
 
   const response = await axios.get(
-    `${apiBaseUrl}/movies/all?page=${moviePage}&type=${swipeType}${countryString}${genreString}${ratingString}${periodString}`,
+    `${apiBaseUrl}/movies/all?page=${moviePage}&type=${typeChosen}${countryString}${genreString}${ratingString}${periodString}`,
     { withCredentials: true },
   );
 

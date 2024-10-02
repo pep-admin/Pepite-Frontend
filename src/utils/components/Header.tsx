@@ -13,7 +13,6 @@ import {
   Avatar,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 // Import des icônes
 import MenuIcon from '@mui/icons-material/Menu';
@@ -31,7 +30,7 @@ import { handleLogout } from '../request/authRequest';
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts'];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const Header = ({ page }) => {
+const Header = ({ page, isTrailerFullscreen }) => {
   // Infos de l'utilisateur connecté
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
@@ -79,23 +78,26 @@ const Header = ({ page }) => {
       position={
         page === 'swipe'
           ? 'absolute'
-          : page === 'list' || page === 'contacts'
+          : page === 'home' || page === 'list' || page === 'contacts'
           ? 'static'
           : 'fixed'
       }
+      elevation={page === 'swipe' ? 2 : 0}
       sx={{
-        height: '50px',
+        visibility: isTrailerFullscreen ? 'hidden' : 'visible',
+        height: '56px',
         justifyContent: 'center',
-        backgroundColor: 'rgba(1, 18, 18, 0.9)',
+        backgroundColor: page === 'swipe' ? 'rgba(1, 18, 18, 0.75)' : '#052525',
       }}
     >
       <Toolbar
         disableGutters
         sx={{
-          height: '50px',
+          height: '56px',
           width: '100%',
           padding: '0 6%',
           justifyContent: 'space-between',
+          backgroundColor: 'inherit',
         }}
       >
         <Stack
@@ -282,10 +284,6 @@ const Header = ({ page }) => {
       </Toolbar>
     </AppBar>
   );
-};
-
-Header.propTypes = {
-  page: PropTypes.string.isRequired,
 };
 
 export default Header;

@@ -21,9 +21,9 @@ import { useData } from '@hooks/DataContext';
 
 // Import des requêtes
 import { getUserMovieStatusRequest } from '@utils/request/list/getUserMovieStatusRequest';
-import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
+import { handleWatchedMovieRequest } from '@utils/request/list/handleWatchedMovieRequest';
 import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
-import { addNewQuickRating } from '@utils/request/quickRatings/addNewQuickRating';
+import { handleRatingRequest } from '@utils/request/quickRatings/handleRatingRequest';
 
 const RatingMenu = ({
   utility,
@@ -55,7 +55,7 @@ const RatingMenu = ({
 
     // Si le film était dans la liste des films à voir, on le supprime de cette même liste
     if (movieState.isWanted) {
-      await removeWantedMovieRequest(infos.id, displayType);
+      await handleWatchedMovieRequest(infos.id, displayType, true);
     }
 
     // Si le film était dans la liste des films vus, on le supprime de cette même liste
@@ -64,12 +64,13 @@ const RatingMenu = ({
     }
 
     // Ajout dans la liste des notations rapides
-    await addNewQuickRating(
+    await handleRatingRequest(
       infos.id,
       displayType,
       rating,
       isGoldNugget,
       isTurnip,
+      true,
     );
 
     setIsQuicklyRated(true);

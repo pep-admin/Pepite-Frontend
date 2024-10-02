@@ -1,215 +1,201 @@
 // Import des libs externes
-import { Stack, Typography } from '@mui/material';
-import React, { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { Badge, Stack } from '@mui/material';
+import React, { FC, useState } from 'react';
 
 // Import des composants internes
-import { CustomButton } from './CustomBtn';
+import { CustomButton } from '@views/Swipe/CustomBtn';
+import SwipeQuickRating from '@views/Swipe/SwipeQuickRating';
 
 // Import des icônes
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import PlaylistAddOutlinedIcon from '@mui/icons-material/PlaylistAddOutlined';
+import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 
-// Import du contexte
-import { useData } from '@hooks/DataContext';
+interface Movie {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  is_rated: boolean;
+  is_unwanted: boolean;
+  is_wanted: boolean;
+  is_watched: boolean;
+  is_gold_nugget: boolean;
+  is_turnip: boolean;
+  user_rating: number | null;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
 
-// Import des requêtes
-import { addWatchedMovieRequest } from '@utils/request/list/addWatchedMovieRequest';
-import { removeWatchedMovieRequest } from '@utils/request/list/removeWatchedMovieRequest';
-import { addUnwantedMovieRequest } from '@utils/request/list/addUnwantedMovieRequest';
-import { recoverUnwantedMovieRequest } from '@utils/request/list/recoverUnwantedMovieRequest';
-import { addWantedMovieRequest } from '@utils/request/list/addWantedMovieRequest';
-import { removeWantedMovieRequest } from '@utils/request/list/removeWantedMovieRequest';
+interface ErrorState {
+  state: boolean | null;
+  message: string | null;
+}
 
-// Utilisation du bouton personnalisé dans un composant
-const ChoiceBtn = ({
-  choice,
-  moviesStatusUpdated,
-  setMoviesStatusUpdated,
-  index,
-  currentMovieIndex,
-  setCurrentMovieIndex,
-  swipeToTheRight,
-}) => {
-  const { displayType } = useData();
+interface ChoiceBtn2Props {
+  movies: Array<Movie>;
+  setMovies: React.Dispatch<React.SetStateAction<Movie | null>>;
+  currentIndex: number | null;
+  choice: string;
+  isActive: boolean | null;
+  handleActions: (
+    btnChoice: string,
+    rating: number | undefined,
+    isGoldNugget: boolean | undefined,
+    isTurnip: boolean | undefined,
+    validateOrCancel: string | undefined,
+  ) => void;
+  isGoldNugget: boolean;
+  setIsGoldNugget: React.Dispatch<React.SetStateAction<boolean | null>>;
+  isTurnip: boolean;
+  setIsTurnip: React.Dispatch<React.SetStateAction<boolean | null>>;
+  error: ErrorState;
+}
 
-  const isUnwantedRef = useRef(
-    moviesStatusUpdated[currentMovieIndex]?.is_unwanted,
-  );
-  const isWantedRef = useRef(moviesStatusUpdated[currentMovieIndex]?.is_wanted);
-  const isWatchedRef = useRef(
-    moviesStatusUpdated[currentMovieIndex]?.is_watched,
-  );
+const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
+  ({
+    movies,
+    setMovies,
+    currentIndex,
+    choice,
+    isActive,
+    handleActions,
+    isGoldNugget,
+    setIsGoldNugget,
+    isTurnip,
+    setIsTurnip,
+    error,
+  }) => {
+    const [anchorRatingBtn, setAnchorRatingBtn] =
+      useState<HTMLButtonElement | null>(null);
 
-  // Indique un film / série comme non voulu, ou permet à l'utilisateur de revenir sur sa décision
-  const handleUnwantedMovie = async () => {
-    const updatedMovies = moviesStatusUpdated.map(movie => {
-      if (movie.id === moviesStatusUpdated[currentMovieIndex].id) {
-        return { ...movie, is_unwanted: !isUnwantedRef.current };
-      }
-      return movie;
-    });
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorRatingBtn(event.currentTarget);
+    };
 
-    if (!isUnwantedRef.current) {
-      await addUnwantedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
+    const closePopover = () => {
+      setAnchorRatingBtn(null);
+    };
 
-      setTimeout(() => {
-        swipeToTheRight();
-        if (currentMovieIndex !== moviesStatusUpdated.length - 1) {
-          setCurrentMovieIndex(prevIndex => prevIndex + 1);
-        }
-        // Si la dernière card de movies est affichée, on définit l'index courant sur -1
-        else {
-          setCurrentMovieIndex(-1);
-        }
-      }, 300);
-    } else {
-      await recoverUnwantedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
-    }
+    const openPopover = Boolean(anchorRatingBtn);
 
-    setMoviesStatusUpdated(updatedMovies);
-    isUnwantedRef.current = !isUnwantedRef.current;
-  };
-
-  const handleWantedMovie = async () => {
-    const updatedMovies = moviesStatusUpdated.map(movie => {
-      if (movie.id === moviesStatusUpdated[currentMovieIndex].id) {
-        return { ...movie, is_wanted: !isWantedRef.current };
-      }
-      return movie;
-    });
-
-    if (!isWantedRef.current) {
-      await addWantedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
-    } else {
-      await removeWantedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
-    }
-
-    setMoviesStatusUpdated(updatedMovies);
-    isWantedRef.current = !isWantedRef.current;
-  };
-
-  // Indique un film / série comme déjà vu, ou permet à l'utilisateur de revenir sur sa décision
-  const handleWatchedMovie = async () => {
-    const updatedMovies = moviesStatusUpdated.map(movie => {
-      if (movie.id === moviesStatusUpdated[currentMovieIndex].id) {
-        return { ...movie, is_watched: !isWatchedRef.current };
-      }
-      return movie;
-    });
-
-    if (!isWatchedRef.current) {
-      await addWatchedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
-
-      setTimeout(() => {
-        swipeToTheRight();
-        if (currentMovieIndex !== moviesStatusUpdated.length - 1) {
-          setCurrentMovieIndex(prevIndex => prevIndex + 1);
-        }
-        // Si la dernière card de movies est affichée, on définit l'index courant sur -1
-        else {
-          setCurrentMovieIndex(-1);
-        }
-      }, 300);
-    } else {
-      await removeWatchedMovieRequest(
-        moviesStatusUpdated[currentMovieIndex].id,
-        displayType,
-      );
-    }
-
-    setMoviesStatusUpdated(updatedMovies);
-    isWatchedRef.current = !isWatchedRef.current;
-  };
-
-  // Réinitialisation des refs "non souhaité", "souhaité", "déjà vu" à chaque fois que l'utilisateur swipe
-  useEffect(() => {
-    isUnwantedRef.current = moviesStatusUpdated[index]?.is_unwanted;
-    isWantedRef.current = moviesStatusUpdated[index]?.is_wanted;
-    isWatchedRef.current = moviesStatusUpdated[index]?.is_watched;
-  }, [index]);
-
-  return (
-    <Stack alignItems="center">
-      <CustomButton
-        variant="contained"
-        btntype={'others'}
-        choice={choice}
-        isunwanted={isUnwantedRef.current}
-        iswanted={isWantedRef.current}
-        iswatched={isWatchedRef.current}
-        onClick={
-          choice === 'unwanted'
-            ? handleUnwantedMovie
-            : choice === 'wanted'
-            ? handleWantedMovie
-            : handleWatchedMovie
-        }
-      >
-        {choice === 'unwanted' ? (
-          <DeleteForeverOutlinedIcon fontSize="large" />
-        ) : choice === 'wanted' ? (
-          <ThumbUpOutlinedIcon fontSize="large" />
-        ) : (
-          <RemoveRedEyeOutlinedIcon fontSize="large" />
+    return (
+      <>
+        <Stack alignItems="center" justifyContent="center">
+          <CustomButton
+            variant="contained"
+            btntype={
+              choice === 'unwanted' || choice === 'wanted' ? 'center' : 'side'
+            }
+            choice={choice}
+            isactive={isActive}
+            errorstate={error.state}
+            onClick={
+              choice !== 'quick_rating'
+                ? () =>
+                    handleActions(
+                      choice,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                    )
+                : e => handleClick(e)
+            }
+          >
+            {choice === 'unwanted' ? (
+              isActive ? (
+                <DeleteForeverOutlinedIcon
+                  sx={{ fontSize: '2.5em', color: '#dd111b' }}
+                />
+              ) : (
+                <DeleteOutlinedIcon
+                  sx={{ fontSize: '2.5em', color: '#dd111b' }}
+                />
+              )
+            ) : choice === 'wanted' ? (
+              isActive ? (
+                <PlaylistAddCheckOutlinedIcon
+                  sx={{
+                    fontSize: '2.5em',
+                    position: 'relative',
+                    left: '1px',
+                    color: '#17db17',
+                  }}
+                />
+              ) : (
+                <PlaylistAddOutlinedIcon
+                  sx={{
+                    fontSize: '2.5em',
+                    position: 'relative',
+                    left: '1px',
+                    color: '#17db17',
+                  }}
+                />
+              )
+            ) : choice === 'watched' ? (
+              isActive ? (
+                <VisibilityOutlinedIcon
+                  sx={{ fontSize: '2em', color: '#0295c7' }}
+                />
+              ) : (
+                <VisibilityOffOutlinedIcon
+                  sx={{ fontSize: '2em', color: '#0295c7' }}
+                />
+              )
+            ) : (
+              <Badge
+                badgeContent={movies[currentIndex].user_rating}
+                invisible={!movies[currentIndex].user_rating}
+                sx={{
+                  '& .MuiBadge-badge': {
+                    top: '-10px',
+                    height: '19px',
+                    backgroundColor: '#E7AE1A',
+                    color: '#000',
+                    fontWeight: 'bold',
+                  },
+                }}
+              >
+                <StarBorderOutlinedIcon
+                  sx={{ fontSize: '2em', color: '#E7AE1A' }}
+                />
+              </Badge>
+            )}
+          </CustomButton>
+        </Stack>
+        {choice === 'quick_rating' && (
+          <SwipeQuickRating
+            movies={movies}
+            setMovies={setMovies}
+            currentIndex={currentIndex}
+            openPopover={openPopover}
+            anchorRatingBtn={anchorRatingBtn}
+            closePopover={closePopover}
+            handleActions={handleActions}
+            isGoldNugget={isGoldNugget}
+            setIsGoldNugget={setIsGoldNugget}
+            isTurnip={isTurnip}
+            setIsTurnip={setIsTurnip}
+          />
         )}
-      </CustomButton>
-      {choice === 'unwanted' ? (
-        <Typography
-          fontSize="2vh"
-          color="#fff"
-          fontWeight="100"
-          marginTop="5px"
-        >
-          {'Non souhaité'}
-        </Typography>
-      ) : choice === 'wanted' ? (
-        <Typography
-          fontSize="2vh"
-          color="#fff"
-          fontWeight="100"
-          marginTop="5px"
-        >
-          {'Souhaité'}
-        </Typography>
-      ) : (
-        <Typography
-          fontSize="2vh"
-          color="#fff"
-          fontWeight="100"
-          marginTop="5px"
-        >
-          {'Déjà vu'}
-        </Typography>
-      )}
-    </Stack>
-  );
-};
+      </>
+    );
+  },
+);
 
-ChoiceBtn.propTypes = {
-  choice: PropTypes.string.isRequired,
-  moviesStatusUpdated: PropTypes.array.isRequired,
-  setMoviesStatusUpdated: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
-  currentMovieIndex: PropTypes.number.isRequired,
-  setCurrentMovieIndex: PropTypes.func.isRequired,
-  swipeToTheRight: PropTypes.func,
-};
+ChoiceBtn.displayName = 'ChoiceBtn';
 
-export default React.memo(ChoiceBtn);
+export default ChoiceBtn;

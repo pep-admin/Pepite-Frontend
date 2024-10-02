@@ -1,17 +1,18 @@
 import Button, { ButtonProps } from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
 interface CustomButtonProps extends ButtonProps {
   choice?: string;
-  btntype?: 'filter' | 'others';
-  isunwanted?: boolean;
-  iswanted?: boolean;
-  iswatched?: boolean;
+  btntype?: 'filter' | 'side' | 'center';
+  isactive?: boolean;
+  errorstate?: null | boolean;
 }
 
 const btnSize = {
-  filter: '50px',
-  others: '60px',
+  filter: '55px',
+  side: '50px',
+  center: '60px',
 };
 
 const bgGradient = {
@@ -24,17 +25,25 @@ const bgGradient = {
 const hoverColors = {
   filter:
     'linear-gradient(to bottom right, rgba(42, 42, 42, 1), rgba(0, 0, 0, 0.73))',
-  unwanted: 'linear-gradient(to bottom right, #792332, #000000)',
+  unwanted: 'linear-gradient(to bottom right, #9b1a1a, #000000)',
   wanted: 'linear-gradient(to bottom right, #225b1d, #000000)',
-  watched: 'linear-gradient(to bottom right, #70491d, #000000)',
+  watched: 'linear-gradient(to bottom right, #8f5411, #000000)',
 };
 
-const getGradientColor = (choice, isunwanted, iswanted, iswatched) => {
-  if (choice === 'unwanted' && isunwanted) {
+const getGradientColor = (
+  choice: string,
+  isactive: boolean,
+  errorstate: null | boolean,
+  lockColor: boolean,
+) => {
+  // Bloque le changement couleur si lockColor est activé
+  if (lockColor) return bgGradient.others;
+
+  if (choice === 'unwanted' && isactive && !errorstate) {
     return hoverColors.unwanted;
-  } else if (choice === 'wanted' && iswanted) {
+  } else if (choice === 'wanted' && isactive && !errorstate) {
     return hoverColors.wanted;
-  } else if (choice === 'watched' && iswatched) {
+  } else if (choice === 'watched' && isactive && !errorstate) {
     return hoverColors.watched;
   } else {
     return bgGradient.others;
@@ -44,12 +53,18 @@ const getGradientColor = (choice, isunwanted, iswanted, iswatched) => {
 // Bouton rond de gradient personnalisé
 export const CustomButton = styled(Button, {
   shouldForwardProp: prop =>
-    prop !== 'isunwanted' &&
-    prop !== 'iswanted' &&
-    prop !== 'iswatched' &&
-    prop !== 'btntype',
-})<CustomButtonProps>(
-  ({ choice, btntype, isunwanted, iswanted, iswatched }) => ({
+    prop !== 'isactive' && prop !== 'btntype' && prop !== 'errorstate',
+})<CustomButtonProps>(({ choice, btntype, isactive, errorstate }) => {
+  const [lockColor, setLockColor] = useState(false);
+
+  useEffect(() => {
+    // Si une erreur est détectée, verrouillez la couleur
+    if (errorstate) {
+      setLockColor(true);
+    }
+  }, [errorstate]);
+
+  return {
     height: btnSize[btntype],
     width: btnSize[btntype],
     minWidth: 'auto',
@@ -57,9 +72,9 @@ export const CustomButton = styled(Button, {
     background:
       btntype === 'filter'
         ? bgGradient.filter
-        : getGradientColor(choice, isunwanted, iswanted, iswatched),
+        : getGradientColor(choice, isactive, errorstate, lockColor),
     color: '#fff',
     borderRadius: '50%',
     boxShadow: 'inset 4.5px 4px 4px rgba(31, 170, 179, 0.25) !important',
-  }),
-);
+  };
+});

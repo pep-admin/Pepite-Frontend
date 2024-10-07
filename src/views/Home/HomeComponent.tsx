@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, SwipeableDrawer } from '@mui/material';
 import Header from '@utils/components/Header';
 import { useEffect, useRef, useState } from 'react';
 import HomeNav from './HomeNav';
@@ -8,12 +8,14 @@ import { getPopularMoviesRequest } from '@utils/request/home/getPopularMoviesReq
 import { getFriendsCriticsRequest } from '@utils/request/critics/getFriendsCriticsRequest';
 import { getFollowedCriticsRequest } from '@utils/request/critics/getFollowedCriticsRequest';
 import { getUpcomingMoviesRequest } from '@utils/request/home/getUpcomingMoviesRequest';
+import FilmComponent from '@views/Film/FilmComponent';
 
 const HomeComponent = () => {
   const [homeSectionIndex, setHomeSectionIndex] = useState(0);
   const [movies, setMovies] = useState([]);
   const [loadingMovies, setLoadingMovies] = useState([]); // Films en cours de chargement
   const [hasMore, setHasMore] = useState(true);
+  const [showFilmDetails, setShowFilmDetails] = useState({ display: false, movie: null }); 
 
   const homeSectionRef = useRef('popular');
   const pageRef = useRef(1);
@@ -85,8 +87,8 @@ const HomeComponent = () => {
 
   return (
     <>
-      <Box sx={{ backgroundColor: '#052525' }}>
-        <Header page={'home'} isTrailerFullscreen={null} />
+      <Header page={'home'} isTrailerFullscreen={null} />
+      <Box paddingTop='5px' sx={{ backgroundColor: '#052525' }}>
         <HomeNav
           homeSectionIndex={homeSectionIndex}
           setHomeSectionIndex={setHomeSectionIndex}
@@ -114,9 +116,23 @@ const HomeComponent = () => {
           <HomeSection
             homeSectionRef={homeSectionRef}
             movies={[...movies, ...loadingMovies]}
-          />{' '}
-          {/* Combine les films déjà chargés et les placeholders */}
+            setShowFilmDetails={setShowFilmDetails}
+          />
         </InfiniteScroll>
+        <SwipeableDrawer
+          anchor={'left'}
+          open={showFilmDetails.display}
+          onClose={() => setShowFilmDetails({ display: false, movie: null })}
+          onOpen={() => setShowFilmDetails({ display: false, movie: showFilmDetails.movie })}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: '100vw', 
+              backgroundColor: '#011212'
+            }
+          }}
+        >
+          <FilmComponent movie={showFilmDetails.movie} />
+        </SwipeableDrawer>
       </Container>
     </>
   );

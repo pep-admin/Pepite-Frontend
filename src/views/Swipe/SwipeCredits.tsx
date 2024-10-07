@@ -1,10 +1,13 @@
 // Import des libs externes
-import { Skeleton, Stack, Typography } from '@mui/material';
+import { Skeleton, Stack, Typography, useTheme } from '@mui/material';
 
 // Import des fonctions utilitaires
 import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
 
 const SwipeCredits = ({ movie, movieDetails }) => {
+
+  const theme = useTheme();
+
   const findDirectorName = crew => {
     const director = crew.find(member => member.job === 'Director');
     return director ? director.name : 'Réalisateur inconnu';
@@ -31,7 +34,7 @@ const SwipeCredits = ({ movie, movieDetails }) => {
         }}
       >
         <Typography
-          color="primary"
+          color={theme.palette.text.primary}
           fontWeight="300"
           lineHeight="1.9"
           fontSize="2.1vh"
@@ -48,7 +51,7 @@ const SwipeCredits = ({ movie, movieDetails }) => {
           </Typography>
           {movieDetails ? (
             <Typography
-              color="primary"
+              color={theme.palette.text.primary}
               fontWeight="300"
               maxWidth="66vw"
               overflow="hidden"
@@ -73,7 +76,7 @@ const SwipeCredits = ({ movie, movieDetails }) => {
           </Typography>
           {movieDetails ? (
             <Typography
-              color="primary"
+              color={theme.palette.text.primary}
               fontWeight="300"
               maxWidth="66vw"
               overflow="hidden"
@@ -96,7 +99,7 @@ const SwipeCredits = ({ movie, movieDetails }) => {
           </Typography>
           {movieDetails ? (
             <Typography
-              color="primary"
+              color={theme.palette.text.primary}
               fontWeight="300"
               maxWidth="66vw"
               overflow="hidden"

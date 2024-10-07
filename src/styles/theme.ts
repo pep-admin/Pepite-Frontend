@@ -25,16 +25,17 @@ const theme = createTheme({
       default: '#011212',
     },
     primary: {
-      main: '#fff',
+      main: '#0B2C2C',
       dark: '#052525',
       light: '#24A5A5',
     },
     secondary: {
       main: '#E7AE1A',
-      contrastText: '#FEFEFE',
     },
-    common: {
-      white: '#F1F1F1',
+    purple: { // Navet
+      main: '#9C27B0',
+      light: '#EB3C98',
+      dark: '#5E103D',
     },
     form: {
       main: '#034A4A',
@@ -46,7 +47,8 @@ const theme = createTheme({
       main: '#5AC164',
     },
     text: {
-      primary: '#383838',
+      primary: '#F1F1F1',
+      secondary: '#AA9A70'
     },
   },
   components: {
@@ -213,6 +215,16 @@ const theme = createTheme({
     },
   },
 });
+
+// Étendre la palette pour ajouter "purple"
+declare module '@mui/material/styles' {
+  interface Palette {
+    purple: Palette['primary'];
+  }
+  interface PaletteOptions {
+    purple?: PaletteOptions['primary'];
+  }
+}
 
 declare module '@mui/material/styles' {
   interface Palette {

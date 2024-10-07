@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import HomeCard from './HomeCard';
 import { Movie } from 'types/interface';
 
-const HomeSection = ({ movies, homeSectionRef }) => {
+const HomeSection = ({ movies, homeSectionRef, setShowFilmDetails }) => {
   return (
     <Grid container>
       {movies.map((movie: Movie, index: number) => {
@@ -11,6 +11,7 @@ const HomeSection = ({ movies, homeSectionRef }) => {
             key={`${movie.id}-${index}`}
             homeSectionRef={homeSectionRef}
             movie={movie}
+            setShowFilmDetails={setShowFilmDetails}
           />
         );
       })}

@@ -1,5 +1,5 @@
 // Import des libs externes
-import { Stack, Typography, Divider, CardContent, Box } from '@mui/material';
+import { Stack, Typography, Divider, CardContent, Box, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
@@ -18,7 +18,7 @@ import StarIcon from '@mui/icons-material/Star';
 import CircleIcon from '@mui/icons-material/Circle';
 
 // Import des requêtes
-import { getMovieDetails } from '@utils/request/getMovieDetails';
+import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
 
 const SwipeContent = ({
   movie,
@@ -32,6 +32,7 @@ const SwipeContent = ({
   setError,
 }) => {
   // console.log('rendu SwipeContent !', movie);
+  const theme = useTheme();
 
   const [movieDetails, setMovieDetails] = useState(null); // Les noms du réal, des acteurs...
 
@@ -51,7 +52,7 @@ const SwipeContent = ({
   // Récupère les détails d'un film (genre, année...)
   const fetchMovieDetails = async movieId => {
     try {
-      const details = await getMovieDetails(typeChosen, movieId);
+      const details = await getMovieDetailsRequest(typeChosen, movieId);
 
       setMovieDetails(details);
     } catch (err) {
@@ -107,7 +108,7 @@ const SwipeContent = ({
                 } // Taille de la police ajustée en fonction de la longueur du titre
                 fontFamily="League Spartan"
                 fontWeight="700"
-                color="primary.main"
+                color={theme.palette.text.primary}
                 lineHeight="1.1"
                 maxWidth="85%"
                 letterSpacing="-1px"
@@ -122,7 +123,7 @@ const SwipeContent = ({
                 fontSize="7.5vh"
                 fontFamily="League Spartan"
                 fontWeight="500"
-                color="primary.main"
+                color={theme.palette.text.primary}
                 lineHeight="0.9"
                 position="relative"
                 top="5px"

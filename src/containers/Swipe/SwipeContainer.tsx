@@ -6,6 +6,7 @@ import SwipeComponent from '@views/Swipe/SwipeComponent';
 
 // Import des requêtes
 import { getMoviesSwipe } from '@utils/request/swipe/getMoviesSwipe';
+import { ErrorState } from 'types/interface';
 // import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 
 const SwipeContainer = () => {
@@ -36,7 +37,7 @@ const SwipeContainer = () => {
 
   // Gestion du chargement et des erreurs
   const [loading, setLoading] = useState(true); // Chargement des 20 premiers films
-  const [error, setError] = useState({ state: null, message: null }); // Erreur lors du chargement
+  const [error, setError] = useState<ErrorState>({ state: null, message: '' }); // Erreur lors du chargement
 
   // Récupère 20 films selon la page
   const getMovies = async moviePage => {

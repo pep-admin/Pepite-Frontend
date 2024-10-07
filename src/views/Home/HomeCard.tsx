@@ -3,7 +3,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import StarIcon from '@mui/icons-material/Star';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-const HomeCard = ({ homeSectionRef, movie }) => {
+const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
   const isPlaceholder = !movie.id; // Si l'objet film n'a pas d'ID, c'est un placeholder
 
   const formatDate = (dateString: string) => {
@@ -54,6 +54,7 @@ const HomeCard = ({ homeSectionRef, movie }) => {
             backgroundPosition: 'center',
             backgroundSize: 'cover',
           }}
+          onClick={() => setShowFilmDetails({ display: true, movie: movie })}
         >
           {movie && homeSectionRef.current !== 'popular' && (
             <Stack
@@ -62,16 +63,6 @@ const HomeCard = ({ homeSectionRef, movie }) => {
               alignItems="flex-start"
               padding="5px 5px 4px 5px"
             >
-              {/* <Avatar 
-                variant='rounded'
-                alt={`Photo de profil de ${movie.grouped_critics[0].first_name} ${movie.grouped_critics[0].last_name}`} 
-                src={`${apiBaseUrl}/uploads/${movie.grouped_critics[0].file_path}`} 
-                sx={{
-                  height: '50px',
-                  width: '50px',
-                  border: '1px solid #040404'
-                }}
-              /> */}
               <Stack
                 direction="row"
                 width="100%"

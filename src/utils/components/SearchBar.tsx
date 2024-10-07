@@ -26,7 +26,7 @@ import {
   searchMoviesSeries,
   searchUsers,
 } from '../request/search/searchMoviesSeries';
-import { getMovieDetails } from '../request/getMovieDetails';
+import { getMovieDetailsRequest } from '../request/getMovieDetailsRequest';
 import { storeDetailsData } from '../request/swipe/storeDetailsData';
 
 const SearchBar = ({
@@ -65,7 +65,7 @@ const SearchBar = ({
 
   const getChosenMovie = async id => {
     try {
-      const movieData = await getMovieDetails(displayType, id);
+      const movieData = await getMovieDetailsRequest(displayType, id);
       setChosenMovie(movieData);
 
       // Stockage des détails du film dans la DB

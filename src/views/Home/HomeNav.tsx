@@ -18,7 +18,6 @@ const HomeNav = ({ homeSectionIndex, setHomeSectionIndex }) => {
     <Box
       sx={{
         height: '48px',
-        marginTop: '5px',
         backgroundColor: theme.palette.primary.dark,
       }}
     >

@@ -1,6 +1,5 @@
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import { translateJob } from '@utils/data/jobsTranslations';
-import React from 'react';
 
 const FilmCastingCard = ({ peopleType, people }) => {
 
@@ -36,17 +35,24 @@ const FilmCastingCard = ({ peopleType, people }) => {
       </Avatar>
       <Stack 
         alignItems='center'
+        width='100%'
         marginTop='10px'
       >
         <Typography
           align='center'
           fontFamily='Pragati Narrow, sans-serif'
           fontSize='0.9em'
-          lineHeight='1.2'
+          lineHeight='1'
+          sx={{
+            width: '100%',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis'
+          }}
         >
           {`${people.name}`}
         </Typography>
-        <Box marginTop='3px' >
+        <Box marginTop='4px' >
           {peopleType === 'crew' ?
             <Typography 
               component='p' 

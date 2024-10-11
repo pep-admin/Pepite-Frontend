@@ -1,46 +1,26 @@
 import { Stack, Box, Typography, useTheme, Skeleton, Divider, Container } from '@mui/material';
-import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ErrorState, Movie, MovieDetails } from 'types/interface';
 import FilmRating from './FilmRating';
 
 interface FilmPresentationProps {
-  movie: Movie; // Tu devrais aussi typer `movie` plus précisément
+  movie: Movie;
+  movieDetails: MovieDetails; 
+  isMovieOrSerie: string;
+  areDetailsLoading: boolean;
   error: ErrorState;
   setError: Dispatch<SetStateAction<ErrorState>>;
 }
 
-const FilmPresentation: React.FC<FilmPresentationProps> = ({ movie, setError }) => {
+const FilmPresentation: React.FC<FilmPresentationProps> = ({ 
+  movie, 
+  movieDetails,
+  isMovieOrSerie, 
+  areDetailsLoading,
+  setError 
+}) => {
 
   const theme = useTheme();
-
-  const movieOrSerie = 'release_date' in movie ? 'movie' : 'tv';
-
-  const [movieDetails, setMovieDetails] = useState<MovieDetails>({});
-  const [areDetailsLoading, setAreDetailsLoading] = useState(true);
-
-  const getMovieDetails = async() => {
-    try {
-      setAreDetailsLoading(true);
-
-      const details = await getMovieDetailsRequest(movieOrSerie, movie.id);
-      setMovieDetails(details);
-      console.log('les détails =>', details);
-      
-    } catch (err) {
-      setError({
-        state: true,
-        message: 'Erreur dans la récupération des détails du film.',
-      });
-
-    }finally {
-      setAreDetailsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    getMovieDetails();
-  }, []);
 
   return (
     <Container
@@ -94,11 +74,11 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({ movie, setError }) 
               marginTop='9px'
             >
               {`
-                ${movieOrSerie === 'movie' ? 'Film' : 'Série'}
+                ${isMovieOrSerie === 'movie' ? 'Film' : 'Série'}
                 -
                 ${movie.release_date.split('-')[0]}
                 -
-                ${movieDetails?.runtime} min
+                ${movieDetails.runtime} min
                 `
               }
             </Typography>
@@ -108,7 +88,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({ movie, setError }) 
           areDetailsLoading ?
           <Skeleton variant='text' animation='wave' sx={{ fontSize: '1.1em', width: '75%' }} />
           :
-          <Stack width='100%'>
+          <Stack width='75%'>
             {
               movieDetails.tagline ?
                 <Typography
@@ -118,7 +98,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({ movie, setError }) 
                   fontFamily='League Spartan, sans-serif'
                   fontSize='1.1em'
                   fontWeight='300'
-                  lineHeight='1'
+                  lineHeight='1.2'
                 >
                   {`${movieDetails.tagline}`}
                 </Typography>

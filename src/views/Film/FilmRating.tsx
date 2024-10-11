@@ -7,7 +7,11 @@ import { convertRating } from '@utils/functions/convertRating';
 const FilmRating = ({ movie }) => {
 
   return (
-    <Stack spacing={2} alignItems='center'>
+    <Stack 
+      spacing={2} 
+      alignItems='center'
+      width='100%'  
+    >
       <Stack 
         direction='row' 
         justifyContent='center'

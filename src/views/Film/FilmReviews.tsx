@@ -17,8 +17,8 @@ const FilmReviews = ({ reviewsFrom }) => {
         }}
       >
         <Stack
-          spacing={2}
-          padding='20px 0 40px 0'
+          spacing={3}
+          padding='30px 0 40px 0'
         >
           <Stack width='fit-content' >
             <Badge 
@@ -38,7 +38,7 @@ const FilmReviews = ({ reviewsFrom }) => {
               <Typography
                 component='h2'
                 color='text.primary'
-                fontSize='1.3em'
+                fontSize='1.15em'
                 fontWeight='400'
                 textTransform='uppercase'
               >
@@ -46,9 +46,10 @@ const FilmReviews = ({ reviewsFrom }) => {
               </Typography>
             </Badge>
           </Stack>
-          <Stack spacing={2}>
+          <Stack spacing={4}>
             <Typography
               color='#555555'
+              lineHeight='1'
             >
               {`Aucun ${reviewsFrom === 'amis' ? 'ami' : 'suivi'} n'a encore noté ce film.`}
             </Typography>

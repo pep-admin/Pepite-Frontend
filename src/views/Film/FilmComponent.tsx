@@ -1,11 +1,14 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FilmPresentation from './FilmPresentation';
-import { useEffect, useRef, useState } from 'react';
-import { ErrorState } from 'types/interface';
+import { useEffect, useState } from 'react';
+import { ErrorState, MovieDetails } from 'types/interface';
 import FilmOverview from './FilmOverview';
 import FilmReviews from './FilmReviews';
 import FilmCredits from './FilmCredits';
+import FilmSimilar from './FilmSimilar';
+import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
+import FilmExternalLinks from './FilmExternalLinks';
 
 const FilmComponent = ({ movie }) => {
   if(!movie) return;
@@ -14,11 +17,37 @@ const FilmComponent = ({ movie }) => {
   const theme = useTheme();
 
   const isMovieOrSerie = 'release_date' in movie ? 'movie' : 'tv';
-  
+
+  const [movieDetails, setMovieDetails] = useState<MovieDetails>({});
+  const [areDetailsLoading, setAreDetailsLoading] = useState(true);
   const [error, setError] = useState<ErrorState>({
     state: null,
     message: ''
   })
+
+  const getMovieDetails = async() => {
+    try {
+      setAreDetailsLoading(true);
+
+      const details = await getMovieDetailsRequest(isMovieOrSerie, movie.id);
+      setMovieDetails(details);
+      console.log('les détails =>', details);
+      
+    } catch (err) {
+      setError({
+        state: true,
+        message: 'Erreur dans la récupération des détails du film.',
+      });
+
+    }finally {
+      setAreDetailsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getMovieDetails();
+  }, []);
+
   
   return (
     <Box 
@@ -74,13 +103,31 @@ const FilmComponent = ({ movie }) => {
         </Typography>
       </Box>  
       <Stack>
-        <FilmPresentation movie={movie} error={error} setError={setError} />
+        <FilmPresentation 
+          movie={movie}
+          movieDetails={movieDetails} 
+          isMovieOrSerie={isMovieOrSerie} 
+          areDetailsLoading={areDetailsLoading}
+          error={error} 
+          setError={setError} 
+        />
         <FilmOverview movie={movie} />
         <Box>
           <FilmReviews reviewsFrom={'amis'} />
           <FilmReviews reviewsFrom={'suivis'} />
         </Box>
-        <FilmCredits isMovieOrSerie={isMovieOrSerie} movie={movie} />
+        <FilmCredits 
+          isMovieOrSerie={isMovieOrSerie} 
+          movie={movie} 
+        />
+        <FilmSimilar 
+          isMovieOrSerie={isMovieOrSerie} 
+          movieDetails={movieDetails} 
+        />
+        <FilmExternalLinks
+          isMovieOrSerie={isMovieOrSerie}
+          movie={movie}
+        />
       </Stack>  
     </Box>
   );

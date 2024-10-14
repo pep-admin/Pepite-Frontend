@@ -1,5 +1,4 @@
 import { Box, Container, SwipeableDrawer } from '@mui/material';
-import Header from '@utils/components/Header';
 import { useEffect, useRef, useState } from 'react';
 import HomeNav from './HomeNav';
 import HomeSection from './HomeSection';
@@ -9,6 +8,7 @@ import { getFriendsCriticsRequest } from '@utils/request/critics/getFriendsCriti
 import { getFollowedCriticsRequest } from '@utils/request/critics/getFollowedCriticsRequest';
 import { getUpcomingMoviesRequest } from '@utils/request/home/getUpcomingMoviesRequest';
 import FilmComponent from '@views/Film/FilmComponent';
+import Header2 from '@utils/components/Header/Header2';
 
 const HomeComponent = () => {
   const [homeSectionIndex, setHomeSectionIndex] = useState(0);
@@ -87,7 +87,7 @@ const HomeComponent = () => {
 
   return (
     <>
-      <Header page={'home'} isTrailerFullscreen={null} />
+      <Header2 page={'Accueil'} isTrailerFullscreen={null} />
       <Box paddingTop='5px' sx={{ backgroundColor: '#052525' }}>
         <HomeNav
           homeSectionIndex={homeSectionIndex}
@@ -131,7 +131,10 @@ const HomeComponent = () => {
             }
           }}
         >
-          <FilmComponent movie={showFilmDetails.movie} />
+          <FilmComponent 
+            movie={showFilmDetails.movie} 
+            onClose={() => setShowFilmDetails({ display: false, movie: null })}  
+          />
         </SwipeableDrawer>
       </Container>
     </>

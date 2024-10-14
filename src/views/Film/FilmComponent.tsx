@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import FilmPresentation from './FilmPresentation';
 import { useEffect, useState } from 'react';
 import { ErrorState, MovieDetails } from 'types/interface';
@@ -10,11 +9,8 @@ import FilmSimilar from './FilmSimilar';
 import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
 import FilmExternalLinks from './FilmExternalLinks';
 
-const FilmComponent = ({ movie }) => {
+const FilmComponent = ({ movie, onClose }) => {
   if(!movie) return;
-
-  console.log('le film !', movie);
-  const theme = useTheme();
 
   const isMovieOrSerie = 'release_date' in movie ? 'movie' : 'tv';
 
@@ -92,14 +88,15 @@ const FilmComponent = ({ movie }) => {
       >
         <Typography
           fontFamily='League Spartan, sans-serif'
-          color={theme.palette.text.primary}
+          color='#c6c6c6'
           sx={{
             position: 'relative', 
             zIndex: 2, 
             padding: '17px 0 0 22px'
           }}
+          onClick={onClose}
         >
-          Retour aux films
+          Retour à l'accueil
         </Typography>
       </Box>  
       <Stack>

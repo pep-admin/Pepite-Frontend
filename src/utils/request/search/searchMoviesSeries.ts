@@ -16,16 +16,3 @@ export const searchMoviesSeries = async (
     console.log(error);
   }
 };
-
-// Recherche les utilisateurs
-export const searchUsers = async (query: string) => {
-  try {
-    const response = await axios.get(
-      `${apiBaseUrl}/search/users?query=${query}`,
-      { withCredentials: true },
-    );
-    return response.data.results;
-  } catch (error) {
-    console.log(error);
-  }
-};

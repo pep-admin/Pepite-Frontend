@@ -15,6 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import NavigationPresentation from './NavigationPresentation';
 import HeaderNavigation from './HeaderNavigation';
+import { handleLogout } from '@utils/request/authRequest';
 
 const Header2 = ({ page, isTrailerFullscreen }) => {
 
@@ -36,9 +37,7 @@ const Header2 = ({ page, isTrailerFullscreen }) => {
       position={
         page === 'swipe'
           ? 'absolute'
-          : page === 'Accueil' || page === 'list' || page === 'contacts'
-          ? 'static'
-          : 'fixed'
+          : 'static'
       }
       elevation={page === 'swipe' ? 2 : 0}
       sx={{
@@ -112,7 +111,10 @@ const Header2 = ({ page, isTrailerFullscreen }) => {
           }}
         >
           <NavigationPresentation loggedUserInfos={loggedUserInfos} />
-          <HeaderNavigation page={page} />
+          <HeaderNavigation 
+            page={page} 
+              
+          />
         </Stack>
         {/* Ajoutez le contenu du menu ici */}
       </SwipeableDrawer>

@@ -22,6 +22,7 @@ import { handleUnwantedMovieRequest } from '@utils/request/list/handleUnwantedMo
 import { handleWantedMovieRequest } from '@utils/request/list/handleWantedMovieRequest';
 import { handleWatchedMovieRequest } from '@utils/request/list/handleWatchedMovieRequest';
 import { handleRatingRequest } from '@utils/request/quickRatings/handleRatingRequest';
+import Header2 from '@utils/components/Header/Header2';
 
 const SwipeComponent = ({
   movies,
@@ -299,7 +300,7 @@ const SwipeComponent = ({
 
   return (
     <>
-      <Header page={'swipe'} isTrailerFullscreen={isTrailerFullscreen} />
+      <Header2 page={'Swipe'} isTrailerFullscreen={isTrailerFullscreen} />
       <Box
         sx={{
           overflow: 'hidden',

@@ -1,14 +1,22 @@
-import { Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import SwipeIcon from '@mui/icons-material/Swipe';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import PeopleIcon from '@mui/icons-material/People';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { handleLogout } from '@utils/request/authRequest';
 
 const pages = ['Accueil', 'Swipe', 'Ma liste', 'Mes contacts', 'Mon profil', 'Paramètres'];
 
 const HeaderNavigation = ({ page }) => {
+
+  const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
+
+  const navigate = useNavigate();
   
   const getPageIcon = (page) => {
     switch(page) {
@@ -27,14 +35,23 @@ const HeaderNavigation = ({ page }) => {
       default:
         break;
     }
-  }
+  };
+
+  async function onLogout() {
+    await handleLogout();
+    localStorage.clear();
+
+    navigate('/login');
+  };
 
   return (
-    <Box
+    <Stack
+      justifyContent='space-between'
       sx={{
         bgcolor: '#021E1E',
         flexGrow: '1',
-        marginTop: '25px'
+        marginTop: '25px',
+        paddingBottom: '25px'
       }}
     >
       <nav>
@@ -48,14 +65,25 @@ const HeaderNavigation = ({ page }) => {
           {
             pages.map((item, index) => {
               return(
-                <>
+                <React.Fragment key={item}>
                   <ListItem 
-                    key={item} 
                     disablePadding
                     sx={{
                       height: '55px',
                       paddingLeft: '0',
                       backgroundColor: page === item ? '#0b2c2c' : 'inherit'
+                    }}
+                    onClick={() => {
+                      if (item === 'Accueil') {
+                        navigate(`/home/${loggedUserInfos.id}`);
+                      } else if (item === 'Swipe') {
+                        navigate('/swipe');
+                      } else if (item === 'Ma liste') {
+                        navigate(`/list/${loggedUserInfos.id}`);
+                      } else if (item === 'Mes contacts') {
+                        navigate(`/contacts/${loggedUserInfos.id}`);
+                      }
+                      // handleCloseNavMenu();
                     }}
                   >
                     <ListItemButton
@@ -88,13 +116,28 @@ const HeaderNavigation = ({ page }) => {
                     :
                       <Divider sx={{ borderColor: '#173333 '}} />
                   }
-                </>
+                </React.Fragment>
               )
             })
           }
         </List>
       </nav>
-    </Box>
+      <Stack 
+        direction='row'
+        justifyContent='center'
+        spacing={1}
+        onClick={onLogout}
+      >
+        <LogoutIcon />
+        <Typography
+          component='span'
+          fontFamily='Pragati Narrow, sans-serif'
+          color='#dddddd'
+        >
+          {'Déconnexion'}
+        </Typography>
+      </Stack>
+    </Stack>
   );
 };
 

@@ -29,8 +29,7 @@ const FilmReviews = ({ reviewsFrom }) => {
                 '& .MuiBadge-badge': {
                   backgroundColor: reviewsFrom === 'amis' ? '#835F00' : '#0c6666',
                   color: '#fff',
-                  fontFamily: 'Pragati Narrow, sans-serif',
-                  fontSize: '0.95em',
+                  fontSize: '0.9em',
                   right: '-17px',
                 }
               }}

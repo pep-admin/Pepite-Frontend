@@ -48,7 +48,7 @@ const ContactsComponent = () => {
 
   return (
     <>
-      <Header page={'contacts'} />
+      <Header page={'Mes contacts'} isTrailerFullscreen={null} />
       <Container
         sx={{
           minHeight: 'calc(100vh - 50px)',

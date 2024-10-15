@@ -1,11 +1,10 @@
-import { Avatar, Stack, Typography } from '@mui/material';
-import { apiBaseUrl } from '@utils/request/config';
+import { Stack, Typography } from '@mui/material';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import UserAvatar from '../UserAvatar';
 
 const NavigationPresentation = ({ loggedUserInfos }) => {
 
   const fullName = `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`;
-  const activeProfilPic = loggedUserInfos.profilPics.find(pic => pic.isActive === 1)?.filePath;
 
   return (
     <Stack>
@@ -14,28 +13,11 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
         justifyContent='center'
         alignItems='center'
       >
-        <Avatar
-          variant="circular"
-          alt={`Photo de ${fullName}`}
-          src={activeProfilPic ? `${apiBaseUrl}/uploads/${activeProfilPic}` : undefined}
-          sx={{
-            height: '100px',
-            width: '100px',
-            border: '1px solid #2E2E2E',
-            fontSize: '2em', 
-            backgroundColor: activeProfilPic ? 'inherit' : '#0c6666',
-            color: '#040404'
-          }}
-        >
-          {/* Si pas de photo de profil */}
-          {!activeProfilPic && fullName
-            .split(' ')
-            .map((n) => n[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2) // Limiter à 2 lettres
-          }
-        </Avatar>
+        <UserAvatar
+          userInfos={loggedUserInfos}
+          picHeight={100}
+          picWidth={100}
+        />
         <Stack>
           <Typography
             align='center'
@@ -44,7 +26,7 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
           >
             {`${fullName}`}
           </Typography>
-          <Stack direction='row'>
+          <Stack direction='row' justifyContent='center'>
             <MilitaryTechIcon 
               sx={{
                 color: '#DD7909'

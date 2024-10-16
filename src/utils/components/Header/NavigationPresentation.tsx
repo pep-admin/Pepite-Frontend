@@ -15,8 +15,9 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
       >
         <UserAvatar
           userInfos={loggedUserInfos}
-          picHeight={100}
-          picWidth={100}
+          picHeight={'100px'}
+          picWidth={'100px'}
+          sx={null}
         />
         <Stack>
           <Typography

@@ -29,7 +29,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 // Import des requêtes
 import { uploadUserPic } from '@utils/request/uploads/uploadUserPic';
-import { getUser } from '@utils/request/users/getUser';
+import { getUserRequest } from '@utils/request/users/getUserRequest';
 import { recoverOldPic } from '@utils/request/uploads/recoverOldPic';
 import { uploadPoster } from '@utils/request/uploads/uploadPoster';
 
@@ -56,7 +56,7 @@ const AccountUpdatePic = ({
 
       await uploadUserPic(newFile, picType);
 
-      const newData = await getUser(loggedUserInfos.id);
+      const newData = await getUserRequest(loggedUserInfos.id);
 
       // Met à jour le localStorage
       localStorage.setItem('user_infos', JSON.stringify(newData));
@@ -73,7 +73,7 @@ const AccountUpdatePic = ({
   const handleOldPic = async (imgId, picType) => {
     try {
       await recoverOldPic(imgId, picType);
-      const newData = await getUser(loggedUserInfos.id);
+      const newData = await getUserRequest(loggedUserInfos.id);
       setLoggedUserInfos(newData);
 
       // Met à jour le localStorage
@@ -89,7 +89,7 @@ const AccountUpdatePic = ({
   const handlePoster = async (posterPath, picType) => {
     try {
       await uploadPoster(posterPath, picType);
-      const newData = await getUser(loggedUserInfos.id);
+      const newData = await getUserRequest(loggedUserInfos.id);
       setLoggedUserInfos(newData);
 
       // Met à jour le localStorage

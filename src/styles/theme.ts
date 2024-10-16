@@ -31,6 +31,7 @@ const theme = createTheme({
     },
     secondary: {
       main: '#E7AE1A',
+      light: '#AA9A70'
     },
     purple: { // Navet
       main: '#9C27B0',

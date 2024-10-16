@@ -6,7 +6,7 @@ const UserAvatar = ({
   userInfos,
   picWidth,
   picHeight,
-  // sx,
+  sx,
   // redirection,
 }) => {
   // const navigate = useNavigate();
@@ -19,12 +19,13 @@ const UserAvatar = ({
       alt={`Photo de ${fullName}`}
       src={activeProfilPic ? `${apiBaseUrl}/uploads/${activeProfilPic}` : undefined}
       sx={{
-        height: `${picHeight}px`,
-        width: `${picWidth}px`,
+        height: `${picHeight}`,
+        width: `${picWidth}`,
         border: '1px solid #2E2E2E',
         fontSize: '2em', 
         backgroundColor: activeProfilPic ? 'inherit' : '#0c6666',
-        color: '#040404'
+        color: '#040404',
+        ...sx
       }}
     >
       {/* Si pas de photo de profil */}

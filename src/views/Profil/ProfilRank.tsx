@@ -1,11 +1,10 @@
 // Import des libs externes
-import { Stack, Typography, styled } from '@mui/material';
+import { Skeleton, Stack, Typography, styled } from '@mui/material';
 import LinearProgress, {
   linearProgressClasses,
 } from '@mui/material/LinearProgress';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 // Import des requêtes
 import { getUserRankRequest } from '@utils/request/grades/getUserRankRequest';
@@ -14,7 +13,7 @@ const ProfilRank = ({ page, criticsNumber }) => {
   const { id } = useParams();
 
   const [progression, setProgression] = useState(0);
-  const [userRank, setUserRank] = useState("Chercheur d'Or");
+  const [userRank, setUserRank] = useState(null);
   const [currentGradePoints, setCurrentGradePoints] = useState(0);
   const [nextGradePoints, setNextGradePoints] = useState(0);
 
@@ -39,13 +38,11 @@ const ProfilRank = ({ page, criticsNumber }) => {
   const BorderLinearProgress = styled(LinearProgress)(() => ({
     variant: 'determinate',
     height: 10,
-    borderRadius: 5,
     [`&.${linearProgressClasses.colorPrimary}`]: {
-      backgroundColor: '#E0E0E0',
+      backgroundColor: '#363636',
     },
     [`& .${linearProgressClasses.bar}`]: {
-      borderRadius: 5,
-      backgroundColor: '#1BADAD',
+      backgroundColor: '#E7AE1A',
     },
   }));
 
@@ -54,27 +51,29 @@ const ProfilRank = ({ page, criticsNumber }) => {
   }, [criticsNumber]);
 
   return (
-    <Stack width={page === 'profil' ? '110px' : '100%'}>
-      <Typography
-        variant="body2"
-        align={page === 'profil' ? 'center' : 'left'}
-        color="#898989"
-        fontWeight="600"
-        marginBottom="3px"
-      >
-        {`${userRank}`}
-      </Typography>
+    <Stack spacing={2} width='35vw'>
+      {
+        userRank ?
+          <Typography
+            component='p'
+            align='center'
+            color='secondary.light'
+            fontFamily='League Spartan, sans-serif'
+            fontSize='1.1em'
+            fontWeight='300'
+            lineHeight='1'
+          >
+            {`${userRank}`}
+          </Typography>
+        :
+          <Skeleton variant='text' sx={{ fontSize: '1.1em', width: '100%' }} />
+      } 
       <BorderLinearProgress
         variant="determinate"
         value={progressionPercentage}
       />
     </Stack>
   );
-};
-
-ProfilRank.propTypes = {
-  page: PropTypes.string.isRequired,
-  criticsNumber: PropTypes.number,
 };
 
 export default ProfilRank;

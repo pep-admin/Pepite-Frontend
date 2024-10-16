@@ -4,7 +4,7 @@ import GoldNuggetIcon from '@utils/components/GoldNuggetIcon';
 import { TurnipIcon } from '@utils/components/styledComponent';
 import { convertRating } from '@utils/functions/convertRating';
 
-const FilmRating = ({ movie }) => {
+const FilmRating = ({ isMovieOrSerie, movie }) => {
 
   return (
     <Stack 
@@ -122,6 +122,7 @@ const FilmRating = ({ movie }) => {
       >
         <Button
           sx={{
+            height: '35px',
             width: '45%',
             padding: '2px 10px 0 10px',
             color: '#f1f1f1',
@@ -130,10 +131,11 @@ const FilmRating = ({ movie }) => {
             fontWeight: '400'
           }}
         >
-          {'Noter ce film'}
+          {`Noter ${isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'}`}
         </Button>
         <Button
           sx={{
+            height: '35px',
             width: '45%',
             padding: '2px 10px 0 10px',
             color: '#f1f1f1',

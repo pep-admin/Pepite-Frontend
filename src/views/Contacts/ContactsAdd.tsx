@@ -4,8 +4,11 @@ import UserAvatar from '@utils/components/UserAvatar';
 import { searchUserRequest } from '@utils/request/search/searchUserRequest';
 import { useState } from 'react';
 import ContactsShare from './ContactsShare';
+import { useNavigate } from 'react-router-dom';
 
 const ContactsAdd = () => {
+
+  const navigate = useNavigate();
 
   const [searchResults, setSearchResults] = useState([]);
 
@@ -61,11 +64,13 @@ const ContactsAdd = () => {
                   <Stack 
                     spacing={1}
                     alignItems='center'  
+                    onClick={() => navigate(`/profil/${user.id}`)}
                   >
                     <UserAvatar
                       userInfos={user}
-                      picHeight={70}
-                      picWidth={70}
+                      picHeight={'70px'}
+                      picWidth={'70px'}
+                      sx={null}
                     />
                     <Typography
                       align='center'

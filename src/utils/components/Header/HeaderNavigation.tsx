@@ -82,8 +82,10 @@ const HeaderNavigation = ({ page }) => {
                         navigate(`/list/${loggedUserInfos.id}`);
                       } else if (item === 'Mes contacts') {
                         navigate(`/contacts/${loggedUserInfos.id}`);
+                      } else if (item === 'Mon profil') {
+                        navigate(`/profil/${loggedUserInfos.id}`);
                       }
-                      // handleCloseNavMenu();
+  
                     }}
                   >
                     <ListItemButton

@@ -18,7 +18,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 // Import des requêtes internes
 import { modifyCriticComment } from '@utils/request/comments/modifyCriticComment';
-import { getUser } from '@utils/request/users/getUser';
+import { getUser } from '@utils/request/users/getUserRequest';
 import { modifyAdviceComment } from '@utils/request/comments/modifyAdviceComment';
 
 interface Picture {

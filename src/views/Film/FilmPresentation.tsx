@@ -113,7 +113,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
             }           
           </Stack>      
         }
-        <FilmRating movie={movie} />
+        <FilmRating isMovieOrSerie={isMovieOrSerie} movie={movie} />
       </Stack>
     </Container>
   );

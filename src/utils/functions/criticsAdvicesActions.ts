@@ -2,7 +2,7 @@ import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
 import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
 import { getCriticsOfUser } from '@utils/request/critics/getCritics';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
-import { getUser } from '@utils/request/users/getUser';
+import { getUser } from '@utils/request/users/getUserRequest';
 
 // PAGE DE PROFIL : Récupère les critiques et conseils
 export const getCriticsAdvices = async (

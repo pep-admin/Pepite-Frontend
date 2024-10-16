@@ -1,8 +1,9 @@
-import { Box, Grid, Stack, Typography } from '@mui/material';
+import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import SearchBar2 from '@utils/components/SearchBar2';
 import UserAvatar from '@utils/components/UserAvatar';
 import { searchUserRequest } from '@utils/request/search/searchUserRequest';
 import { useState } from 'react';
+import ContactsShare from './ContactsShare';
 
 const ContactsAdd = () => {
 
@@ -80,6 +81,13 @@ const ContactsAdd = () => {
           </Grid>
         </Stack>
       </Stack>
+      <Divider 
+        sx={{
+          margin: '0 5vw', 
+          borderColor: '#173333' 
+        }}
+      />
+      <ContactsShare />
     </Box>
   );
 };

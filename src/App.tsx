@@ -6,6 +6,7 @@ import theme from '@styles/theme';
 // Import des hooks
 import useFontLoader from '@hooks/useFontLoader';
 import { DataProvider } from '@hooks/DataContext';
+import { SnackbarProvider } from '@hooks/SnackbarContext';
 
 // Import des composants
 import PrivateRoute from './PrivateRoute';
@@ -30,6 +31,7 @@ export function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <DataProvider>
+        <SnackbarProvider>
           <BrowserRouter>
             <ScrollToTop />
             <Routes>
@@ -102,6 +104,7 @@ export function App() {
               {/* <Route path="/film/:id" element={<Film />} /> */}
             </Routes>
           </BrowserRouter>
+        </SnackbarProvider>
         </DataProvider>
       </ThemeProvider>
     </>

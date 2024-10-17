@@ -4,7 +4,7 @@ import TopMovieCard from './TopMovieCard';
 const ProfilTopMovies = () => {
   return (
     <Stack
-      spacing={3}
+      spacing={4}
       padding='0 0 40px 0'
     >
       <Stack>

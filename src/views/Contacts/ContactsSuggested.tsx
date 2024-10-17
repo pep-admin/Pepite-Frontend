@@ -63,7 +63,7 @@ const ContactsSuggested = ({ contactsFrom }) => {
 
   return (
     <Stack spacing={4}>
-      <Stack>
+      <Stack spacing={1}>
         <Typography
           component='h2'
           color='text.primary'

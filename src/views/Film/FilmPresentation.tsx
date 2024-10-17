@@ -55,7 +55,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
             fontFamily='League Spartan, sans-serif'
             fontSize='2em'
             fontWeight='300'
-            lineHeight='1'
+            lineHeight='1.25'
           >
             {`${movie.title}`}
           </Typography>

@@ -1,7 +1,6 @@
 import { Box, Container } from '@mui/material';
 import Header2 from '@utils/components/Header/Header2';
 import { useEffect, useRef, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import ContactsNav from './ContactsNav';
 import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
 import { useParams } from 'react-router-dom';
@@ -124,16 +123,8 @@ const ContactsComponent2 = () => {
               loadingContacts={loadingContacts} 
             />
             :
-              <ContactsAdd />
+            <ContactsAdd />
         }
-        {/* <InfiniteScroll
-          dataLength={movies.length}
-          next={getMovies}
-          hasMore={hasMore}
-          loader={false}
-          scrollableTarget="scrollableContainer"
-        >
-        </InfiniteScroll> */}
       </Container>
     </>
   );

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 // Import des composants internes
-import Header from '@utils/components/Header';
 import SwipeCard from '@views/Swipe/SwipeCard';
 import SwipeFilter from '@views/Swipe/SwipeFilter';
 import { CustomButton } from '@views/Swipe/CustomBtn';

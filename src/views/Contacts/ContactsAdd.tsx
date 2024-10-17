@@ -5,6 +5,7 @@ import { searchUserRequest } from '@utils/request/search/searchUserRequest';
 import { useState } from 'react';
 import ContactsShare from './ContactsShare';
 import { useNavigate } from 'react-router-dom';
+import ContactsSearchCard from './ContactsSearchCard';
 
 const ContactsAdd = () => {
 
@@ -25,7 +26,7 @@ const ContactsAdd = () => {
 
   return (
     <Box
-      bgcolor='#021818'
+      bgcolor='#021E1E'
       flexGrow={1}
     >
       <Stack
@@ -46,52 +47,18 @@ const ContactsAdd = () => {
         <Stack>
           <SearchBar2 onSearch={handleUserSearch} />
         </Stack>
-        <Stack>
-          <Grid 
-            container
-            spacing={3}  
-          >
-            {searchResults.map((user) => {
+        <Stack spacing={3}>
+            {searchResults.map((user, index) => {
               return (
-                <Grid
-                  key={user.id}
-                  item
-                  xs={4}
-                  sx={{
-                    flexBasis: '33.333%',
-                  }}
-                >
-                  <Stack 
-                    spacing={1}
-                    alignItems='center'  
-                    onClick={() => navigate(`/profil/${user.id}`)}
-                  >
-                    <UserAvatar
-                      userInfos={user}
-                      picHeight={'70px'}
-                      picWidth={'70px'}
-                      sx={null}
-                    />
-                    <Typography
-                      align='center'
-                      fontFamily='Pragati Narrow, sans-serif'
-                      fontSize='0.9em'
-                    >
-                      {`${user.first_name} ${user.last_name}`}
-                    </Typography>
-                  </Stack>
-                </Grid>
+                <ContactsSearchCard 
+                  key={user.id} 
+                  user={user} 
+                  isLastCard={index === searchResults.length - 1}  
+                />
               );
             })}
-          </Grid>
         </Stack>
       </Stack>
-      <Divider 
-        sx={{
-          margin: '0 5vw', 
-          borderColor: '#173333' 
-        }}
-      />
       <ContactsShare />
     </Box>
   );

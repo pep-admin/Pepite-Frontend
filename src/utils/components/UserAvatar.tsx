@@ -1,5 +1,6 @@
 import { Avatar } from '@mui/material';
 import { apiBaseUrl } from '@utils/request/config';
+import { useNavigate } from 'react-router-dom';
 // import { useNavigate } from 'react-router-dom';
 
 const UserAvatar = ({
@@ -7,9 +8,11 @@ const UserAvatar = ({
   picWidth,
   picHeight,
   sx,
-  // redirection,
+  redirection,
 }) => {
-  // const navigate = useNavigate();
+
+  const navigate = useNavigate();
+
   const activeProfilPic = userInfos.profilPics.find(pic => pic.isActive === 1)?.filePath;
   const fullName = `${userInfos.first_name} ${userInfos.last_name}`;
 
@@ -27,6 +30,7 @@ const UserAvatar = ({
         color: '#040404',
         ...sx
       }}
+      onClick={ redirection ? () => navigate(`/profil/${userInfos.id}`) : null }
     >
       {/* Si pas de photo de profil */}
       {!activeProfilPic && fullName

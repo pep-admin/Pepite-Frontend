@@ -54,7 +54,7 @@ const ProfilRank = ({ page, criticsNumber }) => {
   }, [criticsNumber]);
 
   return (
-    <Stack spacing={2} width='35vw'>
+    <Stack spacing={2} >
       {
         userRank ?
           <Stack 

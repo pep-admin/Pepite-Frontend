@@ -9,7 +9,10 @@ const ProfilContainer = () => {
   console.log('profil container');
   
   const { id } = useParams();
+
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos')); // Les infos de l'utilisateur connecté
+
+  const isProfilLoggedUser = loggedUserInfos.id === parseInt(id, 10);
 
   const [profilUser, setProfilUser] = useState({});
   const [isUserLoading, setIsUserLoading] = useState(true);
@@ -20,7 +23,7 @@ const ProfilContainer = () => {
     try {
       setIsUserLoading(true);
 
-      if(loggedUserInfos.id === parseInt(id, 10)) {
+      if(isProfilLoggedUser) {
         setProfilUser(loggedUserInfos);
         console.log('utilisateur =>', loggedUserInfos);
 
@@ -53,7 +56,12 @@ const ProfilContainer = () => {
     getUser();
   }, []);
 
-  return !isUserLoading && <ProfilComponent2 userInfos={profilUser} additionalInfos={additionalInfos} />;
+  return !isUserLoading && 
+    <ProfilComponent2 
+      isProfilLoggedUser={isProfilLoggedUser}
+      userInfos={profilUser} 
+      additionalInfos={additionalInfos} 
+    />
 };
 
 export default ProfilContainer;

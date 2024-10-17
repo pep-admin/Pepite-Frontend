@@ -39,7 +39,12 @@ const ProfilAdditionalInfos = ({ additionalInfos }) => {
       id: 2,
       type: `navet${turnipNumber > 1 ? 's' : ''}`,
       number: 0,
-      icon: <TurnipIcon />,
+      icon: <TurnipIcon 
+        sx={{
+          position: 'relative',
+          left: '5px'
+        }}
+      />,
       textColor: '#EB3C98',
     },
   ];

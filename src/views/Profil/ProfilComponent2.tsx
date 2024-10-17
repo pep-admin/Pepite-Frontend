@@ -4,13 +4,15 @@ import { getCoverPic } from '@utils/functions/getCoverPic';
 import ProfilPresentation from './ProfilPresentation';
 import ProfilRequestButtons from './ProfilRequestButtons';
 import ProfilAdditionalInfos from './ProfilAdditionalInfos';
+import ProfilTopMovies from './ProfilTopMovies';
+import ProfilGoldList from './ProfilGoldList';
+import ProfilReviews from './ProfilReviews';
 
-const ProfilComponent2 = ({ userInfos, additionalInfos }) => {
+const ProfilComponent2 = ({ isProfilLoggedUser, userInfos, additionalInfos }) => {
 
   console.log(userInfos);
-  console.log('infos additionnelles =>', additionalInfos);
-  
-  
+  // console.log('infos additionnelles =>', additionalInfos);
+    
   return (
     <Box 
       height='auto'
@@ -53,12 +55,41 @@ const ProfilComponent2 = ({ userInfos, additionalInfos }) => {
             userInfos={userInfos} 
             additionalInfos={additionalInfos}
           />
-          <ProfilRequestButtons />
+          { !isProfilLoggedUser && <ProfilRequestButtons /> }
           <ProfilAdditionalInfos additionalInfos={additionalInfos} />
+          <ProfilTopMovies />
         </Stack>
-        
       </Container>
-        
+      <Box
+        bgcolor='#021E1E'
+      >
+        <Container
+          sx={{
+            paddingLeft: '5vw',
+            paddingRight: '5vw'
+          }}
+        >
+          <ProfilGoldList 
+            isProfilLoggedUser={isProfilLoggedUser} 
+            userInfos={userInfos}  
+          />
+        </Container>
+      </Box>
+      <Box
+        bgcolor='#021818'
+      >
+        <Container
+          sx={{
+            paddingLeft: '5vw',
+            paddingRight: '5vw'
+          }}
+        >
+          <ProfilReviews
+            isProfilLoggedUser={isProfilLoggedUser} 
+            userInfos={userInfos}  
+          />
+        </Container>
+      </Box>
 
       {/* <Stack>
         <FilmPresentation 

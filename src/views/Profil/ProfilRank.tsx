@@ -1,16 +1,19 @@
 // Import des libs externes
-import { Skeleton, Stack, Typography, styled } from '@mui/material';
+import { Skeleton, Stack, Typography, styled, useTheme } from '@mui/material';
 import LinearProgress, {
   linearProgressClasses,
 } from '@mui/material/LinearProgress';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 
 // Import des requêtes
 import { getUserRankRequest } from '@utils/request/grades/getUserRankRequest';
 
 const ProfilRank = ({ page, criticsNumber }) => {
+
   const { id } = useParams();
+  const theme = useTheme();
 
   const [progression, setProgression] = useState(0);
   const [userRank, setUserRank] = useState(null);
@@ -54,17 +57,29 @@ const ProfilRank = ({ page, criticsNumber }) => {
     <Stack spacing={2} width='35vw'>
       {
         userRank ?
-          <Typography
-            component='p'
-            align='center'
-            color='secondary.light'
-            fontFamily='League Spartan, sans-serif'
-            fontSize='1.1em'
-            fontWeight='300'
-            lineHeight='1'
+          <Stack 
+            direction='row'
+            justifyContent='center'
+            alignItems='center' 
+            columnGap='2px' 
           >
-            {`${userRank}`}
-          </Typography>
+            <MilitaryTechIcon
+              sx={{
+                color: theme.palette.secondary.light
+              }}
+            />
+             <Typography
+              component='p'
+              align='center'
+              color='secondary.light'
+              fontFamily='League Spartan, sans-serif'
+              fontSize='1.1em'
+              fontWeight='300'
+              lineHeight='1'
+            >
+              {`${userRank}`}
+            </Typography>
+          </Stack>
         :
           <Skeleton variant='text' sx={{ fontSize: '1.1em', width: '100%' }} />
       } 

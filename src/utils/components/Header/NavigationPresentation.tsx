@@ -1,8 +1,10 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack, Typography, useTheme } from '@mui/material';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import UserAvatar from '../UserAvatar';
 
 const NavigationPresentation = ({ loggedUserInfos }) => {
+
+  const theme = useTheme();
 
   const fullName = `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`;
 
@@ -27,16 +29,22 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
           >
             {`${fullName}`}
           </Typography>
-          <Stack direction='row' justifyContent='center'>
+          <Stack 
+            direction='row' 
+            justifyContent='center'
+            position='relative'
+          >
             <MilitaryTechIcon 
               sx={{
-                color: '#DD7909'
+                color: theme.palette.secondary.light,
+                position: 'absolute',
+                left: '-17px'
               }}
             />
             <Typography
               align='center'
               fontFamily='Pragati Narrow, sans-serif'
-              color='#DD7909'
+              color='secondary.light'
             >
               {`${loggedUserInfos.rank}`}
             </Typography>

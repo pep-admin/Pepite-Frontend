@@ -1,6 +1,6 @@
 import { Badge, Box, Button, Stack, Typography } from '@mui/material';
 
-const ContactsList = ({ contactsFrom, loadingContacts, contacts }) => {
+const ContactsList = ({ contactsFrom, contacts }) => {
   return (
     <Box
       bgcolor='#021818'
@@ -42,7 +42,7 @@ const ContactsList = ({ contactsFrom, loadingContacts, contacts }) => {
         </Stack>
         <Stack spacing={4}>
         {
-          loadingContacts && !contacts.length ?
+          !contacts.length ?
           <>
             <Typography
               color='#555555'

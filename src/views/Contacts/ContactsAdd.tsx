@@ -1,15 +1,11 @@
-import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import SearchBar2 from '@utils/components/SearchBar2';
-import UserAvatar from '@utils/components/UserAvatar';
 import { searchUserRequest } from '@utils/request/search/searchUserRequest';
 import { useState } from 'react';
 import ContactsShare from './ContactsShare';
-import { useNavigate } from 'react-router-dom';
 import ContactsSearchCard from './ContactsSearchCard';
 
 const ContactsAdd = () => {
-
-  const navigate = useNavigate();
 
   const [searchResults, setSearchResults] = useState([]);
 

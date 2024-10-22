@@ -7,10 +7,10 @@ const ContactsShare = () => {
       bgcolor='#021818'
     >
       <Stack
-        spacing={3}
+        spacing={4}
         padding='30px 5vw 40px 5vw'
       >
-        <Stack width='fit-content'>
+        <Stack>
           <Typography
             component='h2'
             color='text.primary'

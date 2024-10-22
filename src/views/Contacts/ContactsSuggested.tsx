@@ -3,9 +3,9 @@ import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
 import { Stack, Typography } from '@mui/material';
 import UserAvatar from '@utils/components/UserAvatar';
 import { getUsersSuggestions } from '@utils/request/users/getUsersSuggestions';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const ContactsSuggested = ({ contactsFrom }) => {
+const ContactsSuggested = ({ contactsFrom }) => {  
 
   const [usersSuggestion, setUsersSuggestion] = useState([]); // Les utilisateurs suggérés
   const [areUsersLoading, setAreUsersLoading] = useState(true); // Etat de chargement des utilisateurs suggérés
@@ -82,8 +82,7 @@ const ContactsSuggested = ({ contactsFrom }) => {
           marginTop='1px'
         >
           {
-            contactsFrom === 'Amis' || 
-            contactsFrom === 'Ajouter' ?
+            contactsFrom === 'Amis' ?
               'Amis en commun'
             : contactsFrom === 'Suivis' ?
               'Pépites en commun'
@@ -102,6 +101,8 @@ const ContactsSuggested = ({ contactsFrom }) => {
                 userInfos={user}
                 picHeight={60}
                 picWidth={60}
+                sx={null}
+                redirection={true}
               />
             )
           })

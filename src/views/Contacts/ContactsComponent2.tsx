@@ -2,87 +2,43 @@ import { Box, Container } from '@mui/material';
 import Header2 from '@utils/components/Header/Header2';
 import { useEffect, useRef, useState } from 'react';
 import ContactsNav from './ContactsNav';
-import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
-import { useParams } from 'react-router-dom';
-import { getFriendsList } from '@utils/request/friendship/getFriendsList';
 import ContactsList from './ContactsList';
-import { getFollowedList } from '@utils/request/followed/getFollowedList';
-import ContactsTopContent from './ContactsTopContent';
 import ContactsAdd from './ContactsAdd';
+import ContactsTopContent from './ContactsTopContent';
 
-const ContactsComponent2 = () => {
-
-  const { id } = useParams();
-
+const ContactsComponent2 = ({ contacts }) => {
   const [contactsSectionIndex, setContactsSectionIndex] = useState(0);
-  const [friendsRequests, setFriendsRequests] = useState([]);
-  const [contacts, setContacts] = useState([]);
-  const [loadingContacts, setLoadingContacts] = useState([]);
+  const [contactsSection, setContactsSection] = useState('Demandes'); // Utilisation de useState pour le nom de la section
+
+  const friendRequestReceived = contacts.receivedFriendRequests;
+  const friendRequestSent = contacts.sentFriendRequests;
+  const friendsList = contacts.friends;
+  const followedList = contacts.followed;
 
   const scrollableContainerRef = useRef(null);
-  const contactsSectionRef = useRef('Amis');
 
-  const getContacts = async () => {
-    // console.log('Fetching movies... La page =>', pageRef.current);
-    setLoadingContacts(Array(20).fill({})); // Ajoute 20 films fictifs en tant que placeholders pour le Skeleton
-
-    let friendsRequests = [];
-    let contacts = [];
-
-    switch (contactsSectionRef.current) {
-      case 'Amis':
-        friendsRequests = await getFriendRequestList();
-        contacts = await getFriendsList(id);
-        break;
-      case 'Suivis':
-        contacts = await getFollowedList(id);
-        break;
-      default:
-        break;
-    }
-
-    if(friendsRequests && friendsRequests.length > 0) {
-      console.log('les demandes !', friendsRequests);
-      
-      setFriendsRequests(friendsRequests);
-    }
-    if (contacts && contacts.length > 0) {
-      console.log('les contacts !', contacts);
-      setContacts(contacts);
-      // pageRef.current++;
-    } 
-    // else {
-    //   setHasMore(false); // S'il n'y a plus de films à charger
-    // }
-
-    setLoadingContacts([]); // Retirer les placeholders une fois le chargement terminé
-  };
-
+  // Mettre à jour le nom de la section chaque fois que l'index change
   useEffect(() => {
-    setContacts([]);
-    // pageRef.current = 1;
-
     switch (contactsSectionIndex) {
       case 0:
-        contactsSectionRef.current = 'Demandes';
+        setContactsSection('Demandes');
         break;
       case 1:
-        contactsSectionRef.current = 'Amis';
+        setContactsSection('Amis');
         break;
       case 2:
-        contactsSectionRef.current = 'Suivis';
+        setContactsSection('Suivis');
         break;
       default:
         break;
     }
 
-    // Remonter le scroll du conteneur en haut
-    // if (contactsSectionRef.current) {
-    //   contactsSectionRef.current.scrollTo({ top: 0 });
-    // }
+    // Remonter le scroll du conteneur en haut (si nécessaire)
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTo({ top: 0 });
+    }
 
-    getContacts();
-  }, [contactsSectionIndex]);
+  }, [contactsSectionIndex]); // Re-exécutez chaque fois que contactsSectionIndex change
 
   return (
     <>
@@ -91,7 +47,7 @@ const ContactsComponent2 = () => {
         <ContactsNav
           contactsSectionIndex={contactsSectionIndex}
           setContactsSectionIndex={setContactsSectionIndex}
-          friendRequestsCount={friendsRequests.length}
+          friendRequestsCount={friendRequestReceived.length}
         />
       </Box>
       <Container
@@ -108,19 +64,16 @@ const ContactsComponent2 = () => {
           overflow: 'auto',
         }}
       >
-        <ContactsTopContent 
-          contactsFrom={contactsSectionRef.current} 
+        <ContactsTopContent
+          contactsFrom={contactsSection}  // Passez le nom de la section au composant enfant
           contactsSectionIndex={contactsSectionIndex} 
-          friendsRequests={friendsRequests} 
-          loadingContacts={loadingContacts}   
+          friendsRequests={friendRequestReceived} 
         />
         {
-          contactsSectionIndex === 1||
-          contactsSectionIndex === 2 ?
+          contactsSectionIndex === 1 || contactsSectionIndex === 2 ?
             <ContactsList 
-              contactsFrom={contactsSectionRef.current} 
+              contactsFrom={contactsSection}  // Utilisation du nom de la section ici
               contacts={contacts} 
-              loadingContacts={loadingContacts} 
             />
             :
             <ContactsAdd />

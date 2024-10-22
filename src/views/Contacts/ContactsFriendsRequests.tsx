@@ -1,6 +1,9 @@
 import { Badge, Stack, Typography } from '@mui/material';
 
-const ContactsFriendsRequests = ({ friendsRequests, loadingContacts }) => {
+const ContactsFriendsRequests = ({ friendsRequests }) => {
+
+  console.log('la liste amis ==>', friendsRequests);
+  
   return (
     <Stack spacing={3}>
       <Stack width='fit-content' >
@@ -30,7 +33,7 @@ const ContactsFriendsRequests = ({ friendsRequests, loadingContacts }) => {
       </Stack>
       <Stack spacing={4}>
         {
-          loadingContacts && !friendsRequests.length ?
+          !friendsRequests.length ?
             <Typography
               color='#555555'
               lineHeight='1'

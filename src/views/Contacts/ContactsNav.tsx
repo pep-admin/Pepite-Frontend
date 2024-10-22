@@ -30,6 +30,7 @@ const ContactsNav = ({ setContactsSectionIndex, contactsSectionIndex, friendRequ
         sx={{
           '& .MuiTab-root': {
             color: theme.palette.common.white, 
+            overflow: 'visible',
           },
           '& .Mui-selected': {
             color: `${theme.palette.secondary.main} !important`, 

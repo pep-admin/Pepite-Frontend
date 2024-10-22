@@ -3,11 +3,10 @@ import SearchBar2 from '@utils/components/SearchBar2';
 import { searchUserRequest } from '@utils/request/search/searchUserRequest';
 import { useState } from 'react';
 import ContactsShare from './ContactsShare';
-import ContactsSearchCard from './ContactsSearchCard';
+import ContactsCard from './ContactsCard';
 
-const ContactsAdd = () => {
+const ContactsAdd = ({ searchResults, setSearchResults, onUpdate }) => {
 
-  const [searchResults, setSearchResults] = useState([]);
 
   const handleUserSearch = async (query: string) => {
     try {
@@ -46,10 +45,11 @@ const ContactsAdd = () => {
         <Stack spacing={3}>
             {searchResults.map((user, index) => {
               return (
-                <ContactsSearchCard 
+                <ContactsCard 
                   key={user.id} 
                   user={user} 
                   isLastCard={index === searchResults.length - 1}  
+                  onUpdate={onUpdate}
                 />
               );
             })}

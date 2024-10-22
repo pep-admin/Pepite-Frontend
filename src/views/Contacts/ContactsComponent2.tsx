@@ -5,17 +5,43 @@ import ContactsNav from './ContactsNav';
 import ContactsList from './ContactsList';
 import ContactsAdd from './ContactsAdd';
 import ContactsTopContent from './ContactsTopContent';
+import { getUserInteractionRequest } from '@utils/request/contacts/getUserInteractionRequest';
 
-const ContactsComponent2 = ({ contacts }) => {
+const ContactsComponent2 = () => {
+
+  const [friendRequestList, setFriendRequestList] = useState([]);
+  const [friendsList, setFriendsList] = useState([]);
+  const [followedList, setFollowedList] = useState([]);
+
+  const [searchResults, setSearchResults] = useState([]);
+
+  const [loadingContacts, setLoadingContacts] = useState(true);
   const [contactsSectionIndex, setContactsSectionIndex] = useState(0);
   const [contactsSection, setContactsSection] = useState('Demandes'); // Utilisation de useState pour le nom de la section
 
-  const friendRequestReceived = contacts.receivedFriendRequests;
-  const friendRequestSent = contacts.sentFriendRequests;
-  const friendsList = contacts.friends;
-  const followedList = contacts.followed;
-
   const scrollableContainerRef = useRef(null);
+
+  const getContacts = async () => {
+    try {
+      // setLoadingContacts(true);
+
+      const contacts = await getUserInteractionRequest();
+      setFriendRequestList(contacts.receivedFriendRequests);
+      setFriendsList(contacts.friends);
+      setFollowedList(contacts.followed);
+
+    } catch (error) {
+      console.log(error);
+      
+    } finally {
+      setLoadingContacts(false);
+    }
+  };
+
+  // Fonction de rappel pour indiquer qu'une mise à jour a eu lieu
+  const handleUpdate = async () => {
+    await getContacts(); // Re-récupère les contacts pour synchroniser les composants
+  };
 
   // Mettre à jour le nom de la section chaque fois que l'index change
   useEffect(() => {
@@ -38,7 +64,9 @@ const ContactsComponent2 = ({ contacts }) => {
       scrollableContainerRef.current.scrollTo({ top: 0 });
     }
 
-  }, [contactsSectionIndex]); // Re-exécutez chaque fois que contactsSectionIndex change
+    getContacts();
+
+  }, [contactsSectionIndex]);
 
   return (
     <>
@@ -47,7 +75,7 @@ const ContactsComponent2 = ({ contacts }) => {
         <ContactsNav
           contactsSectionIndex={contactsSectionIndex}
           setContactsSectionIndex={setContactsSectionIndex}
-          friendRequestsCount={friendRequestReceived.length}
+          friendRequestsCount={!loadingContacts ? friendRequestList.length : null}
         />
       </Box>
       <Container
@@ -64,19 +92,30 @@ const ContactsComponent2 = ({ contacts }) => {
           overflow: 'auto',
         }}
       >
-        <ContactsTopContent
-          contactsFrom={contactsSection}  // Passez le nom de la section au composant enfant
-          contactsSectionIndex={contactsSectionIndex} 
-          friendsRequests={friendRequestReceived} 
-        />
         {
-          contactsSectionIndex === 1 || contactsSectionIndex === 2 ?
-            <ContactsList 
-              contactsFrom={contactsSection}  // Utilisation du nom de la section ici
-              contacts={contacts} 
+          !loadingContacts &&
+          <>
+            <ContactsTopContent
+              contactsFrom={contactsSection}
+              contactsSectionIndex={contactsSectionIndex} 
+              friendsRequests={friendRequestList} 
+              onUpdate={handleUpdate}
             />
-            :
-            <ContactsAdd />
+            {
+              contactsSectionIndex === 1 || contactsSectionIndex === 2 ?
+              <ContactsList 
+                contactsFrom={contactsSection} 
+                contactList={contactsSectionIndex === 1 ? friendsList : followedList}
+                onUpdate={handleUpdate}
+              />
+              :
+              <ContactsAdd 
+                searchResults={searchResults}
+                setSearchResults={setSearchResults}
+                onUpdate={handleUpdate} 
+              />
+            }
+          </>
         }
       </Container>
     </>

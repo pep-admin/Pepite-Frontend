@@ -13,8 +13,15 @@ const UserAvatar = ({
 
   const navigate = useNavigate();
 
-  const activeProfilPic = userInfos.profilPics.find(pic => pic.isActive === 1)?.filePath;
   const fullName = `${userInfos.first_name} ${userInfos.last_name}`;
+
+  let activeProfilPic = null;
+
+  if(userInfos.profilPics) {
+    activeProfilPic = userInfos.profilPics.find(pic => pic.isActive === 1)?.filePath;
+  } else {
+    activeProfilPic = userInfos.profile_pic;
+  }
 
   return (
     <Avatar

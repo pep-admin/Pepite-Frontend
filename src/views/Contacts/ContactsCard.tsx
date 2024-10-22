@@ -10,7 +10,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { handleFollowedRequest } from '@utils/request/followed/handleFollowedRequest';
 import ContactsSkeleton from './ContactsSkeleton';
 
-const ContactsSearchCard = ({ user, isLastCard }) => {
+const ContactsCard = ({ user, isLastCard, onUpdate }) => {
   const handleOpenSnackbar = useSnackbar();  
 
   const [isRelationLoading, setIsRelationLoading] = useState(true);
@@ -54,54 +54,56 @@ const ContactsSearchCard = ({ user, isLastCard }) => {
         // Envoyer une demande d'ami
         case 'send':
           setRelationship({ ...relationship, friendship: 'sent' });
-          handleFriendshipRequest('send', user.id);
+          await handleFriendshipRequest('send', user.id);
           handleOpenSnackbar(`Vous avez envoyé une demande d'amitié à ${userFullName}.`);
           break;
 
         // Annuler une demande d'ami
         case 'cancel':
           setRelationship({ ...relationship, friendship: 'none' });
-          handleFriendshipRequest('cancel', user.id);
+          await handleFriendshipRequest('cancel', user.id);
           handleOpenSnackbar(`Demande d'amitié annulée.`);
           break;
         
         // Accepter une demande d'ami
         case 'accept':
           setRelationship({ ...relationship, friendship: 'accepted' });
-          handleFriendshipRequest('accept', user.id);
+          await handleFriendshipRequest('accept', user.id);
           handleOpenSnackbar(`Vous avez accepté la demande d'amitié de ${userFullName}.`);
           break;
 
         // Refuser une demande d'ami
         case 'decline':
           setRelationship({ ...relationship, friendship: 'none' });
-          handleFriendshipRequest('decline', user.id);
+          await handleFriendshipRequest('decline', user.id);
           break;
 
         // Supprimer un ami
         case 'remove':
           setRelationship({ ...relationship, friendship: 'none' });
-          handleFriendshipRequest('remove', user.id);
+          await handleFriendshipRequest('remove', user.id);
           handleOpenSnackbar(`Amitié avec ${userFullName} supprimée.`);
           break;
 
         // Suivre une personne
         case 'follow':
           setRelationship({ ...relationship, follow: 'followed' });
-          handleFollowedRequest(true, user.id);
+          await handleFollowedRequest(true, user.id);
           handleOpenSnackbar(`Vous suivez maintenant ${userFullName}.`);
           break;
 
         // Ne plus suivre une personne
         case 'unfollow':
           setRelationship({ ...relationship, follow: 'unfollowed' });
-          handleFollowedRequest(false, user.id);
+          await handleFollowedRequest(false, user.id);
           handleOpenSnackbar(`Vous ne suivez plus ${userFullName}.`);
           break;
   
         default:
           break;
       }
+
+      onUpdate();
         
     } catch (error) {
       console.log(error);
@@ -219,4 +221,4 @@ const ContactsSearchCard = ({ user, isLastCard }) => {
   );
 };
 
-export default ContactsSearchCard;
+export default ContactsCard;

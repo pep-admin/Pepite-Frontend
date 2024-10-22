@@ -1,6 +1,8 @@
 import { Badge, Box, Button, Stack, Typography } from '@mui/material';
+import ContactsCard from './ContactsCard';
 
-const ContactsList = ({ contactsFrom, contacts }) => {
+const ContactsList = ({ contactsFrom, contactList, onUpdate }) => {
+  
   return (
     <Box
       bgcolor='#021818'
@@ -12,7 +14,7 @@ const ContactsList = ({ contactsFrom, contacts }) => {
       >
         <Stack width='fit-content' >
           <Badge 
-            badgeContent={0} 
+            badgeContent={contactList.length} 
             showZero  
             max={999}
             sx={{
@@ -42,7 +44,7 @@ const ContactsList = ({ contactsFrom, contacts }) => {
         </Stack>
         <Stack spacing={4}>
         {
-          !contacts.length ?
+          !contactList.length ?
           <>
             <Typography
               color='#555555'
@@ -74,14 +76,12 @@ const ContactsList = ({ contactsFrom, contacts }) => {
               }
             </Button>
           </>
-            
           :
-            <Typography
-              color='#555555'
-              lineHeight='1'
-            >
-              {`Liste d'amis`}
-            </Typography>
+          contactList.map((user, index) => {
+            return(
+              <ContactsCard key={user.id} user={user} isLastCard={index === contactList.length - 1} onUpdate={onUpdate}/>
+            )
+          })
         }
       </Stack>
       </Stack>

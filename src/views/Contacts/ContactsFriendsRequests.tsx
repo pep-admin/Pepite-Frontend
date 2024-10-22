@@ -1,14 +1,13 @@
 import { Badge, Stack, Typography } from '@mui/material';
+import ContactsCard from './ContactsCard';
 
-const ContactsFriendsRequests = ({ friendsRequests }) => {
-
-  console.log('la liste amis ==>', friendsRequests);
+const ContactsFriendsRequests = ({ friendsRequests, onUpdate }) => {
   
   return (
     <Stack spacing={3}>
       <Stack width='fit-content' >
         <Badge 
-          badgeContent={0} 
+          badgeContent={friendsRequests.length} 
           showZero  
           max={99}
           sx={{
@@ -16,7 +15,7 @@ const ContactsFriendsRequests = ({ friendsRequests }) => {
               backgroundColor: '#835F00',
               color: '#fff',
               fontSize: '0.9em',
-              right: '-17px',
+              right: '-19px',
             }
           }}
         >
@@ -41,12 +40,11 @@ const ContactsFriendsRequests = ({ friendsRequests }) => {
               {`Aucune demande d'amitié pour l'instant.`}
             </Typography>
           :
-            <Typography
-              color='#555555'
-              lineHeight='1'
-            >
-              {`Nouvelles demandes`}
-            </Typography>
+          friendsRequests.map((user, index) => {
+            return(
+              <ContactsCard key={user.id} user={user} isLastCard={index === friendsRequests.length - 1} onUpdate={onUpdate}/>
+            )
+          })
         }
       </Stack>
     </Stack>

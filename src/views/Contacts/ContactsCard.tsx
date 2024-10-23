@@ -34,7 +34,6 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
           block: false,
           user_id: relation.user_id 
       }));
-      console.log('Relation actuelle =>', relation);
 
     } catch (error) {
       console.error(error);

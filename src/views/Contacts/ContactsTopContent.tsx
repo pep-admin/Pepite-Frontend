@@ -11,7 +11,7 @@ const ContactsTopContent = ({ contactsFrom, contactsSectionIndex, friendsRequest
       { contactsSectionIndex === 0 ?
         <ContactsFriendsRequests friendsRequests={friendsRequests} onUpdate={onUpdate}/>
         :
-        <ContactsSuggested contactsFrom={contactsFrom} />
+        <ContactsSuggested contactsFrom={contactsFrom} contactsSectionIndex={contactsSectionIndex} />
       }
     </Stack>
   )

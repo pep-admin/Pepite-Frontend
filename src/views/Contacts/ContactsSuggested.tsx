@@ -5,7 +5,7 @@ import UserAvatar from '@utils/components/UserAvatar';
 import { getUsersSuggestions } from '@utils/request/users/getUsersSuggestions';
 import { useEffect, useRef, useState } from 'react';
 
-const ContactsSuggested = ({ contactsFrom }) => {  
+const ContactsSuggested = ({ contactsFrom, contactsSectionIndex }) => {  
 
   const [usersSuggestion, setUsersSuggestion] = useState([]); // Les utilisateurs suggérés
   const [areUsersLoading, setAreUsersLoading] = useState(true); // Etat de chargement des utilisateurs suggérés
@@ -21,8 +21,9 @@ const ContactsSuggested = ({ contactsFrom }) => {
 
   const loadUsers = async () => {
     try {
-
-      if (!hasMore) return;
+      console.log('loading users');
+      
+      // if (!hasMore) return;
 
       setAreUsersLoading(true); // Début du chargement des utilisateurs
 
@@ -30,6 +31,9 @@ const ContactsSuggested = ({ contactsFrom }) => {
         cardsToShow,
         suggestionsPageRef.current,
       );
+
+      console.log('la réponse =>', response);
+      
 
       suggestionsPageRef.current++; // Incrémentation de la page
 
@@ -59,10 +63,10 @@ const ContactsSuggested = ({ contactsFrom }) => {
 
   useEffect(() => {
     loadUsers();
-  }, [])
+  }, [contactsSectionIndex]);
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography
           component='h2'
@@ -93,17 +97,42 @@ const ContactsSuggested = ({ contactsFrom }) => {
       <Stack 
         ref={scrollContainerRef}
         direction='row'
+        spacing={4}
+        overflow='auto'
       >
         {usersSuggestion.length ?
-          usersSuggestion.map((user, index) => {
+          usersSuggestion.map((user) => {
             return(
-              <UserAvatar
-                userInfos={user}
-                picHeight={60}
-                picWidth={60}
-                sx={null}
-                redirection={true}
-              />
+              <Stack 
+                key={user.id} 
+                alignItems='center'
+                width='80px'  
+              >
+                <UserAvatar
+                  userInfos={user}
+                  picHeight={'70px'}
+                  picWidth={'70px'}
+                  sx={null}
+                  redirection={true}
+                />
+                <Typography
+                  align='center'
+                  fontFamily='Pragati Narrow, sans-serif'
+                  fontSize='0.9em'
+                  lineHeight='1'
+                  color='text.lightWhite'
+                  sx={{
+                    width: '100%',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    marginTop: '12px'
+                  }}
+                >
+                  {`${user.first_name} ${user.last_name}`}
+                </Typography>
+              </Stack>
+              
             )
           })
           :

@@ -9,6 +9,7 @@ import { getFollowedCriticsRequest } from '@utils/request/critics/getFollowedCri
 import { getUpcomingMoviesRequest } from '@utils/request/home/getUpcomingMoviesRequest';
 import FilmComponent from '@views/Film/FilmComponent';
 import Header2 from '@utils/components/Header/Header2';
+import AddReviewBtn from '@utils/components/AddReviewBtn';
 
 const HomeComponent = () => {
   const [homeSectionIndex, setHomeSectionIndex] = useState(0);
@@ -137,6 +138,7 @@ const HomeComponent = () => {
           />
         </SwipeableDrawer>
       </Container>
+      <AddReviewBtn containerRef={scrollableContainerRef} />
     </>
   );
 };

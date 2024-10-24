@@ -1,4 +1,5 @@
-import { Badge, Box, Button, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
 const FilmReviews = ({ reviewsFrom }) => {
   return (
@@ -21,18 +22,15 @@ const FilmReviews = ({ reviewsFrom }) => {
           padding='30px 0 40px 0'
         >
           <Stack width='fit-content' >
-            <Badge 
-              badgeContent={0} 
-              showZero  
-              max={99}
-              sx={{
-                '& .MuiBadge-badge': {
-                  backgroundColor: reviewsFrom === 'amis' ? '#835F00' : '#0c6666',
-                  color: '#fff',
-                  fontSize: '0.9em',
-                  right: '-17px',
-                }
-              }}
+            <CustomBadge
+              value={[1]}
+              max={999}
+              showZero={false}
+              bgColor={
+                reviewsFrom === 'amis' ?
+                  '#835F00'
+                : '#0c6666'
+              }
             >
               <Typography
                 component='h2'
@@ -43,7 +41,7 @@ const FilmReviews = ({ reviewsFrom }) => {
               >
                 {`NOTATIONS - ${reviewsFrom}`}
               </Typography>
-            </Badge>
+            </CustomBadge>
           </Stack>
           <Stack spacing={4}>
             <Typography
@@ -72,7 +70,6 @@ const FilmReviews = ({ reviewsFrom }) => {
             </Button>
           </Stack>
         </Stack>
-        
       </Container>
     </Box>
   );

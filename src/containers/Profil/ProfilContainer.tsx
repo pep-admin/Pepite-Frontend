@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { getUserRequest } from '@utils/request/users/getUserRequest';
 import ProfilComponent2 from '@views/Profil/ProfilComponent2';
 import { countUserAdditionalInfosRequest } from '@utils/request/users/countUserAdditionalInfosRequest';
+import { Box, CircularProgress, Stack } from '@mui/material';
+import Header2 from '@utils/components/Header/Header2';
 
 const ProfilContainer = () => {
 
@@ -56,12 +58,27 @@ const ProfilContainer = () => {
     getUser();
   }, []);
 
-  return !isUserLoading && 
-    <ProfilComponent2 
-      isProfilLoggedUser={isProfilLoggedUser}
-      userInfos={profilUser} 
-      additionalInfos={additionalInfos} 
-    />
+  return ( 
+    <Box 
+        height='auto'
+        minHeight='100vh' 
+        width='100vw' 
+        bgcolor='#011212'
+      >
+        <Header2 page={'Mon profil'} isTrailerFullscreen={null} />
+        { !isUserLoading ?
+            <ProfilComponent2 
+              isProfilLoggedUser={isProfilLoggedUser}
+              userInfos={profilUser} 
+              additionalInfos={additionalInfos} 
+            />
+          : 
+          <Stack height='calc(100vh - 56px)' justifyContent='center' alignItems='center' >
+            <CircularProgress color='secondary' sx={{ height: '15vw', width: '15vw'}}/>  
+          </Stack>
+        }
+    </Box>
+    )
 };
 
 export default ProfilContainer;

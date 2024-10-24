@@ -19,6 +19,7 @@ const ProfilPresentation = ({ userInfos, additionalInfos }) => {
           transform: 'translateX(-50%)',
           fontSize: '3.4em'
         }}
+        redirection={false}
       />
       <Stack marginTop='7vh' spacing={4} alignItems='center'>
         <Stack spacing={2} alignItems='center' width='100%'>
@@ -33,7 +34,7 @@ const ProfilPresentation = ({ userInfos, additionalInfos }) => {
           >
             {`${userInfos.first_name} ${userInfos.last_name}`}
           </Typography>
-          <ProfilRank page={'profil'} criticsNumber={additionalInfos.criticsNumber} />
+          <ProfilRank userInfos={userInfos} />
         </Stack>
       </Stack>
     </>

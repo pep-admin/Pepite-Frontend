@@ -1,6 +1,6 @@
 import { Stack, Typography, Button, Container } from '@mui/material';
 
-const FilmOverview = ({ movie }) => {
+const FilmOverview = ({ movie, isMovieOrSerie }) => {
 
   return (
     <Container
@@ -18,7 +18,11 @@ const FilmOverview = ({ movie }) => {
           fontWeight='200'
           lineHeight='2'
         >
-          {`${movie.overview}`}
+          {
+            movie.overview && movie.overview.trim() !== "" ?
+              `${movie.overview}`
+            : `Aucun synopsis disponible pour ${isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'}.`
+          }
         </Typography>
         <Button
           sx={{

@@ -48,12 +48,13 @@ const AddReviewBtn = ({ containerRef }) => {
       <Fab 
         aria-label="add" 
         sx={{
-          height: '52px',
-          width: '52px',
+          height: '50px',
+          width: '50px',
           position: 'fixed', 
           bottom: 18, 
           right: 17,
-          background: 'linear-gradient(310deg, rgba(21,21,21,1) 0%, rgba(40,40,40,1) 100%)'
+          background: 'linear-gradient(310deg, rgba(21,21,21,1) 0%, rgba(40,40,40,1) 100%)',
+          border: '1px solid #131313'
         }}
       >
         <AddIcon fontSize='large' sx={{ color: '#f1f1f1' }}/>

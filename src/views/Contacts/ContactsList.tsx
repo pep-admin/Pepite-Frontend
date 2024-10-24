@@ -1,8 +1,10 @@
-import { Badge, Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import ContactsCard from './ContactsCard';
+import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
 const ContactsList = ({ contactsFrom, contactList, onUpdate }) => {
-  
+    console.log(contactsFrom);
+    
   return (
     <Box
       bgcolor='#021818'
@@ -13,18 +15,15 @@ const ContactsList = ({ contactsFrom, contactList, onUpdate }) => {
         padding='30px 5vw 40px 5vw'
       >
         <Stack width='fit-content' >
-          <Badge 
-            badgeContent={contactList.length} 
-            showZero  
+          <CustomBadge
+            value={contactList}
+            showZero={false}
             max={999}
-            sx={{
-              '& .MuiBadge-badge': {
-                backgroundColor: '#835F00',
-                color: '#fff',
-                fontSize: '0.9em',
-                right: '-17px',
-              }
-            }}
+            bgColor={
+              contactsFrom === 'Amis' 
+              ? '#835F00'
+              : '#0c6666'
+            }
           >
             <Typography
               component='h2'
@@ -40,7 +39,7 @@ const ContactsList = ({ contactsFrom, contactList, onUpdate }) => {
                   'Personnes suivies'
               }
             </Typography>
-          </Badge>
+          </CustomBadge>  
         </Stack>
         <Stack spacing={4}>
         {

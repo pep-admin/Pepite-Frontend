@@ -1,23 +1,17 @@
-import { Badge, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import ContactsCard from './ContactsCard';
+import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
 const ContactsFriendsRequests = ({ friendsRequests, onUpdate }) => {
   
   return (
     <Stack spacing={3}>
       <Stack width='fit-content' >
-        <Badge 
-          badgeContent={friendsRequests.length} 
+        <CustomBadge
+          value={friendsRequests.length} 
           showZero  
           max={99}
-          sx={{
-            '& .MuiBadge-badge': {
-              backgroundColor: '#835F00',
-              color: '#fff',
-              fontSize: '0.9em',
-              right: '-19px',
-            }
-          }}
+          bgColor={'#835F00'}
         >
           <Typography
             component='h2'
@@ -28,7 +22,7 @@ const ContactsFriendsRequests = ({ friendsRequests, onUpdate }) => {
           >
             {`DEMANDES D'AMITIÉ`}
           </Typography>
-        </Badge>
+        </CustomBadge>
       </Stack>
       <Stack spacing={4}>
         {

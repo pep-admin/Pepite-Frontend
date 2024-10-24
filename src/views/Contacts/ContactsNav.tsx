@@ -43,11 +43,9 @@ const ContactsNav = ({ setContactsSectionIndex, contactsSectionIndex, friendRequ
               DEMANDES
               {friendRequestsCount > 0 && (
                 <Badge 
-                  color="error" 
                   badgeContent={friendRequestsCount} 
                   sx={{
                     '& .MuiBadge-badge': {
-                      fontSize: '0.9em',
                       backgroundColor: '#835F00',
                       color: '#fff',
                       top: '-12px',

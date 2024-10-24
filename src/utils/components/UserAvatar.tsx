@@ -35,6 +35,8 @@ const UserAvatar = ({
         fontSize: `calc(0.4 * ${picHeight})`, 
         backgroundColor: activeProfilPic ? 'inherit' : '#0c6666',
         color: '#011212',
+        maxHeight: '150px',
+        maxWidth: '150px',
         ...sx
       }}
       onClick={ redirection ? () => navigate(`/profil/${userInfos.id}`) : null }

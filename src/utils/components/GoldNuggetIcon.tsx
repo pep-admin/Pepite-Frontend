@@ -6,7 +6,7 @@ export const GoldNuggetIcon = ({
   sx,
 }) => {
   const iconWidth = width || '79px';
-  const iconHeight = height || '75px';
+  const iconHeight = height || '79px';
 
   return (
     <svg

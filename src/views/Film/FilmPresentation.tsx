@@ -19,7 +19,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
   areDetailsLoading,
   setError 
 }) => {
-
+  
   const theme = useTheme();
 
   return (
@@ -61,36 +61,48 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
           </Typography>
           {
             areDetailsLoading ?
-              <Skeleton variant='text' animation='wave' sx={{ fontSize: '0.9em', width:'50%', marginTop: '9px' }} />
+            <>
+              <Skeleton variant='text' animation='wave' sx={{ fontSize: '1em', width:'30%' }} />
+              <Skeleton variant='text' animation='wave' sx={{ fontSize: '0.9em', width:'50%', marginTop: '15px' }} />
+            </>
             :
-            <Typography
-              component='p'
-              align='center'
-              color='secondary'
-              fontFamily='League Spartan, sans-serif'
-              fontSize='0.9em'
-              fontWeight='300'
-              lineHeight='1'
-              marginTop='9px'
-            >
-              {`
-                ${isMovieOrSerie === 'movie' ? 'Film' : 'Série'}
-                -
-                ${movie.release_date.split('-')[0]}
-                -
-                ${movieDetails.runtime} min
-                `
-              }
-            </Typography>
+            <>
+              <Typography
+                align='center'
+                color='secondary'
+                fontFamily='Pragati Narrow, sans-serif'
+                fontSize='1em'
+                fontWeight='300'
+                lineHeight='1.25'
+              >
+                {`${isMovieOrSerie === 'movie' ? 'Film' : 'Série'}`}
+                {' - '}
+                {`${movie.release_date.split('-')[0]}`}
+                {' - '}
+                {`${movieDetails.runtime} min`}
+              </Typography>
+              <Typography
+                component='p'
+                align='center'
+                color='gray'
+                fontFamily='League Spartan, sans-serif'
+                fontSize='0.9em'
+                fontWeight='300'
+                lineHeight='1'
+                marginTop='15px'
+              >
+                {`${movieDetails.genres.map((genre) => genre.name).join(', ')}`}
+              </Typography>
+            </>
           }
         </Stack>
         {
           areDetailsLoading ?
-          <Skeleton variant='text' animation='wave' sx={{ fontSize: '1.1em', width: '75%' }} />
+          <Skeleton variant='text' animation='wave' sx={{ fontSize: '1em', width: '75%' }} />
           :
-          <Stack width='75%'>
+          <Stack width='90%'>
             {
-              movieDetails.tagline ?
+              movieDetails.tagline && movieDetails.tagline.trim() !== "" ?
                 <Typography
                   component='h2'
                   align='center'
@@ -105,7 +117,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
               :
                 <Divider 
                   sx={{
-                    width: '12%',
+                    width: '15%',
                     borderColor: '#aa9a709c',
                     margin: '0 auto !important'
                   }}

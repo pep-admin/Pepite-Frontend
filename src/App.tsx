@@ -21,6 +21,7 @@ import HomeContainer from './containers/Home/HomeContainer';
 import ContactContainer from './containers/Contacts/ContactContainer';
 import ListContainer from './containers/List/ListContainer';
 import ScrollToTop from '@utils/components/ScrollToTop';
+import FilmContainer from './containers/Film/FilmContainer';
 
 export function App() {
   // Permet d'afficher la page dès que les polices sont chargées
@@ -33,7 +34,7 @@ export function App() {
         <DataProvider>
         <SnackbarProvider>
           <BrowserRouter>
-            <ScrollToTop />
+            {/* <ScrollToTop /> */}
             <Routes>
               <Route path="/login" element={<LoginFormContainer />} />
               <Route path="/register" element={<RegisterFormContainer />} />
@@ -101,7 +102,18 @@ export function App() {
                   </PrivateRoute>
                 }
               />
-              {/* <Route path="/film/:id" element={<Film />} /> */}
+              <Route 
+                path="/film/:movieOrSerie/:id" 
+                element={
+                  <PrivateRoute>
+                    <FilmContainer 
+                      display={'full-page'} 
+                      movie={null} 
+                      onClose={null} 
+                    />
+                  </PrivateRoute>
+                } 
+              />
             </Routes>
           </BrowserRouter>
         </SnackbarProvider>

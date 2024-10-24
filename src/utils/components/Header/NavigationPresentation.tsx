@@ -19,9 +19,10 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
           userInfos={loggedUserInfos}
           picHeight={'100px'}
           picWidth={'100px'}
+          redirection={true}
           sx={null}
         />
-        <Stack>
+        <Stack alignItems='center'>
           <Typography
             align='center'
             fontFamily='Pragati Narrow, sans-serif'
@@ -32,13 +33,14 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
           <Stack 
             direction='row' 
             justifyContent='center'
+            width='fit-content'
             position='relative'
           >
             <MilitaryTechIcon 
               sx={{
                 color: theme.palette.secondary.light,
                 position: 'absolute',
-                left: '-17px'
+                left: '-29px'
               }}
             />
             <Typography

@@ -7,96 +7,127 @@ import ProfilAdditionalInfos from './ProfilAdditionalInfos';
 import ProfilTopMovies from './ProfilTopMovies';
 import ProfilGoldList from './ProfilGoldList';
 import ProfilReviews from './ProfilReviews';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AddReviewBtn from '@utils/components/AddReviewBtn';
+import { getGoldNuggetsOfUserRequest } from '@utils/request/goldNugget/getGoldNuggetsOfUserRequest';
 
 const ProfilComponent2 = ({ isProfilLoggedUser, userInfos, additionalInfos }) => {
 
-  const containerRef = useRef(null);
-    
+  const [goldNuggetsMovies, setGoldNuggetsMovies] = useState([]); // Toutes les pépites de l'utilisateur
+  const [hasFetchedGoldNuggets, setHasFetchedGoldNuggets] = useState(false); // Pour éviter de déclencher plusieurs fois
+
+  const goldListRef = useRef(null); // Référence pour le composant ProfilGoldList
+
+  // Fonction pour récupérer les films "pépite" de l'utilisateur
+  const getGoldNuggetsOfUser = async() => {
+    try {
+      const goldNuggets = await getGoldNuggetsOfUserRequest(
+        'movie',
+        userInfos.id,
+      );
+      setGoldNuggetsMovies(goldNuggets);
+      setHasFetchedGoldNuggets(true); // Marquer comme récupéré
+      console.log('les pépites =>', goldNuggets);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Intersection Observer pour déclencher getGoldNuggetsOfUser
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !hasFetchedGoldNuggets) {
+          getGoldNuggetsOfUser();
+        }
+      },
+      { threshold: 0.1 } // Se déclenche lorsque 10% du composant est visible
+    );
+
+    if (goldListRef.current) {
+      observer.observe(goldListRef.current);
+    }
+
+    return () => {
+      if (goldListRef.current) {
+        observer.unobserve(goldListRef.current);
+      }
+    };
+  }, [hasFetchedGoldNuggets]);
+
   return (
     <>
-      <Box 
-        ref={containerRef}
-        height='auto'
-        minHeight='100vh' 
-        width='100vw' 
-        bgcolor='#011212'
-      >
-        <Header2 page={'profil'} isTrailerFullscreen={null} />
-        <Box
-          sx={{
-          position: 'relative', // Important pour que l'enfant pseudo-élément se positionne par rapport à cet élément
+      <Box
+        sx={{
+          position: 'relative',
           height: '40vh',
           width: '100vw',
           backgroundImage: `url(${getCoverPic(userInfos)})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-            '&::before': {
-              content: '""', // Nécessaire pour créer le pseudo-élément
-              position: 'absolute', // Positionnement absolu par rapport à l'élément parent
-              bottom: '-1px',
-              left: 0,
-              width: '100%',
-              height: '101%',
-              background: 'linear-gradient(180deg, rgba(1,18,18,0.42) 0%, rgba(1,18,18,0.40) 80%, rgba(1,18,18,1) 100%)',
-              zIndex: 1, // Met le pseudo-élément au-dessus de l'image de fond
-            },
-          }}  
-        />
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            bottom: '-1px',
+            left: 0,
+            width: '100%',
+            height: '101%',
+            background: 'linear-gradient(180deg, rgba(1,18,18,0.42) 0%, rgba(1,18,18,0.40) 80%, rgba(1,18,18,1) 100%)',
+            zIndex: 1,
+          },
+        }}  
+      />
+      <Container
+        sx={{
+          position: 'relative',
+          zIndex: '2',
+          paddingLeft: '5vw',
+          paddingRight: '5vw'
+        }}
+      >
+        <Stack spacing={6}>
+          <ProfilPresentation 
+            userInfos={userInfos} 
+            additionalInfos={additionalInfos}
+          />
+          { !isProfilLoggedUser && <ProfilRequestButtons /> }
+          <ProfilAdditionalInfos additionalInfos={additionalInfos} />
+          <ProfilTopMovies />
+        </Stack>
+      </Container>
+      <Box bgcolor='#021E1E'>
         <Container
           sx={{
-            position: 'relative',
-            zIndex: '2',
             paddingLeft: '5vw',
             paddingRight: '5vw'
           }}
         >
-          <Stack spacing={6}>
-            <ProfilPresentation 
-              userInfos={userInfos} 
-              additionalInfos={additionalInfos}
-            />
-            { !isProfilLoggedUser && <ProfilRequestButtons /> }
-            <ProfilAdditionalInfos additionalInfos={additionalInfos} />
-            <ProfilTopMovies />
-          </Stack>
-        </Container>
-        <Box
-          bgcolor='#021E1E'
-        >
-          <Container
-            sx={{
-              paddingLeft: '5vw',
-              paddingRight: '5vw'
-            }}
-          >
+          <div ref={goldListRef}> {/* Référence pour observer ProfilGoldList */}
             <ProfilGoldList 
               isProfilLoggedUser={isProfilLoggedUser} 
               userInfos={userInfos}  
+              goldNuggetsMovies={goldNuggetsMovies}
             />
-          </Container>
-        </Box>
-        <Box
-          bgcolor='#021818'
+          </div>
+        </Container>
+      </Box>
+      <Box bgcolor='#021818'>
+        <Container
+          sx={{
+            paddingLeft: '5vw',
+            paddingRight: '5vw'
+          }}
         >
-          <Container
-            sx={{
-              paddingLeft: '5vw',
-              paddingRight: '5vw'
-            }}
-          >
-            <ProfilReviews
-              isProfilLoggedUser={isProfilLoggedUser} 
-              userInfos={userInfos}  
-            />
-          </Container>
-        </Box>
+          <ProfilReviews
+            isProfilLoggedUser={isProfilLoggedUser} 
+            userInfos={userInfos}  
+          />
+        </Container>
       </Box>
       <AddReviewBtn containerRef={null} />
     </>
-    
   );
 };
 

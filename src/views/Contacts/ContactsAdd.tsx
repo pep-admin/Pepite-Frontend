@@ -1,7 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import SearchBar2 from '@utils/components/SearchBar2';
 import { searchUserRequest } from '@utils/request/search/searchUserRequest';
-import { useState } from 'react';
 import ContactsShare from './ContactsShare';
 import ContactsCard from './ContactsCard';
 

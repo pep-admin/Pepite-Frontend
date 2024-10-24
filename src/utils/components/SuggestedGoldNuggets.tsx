@@ -14,7 +14,7 @@ import { useCardsToShowHorizontal } from '@hooks/useCardsToShowHorizontal';
 import { useHorizontalScroll } from '@hooks/useHorizontalScroll';
 
 // Import des requêtes
-import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getAllGoldNuggetsOfUser';
+import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getGoldNuggetsOfUserRequest';
 import { getGoldNuggetsFromAcquaintances } from '@utils/request/goldNugget/getGoldNuggetsFromAcquaintances';
 
 const SuggestedGoldNuggets = ({

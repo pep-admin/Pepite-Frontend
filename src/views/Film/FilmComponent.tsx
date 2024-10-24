@@ -1,73 +1,33 @@
 import { Box, Stack, Typography } from '@mui/material';
 import FilmPresentation from './FilmPresentation';
-import { useEffect, useState } from 'react';
-import { ErrorState, MovieDetails } from 'types/interface';
 import FilmOverview from './FilmOverview';
 import FilmReviews from './FilmReviews';
 import FilmCredits from './FilmCredits';
 import FilmSimilar from './FilmSimilar';
-import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
 import FilmExternalLinks from './FilmExternalLinks';
 
-const FilmComponent = ({ movie, onClose }) => {
-  if(!movie) return;
+const FilmComponent = ({ display, movie, movieDetails, isMovieOrSerie, areDetailsLoading, onClose, error, setError }) => {
 
-  const isMovieOrSerie = 'release_date' in movie ? 'movie' : 'tv';
-
-  const [movieDetails, setMovieDetails] = useState<MovieDetails>({});
-  const [areDetailsLoading, setAreDetailsLoading] = useState(true);
-  const [error, setError] = useState<ErrorState>({
-    state: null,
-    message: ''
-  })
-
-  const getMovieDetails = async() => {
-    try {
-      setAreDetailsLoading(true);
-
-      const details = await getMovieDetailsRequest(isMovieOrSerie, movie.id);
-      setMovieDetails(details);
-      console.log('les détails =>', details);
-      
-    } catch (err) {
-      setError({
-        state: true,
-        message: 'Erreur dans la récupération des détails du film.',
-      });
-
-    }finally {
-      setAreDetailsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    getMovieDetails();
-  }, []);
-
-  
   return (
-    <Box 
-      height='auto'
-      minHeight='100vh' 
-      width='100vw' 
-      bgcolor='#011212'
-    >
-      {/* Puller visuel de swipe retour */}
-      <Box 
-        sx={{
-          height: '75px',
-          width: '8px',
-          position: 'fixed',
-          top: '50%',
-          right: '5px',
-          transform: 'translateY(-50%)',
-          backgroundColor: '#3a3a3a',
-          borderRadius: '20px',
-        }}
-      />
+    <>
+      { // Si la page est swipable, on affiche un puller visuel
+        display === 'swipeable' &&
+        <Box 
+          sx={{
+            height: '75px',
+            width: '8px',
+            position: 'fixed',
+            top: '50%',
+            right: '5px',
+            transform: 'translateY(-50%)',
+            backgroundColor: '#3a3a3a',
+            borderRadius: '20px',
+          }}
+        />
+      }
       <Box
          sx={{
-          position: 'relative', // Important pour que l'enfant pseudo-élément se positionne par rapport à cet élément
+          position: 'relative', 
           height: '40vh',
           width: '100vw',
           backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdrop_path})`,
@@ -75,29 +35,32 @@ const FilmComponent = ({ movie, onClose }) => {
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           '&::before': {
-            content: '""', // Nécessaire pour créer le pseudo-élément
-            position: 'absolute', // Positionnement absolu par rapport à l'élément parent
+            content: '""', 
+            position: 'absolute', 
             bottom: '-1px',
             left: 0,
             width: '100%',
             height: '101%',
             background: 'linear-gradient(180deg, rgba(1,18,18,0.42) 0%, rgba(1,18,18,0.40) 80%, rgba(1,18,18,1) 100%)',
-            zIndex: 1, // Met le pseudo-élément au-dessus de l'image de fond
+            zIndex: 1, 
           },
         }}  
       >
-        <Typography
-          fontFamily='League Spartan, sans-serif'
-          color='#c6c6c6'
-          sx={{
-            position: 'relative', 
-            zIndex: 2, 
-            padding: '17px 0 0 22px'
-          }}
-          onClick={onClose}
-        >
-          Retour à l'accueil
-        </Typography>
+        {
+          display === 'swipeable' &&
+          <Typography
+            fontFamily='League Spartan, sans-serif'
+            color='#c6c6c6'
+            sx={{
+              position: 'relative', 
+              zIndex: 2, 
+              padding: '17px 0 0 22px'
+            }}
+            onClick={onClose}
+          >
+            { 'Retour à l\'accueil' }
+          </Typography>
+        }
       </Box>  
       <Stack>
         <FilmPresentation 
@@ -108,7 +71,10 @@ const FilmComponent = ({ movie, onClose }) => {
           error={error} 
           setError={setError} 
         />
-        <FilmOverview movie={movie} />
+        <FilmOverview 
+          movie={movie} 
+          isMovieOrSerie={isMovieOrSerie}
+        />
         <Box>
           <FilmReviews reviewsFrom={'amis'} />
           <FilmReviews reviewsFrom={'suivis'} />
@@ -126,7 +92,7 @@ const FilmComponent = ({ movie, onClose }) => {
           movie={movie}
         />
       </Stack>  
-    </Box>
+    </>
   );
 };
 

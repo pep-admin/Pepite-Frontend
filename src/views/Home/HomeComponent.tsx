@@ -7,9 +7,9 @@ import { getPopularMoviesRequest } from '@utils/request/home/getPopularMoviesReq
 import { getFriendsCriticsRequest } from '@utils/request/critics/getFriendsCriticsRequest';
 import { getFollowedCriticsRequest } from '@utils/request/critics/getFollowedCriticsRequest';
 import { getUpcomingMoviesRequest } from '@utils/request/home/getUpcomingMoviesRequest';
-import FilmComponent from '@views/Film/FilmComponent';
 import Header2 from '@utils/components/Header/Header2';
 import AddReviewBtn from '@utils/components/AddReviewBtn';
+import FilmContainer from '../../containers/Film/FilmContainer';
 
 const HomeComponent = () => {
   const [homeSectionIndex, setHomeSectionIndex] = useState(0);
@@ -132,10 +132,14 @@ const HomeComponent = () => {
             }
           }}
         >
-          <FilmComponent 
-            movie={showFilmDetails.movie} 
-            onClose={() => setShowFilmDetails({ display: false, movie: null })}  
-          />
+          {
+            showFilmDetails.display &&
+            <FilmContainer
+              display={'swipeable'}
+              movie={showFilmDetails.movie} 
+              onClose={() => setShowFilmDetails({ display: false, movie: null })}
+            />
+          }
         </SwipeableDrawer>
       </Container>
       <AddReviewBtn containerRef={scrollableContainerRef} />

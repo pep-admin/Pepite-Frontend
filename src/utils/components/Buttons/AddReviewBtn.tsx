@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { useNavigate } from 'react-router-dom';
 
 const AddReviewBtn = ({ containerRef }) => {
+
+  const navigate = useNavigate();
+
   const [showButton, setShowButton] = useState(true);
   const [lastScrollTop, setLastScrollTop] = useState(0);
 
@@ -56,6 +60,7 @@ const AddReviewBtn = ({ containerRef }) => {
           background: 'linear-gradient(310deg, rgba(21,21,21,1) 0%, rgba(40,40,40,1) 100%)',
           border: '1px solid #131313'
         }}
+        onClick={() => navigate('/rating')}
       >
         <AddIcon fontSize='large' sx={{ color: '#f1f1f1' }}/>
       </Fab>

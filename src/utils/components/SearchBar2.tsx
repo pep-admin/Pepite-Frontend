@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchBar2 = ({ onSearch }) => {
+const SearchBar2 = ({ placeHolder, onSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const SearchBar2 = ({ onSearch }) => {
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Prénom et nom"
+        placeholder={placeHolder}
         value={searchQuery}
         onChange={handleInputChange}
         InputProps={{

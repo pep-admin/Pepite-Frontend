@@ -8,7 +8,7 @@ import ProfilTopMovies from './ProfilTopMovies';
 import ProfilGoldList from './ProfilGoldList';
 import ProfilReviews from './ProfilReviews';
 import { useEffect, useRef, useState } from 'react';
-import AddReviewBtn from '@utils/components/AddReviewBtn';
+import AddReviewBtn from '@utils/components/Buttons/AddReviewBtn';
 import { getGoldNuggetsOfUserRequest } from '@utils/request/goldNugget/getGoldNuggetsOfUserRequest';
 
 const ProfilComponent2 = ({ isProfilLoggedUser, userInfos, additionalInfos }) => {

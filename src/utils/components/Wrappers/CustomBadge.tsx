@@ -1,5 +1,10 @@
 import { Badge } from '@mui/material';
 
+/*
+  couleurs amis : '#835F00'
+  couleurs suivis : '#0c6666'
+*/
+
 const CustomBadge = ({ value, max, showZero, bgColor, children }) => {
   return (
     <Badge 

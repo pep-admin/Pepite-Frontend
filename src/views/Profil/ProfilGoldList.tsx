@@ -22,6 +22,7 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsMovies }) =>
           value={goldNuggetsMovies}
           max={999}
           showZero={false}
+          bgColor={'#835F00'}
         >
           <Typography
             component='h2'
@@ -38,9 +39,7 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsMovies }) =>
             }
           </Typography>
         </CustomBadge>
-        
       </Stack>
-
       <Stack spacing={3}>
         {
           !goldNuggetsMovies.length ? (

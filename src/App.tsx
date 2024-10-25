@@ -20,8 +20,9 @@ import AccountContainer from './containers/Account/AccountContainer';
 import HomeContainer from './containers/Home/HomeContainer';
 import ContactContainer from './containers/Contacts/ContactContainer';
 import ListContainer from './containers/List/ListContainer';
-import ScrollToTop from '@utils/components/ScrollToTop';
+// import ScrollToTop from '@utils/components/ScrollToTop';
 import FilmContainer from './containers/Film/FilmContainer';
+import RatingContainer from './containers/Rating/RatingContainer';
 
 export function App() {
   // Permet d'afficher la page dès que les polices sont chargées
@@ -62,14 +63,14 @@ export function App() {
                   </PrivateRoute>
                 }
               />
-              <Route
+              {/* <Route
                 path="/account/:id"
                 element={
                   <PrivateRoute>
                     <AccountContainer />
                   </PrivateRoute>
                 }
-              />
+              /> */}
               <Route
                 path="/contacts/:id"
                 element={
@@ -99,6 +100,14 @@ export function App() {
                 element={
                   <PrivateRoute>
                     <HomeContainer />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/rating"
+                element={
+                  <PrivateRoute>
+                    <RatingContainer />
                   </PrivateRoute>
                 }
               />

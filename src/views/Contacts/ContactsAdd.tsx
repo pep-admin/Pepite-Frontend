@@ -6,7 +6,6 @@ import ContactsCard from './ContactsCard';
 
 const ContactsAdd = ({ searchResults, setSearchResults, onUpdate }) => {
 
-
   const handleUserSearch = async (query: string) => {
     try {
       const users = await searchUserRequest(query);
@@ -39,7 +38,7 @@ const ContactsAdd = ({ searchResults, setSearchResults, onUpdate }) => {
           </Typography>
         </Stack>
         <Stack>
-          <SearchBar2 onSearch={handleUserSearch} />
+          <SearchBar2 placeHolder={'Prénom et nom'} onSearch={handleUserSearch} />
         </Stack>
         <Stack spacing={3}>
             {searchResults.map((user, index) => {

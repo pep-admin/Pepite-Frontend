@@ -1,13 +1,17 @@
 import { Stack, Typography, Button } from '@mui/material';
 import MovieInterestBtn from '@utils/components/Buttons/MovieInterestBtn';
 import ColoredRating from '@utils/components/ColoredRating';
+import { checkIfMovieReleased } from '@utils/functions/checkIfMovieReleased';
+import { convertDate } from '@utils/functions/convertDate';
 import { convertRating } from '@utils/functions/convertRating';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const FilmRating = ({ isMovieOrSerie, movie }) => {
 
+  const isReleased = checkIfMovieReleased(movie);
+
   return (
     <Stack 
-      spacing={3} 
       alignItems='center'
       width='100%'  
     >
@@ -15,70 +19,110 @@ const FilmRating = ({ isMovieOrSerie, movie }) => {
         direction='row' 
         justifyContent='center'
         alignItems='center'
+        position='relative'
         spacing={1}
       >
-        <ColoredRating 
-          color='#E7AE1A' 
-          emptyColor='#AAAAAA' 
-          value={convertRating(movie.vote_average)} 
-          readOnly={true}
-          precision={0.1}
-          fontSize='1.2'
-        />
-        <Typography
-          component='span'
-          color='secondary'
-          fontFamily='Pragati Narrow, sans-serif'
-          fontSize='1.2em'
-          fontWeight='bold'
-          position='relative'
-          bottom='0.2px'
-        >
-          {`${convertRating(movie.vote_average)} / 5`}
-        </Typography>
+        {
+          isReleased ?
+
+            movie.vote_average && movie.vote_count ?
+            <>
+              <ColoredRating 
+                color='#E7AE1A' 
+                emptyColor='#AAAAAA' 
+                value={convertRating(movie.vote_average)} 
+                readOnly={true}
+                precision={0.1}
+                fontSize='1.2'
+              />
+              <Typography
+                component='span'
+                color='secondary'
+                fontFamily='Pragati Narrow, sans-serif'
+                fontSize='1.2em'
+                fontWeight='bold'
+                position='relative'
+                bottom='0.2px'
+              >
+                {`${convertRating(movie.vote_average)} / 5`}
+              </Typography>
+            </>
+            :
+            <Typography
+              component='p'
+              align='justify'
+              color='#7c7c7c'
+              fontWeight='200'
+            >
+              {'Aucune note disponible.'}
+            </Typography>
+          :
+          <>
+            <CalendarMonthIcon
+              sx={{ 
+                fontSize: '20px', 
+                color: '#bdbdbd',
+                position: 'absolute',
+                left: '-21px',
+                bottom: '4px'
+              }}
+            />
+            <Typography
+              fontWeight="400"
+              sx={{ 
+                color: '#bdbdbd',
+              }}
+            >
+              {`${convertDate('full', movie.release_date)}`}
+            </Typography>
+          </>
+        }
       </Stack>
       <Stack 
         direction='row' 
-        justifyContent='space-between'
+        justifyContent={ isReleased ? 'space-between' : 'center' }
         width='70%'  
+        marginTop='20px'
       >
-        <MovieInterestBtn btnType={'gold'} value={4} />
+        { isReleased && <MovieInterestBtn btnType={'gold'} value={4} /> }
         <MovieInterestBtn btnType={'heart'} value={12} />
-        <MovieInterestBtn btnType={'turnip'} value={2} />
+        { isReleased && <MovieInterestBtn btnType={'turnip'} value={2} /> }
       </Stack>
-      <Stack 
-        direction='row' 
-        justifyContent='space-between'
-        width='100%'
-        marginTop='36px !important'
-      >
-        <Button
-          sx={{
-            height: '35px',
-            width: '45%',
-            padding: '2px 10px 0 10px',
-            color: '#f1f1f1',
-            outline: '1px solid #2D2D2D',
-            fontSize: '0.75em',
-            fontWeight: '400'
-          }}
+      { isReleased &&
+        <Stack 
+          direction='row' 
+          justifyContent='space-between'
+          width='100%'
+          marginTop='36px !important'
         >
-          {`Noter ${isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'}`}
-        </Button>
-        <Button
-          sx={{
-            height: '35px',
-            width: '45%',
-            padding: '2px 10px 0 10px',
-            color: '#f1f1f1',
-            outline: '1px solid #2D2D2D',
-            fontSize: '0.75em',
-            fontWeight: '400'
-          }}
-        >
-          {'Conseiller à un ami'}
-        </Button>
-      </Stack>
+          <Button
+            sx={{
+              height: '35px',
+              width: '45%',
+              padding: '2px 10px 0 10px',
+              color: '#f1f1f1',
+              outline: '1px solid #2D2D2D',
+              fontSize: '0.75em',
+              fontWeight: '400'
+            }}
+          >
+            {`Noter ${isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'}`}
+          </Button>
+          <Button
+            sx={{
+              height: '35px',
+              width: '45%',
+              padding: '2px 10px 0 10px',
+              color: '#f1f1f1',
+              outline: '1px solid #2D2D2D',
+              fontSize: '0.75em',
+              fontWeight: '400'
+            }}
+          >
+            {'Conseiller à un ami'}
+          </Button>
+        </Stack>
+      }
     </Stack>
     
   );

@@ -12,6 +12,7 @@ export const parseDatabaseData = data => {
   const production_countries = JSON.parse(data.production_countries);
   const overview = data.overview;
   const poster_path = data.poster_path;
+  const backdrop_path = data.backdrop_path;
   const tmdb_vote_average = parseFloat(data.vote_average);
   const pepite_vote_average = parseFloat(data.pepite_vote_average);
 
@@ -34,6 +35,7 @@ export const parseDatabaseData = data => {
       production_countries,
       overview,
       poster_path,
+      backdrop_path,
       release_date,
       tmdb_vote_average,
       pepite_vote_average,
@@ -56,6 +58,7 @@ export const parseDatabaseData = data => {
       production_countries,
       overview,
       poster_path,
+      backdrop_path,
       release_date,
       tmdb_vote_average,
       pepite_vote_average,

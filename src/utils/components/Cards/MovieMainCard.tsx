@@ -1,5 +1,5 @@
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import ColoredRating from '../ColoredRating';
+// import ColoredRating from '../ColoredRating';
 import { convertDate } from '@utils/functions/convertDate';
 import GoldNuggetIcon from '../GoldNuggetIcon';
 // import { convertRating } from '@utils/functions/convertRating';

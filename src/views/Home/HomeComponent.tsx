@@ -8,10 +8,11 @@ import { getFriendsCriticsRequest } from '@utils/request/critics/getFriendsCriti
 import { getFollowedCriticsRequest } from '@utils/request/critics/getFollowedCriticsRequest';
 import { getUpcomingMoviesRequest } from '@utils/request/home/getUpcomingMoviesRequest';
 import Header2 from '@utils/components/Header/Header2';
-import AddReviewBtn from '@utils/components/AddReviewBtn';
+import AddReviewBtn from '@utils/components/Buttons/AddReviewBtn';
 import FilmContainer from '../../containers/Film/FilmContainer';
 
 const HomeComponent = () => {
+  
   const [homeSectionIndex, setHomeSectionIndex] = useState(0);
   const [movies, setMovies] = useState([]);
   const [loadingMovies, setLoadingMovies] = useState([]); // Films en cours de chargement

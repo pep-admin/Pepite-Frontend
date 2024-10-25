@@ -24,6 +24,6 @@ export function convertDate(mode, timestamp) {
     const day = date.getDate(); // Obtient le jour du mois
     const month = months[date.getMonth()]; // Obtient le mois (0-11, donc nécessite un tableau pour la conversion)
   
-    return `${day} ${month} ${year}`; // Formatte la date
+    return `${day} ${month} ${year}`; // Formate la date
   }
 }

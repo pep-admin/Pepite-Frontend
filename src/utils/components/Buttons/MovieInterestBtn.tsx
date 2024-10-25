@@ -4,6 +4,7 @@ import { TurnipIcon } from '../styledComponent';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const MovieInterestBtn = ({ btnType, value }) => {
+
   return (
     <Fab 
       variant="extended" 

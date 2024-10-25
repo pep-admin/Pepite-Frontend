@@ -67,7 +67,7 @@ const ContactsSuggested = ({ contactsFrom, contactsSectionIndex }) => {
 
   return (
     <Stack spacing={3}>
-      <Stack spacing={1}>
+      <Stack>
         <Typography
           component='h2'
           color='text.primary'
@@ -83,7 +83,7 @@ const ContactsSuggested = ({ contactsFrom, contactsSectionIndex }) => {
           fontSize='1em'
           fontWeight='400'
           lineHeight='1'
-          marginTop='1px'
+          marginTop='4px'
         >
           {
             contactsFrom === 'Amis' ?

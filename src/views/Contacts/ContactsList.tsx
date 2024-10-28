@@ -3,7 +3,6 @@ import ContactsCard from './ContactsCard';
 import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
 const ContactsList = ({ contactsFrom, contactList, onUpdate }) => {
-    console.log(contactsFrom);
     
   return (
     <Box

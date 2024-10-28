@@ -84,9 +84,9 @@ const FilmRating = ({ isMovieOrSerie, movie }) => {
         width='70%'  
         marginTop='20px'
       >
-        { isReleased && <MovieInterestBtn btnType={'gold'} value={4} /> }
-        <MovieInterestBtn btnType={'heart'} value={12} />
-        { isReleased && <MovieInterestBtn btnType={'turnip'} value={2} /> }
+        { isReleased && <MovieInterestBtn btnFrom={'movie'} btnType={'gold'} value={4} disabled={null} handleBtn={null} /> }
+        <MovieInterestBtn btnFrom={'movie'} btnType={'heart'} value={12} disabled={null} handleBtn={null} />
+        { isReleased && <MovieInterestBtn btnFrom={'movie'} btnType={'turnip'} value={2} disabled={null} handleBtn={null} /> }
       </Stack>
       { isReleased &&
         <Stack 

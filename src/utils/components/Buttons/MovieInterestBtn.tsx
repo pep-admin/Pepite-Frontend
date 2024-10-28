@@ -3,24 +3,26 @@ import GoldNuggetIcon from '../GoldNuggetIcon';
 import { TurnipIcon } from '../styledComponent';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-const MovieInterestBtn = ({ btnType, value }) => {
+const MovieInterestBtn = ({ btnFrom, btnType, value, disabled, handleBtn }) => {
 
   return (
     <Fab 
       variant="extended" 
       color="primary"
       sx={{
-        height: '33px',
-        width: 'auto',
+        height: btnFrom === 'rating' ? '50px' : '33px',
+        width: btnFrom === 'rating' ? '50px' : 'auto',
         padding: '0 10px',
-        backgroundColor: 
+        background: 
           btnType === 'gold' 
-          ? '#5C3C0D !important' 
+          ? 'linear-gradient(320deg, rgba(33,22,6,1) 0%, rgba(117,76,16,1) 100%) !important' 
           : btnType === 'turnip'
-          ? '#5E103D !important'
+          ? 'linear-gradient(320deg, rgba(33,5,22,1) 0%, rgba(94,16,61,1) 100%) !important'
           : '#161616 !important',
-        outline: '1px solid #2D2D2D'
+        outline: '1px solid #151515',
+        filter: disabled ? 'grayscale(1)' : 'none'
       }}
+      onClick={() => handleBtn(btnType)}
     >
       <Stack 
         spacing={1}
@@ -34,7 +36,7 @@ const MovieInterestBtn = ({ btnType, value }) => {
           btnType === 'gold' ?
             <GoldNuggetIcon
               height='100%'
-              width='20px'
+              width={btnFrom === 'rating' ? '31px' : '20px'}
               isShadowed={false}
               strokeWidth='3px'
               sx={null}
@@ -50,28 +52,32 @@ const MovieInterestBtn = ({ btnType, value }) => {
             <TurnipIcon
               sx={{
                 height: '100%',
-                width: '20px',
+                width: btnFrom === 'rating' ? '30px' : '20px',
                 position: 'relative',
-                bottom: '1px'
+                bottom: '1px',
+                left: btnFrom === 'rating' ? '2px' : '0'
               }}
             />
         }
-        <Typography
-          component='span'
-          color={ 
-            btnType === 'gold' 
-            ? 'secondary' 
-            : btnType === 'turnip'
-            ? 'purple.light' 
-            : '#cf1c1c'  
-          }
-          fontFamily='Pragati Narrow, sans-serif'
-          fontSize='1.3em'
-          fontWeight='600'
-          lineHeight='1'
-        >
-          {`${ value }`}
-        </Typography>
+        {
+          btnFrom === 'movie' &&
+          <Typography
+            component='span'
+            color={ 
+              btnType === 'gold' 
+              ? 'secondary' 
+              : btnType === 'turnip'
+              ? 'purple.light' 
+              : '#cf1c1c'  
+            }
+            fontFamily='Pragati Narrow, sans-serif'
+            fontSize='1.3em'
+            fontWeight='600'
+            lineHeight='1'
+          >
+            {`${ value }`}
+          </Typography>
+        }
       </Stack>
     </Fab>
   );

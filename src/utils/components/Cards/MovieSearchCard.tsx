@@ -1,12 +1,17 @@
-import { Box, Grid, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { convertDate } from '@utils/functions/convertDate';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 
-const MovieSearchCard = ({ movie }) => {
+const MovieSearchCard = ({ movie, setSearchResults, setMovieSelected }) => {
 
   const isMovieOrSerie = findIfMovieOrSerie(movie);
 
   const theme = useTheme();
+
+  const selectMovie = () => {
+    setSearchResults([]);
+    setMovieSelected(movie);
+  }
 
   return (
     <Stack
@@ -24,6 +29,7 @@ const MovieSearchCard = ({ movie }) => {
           backgroundSize: 'cover',
           outline: '1px solid #292929'
         }}
+        onClick={selectMovie}
       />
       <Typography
         maxWidth='100%'

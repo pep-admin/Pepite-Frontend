@@ -77,6 +77,7 @@ const QuickRatingBtns = ({ btnType, handleBtnAction }) => {
           width="30px"
           isShadowed={false}
           strokeWidth="3px"
+          sx={null}
         />
       ) : btnType === 'validate' ? (
         <DoneIcon sx={{ fontSize: '30px' }} />

@@ -9,6 +9,7 @@ const UserAvatar = ({
   picHeight,
   sx,
   redirection,
+  onSelect
 }) => {
 
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const UserAvatar = ({
   } else {
     activeProfilPic = userInfos.profile_pic;
   }
-
+  
   return (
     <Avatar
       variant="circular"
@@ -39,7 +40,13 @@ const UserAvatar = ({
         maxWidth: '150px',
         ...sx
       }}
-      onClick={ redirection ? () => navigate(`/profil/${userInfos.id}`) : null }
+      onClick={ () => 
+        redirection ? 
+          navigate(`/profil/${userInfos.id}`)
+        : onSelect ? 
+          onSelect(userInfos)
+        : null
+      }
     >
       {/* Si pas de photo de profil */}
       {!activeProfilPic && fullName

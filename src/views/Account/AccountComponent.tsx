@@ -99,6 +99,7 @@ const AccountComponent = () => {
                     boxShadow: '0px 8px 5px 0px rgb(57 57 57 / 14%)',
                   }}
                   redirection={false}
+                  onSelect={null}
                 />
                 <Box
                   height="40px"

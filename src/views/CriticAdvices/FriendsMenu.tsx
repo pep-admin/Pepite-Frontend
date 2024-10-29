@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 
 // Import des requêtes
-import { getFriendsList } from '@utils/request/friendship/getFriendsList';
+import { getFriendsList } from '@utils/request/friendship/getFriendsListRequest';
 
 const FriendsMenu = ({ chosenUser, setChosenUser }) => {
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos')); // Les infos de l'utilisateur connecté

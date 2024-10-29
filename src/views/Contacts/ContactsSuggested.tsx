@@ -114,6 +114,7 @@ const ContactsSuggested = ({ contactsFrom, contactsSectionIndex }) => {
                   picWidth={'70px'}
                   sx={null}
                   redirection={true}
+                  onSelect={null}
                 />
                 <Typography
                   align='center'

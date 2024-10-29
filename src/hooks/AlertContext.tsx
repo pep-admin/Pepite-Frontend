@@ -3,59 +3,65 @@ import { createContext, useContext, useState } from 'react';
 import { AlertColor } from '@mui/material';
 import ConfirmationAlert from '@utils/components/Infos/ConfirmationAlert';
 
-// Définissez le type pour les paramètres d'alerte, avec `AlertColor` pour la sévérité
 type AlertParams = {
-  message: string;
   title: string;
-  severity: AlertColor; // Définit severity comme AlertColor
+  message: string;
+  severity: AlertColor;
   onConfirm?: () => void;
   onCancel?: () => void;
 };
 
-// Création du contexte avec des valeurs par défaut
 const AlertContext = createContext({
   alert: {
     open: false,
-    message: '',
     title: '',
-    severity: 'info' as AlertColor, // Utilisation de `as AlertColor` pour garantir la compatibilité
+    message: '',
+    severity: 'info' as AlertColor,
     onConfirm: null,
     onCancel: null,
   },
   showAlert: (_: AlertParams) => {},
+  showSimpleAlert: (_: string, __: string, ___: AlertColor) => {}, // Initialisation correcte de showSimpleAlert
   hideAlert: () => {},
 });
 
 export const AlertProvider = ({ children }) => {
   const [alert, setAlert] = useState({
     open: false,
-    message: '',
     title: '',
-    severity: 'info' as AlertColor, // Assertion explicite pour la compatibilité
+    message: '',
+    severity: 'info' as AlertColor,
     onConfirm: null,
     onCancel: null,
   });
 
-  const showAlert = ({ message, title, severity, onConfirm, onCancel }: AlertParams) => {
-    // Validation de la sévérité pour assurer qu'elle est de type AlertColor
-    const validSeverity: AlertColor = ['success', 'error', 'warning', 'info'].includes(severity)
-      ? severity
-      : 'info';
-
+  const showAlert = ({ title, message, severity, onConfirm, onCancel }: AlertParams) => {
     setAlert({
       open: true,
-      message,
       title,
-      severity: validSeverity,
+      message,
+      severity,
       onConfirm,
       onCancel,
+    });
+  };
+
+  // Fonction pour afficher une alerte simple sans onConfirm ni onCancel
+  const showSimpleAlert = (title: string, message: string, severity: AlertColor) => {
+    setAlert({
+      open: true,
+      title,
+      message,
+      severity,
+      onConfirm: null,
+      onCancel: null,
     });
   };
 
   const hideAlert = () => setAlert((prevAlert) => ({ ...prevAlert, open: false }));
 
   return (
-    <AlertContext.Provider value={{ alert, showAlert, hideAlert }}>
+    <AlertContext.Provider value={{ alert, showAlert, showSimpleAlert, hideAlert }}>
       {children}
       {alert.open && <ConfirmationAlert />}
     </AlertContext.Provider>

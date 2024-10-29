@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import Header2 from '@utils/components/Header/Header2';
 import RatingComponent from '@views/Rating/RatingComponent';
 import RatingNav from '@views/Rating/RatingNav';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const RatingContainer = () => {
 
@@ -19,7 +19,7 @@ const RatingContainer = () => {
           <Header2 page={'Mon profil'} isTrailerFullscreen={null} />
           <RatingNav ratingSectionIndex={ratingSectionIndex} setRatingSectionIndex={setRatingSectionIndex} />
         </Box>
-        <RatingComponent />
+        <RatingComponent ratingSectionIndex={ratingSectionIndex} />
     </Box>
   );
 };

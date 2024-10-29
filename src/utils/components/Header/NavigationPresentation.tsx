@@ -20,6 +20,7 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
           picHeight={'100px'}
           picWidth={'100px'}
           redirection={true}
+          onSelect={null}
           sx={null}
         />
         <Stack alignItems='center'>

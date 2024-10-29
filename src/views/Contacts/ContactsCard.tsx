@@ -122,7 +122,14 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
         :
         <Stack spacing={3} direction='row'>
           <Stack spacing={2} direction='row' alignItems='center' width='150px'>
-            <UserAvatar userInfos={user} picHeight={'50px'} picWidth={'50px'} sx={null} redirection={true} />
+            <UserAvatar 
+              userInfos={user} 
+              picHeight={'50px'} 
+              picWidth={'50px'} 
+              sx={null} 
+              redirection={true} 
+              onSelect={null}
+            />
             <Typography fontFamily='Pragati Narrow, sans-serif' color='#d3d3d3'>
               {userFullName}
             </Typography>

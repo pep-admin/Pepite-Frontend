@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchBar2 = ({ placeHolder, onSearch }) => {
+const SearchBar2 = ({ placeHolder, onSearch, boxMargin }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
+      console.log('search query => ', searchQuery);
+      
       if (searchQuery) {
         onSearch(searchQuery);
+      } else {
+        onSearch(null);
       }
     }, 300); // Délai de 300 ms
 
@@ -20,7 +24,7 @@ const SearchBar2 = ({ placeHolder, onSearch }) => {
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: '600px', marginBottom: '20px' }}>
+    <Box sx={{ width: '100%', maxWidth: '600px', margin: boxMargin }}>
       <TextField
         fullWidth
         variant="outlined"

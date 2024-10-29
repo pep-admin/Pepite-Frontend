@@ -1,10 +1,20 @@
-import { Divider, Rating, Slider, Stack, Typography } from '@mui/material';
+import { Divider, Rating, Slider, Stack, Typography, useTheme } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import MovieInterestBtn from '@utils/components/Buttons/MovieInterestBtn';
 import { useEffect } from 'react';
 
 
-const RatingStars = ({ isGoldNugget, setIsGoldNugget, isTurnip, setIsTurnip, movieRating, setMovieRating }) => {
+const RatingStars = ({ 
+  ratingSectionIndex, 
+  isGoldNugget, 
+  setIsGoldNugget, 
+  isTurnip, 
+  setIsTurnip, 
+  movieRating, 
+  setMovieRating 
+}) => {
+
+  const theme = useTheme();
 
   const handleSliderChange = (_: Event, newValue: number) => {    
     setMovieRating(newValue as number);
@@ -30,18 +40,34 @@ const RatingStars = ({ isGoldNugget, setIsGoldNugget, isTurnip, setIsTurnip, mov
   return (
     <Stack
       spacing={5}
-      padding='30px 0 40px 0'
+      padding='30px 0 0 0'
     >
       <Stack>
-        <Typography
-          component='h2'
-          color='text.primary'
-          fontSize='1.15em'
-          fontWeight='400'
-          textTransform='uppercase'
-        >
-          {`VOTRE NOTE`}
-        </Typography>
+        <Stack direction='row' justifyContent='space-between'>
+          <Typography
+            component='h2'
+            color='text.primary'
+            fontSize='1.15em'
+            fontWeight='400'
+            textTransform='uppercase'
+          >
+            {'VOTRE NOTE'}
+          </Typography>
+          <Typography
+            component='span'
+            fontSize='1em'
+            fontWeight='200'
+            color={ ratingSectionIndex === 0 ? 
+              'secondary'
+              : theme.palette.primary.light
+            }
+          >
+            { ratingSectionIndex === 0 ?
+              '* obligatoire'
+              : '* facultatif'
+            }
+          </Typography>
+        </Stack>
         <Typography
           component='h2'
           color='gray'
@@ -113,18 +139,15 @@ const RatingStars = ({ isGoldNugget, setIsGoldNugget, isTurnip, setIsTurnip, mov
                 <StarIcon sx={{ color: '#627171' }} fontSize="inherit" />
               }
             />
-            {
-              (!isGoldNugget && !isTurnip && movieRating !== null) &&
-              <Typography
-                color="#E7AE1A"
-                whiteSpace='nowrap'
-                position='absolute'
-                top='6px'
-                right='-9px'
-              >
-                {`${movieRating} / 5`}
-              </Typography>
-            }
+            <Typography
+              color="#E7AE1A"
+              whiteSpace='nowrap'
+              position='absolute'
+              top='6px'
+              right='-9px'
+            >
+              {`${movieRating === null ? '?' : movieRating} / 5`}
+            </Typography>
           </Stack>
           <Stack
             width='75%' 

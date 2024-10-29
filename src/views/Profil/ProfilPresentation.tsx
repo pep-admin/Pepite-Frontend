@@ -20,6 +20,7 @@ const ProfilPresentation = ({ userInfos, additionalInfos }) => {
           fontSize: '3.4em'
         }}
         redirection={false}
+        onSelect={null}
       />
       <Stack marginTop='7vh' spacing={4} alignItems='center'>
         <Stack spacing={2} alignItems='center' width='100%'>

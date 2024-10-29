@@ -1,17 +1,21 @@
 import axios from 'axios';
 import { apiBaseUrl } from '../config';
 
-export const modifyAdvice = async (
-  adviceId,
-  type,
-  rating,
-  text,
-  isGoldNugget,
-  isTurnip,
+export const modifyAdviceRequest = async (
+  adviceId: number,
+  movieId: number,
+  receiverId: number,
+  type: string,
+  rating: number,
+  text: string,
+  isGoldNugget: boolean,
+  isTurnip: boolean,
 ) => {
   await axios.put(
     `${apiBaseUrl}/advices/modify/${adviceId}`,
     {
+      movie_id: movieId,
+      receiver_id: receiverId,
       rating: rating,
       type: type,
       text: text,

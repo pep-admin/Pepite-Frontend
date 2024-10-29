@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { apiBaseUrl } from '../config';
 
-export const getFriendsList = async userId => {
-  try {
+export const getFriendsListRequest = async userId => {
     const response = await axios.get(
       `${apiBaseUrl}/friendship/list/${userId}`,
       {
@@ -10,8 +9,5 @@ export const getFriendsList = async userId => {
       },
     );    
 
-    return response.data;
-  } catch (error) {
-    console.log("erreur dans la récupération de la liste d'amis :", error);
-  }
+    return response.data.results;
 };

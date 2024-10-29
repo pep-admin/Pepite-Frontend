@@ -10,7 +10,7 @@ import ContactsFriendsFollowed from './ContactsFriendsFollowed';
 
 // Import des requêtes
 import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
-import { getFriendsList } from '@utils/request/friendship/getFriendsList';
+import { getFriendsList } from '@utils/request/friendship/getFriendsListRequest';
 import { getFollowedList } from '@utils/request/followed/getFollowedList';
 
 const ContactsComponent = () => {

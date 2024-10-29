@@ -1,17 +1,24 @@
-import { Stack, TextField, Typography } from "@mui/material"
+import { Stack, TextField, Typography, useTheme } from "@mui/material";
 import { findIfMovieOrSerie } from "@utils/functions/findIfMovieOrSerie";
 
-const RatingReview = ({ movie, criticText, setCriticText }) => {
+const RatingReview = ({ ratingSectionIndex, movie, criticText, setCriticText, friendSelected }) => {
+
+  const theme = useTheme();
 
   const isMovieOrSerie = findIfMovieOrSerie(movie);
   const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
+  const friendFullname = `${friendSelected?.first_name} ${friendSelected?.last_name}`;
+
+  // Gestion du changement de texte
+  const handleTextChange = (event) => {
+    setCriticText(event.target.value);
+  };
 
   return (
     <Stack
-      spacing={5}
-      padding='0 0 40px 0'
+      padding='30px 0 0 0'
     >
-      <Stack>
+      <Stack direction='row' justifyContent='space-between'>
         <Typography
           component='h2'
           color='text.primary'
@@ -19,27 +26,34 @@ const RatingReview = ({ movie, criticText, setCriticText }) => {
           fontWeight='400'
           textTransform='uppercase'
         >
-          {`VOTRE CRITIQUE`}
+          { ratingSectionIndex === 0 ?
+            `VOTRE CRITIQUE`
+            : `VOTRE CONSEIL`
+          }
         </Typography>
         <Typography
-          component='h2'
-          color='gray'
+          component='span'
           fontSize='1em'
-          fontWeight='400'
-          lineHeight='1'
-          marginTop='4px'
+          fontWeight='200'
+          color={theme.palette.primary.light}
         >
-          {'Facultatif'}
+          {'* facultatif'}
         </Typography>
       </Stack>
       <Stack>
         <TextField
-          label={`Qu'avez vous pensé de "${movieTitle}" ?`}
+          label={ ratingSectionIndex === 1 && friendSelected ?
+            `Dites quelque chose à ${friendFullname} !`
+            : `Qu'avez vous pensé de "${movieTitle}" ?`
+          }
           multiline
           rows={5}
           variant="filled"
+          value={criticText ? criticText : ''} // Affiche le texte actuel
+          onChange={handleTextChange} // Capture les changements de texte
           sx={{
             border: '1px solid #282828',
+            marginTop: '19px',
             '& .MuiFilledInput-root': {
               '&:after': {
                 borderBottomColor: '#969696', // Couleur du trait lors du focus
@@ -47,6 +61,9 @@ const RatingReview = ({ movie, criticText, setCriticText }) => {
             },
             '& .MuiInputLabel-root.Mui-focused': {
               color: '#3a3a3a', // Couleur du label lors du focus
+            },
+            '& .MuiFilledInput-input': {
+              fontWeight: 300, // Applique le fontWeight au texte
             },
           }}
         />

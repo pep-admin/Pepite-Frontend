@@ -38,7 +38,7 @@ const ContactsAdd = ({ searchResults, setSearchResults, onUpdate }) => {
           </Typography>
         </Stack>
         <Stack>
-          <SearchBar2 placeHolder={'Prénom et nom'} onSearch={handleUserSearch} />
+          <SearchBar2 placeHolder={'Prénom et nom'} onSearch={handleUserSearch} boxMargin={'0'}/>
         </Stack>
         <Stack spacing={3}>
             {searchResults.map((user, index) => {

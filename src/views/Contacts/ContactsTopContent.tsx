@@ -8,7 +8,7 @@ const ContactsTopContent = ({ contactsFrom, contactsSectionIndex, friendsRequest
       padding='30px 5vw 40px 5vw'
     >
       { contactsSectionIndex === 0 ?
-        <ContactsFriendsRequests friendsRequests={friendsRequests} onUpdate={onUpdate}/>
+        <ContactsFriendsRequests friendsRequestsCount={friendsRequests.length} friendsRequests={friendsRequests} onUpdate={onUpdate}/>
         :
         <ContactsSuggested contactsFrom={contactsFrom} contactsSectionIndex={contactsSectionIndex} />
       }

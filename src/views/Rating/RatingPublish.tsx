@@ -1,5 +1,4 @@
 import { AlertColor, Button, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
 import { useAlert } from '@hooks/AlertContext';
 import { postCriticRequest } from '@utils/request/critics/postCriticRequest';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
@@ -8,7 +7,19 @@ import { modifyCriticRequest } from '@utils/request/critics/modifyCriticRequest'
 import { postAdviceRequest } from '@utils/request/advices/postAdviceRequest';
 import { modifyAdviceRequest } from '@utils/request/advices/modifyAdviceRequest';
 
-const RatingPublish = ({ ratingSectionIndex, movie, isGoldNugget, isTurnip, movieRating, criticText, friendSelected }) => {
+const RatingPublish = ({ 
+  ratingSectionIndex, 
+  publicationChoice, 
+  setPublicationChoice,
+  isCriticOrAdvice, 
+  movie, 
+  isGoldNugget, 
+  isTurnip, 
+  movieRating, 
+  criticText, 
+  friendSelected,
+  setMovieSelected
+}) => {
 
   const { showAlert, showSimpleAlert } = useAlert();
   const handleOpenSnackbar = useSnackbar(); 
@@ -16,15 +27,10 @@ const RatingPublish = ({ ratingSectionIndex, movie, isGoldNugget, isTurnip, movi
   const isMovieOrSerie = findIfMovieOrSerie(movie);
   const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
 
-  const isCriticOrAdvice = ratingSectionIndex === 0 ? 'critic' : 'advice';
-  const publishMode = isCriticOrAdvice === 'critic' ? 'publique' : 'privée';
-
   const friendFullname = `${friendSelected?.first_name} ${friendSelected?.last_name}`;
 
-  const [publicationChoice, setPublicationChoice] = useState(publishMode);
-
   const checkIfPublishValid = () => {
-    // Si notation
+    // Si critique
     if(ratingSectionIndex === 0) {
       // Pas de note mais une pépite ou un navet
       if(!movieRating && (isGoldNugget || isTurnip)) {
@@ -118,6 +124,7 @@ const RatingPublish = ({ ratingSectionIndex, movie, isGoldNugget, isTurnip, movi
           handleConfirmation('Critique déjà existante', `${critic.message}`, 'warning', critic.id);
         } else {
           handleOpenSnackbar(`Nouvelle critique ${publicationChoice} publiée.`);
+          setMovieSelected(null); 
         }
 
       } else {
@@ -141,6 +148,7 @@ const RatingPublish = ({ ratingSectionIndex, movie, isGoldNugget, isTurnip, movi
           handleConfirmation('Conseil déjà existant', `${advice.message}`, 'warning', advice.id);
         } else {
           handleOpenSnackbar(`Vous avez conseillé ${movieTitle} à ${friendFullname}.`);
+          setMovieSelected(null); 
         }
       }
 
@@ -168,7 +176,7 @@ const RatingPublish = ({ ratingSectionIndex, movie, isGoldNugget, isTurnip, movi
         );
 
         handleOpenSnackbar(`Nouvelle critique pour ${ isMovieOrSerie === 'movie' ? movie.title : movie.name }.`);
-
+        setMovieSelected(null);
       } else {
 
         await modifyAdviceRequest(
@@ -183,6 +191,7 @@ const RatingPublish = ({ ratingSectionIndex, movie, isGoldNugget, isTurnip, movi
         );
 
         handleOpenSnackbar(`Nouveau conseil envoyé à ${friendFullname}.`);
+        setMovieSelected(null); 
       }
       
     } catch (error) {

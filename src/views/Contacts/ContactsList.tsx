@@ -2,7 +2,7 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import ContactsCard from './ContactsCard';
 import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
-const ContactsList = ({ contactsFrom, contactList, onUpdate }) => {
+const ContactsList = ({ contactsFrom, contactListCount, contactList, onUpdate }) => {
     
   return (
     <Box
@@ -15,7 +15,7 @@ const ContactsList = ({ contactsFrom, contactList, onUpdate }) => {
       >
         <Stack width='fit-content' >
           <CustomBadge
-            value={contactList}
+            value={contactListCount}
             showZero={false}
             max={999}
             bgColor={

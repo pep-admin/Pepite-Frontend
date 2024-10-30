@@ -2,15 +2,97 @@ import { Box, Grid, Skeleton, Stack, Typography } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import StarIcon from '@mui/icons-material/Star';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import GoldNuggetIcon from '@utils/components/GoldNuggetIcon';
+import { TurnipIcon } from '@utils/components/styledComponent';
+import { formatRating } from '@utils/functions/formatRating';
 
 const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
-  const isPlaceholder = !movie.id; // Si l'objet film n'a pas d'ID, c'est un placeholder
+  
+  const isSkeleton = !movie.id; // Si l'objet film n'a pas d'ID, c'est un skeleton
 
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split('-'); // Séparer l'année, le mois et le jour
     return `${day}.${month}.${year.slice(2)}`; // Réorganiser en 18.10.24 (jour.mois.année)
   };
 
+  // Affiche conditionnellement l'information de pépite OU navet OU note
+  const getAverageInfos = () => {
+
+    const totalCritics = movie.grouped_critics.length;
+    const goldCount = movie.grouped_critics.filter(critic => critic.is_gold_nugget === 1).length;
+    const turnipCount = movie.grouped_critics.filter(critic => critic.is_turnip === 1).length;
+
+    // Définir le seuil de ratio de pépites
+    const goldThreshold = 0.5;  // Si 50% ou plus de pépites pour afficher l'icône pépite
+
+    // Conditions de choix entre pépite, navet, et note moyenne
+    if (goldCount / totalCritics >= goldThreshold && goldCount > turnipCount) {
+      return (
+        <Stack direction="row" columnGap="5px">
+          <GoldNuggetIcon 
+            width='17px'
+            height='17px'
+            strokeWidth={4}
+            isShadowed={false}
+            sx={null}
+          />
+          <Typography
+            fontSize="0.8em"
+            fontWeight="500"
+            color='#e1a813'
+          >
+            {`${goldCount}`}
+          </Typography>
+        </Stack>
+      )
+    } else if (turnipCount / totalCritics >= goldThreshold && turnipCount > goldCount) {
+      return (
+        <Stack direction="row" columnGap="4px">
+          <TurnipIcon
+            sx={{
+              fontSize: '17px'
+            }}
+          />
+          <Typography
+            fontSize="0.8em"
+            fontWeight="500"
+            color='#d1127b'
+          >
+            {`${turnipCount}`}
+          </Typography>
+        </Stack>
+      )
+    } else if (movie.pepite_vote_average) {
+      return (
+        <Stack direction="row" columnGap="2px">
+          <StarIcon
+            sx={{
+              fontSize: '18px',
+              color:
+                homeSectionRef.current === 'friends'
+                  ? '#d9ae3c'
+                  : '#009696',
+            }}
+          />
+          <Typography
+            fontSize="0.8em"
+            fontWeight="500"
+            sx={{
+              color:
+                homeSectionRef.current === 'friends'
+                  ? '#d9ae3c'
+                  : '#0daaaa',
+            }}
+          >
+            {`${formatRating(movie.pepite_vote_average)}`}
+          </Typography>
+        </Stack>
+      )
+    } else {
+      return '?';
+    }
+  }
+  
   return (
     <Grid
       item
@@ -25,7 +107,7 @@ const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
         outline: '1px solid #2E2E2E',
       }}
     >
-      {isPlaceholder ? (
+      {isSkeleton ? (
         <Skeleton
           variant="rectangular"
           animation="wave"
@@ -59,7 +141,7 @@ const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
           {movie && homeSectionRef.current !== 'popular' && (
             <Stack
               height="100%"
-              justifyContent="flex-end"
+              justifyContent='flex-end'
               alignItems="flex-start"
               padding="5px 5px 4px 5px"
             >
@@ -99,29 +181,7 @@ const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
                         {`${movie.grouped_critics.length}`}
                       </Typography>
                     </Stack>
-                    <Stack direction="row" columnGap="1px">
-                      <StarIcon
-                        sx={{
-                          fontSize: '18px',
-                          color:
-                            homeSectionRef.current === 'friends'
-                              ? '#d9ae3c'
-                              : '#009696',
-                        }}
-                      />
-                      <Typography
-                        fontSize="0.8em"
-                        fontWeight="500"
-                        sx={{
-                          color:
-                            homeSectionRef.current === 'friends'
-                              ? '#d9ae3c'
-                              : '#009696',
-                        }}
-                      >
-                        {`${movie.pepite_vote_average}`}
-                      </Typography>
-                    </Stack>
+                    {getAverageInfos()}
                   </>
                 )}
               </Stack>

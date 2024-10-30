@@ -9,7 +9,7 @@ import { Item } from '@utils/components/styledComponent';
 import MainItemList from '@utils/components/MainItemList';
 
 // Import des requêtes
-import { getCriticsOfUser } from '@utils/request/critics/getCritics';
+import { getCriticsOfUser } from '@utils/request/critics/getCriticsOfUserRequest';
 import { getWantedMoviesRequest } from '@utils/request/list/getWantedMoviesRequest';
 import { getWatchedMoviesRequest } from '@utils/request/list/getWatchedMoviesRequest';
 

@@ -4,7 +4,8 @@ import GoldNuggetIcon from '@utils/components/GoldNuggetIcon';
 import { TurnipIcon } from '@utils/components/styledComponent';
 
 const ProfilAdditionalInfos = ({ additionalInfos }) => {
-
+  console.log(additionalInfos);
+  
   const criticsNumber = additionalInfos.criticsNumber;
   const goldsNumber = additionalInfos.goldsNumber;
   const turnipNumber = additionalInfos.turnipNumber;

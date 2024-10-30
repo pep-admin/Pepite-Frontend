@@ -2,7 +2,7 @@ import { Stack, Typography, useTheme } from '@mui/material';
 import UserAvatar from '@utils/components/UserAvatar';
 import ProfilRank from './ProfilRank';
 
-const ProfilPresentation = ({ userInfos, additionalInfos }) => {
+const ProfilPresentation = ({ userInfos}) => {
 
   const theme = useTheme();
 

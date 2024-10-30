@@ -1,7 +1,8 @@
 import { Stack, Typography } from '@mui/material';
+import MovieMainCard from '@utils/components/Cards/MovieMainCard';
 import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
-const ProfilReviews = ({ isProfilLoggedUser, userInfos }) => {
+const ProfilReviews = ({ isProfilLoggedUser, userInfos, criticsCount, criticsMovies }) => {
   return (
     <Stack
       spacing={3}
@@ -9,7 +10,7 @@ const ProfilReviews = ({ isProfilLoggedUser, userInfos }) => {
     >
       <Stack width='fit-content' >
         <CustomBadge
-          value={[1]}
+          value={criticsCount}
           max={999}
           showZero={false}
           bgColor={'#835F00'}
@@ -30,18 +31,24 @@ const ProfilReviews = ({ isProfilLoggedUser, userInfos }) => {
           </Typography>
         </CustomBadge>
         </Stack>
-        <Stack spacing={4}>
-          <Typography
-            color='#555555'
-            lineHeight='1'
-          >
-              {
-              isProfilLoggedUser ?
-                'Vous n\'avez encore rien noté.'
-              :
-                `${userInfos.first_name} n'a encore rien noté.`
-            }
-          </Typography>
+        <Stack spacing={3}>
+          {
+            !criticsMovies.length ? (
+              <Typography color='#555555' lineHeight='1'>
+                {isProfilLoggedUser ? 'Vous n\'avez encore posté aucune critique.' : `${userInfos.first_name} n'a encore posté aucune critique.`}
+              </Typography>
+            ) : (
+              criticsMovies.map((movie, index) => (
+                <MovieMainCard 
+                  key={movie.id} 
+                  movie={movie} 
+                  displayGradient={true}
+                  isFirstCard={index === 0}
+                  isLastCard={index === criticsMovies.length - 1} 
+                />
+              ))
+            )
+          }
         </Stack>
     </Stack>
   );

@@ -5,6 +5,7 @@ import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 const RatingMovieSelected = ({ movie }) => {
 
   const isMovieOrSerie = findIfMovieOrSerie(movie);
+  const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
 
   const theme = useTheme();
 
@@ -23,12 +24,11 @@ const RatingMovieSelected = ({ movie }) => {
           }}
         />
         <Stack spacing={1} >
-          <Typography>
-            {
-              isMovieOrSerie === 'movie' 
-              ? movie.title
-              : movie.name
-            }
+          <Typography
+            component='h3'
+            fontSize={movieTitle.length >= 10 ? '1em' : '1.1em'}
+          >
+            {`${movieTitle}`}
           </Typography>
           <Typography
             color='gray'

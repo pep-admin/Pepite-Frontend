@@ -1,7 +1,9 @@
 import { Box, CircularProgress, Stack } from '@mui/material';
 import Header2 from '@utils/components/Header/Header2';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
+import { getAndStoreMovieDetails } from '@utils/functions/getAndStoreMovieDetails';
 import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
+import { storeMovieDataRequest } from '@utils/request/store/storeMovieDataRequest';
 import FilmComponent from '@views/Film/FilmComponent';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -35,9 +37,8 @@ const FilmContainer = ({ display, movie, onClose }) => {
     try {      
       setAreDetailsLoading(true);
 
-      const details = await getMovieDetailsRequest(isMovieOrSerie, movieId);
-      setMovieDetails(details);
-      console.log('les détails =>', details);
+      // Récupération des détails du film
+      await getAndStoreMovieDetails(isMovieOrSerie, movieId, setMovieDetails);
       
     } catch (err) {
       setError({
@@ -50,6 +51,7 @@ const FilmContainer = ({ display, movie, onClose }) => {
     }
   }
 
+  // Récupère et stocke les données à chaque nouveau film
   useEffect(() => {
     getMovieDetails();
   }, [id]);

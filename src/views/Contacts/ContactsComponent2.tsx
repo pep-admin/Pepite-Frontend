@@ -104,7 +104,8 @@ const ContactsComponent2 = () => {
             {
               contactsSectionIndex === 1 || contactsSectionIndex === 2 ?
               <ContactsList 
-                contactsFrom={contactsSection} 
+                contactsFrom={contactsSection}
+                contactListCount={contactsSectionIndex === 1 ? friendsList.length : followedList.length} 
                 contactList={contactsSectionIndex === 1 ? friendsList : followedList}
                 onUpdate={handleUpdate}
               />

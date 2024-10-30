@@ -2,13 +2,13 @@ import { Stack, Typography } from '@mui/material';
 import ContactsCard from './ContactsCard';
 import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
-const ContactsFriendsRequests = ({ friendsRequests, onUpdate }) => {
+const ContactsFriendsRequests = ({ friendsRequestsCount, friendsRequests, onUpdate }) => {
   
   return (
     <Stack spacing={3}>
       <Stack width='fit-content' >
         <CustomBadge
-          value={friendsRequests.length} 
+          value={friendsRequestsCount} 
           showZero  
           max={99}
           bgColor={'#835F00'}

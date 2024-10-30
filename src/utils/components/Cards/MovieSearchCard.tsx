@@ -1,6 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { convertDate } from '@utils/functions/convertDate';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
+import { getAndStoreMovieDetails } from '@utils/functions/getAndStoreMovieDetails';
 
 const MovieSearchCard = ({ movie, setSearchResults, setMovieSelected }) => {
 
@@ -9,8 +10,9 @@ const MovieSearchCard = ({ movie, setSearchResults, setMovieSelected }) => {
   const theme = useTheme();
 
   const selectMovie = () => {
-    setSearchResults([]);
-    setMovieSelected(movie);
+    setSearchResults([]); // Supprime les résultats de recherche
+    setMovieSelected(movie); // Assigne le film sélectionné au film choisi
+    getAndStoreMovieDetails(isMovieOrSerie, movie.id, null); // Sauvegarde les détails du film dans la DB
   }
 
   return (

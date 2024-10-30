@@ -3,7 +3,7 @@ import { useState } from 'react';
 import MovieMainCard from '@utils/components/Cards/MovieMainCard';
 import CustomBadge from '@utils/components/Wrappers/CustomBadge';
 
-const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsMovies }) => {
+const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsCount, goldNuggetsMovies }) => {
 
   const [visibleMoviesCount, setVisibleMoviesCount] = useState(3); // Par défaut, afficher 3 films
 
@@ -19,9 +19,9 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsMovies }) =>
     >
       <Stack width='fit-content'>
         <CustomBadge
-          value={goldNuggetsMovies}
+          value={goldNuggetsCount}
           max={999}
-          showZero={false}
+          showZero={true}
           bgColor={'#835F00'}
         >
           <Typography
@@ -48,7 +48,13 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsMovies }) =>
             </Typography>
           ) : (
             goldNuggetsMovies.slice(0, visibleMoviesCount).map((movie, index) => (
-              <MovieMainCard key={movie.id} movie={movie} isLastCard={index === goldNuggetsMovies.length - 1} />
+              <MovieMainCard 
+                key={movie.id} 
+                movie={movie} 
+                displayGradient={false}
+                isFirstCard={index === 0}
+                isLastCard={index === goldNuggetsMovies.length - 1} 
+              />
             ))
           )
         }
@@ -58,7 +64,7 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsMovies }) =>
           variant="outlined"
           onClick={handleShowMore}
           sx={{
-            marginTop: '30px',
+            marginTop: '40px !important',
             alignSelf: 'center',
             fontWeight: 'normal',
             color: '#186060',
@@ -66,7 +72,7 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsMovies }) =>
             lineHeight: '1',
           }}
         >
-          Afficher +
+          {'Afficher +'}
         </Button>
       )}
     </Stack>

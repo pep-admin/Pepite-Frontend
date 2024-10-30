@@ -8,7 +8,7 @@ import { Badge } from '@mui/material';
 const CustomBadge = ({ value, max, showZero, bgColor, children }) => {
   return (
     <Badge 
-      badgeContent={value.length} 
+      badgeContent={value} 
       showZero={showZero}  
       max={max}
       sx={{

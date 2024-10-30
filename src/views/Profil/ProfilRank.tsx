@@ -35,7 +35,7 @@ const ProfilRank = ({ userInfos }) => {
   }));
 
   return (
-    <Stack spacing={2} >
+    <Stack spacing={2}alignItems='center'>
       <Stack 
         direction='row'
         justifyContent='center'
@@ -62,6 +62,9 @@ const ProfilRank = ({ userInfos }) => {
       <BorderLinearProgress
         variant="determinate"
         value={progressValue}
+        sx={{
+          width: '100px'
+        }}
       />
     </Stack>
   );

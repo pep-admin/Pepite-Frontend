@@ -145,6 +145,9 @@ const RatingStars = ({
               position='absolute'
               top='6px'
               right='-9px'
+              sx={{
+                textDecoration: isGoldNugget || isTurnip ? 'line-through' : 'none'
+              }}
             >
               {`${movieRating === null ? '?' : movieRating} / 5`}
             </Typography>

@@ -1,6 +1,6 @@
 import { getAdvicesReceived } from '@utils/request/advices/getAdvicesReceived';
 import { getAllCriticsOfAcquaintances } from '@utils/request/critics/getAllCriticsOfAcquaintances';
-import { getCriticsOfUser } from '@utils/request/critics/getCritics';
+import { getCriticsOfUser } from '@utils/request/critics/getCriticsOfUserRequest';
 import { getAllGoldNuggetsOfUser } from '@utils/request/goldNugget/getGoldNuggetsOfUserRequest';
 import { getUser } from '@utils/request/users/getUserRequest';
 

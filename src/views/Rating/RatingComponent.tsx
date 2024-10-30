@@ -16,13 +16,25 @@ const RatingComponent = ({ ratingSectionIndex }) => {
   const [isGoldNugget, setIsGoldNugget] = useState(false);
   const [isTurnip, setIsTurnip] = useState(false);
 
+  const [publicationChoice, setPublicationChoice] = useState('publique');
+
   // Reset si l'utilisateur sélectionne un nouveau film à noter
   useEffect(() => {
+    console.log('film sélectionné ?', movieSelected);
+    
     setMovieRating(null);
     setCriticText(null);
     setIsGoldNugget(false);
     setIsTurnip(false);
   }, [movieSelected]);
+
+  useEffect(() => {
+    if(ratingSectionIndex === 0) {
+      setPublicationChoice('publique');
+    } else {
+      setPublicationChoice('privée');
+    }
+  }, [ratingSectionIndex])
 
   return (
     <Container
@@ -75,12 +87,16 @@ const RatingComponent = ({ ratingSectionIndex }) => {
           />
           <RatingPublish 
             ratingSectionIndex={ratingSectionIndex}
+            publicationChoice={publicationChoice}
+            setPublicationChoice={setPublicationChoice}
+            isCriticOrAdvice={ratingSectionIndex === 0 ? 'critic' : 'advice'}
             movie={movieSelected} 
             isGoldNugget={isGoldNugget}
             isTurnip={isTurnip}
             movieRating={movieRating}
             criticText={criticText}  
             friendSelected={friendSelected}
+            setMovieSelected={setMovieSelected}
           />
         </>
       }

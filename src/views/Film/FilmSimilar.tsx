@@ -3,8 +3,9 @@ import { calculateSkeletonCount } from '@utils/functions/calculateSkeletonCount'
 import { getMoviesByDirectorRequest} from '@utils/request/film/getMoviesByDirectorRequest';
 import { useEffect, useRef, useState } from 'react';
 import FilmSimilarCard from './FilmSimilarCard';
+import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 
-const FilmSimilar = ({ isMovieOrSerie, movieDetails }) => {
+const FilmSimilar = ({ isMovieOrSerie, movieId, directorData }) => {
 
   const [similarMovies, setSimilarMovies] = useState([]);
   const [areMoviesLoading, setAreMoviesLoading] = useState(true);
@@ -16,14 +17,8 @@ const FilmSimilar = ({ isMovieOrSerie, movieDetails }) => {
     try {
       setAreMoviesLoading(true);
   
-      // Récupération du réalisateur du film 
-      const director = movieDetails.crew.find((crew) => crew.job === 'Director' && crew.department === 'Directing');
-      if(!director) return;
-  
-      const directorId = director.id;
-  
-      const movies = await getMoviesByDirectorRequest(isMovieOrSerie, pageRef.current, directorId, movieDetails.id);
-      console.log('films du même réalisateur:', movies);
+      const movies = await getMoviesByDirectorRequest(isMovieOrSerie, pageRef.current, directorData.id, movieId);
+      console.log(`${isMovieOrSerie} du même réalisateur: `, movies);
       
       setSimilarMovies(movies);
       pageRef.current++;
@@ -50,10 +45,10 @@ const FilmSimilar = ({ isMovieOrSerie, movieDetails }) => {
   }, []);
 
   useEffect(() => {
-    if(!movieDetails.crew) return;
+    if(!directorData.id) return;
 
     getMoviesByDirector();
-  }, [movieDetails]);
+  }, [!directorData.id]);
 
   return (
     <Container
@@ -65,7 +60,7 @@ const FilmSimilar = ({ isMovieOrSerie, movieDetails }) => {
     >
       <Stack
         spacing={3}
-        padding='30px 0 40px 0'
+        padding='30px 0 0 0'
       >
         <Typography
           component='h2'
@@ -74,7 +69,7 @@ const FilmSimilar = ({ isMovieOrSerie, movieDetails }) => {
           fontWeight='400'
           textTransform='uppercase'
         >
-          {`Du même réalisateur`}
+          {`Lié à ${directorData.name}`}
         </Typography>
         <Stack 
           direction='row' 
@@ -89,16 +84,15 @@ const FilmSimilar = ({ isMovieOrSerie, movieDetails }) => {
               <Stack 
                 key={index}
                 alignItems='center' 
-                width='80px'  
                 flexShrink={0}  
               >
-                <Skeleton variant="circular" animation='wave' width={65} height={65} />
-                <Skeleton width="60%" animation='wave' sx={{ margin: '8px auto' }} />
+                <Skeleton variant='rectangular' animation='wave' width={100} height={150} />
+                <Skeleton variant='text' width='60%' animation='wave' sx={{ fontSize: '0.9em', margin: '10px auto' }} />
               </Stack>
             ))
           ) : (
             similarMovies.map((movie) => (
-              <FilmSimilarCard key={movie.id} isMovieOrSerie={isMovieOrSerie} movie={movie} />
+              <FilmSimilarCard key={movie.id} movie={movie} />
             ))
           )}
         </Stack>

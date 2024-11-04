@@ -5,10 +5,14 @@ import { checkIfMovieReleased } from '@utils/functions/checkIfMovieReleased';
 import { convertDate } from '@utils/functions/convertDate';
 import { convertRating } from '@utils/functions/convertRating';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useNavigate } from 'react-router-dom';
 
 const FilmRating = ({ isMovieOrSerie, movie }) => {
 
   const isReleased = checkIfMovieReleased(movie);
+  const dbTable = isMovieOrSerie === 'movie' ? 'movie' : 'tv';
+
+  const navigate = useNavigate();
 
   return (
     <Stack 
@@ -105,6 +109,7 @@ const FilmRating = ({ isMovieOrSerie, movie }) => {
               fontSize: '0.75em',
               fontWeight: '400'
             }}
+            onClick={() => navigate(`/rating/${dbTable}/${movie.id}/review`)}
           >
             {`Noter ${isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'}`}
           </Button>
@@ -118,6 +123,7 @@ const FilmRating = ({ isMovieOrSerie, movie }) => {
               fontSize: '0.75em',
               fontWeight: '400'
             }}
+            onClick={() => navigate(`/rating/${dbTable}/${movie.id}/advice`)}
           >
             {'Conseiller à un ami'}
           </Button>

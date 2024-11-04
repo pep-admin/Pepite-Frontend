@@ -15,8 +15,10 @@ export interface Movie {
   overview: string;
   popularity: number;
   poster_path: string;
-  release_date: string;
-  title: string;
+  release_date?: string;
+  first_air_date?: string;
+  title?: string;
+  name?: string;
   video: boolean;
   vote_average: number;
   vote_count: number;
@@ -66,23 +68,6 @@ interface SpokenLanguage {
   name: string;
 }
 
-interface ReleaseDate {
-  certification?: string;
-  iso_639_1?: string;
-  note?: string;
-  release_date: string; // Date de sortie au format string
-  type: number; // Le type de sortie, par exemple "cinéma", "VOD", etc.
-}
-
-interface ReleaseDatesResult {
-  iso_3166_1: string; // Code du pays (AE, AR, etc.)
-  release_dates: ReleaseDate[]; // Tableau des différentes dates de sortie pour le pays
-}
-
-interface ReleaseDates {
-  results: ReleaseDatesResult[]; // Tableau des pays avec leurs dates de sortie
-}
-
 export interface MovieDetails {
   adult?: boolean;
   backdrop_path?: string;
@@ -103,7 +88,7 @@ export interface MovieDetails {
   production_companies?: ProductionCompany[];
   production_countries?: ProductionCountry[];
   release_date?: string;
-  release_dates?: ReleaseDates;
+  first_air_date?: string;
   revenue?: number;
   runtime?: number;
   spoken_languages?: SpokenLanguage[];
@@ -113,6 +98,7 @@ export interface MovieDetails {
   video?: boolean;
   vote_average?: number;
   vote_count?: number;
+  number_of_seasons?: number;
 }
 
 interface CastMember {

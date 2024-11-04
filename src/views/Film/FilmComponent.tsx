@@ -5,8 +5,16 @@ import FilmReviews from './FilmReviews';
 import FilmCredits from './FilmCredits';
 import FilmSimilar from './FilmSimilar';
 import FilmExternalLinks from './FilmExternalLinks';
+import { useState } from 'react';
+import { Credits } from 'types/interface';
 
 const FilmComponent = ({ display, movie, movieDetails, isMovieOrSerie, areDetailsLoading, onClose, error, setError }) => {
+
+  const [movieCredits, setMovieCredits] = useState<Credits>({});
+  const [directorData, setDirectorData] = useState({ id: null, job: null, name: null }); 
+  
+  console.log('le film enculé =>', movie);
+  
 
   return (
     <>
@@ -82,10 +90,14 @@ const FilmComponent = ({ display, movie, movieDetails, isMovieOrSerie, areDetail
         <FilmCredits 
           isMovieOrSerie={isMovieOrSerie} 
           movie={movie} 
+          movieCredits={movieCredits}
+          setMovieCredits={setMovieCredits}
+          setDirectorData={setDirectorData}
         />
         <FilmSimilar 
           isMovieOrSerie={isMovieOrSerie} 
-          movieDetails={movieDetails} 
+          movieId={movieDetails.id} 
+          directorData={directorData}
         />
         <FilmExternalLinks
           isMovieOrSerie={isMovieOrSerie}

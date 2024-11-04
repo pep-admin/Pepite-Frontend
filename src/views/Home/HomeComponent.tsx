@@ -24,32 +24,30 @@ const HomeComponent = () => {
   const scrollableContainerRef = useRef(null);
 
   const getMovies = async () => {
-    // console.log('Fetching movies... La page =>', pageRef.current);
     setLoadingMovies(Array(20).fill({})); // Ajoute 20 films fictifs en tant que placeholders pour le Skeleton
-
-    let movies = [];
+    console.log('reset =>', homeSectionRef.current);
+    
+    let newMovies = [];
 
     switch (homeSectionRef.current) {
       case 'popular':
-        movies = await getPopularMoviesRequest(pageRef.current);
+        newMovies = await getPopularMoviesRequest(pageRef.current);
         break;
       case 'friends':
-        movies = await getFriendsCriticsRequest(pageRef.current, 'movie');
+        newMovies = await getFriendsCriticsRequest(pageRef.current, 'movie');
         break;
       case 'followed':
-        movies = await getFollowedCriticsRequest(pageRef.current, 'movie');
+        newMovies = await getFollowedCriticsRequest(pageRef.current, 'movie');
         break;
       case 'upcoming':
-        movies = await getUpcomingMoviesRequest(pageRef.current);
+        newMovies = await getUpcomingMoviesRequest(pageRef.current);
         break;
       default:
         break;
     }
 
-    if (movies && movies.length > 0) {
-      console.log('les films !', movies);
-
-      setMovies(prevMovies => [...prevMovies, ...movies]); // Cumul des films
+    if (newMovies && newMovies.length > 0) {
+      setMovies((prevMovies) => [...prevMovies, ...newMovies]); // Ajout direct des films de la nouvelle section
       pageRef.current++;
     } else {
       setHasMore(false); // S'il n'y a plus de films à charger
@@ -59,7 +57,9 @@ const HomeComponent = () => {
   };
 
   useEffect(() => {
+    
     setMovies([]);
+    setHasMore(true);
     pageRef.current = 1;
 
     switch (homeSectionIndex) {
@@ -79,13 +79,17 @@ const HomeComponent = () => {
         break;
     }
 
-    // Remonter le scroll du conteneur en haut
     if (scrollableContainerRef.current) {
       scrollableContainerRef.current.scrollTo({ top: 0 });
     }
 
     getMovies();
   }, [homeSectionIndex]);
+
+  useEffect(() => {
+    console.log('les films ! =>', movies);
+    
+  }, [movies])
 
   return (
     <>

@@ -2,9 +2,11 @@ import { Box, Stack, Typography } from '@mui/material';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 import { useNavigate } from 'react-router-dom';
 
-const FilmSimilarCard = ({ isMovieOrSerie, movie }) => {
+const FilmSimilarCard = ({ movie }) => {
 
   const navigate = useNavigate();
+
+  const isMovieOrSerie = findIfMovieOrSerie(movie);  
 
   return (
     <Stack
@@ -20,7 +22,7 @@ const FilmSimilarCard = ({ isMovieOrSerie, movie }) => {
           backgroundSize: 'cover',
           outline: '1px solid #1F1F1F'
         }}
-        onClick={() => navigate(`/film/${findIfMovieOrSerie(movie)}/${movie.id}`)}
+        onClick={() => navigate(`/film/${isMovieOrSerie}/${movie.id}`)}
       />
       <Typography
         align='center'

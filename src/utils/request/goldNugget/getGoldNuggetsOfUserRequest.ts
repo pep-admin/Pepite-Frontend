@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { apiBaseUrl } from '../config';
+import { parseDatabaseData } from '@utils/functions/parseDetails';
 
 // Récupération de toutes les critiques d'un utilisateur
 export const getGoldNuggetsOfUserRequest = async (
@@ -12,7 +13,15 @@ export const getGoldNuggetsOfUserRequest = async (
       params: { type: type },
       withCredentials: true,
     },
+  );  
+
+  if (!Array.isArray(response.data.goldNuggets)) {
+    return [];
+  }
+
+  const parsedData = response.data.goldNuggets.map(goldNugget =>
+    parseDatabaseData(goldNugget),
   );
 
-  return response.data;
+  return parsedData;
 };

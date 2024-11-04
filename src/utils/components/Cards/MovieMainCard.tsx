@@ -5,9 +5,12 @@ import GoldNuggetIcon from '../GoldNuggetIcon';
 import { TurnipIcon } from '../styledComponent';
 import ColoredRating from '../ColoredRating';
 import { formatRating } from '@utils/functions/formatRating';
+import { useNavigate } from 'react-router-dom';
 // import { convertRating } from '@utils/functions/convertRating';
 
 const MovieMainCard = ({ movie, displayGradient, isFirstCard, isLastCard }) => {
+
+  const navigate = useNavigate();
 
   const isMovieOrSerie = 'release_date' in movie ? 'movie' : 'serie';
   const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
@@ -60,6 +63,7 @@ const MovieMainCard = ({ movie, displayGradient, isFirstCard, isLastCard }) => {
                 backgroundSize: 'cover',
                 outline: '1px solid #292929'
               }}
+              onClick={() => navigate(`/film/${isMovieOrSerie}/${movie.id}`)}
             />
           </Stack>
           <Stack 
@@ -173,7 +177,7 @@ const MovieMainCard = ({ movie, displayGradient, isFirstCard, isLastCard }) => {
         </Stack>
         </Stack>
         
-      { !isLastCard && <Divider sx={{ borderColor: '#173333' }} /> }
+      { !isLastCard && <Divider sx={{ borderColor: '#173333', zIndex: 100 }} /> }
     </>
     
   );

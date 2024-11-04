@@ -1,13 +1,13 @@
 import { Container, Skeleton, Stack, Typography } from '@mui/material';
 import { getMovieCreditsRequest } from '@utils/request/film/getMovieCreditsRequest';
 import { useEffect, useRef, useState } from 'react';
-import { Credits } from 'types/interface';
+// import { Credits } from 'types/interface';
 import FilmCastingCard from './FilmCastingCard';
 import { calculateSkeletonCount } from '@utils/functions/calculateSkeletonCount';
 
-const FilmCredits = ({ isMovieOrSerie, movie }) => {
+const FilmCredits = ({ isMovieOrSerie, movie, movieCredits, setMovieCredits, setDirectorData }) => {
 
-  const [movieCredits, setMovieCredits] = useState<Credits>({});
+  // const [movieCredits, setMovieCredits] = useState<Credits>({});
   const [areCreditsLoading, setAreCreditsLoading] = useState(true);
   const [creditsVisible, setCreditsVisible] = useState(false);
   const [skeletonCount, setSkeletonCount] = useState(0);
@@ -20,42 +20,56 @@ const FilmCredits = ({ isMovieOrSerie, movie }) => {
   const getMovieCredits = async () => {
     try {
       setAreCreditsLoading(true);
-      const credits = await getMovieCreditsRequest(isMovieOrSerie, movie.id);
-
-       // Liste des métiers principaux
-       const mainJobs = [
+      const movieOrTv = isMovieOrSerie === 'movie' ? 'movie' : 'tv';
+      const credits = await getMovieCreditsRequest(movieOrTv, movie.id);
+  
+      const mainJobs = [
         'Director', 'Producer', 'Executive Producer', 'Co-Producer', 'Associate Producer',
         'Writer', 'Story', 'Screenplay', 'Composer', 'Director of Photography', 
         'Editor', 'Production Designer', 'Art Director', 'Costume Designer', 
         'Special Effects', 'Visual Effects Supervisor', 
         'Casting Director', 'Stunt Coordinator'
       ];
-
+  
       // Filtrer pour ne garder que les métiers principaux
       const filteredCrew = credits.crew.filter(member => mainJobs.includes(member.job));
       
-      // Trier l'équipe technique dans l'ordre d'importance
+      // Trier l'équipe technique par importance de rôle, puis par popularité
       const sortedCrew = filteredCrew.sort((a, b) => {
-        const jobOrder = ['Director', 'Co-Director', 'Producer', 'Co-Producer', 'Writer', 'Story', 'Screenplay', 'Composer', 'Executive Producer'];
+        const jobOrder = ['Director', 'Producer', 'Executive Producer', 'Writer', 'Composer'];
         const aIndex = jobOrder.indexOf(a.job) !== -1 ? jobOrder.indexOf(a.job) : jobOrder.length;
         const bIndex = jobOrder.indexOf(b.job) !== -1 ? jobOrder.indexOf(b.job) : jobOrder.length;
-        return aIndex - bIndex;
+  
+        // Si les deux rôles ont la même importance, trier par popularité
+        return aIndex === bIndex ? b.popularity - a.popularity : aIndex - bIndex;
       });
-
+  
+      // Si aucun réalisateur n'existe, choisir le membre avec la popularité la plus élevée
+      if (!sortedCrew.some(member => member.job === 'Director')) {
+        sortedCrew.sort((a, b) => b.popularity - a.popularity);
+      } 
+  
       // Trier les acteurs par popularité
       const sortedCast = credits.cast.sort((a, b) => b.popularity - a.popularity);
-
+  
       setMovieCredits({
         ...credits,
-        crew: sortedCrew, // Utiliser le tableau filtré et trié
+        crew: sortedCrew,
         cast: sortedCast,
       });
+      
+      if(sortedCrew.length > 0) {
+        setDirectorData({ id: sortedCrew[0].id, job: sortedCrew[0].job, name: sortedCrew[0].name });
+      } else {
+        setDirectorData(null);
+      }
+
     } catch (error) {
-      console.log('erreur');
+      console.log('Erreur lors de la récupération des crédits:', error);
     } finally {
       setAreCreditsLoading(false);
     }
-  };
+  };  
 
   useEffect(() => {
     if (!areCreditsLoading) {

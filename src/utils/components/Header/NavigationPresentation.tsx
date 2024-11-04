@@ -48,6 +48,9 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
               align='center'
               fontFamily='Pragati Narrow, sans-serif'
               color='secondary.light'
+              fontSize='0.9em'
+              position='relative'
+              top='3px'
             >
               {`${loggedUserInfos.rank}`}
             </Typography>

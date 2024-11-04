@@ -106,7 +106,7 @@ export function App() {
                     }
                   />
                   <Route
-                    path="/rating"
+                    path="/rating/:type?/:id?/:action?"
                     element={
                       <PrivateRoute>
                         <RatingContainer />

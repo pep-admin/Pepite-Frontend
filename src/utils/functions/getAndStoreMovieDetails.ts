@@ -26,7 +26,7 @@ export const getAndStoreMovieDetails = async(
   ) => {
   // Récupération des détails du film
   const details = await getMovieDetailsRequest(isMovieOrSerie, movieId);
-
+  
   if(setMovieDetails) setMovieDetails(details);
 
   // Enregistrement des données du film nécessaires dans la base de données 
@@ -43,5 +43,5 @@ export const getAndStoreMovieDetails = async(
   }
   storeMovieDataRequest(isMovieOrSerie, necessaryDetails);
 
-  console.log('les détails du film =>', necessaryDetails);
+  // console.log('les détails du film =>', necessaryDetails);
 }

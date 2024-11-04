@@ -1,5 +1,5 @@
 import { Stack, Box, Typography, useTheme, Skeleton, Divider, Container } from '@mui/material';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { ErrorState, Movie, MovieDetails } from 'types/interface';
 import FilmRating from './FilmRating';
 
@@ -19,9 +19,13 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
   areDetailsLoading,
   setError 
 }) => {
+  console.log(movieDetails);
   
   const theme = useTheme();
+  const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
+  const movieDate = isMovieOrSerie === 'movie' ? movie.release_date : movie.first_air_date;
 
+  console.log(movieDate);
   return (
     <Container
       sx={{
@@ -57,7 +61,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
             fontWeight='300'
             lineHeight='1.25'
           >
-            {`${movie.title}`}
+            {`${movieTitle}`}
           </Typography>
           {
             areDetailsLoading ?
@@ -77,9 +81,12 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
               >
                 {`${isMovieOrSerie === 'movie' ? 'Film' : 'Série'}`}
                 {' - '}
-                {`${movie.release_date.split('-')[0]}`}
+                {/* {`${movieDate.split('-')[0]}`} */}
                 {' - '}
-                {`${movieDetails.runtime} min`}
+                { isMovieOrSerie === 'movie'
+                  ? `${movieDetails.runtime} min`
+                  : `${movieDetails.number_of_seasons} saisons`
+                }
               </Typography>
               <Typography
                 component='p'
@@ -108,8 +115,9 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
                   align='center'
                   color={theme.palette.text.secondary}
                   fontFamily='League Spartan, sans-serif'
-                  fontSize='1.1em'
+                  fontSize='1.05em'
                   fontWeight='300'
+                  fontStyle='italic'
                   lineHeight='1.2'
                 >
                   {`${movieDetails.tagline}`}

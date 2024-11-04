@@ -5,7 +5,7 @@ import { Movie } from 'types/interface';
 const HomeSection = ({ movies, homeSectionRef, setShowFilmDetails }) => {
   return (
     <Grid container>
-      {movies.map((movie: Movie, index: number) => {
+      {movies.filter(movie => movie.poster_path).map((movie: Movie, index: number) => {
         return (
           <HomeCard
             key={`${movie.id}-${index}`}

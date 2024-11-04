@@ -7,9 +7,8 @@ import RatingReview from './RatingReview';
 import RatingPublish from './RatingPublish';
 import RatingFriendSelected from './RatingFriendSelected';
 
-const RatingComponent = ({ ratingSectionIndex }) => {
+const RatingComponent = ({ ratingSectionIndex, movieSelected, setMovieSelected }) => {
 
-  const [movieSelected, setMovieSelected] = useState(null);
   const [friendSelected, setFriendSelected] = useState(null);
   const [movieRating, setMovieRating] = useState(null);
   const [criticText, setCriticText] = useState(null);

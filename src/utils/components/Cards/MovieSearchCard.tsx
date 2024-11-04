@@ -9,7 +9,7 @@ const MovieSearchCard = ({ movie, setSearchResults, setMovieSelected }) => {
 
   const theme = useTheme();
 
-  const selectMovie = () => {
+  const selectMovie = () => {    
     setSearchResults([]); // Supprime les résultats de recherche
     setMovieSelected(movie); // Assigne le film sélectionné au film choisi
     getAndStoreMovieDetails(isMovieOrSerie, movie.id, null); // Sauvegarde les détails du film dans la DB

@@ -79,7 +79,7 @@ const HeaderNavigation = ({ page }) => {
                       } else if (item === 'Swipe') {
                         navigate('/swipe');
                       } else if (item === 'Ma liste') {
-                        navigate(`/list/${loggedUserInfos.id}`);
+                        navigate(`/list`);
                       } else if (item === 'Mes contacts') {
                         navigate(`/contacts/${loggedUserInfos.id}`);
                       } else if (item === 'Mon profil') {

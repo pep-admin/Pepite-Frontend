@@ -35,11 +35,11 @@ const Header2 = ({ page, isTrailerFullscreen }) => {
   return (
     <AppBar
       position={
-        page === 'swipe'
+        page === 'Swipe'
           ? 'absolute'
           : 'static'
       }
-      elevation={page === 'swipe' ? 2 : 0}
+      elevation={page === 'Swipe' ? 2 : 0}
       sx={{
         visibility: isTrailerFullscreen ? 'hidden' : 'visible',
         height: '56px',

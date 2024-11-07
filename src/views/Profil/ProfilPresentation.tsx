@@ -29,7 +29,7 @@ const ProfilPresentation = ({ userInfos}) => {
             align='center'
             color={theme.palette.text.primary}
             fontFamily='League Spartan, sans-serif'
-            fontSize='2.1em'
+            fontSize='2em'
             fontWeight='300'
             lineHeight='1'
           >

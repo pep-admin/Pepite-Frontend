@@ -1,7 +1,7 @@
-import ListComponent2 from '@views/List/ListComponent';
+import ListComponent2 from '@views/List/ListComponent2';
 
 const ListContainer = () => {
-  return null;
+  return <ListComponent2 />;
 };
 
 export default ListContainer;

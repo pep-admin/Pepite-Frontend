@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import FilmSimilarCard from './FilmSimilarCard';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 
-const FilmSimilar = ({ isMovieOrSerie, movieId, directorData }) => {
+const FilmSimilar = ({ isMovieOrSerie, movieId, directorData, onNavigate }) => {
 
   const [similarMovies, setSimilarMovies] = useState([]);
   const [areMoviesLoading, setAreMoviesLoading] = useState(true);
@@ -92,7 +92,7 @@ const FilmSimilar = ({ isMovieOrSerie, movieId, directorData }) => {
             ))
           ) : (
             similarMovies.map((movie) => (
-              <FilmSimilarCard key={movie.id} movie={movie} />
+              <FilmSimilarCard key={movie.id} movie={movie} onNavigate={onNavigate}/>
             ))
           )}
         </Stack>

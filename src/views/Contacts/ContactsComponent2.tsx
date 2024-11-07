@@ -17,7 +17,7 @@ const ContactsComponent2 = () => {
 
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [contactsSectionIndex, setContactsSectionIndex] = useState(0);
-  const [contactsSection, setContactsSection] = useState('Demandes'); // Utilisation de useState pour le nom de la section
+  const [contactsSection, setContactsSection] = useState('Demandes'); 
 
   const scrollableContainerRef = useRef(null);
 

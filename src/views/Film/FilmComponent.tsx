@@ -8,7 +8,7 @@ import FilmExternalLinks from './FilmExternalLinks';
 import { useState } from 'react';
 import { Credits } from 'types/interface';
 
-const FilmComponent = ({ display, movie, movieDetails, isMovieOrSerie, areDetailsLoading, onClose, error, setError }) => {
+const FilmComponent = ({ display, movie, movieDetails, isMovieOrSerie, areDetailsLoading, onClose, error, setError, onNavigate }) => {
 
   const [movieCredits, setMovieCredits] = useState<Credits>({});
   const [directorData, setDirectorData] = useState({ id: null, job: null, name: null }); 
@@ -98,6 +98,7 @@ const FilmComponent = ({ display, movie, movieDetails, isMovieOrSerie, areDetail
           isMovieOrSerie={isMovieOrSerie} 
           movieId={movieDetails.id} 
           directorData={directorData}
+          onNavigate={onNavigate}
         />
         <FilmExternalLinks
           isMovieOrSerie={isMovieOrSerie}

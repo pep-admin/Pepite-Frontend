@@ -25,7 +25,6 @@ const HomeComponent = () => {
 
   const getMovies = async () => {
     setLoadingMovies(Array(20).fill({})); // Ajoute 20 films fictifs en tant que placeholders pour le Skeleton
-    console.log('reset =>', homeSectionRef.current);
     
     let newMovies = [];
 
@@ -89,7 +88,7 @@ const HomeComponent = () => {
   useEffect(() => {
     console.log('les films ! =>', movies);
     
-  }, [movies])
+  }, [movies]);
 
   return (
     <>

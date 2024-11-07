@@ -6,14 +6,20 @@ import SwipeComponent from '@views/Swipe/SwipeComponent';
 
 // Import des requêtes
 import { getMoviesSwipe } from '@utils/request/swipe/getMoviesSwipe';
-import { ErrorState } from 'types/interface';
+import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
+import { getMovieCreditsRequest } from '@utils/request/film/getMovieCreditsRequest';
+import { findDirectorName, findTopActors } from '@utils/functions/findCrewAndCast';
 // import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 
 const SwipeContainer = () => {
+  
   // Gestions des films
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviePage, setMoviePage] = useState(null); // Numéro de la page de l'API
   const [hasMoreMovies, setHasMoreMovies] = useState(true); // S'il y'a toujours des films à récupérer
+
+  const [showMovieInfos, setShowMovieInfos] = useState(false); // Booléen pour ouvrir les infos détaillées
+  const [movieDetails, setMovieDetails] = useState(null); // Les informations détaillées du film
 
   // Gestion de l'index
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -37,7 +43,6 @@ const SwipeContainer = () => {
 
   // Gestion du chargement et des erreurs
   const [loading, setLoading] = useState(true); // Chargement des 20 premiers films
-  const [error, setError] = useState<ErrorState>({ state: null, message: '' }); // Erreur lors du chargement
 
   // Récupère 20 films selon la page
   const getMovies = async moviePage => {
@@ -79,16 +84,38 @@ const SwipeContainer = () => {
       }
     } catch (err) {
       console.log('erreur !', err);
-
-      setError({
-        state: true,
-        message: 'Erreur dans la récupération des films.',
-      });
-      return;
     } finally {
       setLoading(false);
     }
   };
+
+  // Récupère les détails d'un film (genre, année...)
+  const fetchMovieDetails = async movieId => {
+    try {
+      console.log('chargement des données détaillées');
+      
+      const details = await getMovieDetailsRequest(typeChosen, movieId);
+      const credits = await getMovieCreditsRequest(typeChosen, movieId);
+
+      const director = findDirectorName(credits.crew);
+      const topActors = findTopActors(credits.cast);
+
+      const detailsData = {...details, director: director, topActors: topActors};      
+
+      setMovieDetails(detailsData);
+    } catch (err) {
+      console.log(err);
+      
+    }
+  };
+
+  useEffect(() => {
+    if (showMovieInfos) {
+      fetchMovieDetails(movies[currentIndex].id);
+    } else {
+      setMovieDetails(null);
+    }
+  }, [showMovieInfos, currentIndex]);
 
   // Charge 20 nouveaux films lorsque l'utilisateur arrive à 3 films avant la fin du tableau
   useEffect(() => {
@@ -128,9 +155,11 @@ const SwipeContainer = () => {
     !loading && (
       <SwipeComponent
         movies={movies}
-        setMovies={setMovies}
         currentIndex={currentIndex}
         setCurrentIndex={setCurrentIndex}
+        showMovieInfos={showMovieInfos}
+        setShowMovieInfos={setShowMovieInfos}
+        movieDetails={movieDetails}
         typeChosen={typeChosen}
         setTypeChosen={setTypeChosen}
         countryChosen={countryChosen}
@@ -142,8 +171,6 @@ const SwipeContainer = () => {
         periodChosen={periodChosen}
         setPeriodChosen={setPeriodChosen}
         setIsFilterValidated={setIsFilterValidated}
-        error={error}
-        setError={setError}
       />
     )
   );

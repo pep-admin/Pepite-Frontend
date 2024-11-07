@@ -81,7 +81,7 @@ const FilmPresentation: React.FC<FilmPresentationProps> = ({
               >
                 {`${isMovieOrSerie === 'movie' ? 'Film' : 'Série'}`}
                 {' - '}
-                {/* {`${movieDate.split('-')[0]}`} */}
+                {`${!movieDate ? null : movieDate.split('-')[0]}`}
                 {' - '}
                 { isMovieOrSerie === 'movie'
                   ? `${movieDetails.runtime} min`

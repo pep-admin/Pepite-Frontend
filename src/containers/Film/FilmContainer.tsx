@@ -4,11 +4,12 @@ import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 import { getAndStoreMovieDetails } from '@utils/functions/getAndStoreMovieDetails';
 import FilmComponent from '@views/Film/FilmComponent';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ErrorState, MovieDetails } from 'types/interface';
 
 const FilmContainer = ({ display, movie, onClose }) => {
   const { movieOrSerie, id } = useParams();
+  const navigate = useNavigate();
 
   let isMovieOrSerie = movieOrSerie;
   let movieId = parseInt(id, 10);
@@ -39,6 +40,11 @@ const FilmContainer = ({ display, movie, onClose }) => {
     }
   };
 
+  const handleNavigateToMovie = (isMovieOrSerie, movieId) => {
+    // Utilise la fonction navigate pour changer de page
+    navigate(`/film/${isMovieOrSerie}/${movieId}`);
+  };
+
   useEffect(() => {
     console.log('RESET');
     
@@ -52,7 +58,7 @@ const FilmContainer = ({ display, movie, onClose }) => {
       { display === 'full-page' ? (
           <>
             <Header2 page={'Film'} isTrailerFullscreen={null} />
-            {!areDetailsLoading && movieDetails.backdrop_path && (movieDetails.release_date || movieDetails.first_air_date) ? (
+            {!areDetailsLoading ? (
               <FilmComponent
                 display={display}
                 movie={movieDetails}
@@ -62,6 +68,7 @@ const FilmContainer = ({ display, movie, onClose }) => {
                 onClose={onClose}
                 error={error}
                 setError={setError}
+                onNavigate={handleNavigateToMovie}
               />
             ) : (
               <Stack height='calc(100vh - 56px)' justifyContent='center' alignItems='center'>
@@ -79,6 +86,7 @@ const FilmContainer = ({ display, movie, onClose }) => {
             onClose={onClose}
             error={error}
             setError={setError}
+            onNavigate={handleNavigateToMovie}
           />
         )}
     </Box>

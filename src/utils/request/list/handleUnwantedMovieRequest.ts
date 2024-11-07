@@ -7,22 +7,21 @@ export const handleUnwantedMovieRequest = async (
   type: string,
   unwanted: boolean,
 ) => {
-  try {
-    if (unwanted) {
-      await axios.post(
-        `${apiBaseUrl}/list/unwanted`,
-        { movie_id: movieId, type: type },
-        { withCredentials: true },
-      );
-    } else {
-      await axios.delete(`${apiBaseUrl}/list/recover_unwanted`, {
-        data: { movie_id: movieId, type: type },
-        withCredentials: true,
-      });
-    }
+  if (unwanted) {      
+    await axios.post(
+      `${apiBaseUrl}/list/unwanted`,
+      { movie_id: movieId, type: type },
+      { withCredentials: true },
+    );
 
-    return { error: null };
-  } catch {
-    return { error: "Erreur serveur : Impossible d'effectuer l'action." };
+    return { message: `ne vous sera plus proposé.` };
+  } else {
+    await axios.delete(`${apiBaseUrl}/list/recover_unwanted`, {
+      data: { movie_id: movieId, type: type },
+      withCredentials: true,
+    });
+
+    return { message: `pourra vous être proposé.` };
   }
+
 };

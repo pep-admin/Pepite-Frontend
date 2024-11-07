@@ -82,7 +82,7 @@ export function App() {
                     }
                   />
                   <Route
-                    path="/list/:id"
+                    path="/list"
                     element={
                       <PrivateRoute>
                         <ListContainer />

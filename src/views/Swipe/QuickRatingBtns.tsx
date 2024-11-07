@@ -80,9 +80,9 @@ const QuickRatingBtns = ({ btnType, handleBtnAction }) => {
           sx={null}
         />
       ) : btnType === 'validate' ? (
-        <DoneIcon sx={{ fontSize: '30px' }} />
+        <DoneIcon sx={{ fontSize: '30px', color: '#e4e4e4' }} />
       ) : (
-        <ClearIcon sx={{ fontSize: '30px' }} />
+        <ClearIcon sx={{ fontSize: '30px', color: '#e4e4e4' }} />
       )}
     </Button>
   );

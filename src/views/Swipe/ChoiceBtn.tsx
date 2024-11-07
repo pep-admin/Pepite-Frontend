@@ -1,10 +1,15 @@
 // Import des libs externes
 import { Badge, Stack } from '@mui/material';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 // Import des composants internes
 import { CustomButton } from '@views/Swipe/CustomBtn';
-import SwipeQuickRating from '@views/Swipe/SwipeQuickRating';
+
+// Import des interfaces TS
+import { Movie } from 'types/interface';
+
+// Import des hooks
+import { useSnackbar } from '@hooks/SnackbarContext';
 
 // Import des icônes
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -15,81 +20,49 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 
-interface Movie {
-  adult: boolean;
-  backdrop_path: string;
-  genre_ids: number[];
-  id: number;
-  is_rated: boolean;
-  is_unwanted: boolean;
-  is_wanted: boolean;
-  is_watched: boolean;
-  is_gold_nugget: boolean;
-  is_turnip: boolean;
-  user_rating: number | null;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  release_date: string;
-  title: string;
-  video: boolean;
-  vote_average: number;
-  vote_count: number;
-}
-
-interface ErrorState {
-  state: boolean | null;
-  message: string | null;
-}
-
 interface ChoiceBtn2Props {
-  movies: Array<Movie>;
-  setMovies: React.Dispatch<React.SetStateAction<Movie | null>>;
-  currentIndex: number | null;
+  currentMovie: Movie;
+  isMovieOrSerie: string;
   choice: string;
-  isActive: boolean | null;
-  handleActions: (
-    btnChoice: string,
+  handleSwipeBtns: (
+    choice: string,
+    movie: Movie,
+    isMovieOrSerie: string,
     rating: number | undefined,
-    isGoldNugget: boolean | undefined,
-    isTurnip: boolean | undefined,
-    validateOrCancel: string | undefined,
+    handleOpenSnackbar: (message: string) => void,
+    isActive: boolean,
+    setIsActive: React.Dispatch<React.SetStateAction<boolean>>,
   ) => void;
-  isGoldNugget: boolean;
-  setIsGoldNugget: React.Dispatch<React.SetStateAction<boolean | null>>;
-  isTurnip: boolean;
-  setIsTurnip: React.Dispatch<React.SetStateAction<boolean | null>>;
-  error: ErrorState;
 }
 
 const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
   ({
-    movies,
-    setMovies,
-    currentIndex,
+    currentMovie,
+    isMovieOrSerie,
     choice,
-    isActive,
-    handleActions,
-    isGoldNugget,
-    setIsGoldNugget,
-    isTurnip,
-    setIsTurnip,
-    error,
+    handleSwipeBtns,
   }) => {
-    const [anchorRatingBtn, setAnchorRatingBtn] =
-      useState<HTMLButtonElement | null>(null);
+
+    const handleOpenSnackbar = useSnackbar(); 
+
+    const [isActive, setIsActive] = useState(false);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorRatingBtn(event.currentTarget);
+      console.log('faire un swipe venant du côté pour noter le film');
+      
     };
 
-    const closePopover = () => {
-      setAnchorRatingBtn(null);
-    };
-
-    const openPopover = Boolean(anchorRatingBtn);
+    useEffect(() => {
+      // Vérifie si l'ID du film est dans le tableau correspondant dans le local storage
+      const updateIsActive = () => {
+        const storedMovies = JSON.parse(localStorage.getItem(`${choice}Movies`)) || [];
+        setIsActive(storedMovies.includes(currentMovie.id)); 
+      };
+  
+      // Appel initial
+      updateIsActive();
+  
+    }, [currentMovie.id, choice]);
 
     return (
       <>
@@ -101,16 +74,18 @@ const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
             }
             choice={choice}
             isactive={isActive}
-            errorstate={error.state}
+            // errorstate={error.state}
             onClick={
               choice !== 'quick_rating'
                 ? () =>
-                    handleActions(
+                    handleSwipeBtns(
                       choice,
-                      undefined,
-                      undefined,
-                      undefined,
-                      undefined,
+                      currentMovie,
+                      isMovieOrSerie,
+                      null,
+                      handleOpenSnackbar,
+                      isActive,
+                      setIsActive,
                     )
                 : e => handleClick(e)
             }
@@ -157,8 +132,8 @@ const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
               )
             ) : (
               <Badge
-                badgeContent={movies[currentIndex].user_rating}
-                invisible={!movies[currentIndex].user_rating}
+                badgeContent={currentMovie.user_rating}
+                invisible={!currentMovie.user_rating}
                 sx={{
                   '& .MuiBadge-badge': {
                     top: '-10px',
@@ -176,7 +151,7 @@ const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
             )}
           </CustomButton>
         </Stack>
-        {choice === 'quick_rating' && (
+        {/* {choice === 'quick_rating' && (
           <SwipeQuickRating
             movies={movies}
             setMovies={setMovies}
@@ -190,7 +165,7 @@ const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
             isTurnip={isTurnip}
             setIsTurnip={setIsTurnip}
           />
-        )}
+        )} */}
       </>
     );
   },

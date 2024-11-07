@@ -15,8 +15,6 @@ const MovieMainCard = ({ movie, displayGradient, isFirstCard, isLastCard }) => {
   const isMovieOrSerie = 'release_date' in movie ? 'movie' : 'serie';
   const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
   const release_date = isMovieOrSerie === 'movie' ? movie.release_date : movie.first_air_date;
-
-  console.log('le film profil =>', movie);
   
   return (
     <>

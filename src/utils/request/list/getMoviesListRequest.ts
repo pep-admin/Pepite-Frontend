@@ -3,8 +3,9 @@ import { parseDatabaseData } from '../../functions/parseDetails';
 import { apiBaseUrl } from '../config';
 
 // Récupération de toutes films / séries souhaitées d'un utilisateur
-export const getWantedMoviesRequest = async (userId, type) => {
-  const response = await axios.get(`${apiBaseUrl}/list/wanted/${userId}`, {
+export const getMoviesListRequest = async (listType, type) => {
+
+  const response = await axios.get(`${apiBaseUrl}/list/${listType}`, {
     params: { type: type },
     withCredentials: true,
   });

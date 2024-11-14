@@ -41,10 +41,12 @@ const ProfilReviews = ({ isProfilLoggedUser, userInfos, criticsCount, criticsMov
               criticsMovies.map((movie, index) => (
                 <MovieMainCard 
                   key={movie.id} 
+                  listSectionIndex={null}
                   movie={movie} 
                   displayGradient={true}
                   isFirstCard={index === 0}
                   isLastCard={index === criticsMovies.length - 1} 
+                  onComplete={null}
                 />
               ))
             )

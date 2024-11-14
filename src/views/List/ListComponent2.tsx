@@ -37,7 +37,7 @@ const ListComponent2 = () => {
     } finally {
       setLoadingMovies(false);
     }
-  }
+  };
 
   useEffect(() => {
     if(listSectionIndex === 0) {
@@ -79,10 +79,12 @@ const ListComponent2 = () => {
               return (
                 <MovieMainCard 
                   key={movie.id}
+                  listSectionIndex={listSectionIndex}
                   displayGradient={true}
                   movie={movie}
                   isFirstCard={index === 0}
                   isLastCard={index === moviesList.length - 1}
+                  onComplete={getMoviesList}
                 />
               )
             })

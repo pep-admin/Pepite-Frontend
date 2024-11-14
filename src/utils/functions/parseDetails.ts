@@ -2,7 +2,7 @@
 
 // Si récupération des détails des films depuis la DB, on parse les infos
 export const parseDatabaseData = data => {
-  // console.log('les données =>', data);
+  console.log('les données =>', data);
 
   // Informations générales
   const isMovie = 'release_date' in data;
@@ -17,6 +17,7 @@ export const parseDatabaseData = data => {
   const is_gold_nugget = data.is_gold_nugget === 1 ? true : false;
   const is_turnip = data.is_turnip === 1 ? true : false;
   const post_date = data.post_date;
+  const text = data.text;
 
   // Si plusieurs personnes ont noté un même film
   const grouped_critics = data.grouped_critics;
@@ -48,6 +49,7 @@ export const parseDatabaseData = data => {
       user_rating,
       is_gold_nugget,
       is_turnip,
+      text,
       post_date
     };
   }
@@ -75,6 +77,7 @@ export const parseDatabaseData = data => {
       user_rating,
       is_gold_nugget,
       is_turnip,
+      text,
       post_date
     };
   }

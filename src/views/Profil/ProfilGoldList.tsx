@@ -50,10 +50,12 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsCount, goldN
             goldNuggetsMovies.slice(0, visibleMoviesCount).map((movie, index) => (
               <MovieMainCard 
                 key={movie.id} 
+                listSectionIndex={null}
                 movie={movie} 
                 displayGradient={false}
                 isFirstCard={index === 0}
                 isLastCard={index === goldNuggetsMovies.length - 1} 
+                onComplete={null}
               />
             ))
           )

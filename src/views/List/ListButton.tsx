@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 
-const ContactsButton = ({ btn, handleBtnAction }) => {
+const ListButton = ({ btn, handleBtnAction }) => {
 
   const IconComponent = btn.icon;
 
@@ -14,7 +14,7 @@ const ContactsButton = ({ btn, handleBtnAction }) => {
         backgroundColor: '#011212 !important',
         border: '1px solid #2E2E2E',
         borderRadius: '4px',
-        color: btn.color 
+        color: '#4d4d4d'
       }}  
       onClick={() => handleBtnAction(btn.action)}
     >
@@ -23,4 +23,4 @@ const ContactsButton = ({ btn, handleBtnAction }) => {
   );
 };
 
-export default ContactsButton;
+export default ListButton;

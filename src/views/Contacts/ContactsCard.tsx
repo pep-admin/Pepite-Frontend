@@ -151,7 +151,6 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
                 // Si l'utilisateur a envoyé une demande
                 : relationship.friendship === 'sent' ?
                   <ContactsButton 
-                    btnType={'friendship'} 
                     btn={friendshipButtons[2]} 
                     handleBtnAction={handleBtnAction} 
                   />
@@ -161,18 +160,15 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
                   // Boutons pour accepter et décliner l'invitation
                   <>
                     <ContactsButton 
-                      btnType={'friendship'} 
                       btn={friendshipButtons[1]} 
                       handleBtnAction={handleBtnAction}
                     />
-                    <ContactsButton 
-                      btnType={'friendship'} 
+                    <ContactsButton   
                       btn={friendshipButtons[4]} 
                       handleBtnAction={handleBtnAction}
                     />
                   </> 
                 : <ContactsButton 
-                    btnType={'friendship'} 
                     btn={friendshipButtons[0]} 
                     handleBtnAction={handleBtnAction}
                   />
@@ -183,7 +179,6 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
                 // Si ami, on affiche le bouton pour supprimer l'amitié
                 relationship.friendship === 'accepted' ?
                   <ContactsButton 
-                    btnType={'friendship'} 
                     btn={friendshipButtons[3]} 
                     handleBtnAction={handleBtnAction}
                   />
@@ -191,14 +186,12 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
                 // Si suivi, on affiche l'icône "suivi"
                 : relationship.follow === 'followed' ?
                   <ContactsButton 
-                    btnType={'other'} 
                     btn={otherButtons[1]} 
                     handleBtnAction={handleBtnAction}
                   />
 
                 // Si non ami et non suivi, on affiche l'icône "non suivi"
                 : <ContactsButton 
-                    btnType={'other'} 
                     btn={otherButtons[0]} 
                     handleBtnAction={handleBtnAction}
                   />
@@ -206,14 +199,12 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
               { // Icône utilisateur bloqué
                 relationship.block === 'blocked' ?
                   <ContactsButton 
-                    btnType={'other'} 
                     btn={otherButtons[3]} 
                     handleBtnAction={handleBtnAction}
                   />
 
                 // Icône pour bloquer
                 : <ContactsButton 
-                  btnType={'other'} 
                   btn={otherButtons[2]} 
                   handleBtnAction={handleBtnAction}
                 /> 

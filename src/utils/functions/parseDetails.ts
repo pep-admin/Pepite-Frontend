@@ -18,6 +18,7 @@ export const parseDatabaseData = data => {
   const is_turnip = data.is_turnip === 1 ? true : false;
   const post_date = data.post_date;
   const text = data.text;
+  const critic_id = data.id;
 
   // Si plusieurs personnes ont noté un même film
   const grouped_critics = data.grouped_critics;
@@ -50,7 +51,8 @@ export const parseDatabaseData = data => {
       is_gold_nugget,
       is_turnip,
       text,
-      post_date
+      post_date,
+      critic_id
     };
   }
 
@@ -78,7 +80,8 @@ export const parseDatabaseData = data => {
       is_gold_nugget,
       is_turnip,
       text,
-      post_date
+      post_date,
+      critic_id
     };
   }
 };

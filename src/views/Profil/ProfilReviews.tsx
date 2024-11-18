@@ -8,7 +8,7 @@ const ProfilReviews = ({ isProfilLoggedUser, userInfos, criticsCount, criticsMov
       spacing={3}
       padding='30px 0 40px 0'
     >
-      <Stack width='fit-content' >
+      <Stack width='fit-content' padding='0 5vw'>
         <CustomBadge
           value={criticsCount}
           max={999}

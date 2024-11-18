@@ -17,7 +17,7 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsCount, goldN
       spacing={3}
       padding='30px 0 40px 0'
     >
-      <Stack width='fit-content'>
+      <Stack width='fit-content' padding='0 5vw'>
         <CustomBadge
           value={goldNuggetsCount}
           max={999}

@@ -41,7 +41,8 @@ export const getAndStoreMovieDetails = async(
     production_countries: details.production_countries,
     vote_average: details.vote_average
   }
-  storeMovieDataRequest(isMovieOrSerie, necessaryDetails);
+  
+  await storeMovieDataRequest(isMovieOrSerie, necessaryDetails);
 
   // console.log('les détails du film =>', necessaryDetails);
 }

@@ -47,7 +47,7 @@ const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
 
     const [isActive, setIsActive] = useState(false);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (_: React.MouseEvent<HTMLButtonElement>) => {
       console.log('faire un swipe venant du côté pour noter le film');
       
     };

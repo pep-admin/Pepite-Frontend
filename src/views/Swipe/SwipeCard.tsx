@@ -157,7 +157,6 @@ const SwipeCard: FC<SwipeCard3Props> = React.memo(
           }}
         >
           <SwipeContent
-            isCurrent={isCurrent}
             movie={movie}
             movieDetails={movieDetails}
             showMovieInfos={showMovieInfos}

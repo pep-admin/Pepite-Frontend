@@ -106,28 +106,24 @@ const ProfilComponent2 = ({ isProfilLoggedUser, userInfos, additionalInfos }) =>
         </Stack>
       </Container>
       <Box bgcolor='#021E1E'>
-        <Container sx={{ paddingLeft: '5vw', paddingRight: '5vw' }}>
-          <div ref={goldListRef}>
-            <ProfilGoldList 
-              isProfilLoggedUser={isProfilLoggedUser} 
-              userInfos={userInfos} 
-              goldNuggetsCount={additionalInfos.goldsNumber}
-              goldNuggetsMovies={goldNuggetsMovies} 
-            />
-          </div>
-        </Container>
+        <div ref={goldListRef}>
+          <ProfilGoldList 
+            isProfilLoggedUser={isProfilLoggedUser} 
+            userInfos={userInfos} 
+            goldNuggetsCount={additionalInfos.goldsNumber}
+            goldNuggetsMovies={goldNuggetsMovies} 
+          />
+        </div>
       </Box>
       <Box bgcolor='#021818'>
-        <Container sx={{ paddingLeft: '5vw', paddingRight: '5vw' }}>
-          <div ref={reviewsRef}>
-            <ProfilReviews 
-              isProfilLoggedUser={isProfilLoggedUser} 
-              userInfos={userInfos} 
-              criticsCount={additionalInfos.criticsNumber}
-              criticsMovies={criticsMovies} 
-            />
-          </div>
-        </Container>
+        <div ref={reviewsRef}>
+          <ProfilReviews 
+            isProfilLoggedUser={isProfilLoggedUser} 
+            userInfos={userInfos} 
+            criticsCount={additionalInfos.criticsNumber}
+            criticsMovies={criticsMovies} 
+          />
+        </div>
       </Box>
       <AddReviewBtn containerRef={null} />
     </>

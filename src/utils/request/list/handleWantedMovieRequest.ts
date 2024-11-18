@@ -8,6 +8,8 @@ export const handleWantedMovieRequest = async (
   wanted: boolean,
 ) => {
   if (wanted) {      
+    console.log(movieId, type);
+    
     await axios.post(
       `${apiBaseUrl}/list/add_wanted`,
       { movie_id: movieId, type: type },

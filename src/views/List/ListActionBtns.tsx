@@ -5,13 +5,14 @@ import { handleWatchedMovieRequest } from '@utils/request/list/handleWatchedMovi
 import { useSnackbar } from '@hooks/SnackbarContext';
 import { handleWantedMovieRequest } from '@utils/request/list/handleWantedMovieRequest';
 import { useNavigate } from 'react-router-dom';
+import { deleteCriticRequest } from '@utils/request/critics/deleteCriticRequest';
 
 const ListActionBtns = ({ listSectionIndex, movie, isMovieOrSerie, onComplete }) => {
 
   const handleOpenSnackbar = useSnackbar(); 
   const navigate = useNavigate();
 
-  const handleBtnAction = async (actionType) => {
+  const handleBtnAction = async (actionType: string) => {
     
     try {
       const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
@@ -22,23 +23,30 @@ const ListActionBtns = ({ listSectionIndex, movie, isMovieOrSerie, onComplete })
 
       switch (actionType) {
         case 'set_watched':
-          console.log('vu');
           response = await handleWatchedMovieRequest(movie.id, isMovieOrSerie, true); // Ajout dans la liste des films vus (à noter)
           handleOpenSnackbar(`${response.message} ${movieTitle}.`);
           onComplete(sectionName);
           break;
         case 'set_unwatched':
-          console.log('pas vu');
           await handleWantedMovieRequest(movie.id, isMovieOrSerie, true); // Replacement du film dans la liste des films voulus
           response = await handleWatchedMovieRequest(movie.id, isMovieOrSerie, false); // Suppression de la liste des films vus
           handleOpenSnackbar(`${response.message} ${movieTitle}.`);
           break;
         case 'note':
           navigate(`/rating/${dbTable}/${movie.id}/review`)
-          console.log('noter');
           break;
         case 'delete':
-          console.log('supprimer');
+          if(listSectionIndex === 0) {
+            // Si suppression depuis la section des films "à voir"
+            await handleWantedMovieRequest(movie.id, isMovieOrSerie, false); // Suppression de la liste des films voulus
+          } else if (listSectionIndex === 1) {
+            // Si suppression depuis la section des films "à noter"
+            await handleWatchedMovieRequest(movie.id, isMovieOrSerie, false); // Suppression de la liste des films vus
+          } else {
+            // Si suppression de la section des films notés
+            await deleteCriticRequest(movie.critic_id, isMovieOrSerie); // Suppression de la critique
+          }
+          handleOpenSnackbar(`${movieTitle} a été supprimé de votre liste.`);
           break;
         default:
           break;
@@ -46,6 +54,7 @@ const ListActionBtns = ({ listSectionIndex, movie, isMovieOrSerie, onComplete })
 
       onComplete(sectionName); // Rechargement de la liste des films après l'action
     } catch (error) {
+      console.log(error);
       
     }
   };

@@ -24,9 +24,11 @@ export const handleSwipeBtns = async(
 
     // Avant l'action, on sauvegarde les détails du film dans la DB
     try {
+      console.log('sauvegarde des détails...');
+      
       await getAndStoreMovieDetails(isMovieOrSerie, movie.id, null);
     } catch (error) {
-      console.log(error);
+      console.log('erreur lors de la sauvegarde des données :', error);
       return;
     }
 

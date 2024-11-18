@@ -21,7 +21,6 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 
 const SwipeContent = ({
-  isCurrent,
   movie,
   movieDetails,
   showMovieInfos,

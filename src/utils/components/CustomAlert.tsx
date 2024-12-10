@@ -1,7 +1,6 @@
 // Import des libs externes
-import { Box, Collapse, Alert, IconButton, Button, Stack } from '@mui/material';
+import { Box, Collapse, Alert, IconButton } from '@mui/material';
 import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,9 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 const CustomAlert = ({
   alertType,
   message,
-  setOnAlert,
-  setShowModal,
-  confirmation,
+  setShowAlert,
 }) => {
   const [open, setOpen] = useState(true);
 
@@ -19,17 +16,16 @@ const CustomAlert = ({
     if (!open) {
       // Supprime la modale après l'animation du collapse
       const timer = setTimeout(() => {
-        if (setOnAlert) {
-          setOnAlert({ state: null, message: null });
-        }
-        if (setShowModal) {
-          setShowModal(false);
+        if (setShowAlert) {
+          console.log('reset');
+          
+          setShowAlert({ display: false, error: false, severity: '', message: '' });
         }
       }, 300);
 
       return () => clearTimeout(timer);
     }
-  }, [open, setOnAlert]);
+  }, [open]);
 
   const handleAlert = () => {
     setOpen(false);
@@ -38,7 +34,7 @@ const CustomAlert = ({
   return (
     <Box
       sx={{
-        width: 'calc(100% - 12px)',
+        width: 'calc(100% - 10vw)',
         position: 'fixed',
         top: '50%',
         left: '50%',
@@ -66,37 +62,15 @@ const CustomAlert = ({
             textAlign: 'center',
             marginBottom: '0',
             borderRadius: '0',
-            bgcolor: '#5b1414',
+            bgcolor: alertType === 'error' ? '#390c0c' : '#063506',
             color: '#fff',
           }}
         >
           {message}
-          {alertType === 'warning' ? (
-            <Stack direction="row" justifyContent="center">
-              <Button
-                onClick={() => confirmation('delete')}
-                sx={{
-                  color: '#D66506',
-                }}
-              >
-                {'Confirmer'}
-              </Button>
-              <Button onClick={() => handleAlert()}>{'Annuler'}</Button>
-            </Stack>
-          ) : null}
         </Alert>
       </Collapse>
     </Box>
   );
-};
-
-CustomAlert.propTypes = {
-  alertType: PropTypes.string.isRequired,
-  message: PropTypes.node.isRequired,
-  setOnAlert: PropTypes.func,
-  setShowModal: PropTypes.func,
-  confirmation: PropTypes.func,
-  criticOrAdvice: PropTypes.string,
 };
 
 export default CustomAlert;

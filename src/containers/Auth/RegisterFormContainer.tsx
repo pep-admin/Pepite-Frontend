@@ -1,12 +1,12 @@
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import RegisterFormComponent from '@views/Auth/RegistrationFormComponent';
-import { useNavigate } from 'react-router-dom';
 
 // Import des variables d'environnement
 import { apiBaseUrl } from '@utils/request/config';
+import CustomAlert from '@utils/components/CustomAlert';
 
 // Schéma de vérification Yup
 const validationSchema = Yup.object({
@@ -24,10 +24,10 @@ const validationSchema = Yup.object({
 
   password: Yup.string()
     .min(8, 'Doit contenir au moins 8 caractères')
-    .matches(
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/,
-      'Au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial',
-    )
+    .matches(/[A-Z]/, 'Une majuscule requise')
+    .matches(/[a-z]/, 'Une minuscule requise')
+    .matches(/\d/, 'Un chiffre requis')
+    .matches(/\W/, 'Un caractère spécial requis')
     .required('Le mot de passe est requis'),
 
   passwordConfirm: Yup.string()
@@ -47,15 +47,14 @@ const initialValues = {
   passwordConfirm: '',
 };
 
-let redirection;
+const RegisterFormContainer = ({ setAuthPage }) => {
 
-const RegisterFormContainer = () => {
-  const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState({ display: false, error: false, severity: '', message: '' });
 
-  const [isBtnClicked, setIsBtnClicked] = useState(false);
-
-  const onSubmit = async values => {
+  const register = async values => {
     try {
+      console.log('submit register');
+      
       // Envoie les données utilisateurs pour inscription
       const response = await axios({
         method: 'post',
@@ -69,35 +68,40 @@ const RegisterFormContainer = () => {
         },
       });
 
-      // Fait apparaître un message de succès
-      formik.setStatus({ state: 'success', message: `${response.data}` });
+      setShowAlert({
+        display: true,
+        error: false,
+        severity: 'success',
+        message: `${response.data.message}`
+      })
 
-      // Redirige vers la page de connexion
-      redirection = setTimeout(() => {
-        navigate('/login');
-      }, 2000);
     } catch (error) {
-      // Fais apparaitre un message d'erreur
-      formik.setStatus({ state: 'error', message: `${error.response.data}` });
+      console.log(error);
+      
+      setShowAlert({
+        display: true,
+        error: true,
+        severity: 'error',
+        message: `${error.message}`
+      })
     }
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit,
+    onSubmit: register,
   });
 
-  // Si l'utilisateur clique sur le bouton de connexion avant la redirection
-  useEffect(() => {
-    if (isBtnClicked) {
-      clearTimeout(redirection);
-      setIsBtnClicked(false);
-    }
-  }, [isBtnClicked]);
-
   return (
-    <RegisterFormComponent formik={formik} setIsBtnClicked={setIsBtnClicked} />
+    <>
+      <RegisterFormComponent formik={formik} setAuthPage={setAuthPage} />
+      {
+        showAlert.display ?
+          <CustomAlert alertType={showAlert.severity} message={showAlert.message} setShowAlert={setShowAlert} />
+        : null
+      }
+    </>
   );
 };
 

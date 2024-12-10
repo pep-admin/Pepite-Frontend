@@ -11,9 +11,8 @@ import { SnackbarProvider } from '@hooks/SnackbarContext';
 // Import des composants
 import PrivateRoute from './PrivateRoute';
 // import Film from '@views/Film';
+import AuthContainer from './containers/Auth/AuthContainer';
 import About from '@views/About/About';
-import RegisterFormContainer from './containers/Auth/RegisterFormContainer';
-import LoginFormContainer from './containers/Auth/LoginFormContainer';
 import SwipeContainer from './containers/Swipe/SwipeContainer';
 import ProfilContainer from './containers/Profil/ProfilContainer';
 import AccountContainer from './containers/Account/AccountContainer';
@@ -39,8 +38,8 @@ export function App() {
               <BrowserRouter>
                 {/* <ScrollToTop /> */}
                 <Routes>
-                  <Route path="/login" element={<LoginFormContainer />} />
-                  <Route path="/register" element={<RegisterFormContainer />} />
+                  <Route path="/login" element={<AuthContainer authType={'login'} />} />
+                  <Route path="/register" element={<AuthContainer authType={'register'} />} />
                   <Route
                     path="/about"
                     element={

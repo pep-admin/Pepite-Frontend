@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "preinstall": "npx check-node-version --node 18.18.0",
     "audit": "npm audit",
     "check-updates": "ncu -u",
     "build": "tsc && vite build",

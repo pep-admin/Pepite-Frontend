@@ -1,80 +1,75 @@
 // Import des libs externes
-import { Stack, Typography, styled } from '@mui/material';
+import { Stack, Typography, styled, useTheme } from '@mui/material';
 import LinearProgress, {
   linearProgressClasses,
 } from '@mui/material/LinearProgress';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import { ranks } from '@utils/data/ranks';
 
-// Import des requêtes
-import { getUserRankRequest } from '@utils/request/grades/getUserRankRequest';
+const ProfilRank = ({ userInfos }) => {
 
-const ProfilRank = ({ page, criticsNumber }) => {
-  const { id } = useParams();
+  const theme = useTheme();
 
-  const [progression, setProgression] = useState(0);
-  const [userRank, setUserRank] = useState("Chercheur d'Or");
-  const [currentGradePoints, setCurrentGradePoints] = useState(0);
-  const [nextGradePoints, setNextGradePoints] = useState(0);
+  // Trouver le grade actuel et le prochain grade
+  const currentRankIndex = ranks.findIndex(rank => rank.name === userInfos.rank);
+  const currentRank = ranks[currentRankIndex];
+  const nextRank = ranks[currentRankIndex + 1] || currentRank; // Si c'est le dernier grade, il n'y a pas de suivant
 
-  const getUserRank = async () => {
-    const response = await getUserRankRequest(id);
-    // console.log('la réponse', response);
+  console.log('grade actuel =>', currentRank);
+  
+  // Calculer la progression vers le prochain grade
+  const currentPoints = userInfos.progression;
+  const pointsForCurrentRank = currentRank.points_required;
+  const pointsForNextRank = nextRank.points_required;
 
-    setProgression(response.progression);
-    setUserRank(response.rank);
-    setCurrentGradePoints(response.currentGradePoints);
-    setNextGradePoints(response.nextGradePoints);
-  };
-
-  // Calcul du pourcentage de progression vers le prochain grade
-  const progressionPercentage =
-    nextGradePoints > currentGradePoints
-      ? ((progression - currentGradePoints) /
-          (nextGradePoints - currentGradePoints)) *
-        100
-      : 0;
+  // Calculer la valeur de progression pour la barre
+  const progressValue = ((currentPoints - pointsForCurrentRank) / (pointsForNextRank - pointsForCurrentRank)) * 100;
 
   const BorderLinearProgress = styled(LinearProgress)(() => ({
     variant: 'determinate',
     height: 10,
-    borderRadius: 5,
     [`&.${linearProgressClasses.colorPrimary}`]: {
-      backgroundColor: '#E0E0E0',
+      backgroundColor: '#363636',
     },
     [`& .${linearProgressClasses.bar}`]: {
-      borderRadius: 5,
-      backgroundColor: '#1BADAD',
+      backgroundColor: '#E7AE1A',
     },
   }));
 
-  useEffect(() => {
-    getUserRank();
-  }, [criticsNumber]);
-
   return (
-    <Stack width={page === 'profil' ? '110px' : '100%'}>
-      <Typography
-        variant="body2"
-        align={page === 'profil' ? 'center' : 'left'}
-        color="#898989"
-        fontWeight="600"
-        marginBottom="3px"
+    <Stack spacing={2}alignItems='center'>
+      <Stack 
+        direction='row'
+        justifyContent='center'
+        alignItems='center' 
+        columnGap='2px' 
       >
-        {`${userRank}`}
-      </Typography>
+        <MilitaryTechIcon
+          sx={{
+            color: theme.palette.secondary.light
+          }}
+        />
+          <Typography
+          component='p'
+          align='center'
+          color='secondary.light'
+          fontFamily='League Spartan, sans-serif'
+          fontSize='1.1em'
+          fontWeight='300'
+          lineHeight='1'
+        >
+          {`${userInfos.rank}`}
+        </Typography>
+      </Stack>
       <BorderLinearProgress
         variant="determinate"
-        value={progressionPercentage}
+        value={progressValue}
+        sx={{
+          width: '100px'
+        }}
       />
     </Stack>
   );
-};
-
-ProfilRank.propTypes = {
-  page: PropTypes.string.isRequired,
-  criticsNumber: PropTypes.number,
 };
 
 export default ProfilRank;

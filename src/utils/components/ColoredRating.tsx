@@ -9,6 +9,7 @@ const ColoredRating = ({
   value,
   readOnly,
   precision,
+  fontSize,
   sx,
 }) => {
   const StyledRating = styled(Rating)({
@@ -28,7 +29,7 @@ const ColoredRating = ({
       emptyIcon={<StarIcon color={emptyColor} fontSize="inherit" />}
       sx={{
         alignItems: 'center',
-        fontSize: '0.9em',
+        fontSize: !fontSize ? '0.9em' : `${fontSize}em`,
         position: 'relative',
         left: '-4px',
         bottom: '1.1px',

@@ -27,23 +27,23 @@ const hoverColors = {
     'linear-gradient(to bottom right, rgba(42, 42, 42, 1), rgba(0, 0, 0, 0.73))',
   unwanted: 'linear-gradient(to bottom right, #9b1a1a, #000000)',
   wanted: 'linear-gradient(to bottom right, #225b1d, #000000)',
-  watched: 'linear-gradient(to bottom right, #8f5411, #000000)',
+  watched: 'linear-gradient(to bottom right, #005775, #000000)',
 };
 
 const getGradientColor = (
   choice: string,
   isactive: boolean,
-  errorstate: null | boolean,
+  // errorstate: null | boolean,
   lockColor: boolean,
 ) => {
   // Bloque le changement couleur si lockColor est activé
   if (lockColor) return bgGradient.others;
 
-  if (choice === 'unwanted' && isactive && !errorstate) {
+  if (choice === 'unwanted' && isactive) {
     return hoverColors.unwanted;
-  } else if (choice === 'wanted' && isactive && !errorstate) {
+  } else if (choice === 'wanted' && isactive) {
     return hoverColors.wanted;
-  } else if (choice === 'watched' && isactive && !errorstate) {
+  } else if (choice === 'watched' && isactive) {
     return hoverColors.watched;
   } else {
     return bgGradient.others;
@@ -72,7 +72,7 @@ export const CustomButton = styled(Button, {
     background:
       btntype === 'filter'
         ? bgGradient.filter
-        : getGradientColor(choice, isactive, errorstate, lockColor),
+        : getGradientColor(choice, isactive, lockColor),
     color: '#fff',
     borderRadius: '50%',
     boxShadow: 'inset 4.5px 4px 4px rgba(31, 170, 179, 0.25) !important',

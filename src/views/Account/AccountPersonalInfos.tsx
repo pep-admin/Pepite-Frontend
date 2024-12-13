@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Item } from '@utils/components/styledComponent';
 
 // Import des composants internes
-import ProfilRank2 from '@views/Profil/ProfilRank';
+import ProfilRank2 from '../Profil/ProfilRank';
 
 // Import des icônes
 import DoneIcon from '@mui/icons-material/Done';

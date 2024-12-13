@@ -24,10 +24,11 @@ import { FeatherPenIcon } from './styledComponent';
 // Import des requêtes internes
 import {
   searchMoviesSeries,
-  searchUsers,
+  // searchUsers,
 } from '../request/search/searchMoviesSeries';
-import { getMovieDetails } from '../request/getMovieDetails';
+import { getMovieDetailsRequest } from '../request/getMovieDetailsRequest';
 import { storeDetailsData } from '../request/swipe/storeDetailsData';
+import { searchUserRequest } from '@utils/request/search/searchUserRequest';
 
 const SearchBar = ({
   page,
@@ -65,7 +66,7 @@ const SearchBar = ({
 
   const getChosenMovie = async id => {
     try {
-      const movieData = await getMovieDetails(displayType, id);
+      const movieData = await getMovieDetailsRequest(displayType, id);
       setChosenMovie(movieData);
 
       // Stockage des détails du film dans la DB
@@ -88,7 +89,7 @@ const SearchBar = ({
           query,
           displayType,
         );
-        const usersResults = await searchUsers(query);
+        const usersResults = await searchUserRequest(query);
 
         // Ajouter un champ 'type' pour différencier les résultats
         const formattedMoviesSeries = moviesSeriesResults.map(item => ({

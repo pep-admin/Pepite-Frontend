@@ -10,7 +10,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Import des requêtes
-import { requestNewFriend } from '@utils/request/friendship/requestNewFriend';
+import { sendFriendshipRequest } from '@utils/request/friendship/handleFrienshipRequest';
 import { checkFriendshipStatus } from '@utils/request/friendship/checkFriendshipStatus';
 import { cancelFriendShip } from '@utils/request/friendship/cancelFriendship';
 import { acceptFriendship } from '@utils/request/friendship/acceptFriendship';
@@ -56,7 +56,7 @@ const FriendRequestBtn = ({
 
   // Envoie une demande d'amitié
   const handleFriendRequest = async () => {
-    await requestNewFriend(userInfos.id);
+    await sendFriendshipRequest(userInfos.id);
     handleClose();
     checkIfFriends(); // Actualise le status d'amitié en attente
   };

@@ -10,7 +10,7 @@ import ContactsFriendsFollowed from './ContactsFriendsFollowed';
 
 // Import des requêtes
 import { getFriendRequestList } from '@utils/request/friendship/getFriendRequestList';
-import { getFriendsList } from '@utils/request/friendship/getFriendsList';
+import { getFriendsList } from '@utils/request/friendship/getFriendsListRequest';
 import { getFollowedList } from '@utils/request/followed/getFollowedList';
 
 const ContactsComponent = () => {
@@ -48,7 +48,7 @@ const ContactsComponent = () => {
 
   return (
     <>
-      <Header page={'contacts'} />
+      <Header page={'Mes contacts'} isTrailerFullscreen={null} />
       <Container
         sx={{
           minHeight: 'calc(100vh - 50px)',

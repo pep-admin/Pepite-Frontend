@@ -1,26 +1,12 @@
 // Import des libs externes
-import { Skeleton, Stack, Typography } from '@mui/material';
+import { Skeleton, Stack, Typography, useTheme } from '@mui/material';
 
 // Import des fonctions utilitaires
 import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
 
-const SwipeCredits = ({ movie, movieDetails }) => {
-  const findDirectorName = crew => {
-    const director = crew.find(member => member.job === 'Director');
-    return director ? director.name : 'Réalisateur inconnu';
-  };
+const SwipeCredits = ({ isMovieOrSerie, movie, movieDetails }) => {
 
-  const findTopActors = cast => {
-    // Trie les acteurs par popularité décroissante
-    const sortedCast = cast.sort((a, b) => b.popularity - a.popularity);
-
-    // Sélectionne les trois premiers acteurs
-    const topActors = sortedCast.slice(0, 3).map(actor => actor.name);
-
-    // Vérifie si le nombre d'acteurs dépasse trois
-    return topActors.join(', ');
-  };
-  console.log('les détails =>', movieDetails);
+  const theme = useTheme();
 
   return (
     <Stack width="88vw" flexShrink="0" marginBottom="100px">
@@ -31,13 +17,13 @@ const SwipeCredits = ({ movie, movieDetails }) => {
         }}
       >
         <Typography
-          color="primary"
+          color={theme.palette.text.primary}
           fontWeight="300"
           lineHeight="1.9"
           fontSize="2.1vh"
         >
-          {movie.overview === null
-            ? "Désolé, il n'y a pas de synopsis disponible pour ce film..."
+          {movie.overview === null || movie.overview === ''
+            ? `Aucun synopsis disponible pour ${isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'}.`
             : movie.overview}
         </Typography>
       </Stack>
@@ -48,7 +34,7 @@ const SwipeCredits = ({ movie, movieDetails }) => {
           </Typography>
           {movieDetails ? (
             <Typography
-              color="primary"
+              color={theme.palette.text.primary}
               fontWeight="300"
               maxWidth="66vw"
               overflow="hidden"
@@ -73,14 +59,14 @@ const SwipeCredits = ({ movie, movieDetails }) => {
           </Typography>
           {movieDetails ? (
             <Typography
-              color="primary"
+              color={theme.palette.text.primary}
               fontWeight="300"
               maxWidth="66vw"
               overflow="hidden"
               whiteSpace="nowrap"
               textOverflow="ellipsis"
             >
-              {findDirectorName(movieDetails.crew)}
+              {`${movieDetails.director}`}
             </Typography>
           ) : (
             <Skeleton
@@ -96,14 +82,14 @@ const SwipeCredits = ({ movie, movieDetails }) => {
           </Typography>
           {movieDetails ? (
             <Typography
-              color="primary"
+              color={theme.palette.text.primary}
               fontWeight="300"
               maxWidth="66vw"
               overflow="hidden"
               whiteSpace="nowrap"
               textOverflow="ellipsis"
             >
-              {findTopActors(movieDetails.cast)}
+              {`${movieDetails.topActors}`}
             </Typography>
           ) : (
             <Skeleton

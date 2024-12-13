@@ -3,7 +3,7 @@ import { apiBaseUrl } from '../config';
 
 export const getRelationStatusRequest = async userTargetId => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/friendship/status`, {
+    const response = await axios.get(`${apiBaseUrl}/contacts/relation_status`, {
       params: { id: userTargetId },
       withCredentials: true,
     });

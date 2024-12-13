@@ -7,22 +7,21 @@ export const handleWatchedMovieRequest = async (
   type: string,
   watched: boolean,
 ) => {
-  try {
-    if (watched) {
-      await axios.post(
-        `${apiBaseUrl}/list/watched/add`,
-        { movie_id: movieId, type: type },
-        { withCredentials: true },
-      );
-    } else {
-      await axios.delete(`${apiBaseUrl}/list/watched/remove`, {
-        data: { movie_id: movieId, type: type },
-        withCredentials: true,
-      });
-    }
+  if (watched) {
+    await axios.post(
+      `${apiBaseUrl}/list/watched/add`,
+      { movie_id: movieId, type: type },
+      { withCredentials: true },
+    );
 
-    return { error: null };
-  } catch {
-    return { error: "Erreur serveur : Impossible d'effectuer l'action." };
+    return { message: `Vous avez déjà vu` };
+
+  } else {
+    await axios.delete(`${apiBaseUrl}/list/watched/remove`, {
+      data: { movie_id: movieId, type: type },
+      withCredentials: true,
+    });
+
+    return { message: `Vous n'avez pas vu` };
   }
 };

@@ -20,7 +20,7 @@ import { Item } from '@utils/components/styledComponent';
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
 import { updatePassword } from '@utils/request/users/updatePassword';
-import CustomAlert from '@utils/components/CustomAlert';
+import CustomAlert from '@utils/components/Infos/CustomAlert';
 
 const AccountUpdatePassword = ({
   showPasswordModal,

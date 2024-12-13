@@ -1172,12 +1172,12 @@ export const countriesList = [
   {
     iso_3166_1: 'HK',
     english_name: 'Hong Kong',
-    name: 'R.A.S. chinoise de Hong Kong',
+    name: 'Hong Kong',
   },
   {
     iso_3166_1: 'MO',
     english_name: 'Macao',
-    name: 'R.A.S. chinoise de Macao',
+    name: 'Macao',
   },
   {
     iso_3166_1: 'CF',

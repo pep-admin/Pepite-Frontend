@@ -16,44 +16,45 @@ import SwipeContent from '@views/Swipe/SwipeContent';
 import { assetsBaseUrl } from '@utils/request/config';
 
 // Import des types
-import { Movie } from 'types/interface';
-import { ErrorState } from 'types/interface';
+import { Movie, MovieDetails } from 'types/interface';
 
 interface SwipeCard3Props {
   movie: Movie;
-  typeChosen: string;
+  movieDetails: MovieDetails;
   isCurrent: boolean;
   onSwipeComplete: (direction: string) => void;
   isFirstCard: boolean;
   zIndex: number;
   dragDirectionRef: MutableRefObject<string | null>;
   setZIndexForSwipe: (direction: string) => void;
+  showMovieInfos: boolean;
+  setShowMovieInfos: Dispatch<SetStateAction<boolean>>;
   showTrailer: boolean;
   setShowTrailer: Dispatch<SetStateAction<boolean>>;
   isTrailerFullscreen: boolean;
   setIsTrailerFullscreen: Dispatch<SetStateAction<boolean>>;
-  setError: Dispatch<SetStateAction<ErrorState>>;
 }
 
 const SwipeCard: FC<SwipeCard3Props> = React.memo(
   ({
     movie,
-    typeChosen,
     isCurrent,
     onSwipeComplete,
     isFirstCard,
     zIndex,
     dragDirectionRef,
     setZIndexForSwipe,
+    showMovieInfos,
+    setShowMovieInfos,
+    movieDetails,
     showTrailer,
     setShowTrailer,
     isTrailerFullscreen,
     setIsTrailerFullscreen,
-    setError,
   }) => {
-    console.log('swipe card');
+    if(showMovieInfos && !isCurrent) return;
 
-    const [showMovieInfos, setShowMovieInfos] = useState(false);
+    // const [showMovieInfos, setShowMovieInfos] = useState(false);
     const [isSwiping, setIsSwiping] = useState(false);
 
     const motionValue = useMotionValue(0); // Initialisation de l'animation à 0
@@ -157,14 +158,13 @@ const SwipeCard: FC<SwipeCard3Props> = React.memo(
         >
           <SwipeContent
             movie={movie}
-            typeChosen={typeChosen}
+            movieDetails={movieDetails}
             showMovieInfos={showMovieInfos}
             setShowMovieInfos={setShowMovieInfos}
             showTrailer={showTrailer}
             setShowTrailer={setShowTrailer}
             isTrailerFullscreen={isTrailerFullscreen}
             setIsTrailerFullscreen={setIsTrailerFullscreen}
-            setError={setError}
           />
         </Card>
       </motion.div>

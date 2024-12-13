@@ -1,6 +1,3 @@
-// Import des libs externes
-import PropTypes from 'prop-types';
-
 export const GoldNuggetIcon = ({
   width,
   height,
@@ -9,7 +6,7 @@ export const GoldNuggetIcon = ({
   sx,
 }) => {
   const iconWidth = width || '79px';
-  const iconHeight = height || '75px';
+  const iconHeight = height || '79px';
 
   return (
     <svg
@@ -6384,14 +6381,6 @@ export const GoldNuggetIcon = ({
       </defs>
     </svg>
   );
-};
-
-GoldNuggetIcon.propTypes = {
-  width: PropTypes.string.isRequired,
-  height: PropTypes.string.isRequired,
-  strokeWidth: PropTypes.string.isRequired,
-  isShadowed: PropTypes.bool.isRequired,
-  sx: PropTypes.object,
 };
 
 export default GoldNuggetIcon;

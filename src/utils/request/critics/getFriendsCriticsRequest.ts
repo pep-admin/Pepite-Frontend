@@ -14,7 +14,7 @@ export const getFriendsCriticsRequest = async (page: number, type: string) => {
   }
 
   const parsedData = response.data.map(critic =>
-    parseDatabaseData(critic, type, 'critic'),
+    parseDatabaseData(critic),
   );
 
   return parsedData;

@@ -1,6 +1,6 @@
 // Import des libs externes
-import { Stack, Typography, Divider, CardContent, Box } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { Stack, Typography, Divider, CardContent, Box, useTheme } from '@mui/material';
+import { useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 
@@ -18,59 +18,29 @@ import StarIcon from '@mui/icons-material/Star';
 import CircleIcon from '@mui/icons-material/Circle';
 
 // Import des requêtes
-import { getMovieDetails } from '@utils/request/getMovieDetails';
+import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 
 const SwipeContent = ({
   movie,
-  typeChosen,
+  movieDetails,
   showMovieInfos,
   setShowMovieInfos,
   showTrailer,
   setShowTrailer,
   isTrailerFullscreen,
   setIsTrailerFullscreen,
-  setError,
 }) => {
   // console.log('rendu SwipeContent !', movie);
+  const theme = useTheme();
 
-  const [movieDetails, setMovieDetails] = useState(null); // Les noms du réal, des acteurs...
+  // const [movieDetails, setMovieDetails] = useState(null); // Les noms du réal, des acteurs...
 
   const swiperRef = useRef(null);
   const firstSlideRef = useRef(null);
   const secondSlideRef = useRef(null);
 
-  const getTitle = () => {
-    if ('title' in movie) {
-      return movie.title;
-    }
-    if ('name' in movie) {
-      return movie.name;
-    }
-  };
-
-  // Récupère les détails d'un film (genre, année...)
-  const fetchMovieDetails = async movieId => {
-    try {
-      const details = await getMovieDetails(typeChosen, movieId);
-
-      setMovieDetails(details);
-    } catch (err) {
-      setError({
-        state: true,
-        message: 'Erreur dans la récupération des détails du film.',
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (showMovieInfos) {
-      fetchMovieDetails(movie.id);
-    }
-  }, [showMovieInfos]);
-
-  useEffect(() => {
-    console.log('plein écran ?? =>', isTrailerFullscreen);
-  }, [isTrailerFullscreen]);
+  const isMovieOrSerie = findIfMovieOrSerie(movie);
+  const movieTitle = isMovieOrSerie === 'movie' ? movie.title : movie.name;
 
   useEffect(() => {
     if (swiperRef.current && swiperRef.current.swiper) {
@@ -99,30 +69,31 @@ const SwipeContent = ({
               <Typography
                 component="h1"
                 fontSize={
-                  getTitle().length > 30
+                  movieTitle.length > 30
                     ? '5.5vh'
-                    : getTitle().length > 35
+                    : movieTitle.length > 35
                     ? '5vh'
                     : '6.5vh'
                 } // Taille de la police ajustée en fonction de la longueur du titre
                 fontFamily="League Spartan"
                 fontWeight="700"
-                color="primary.main"
+                color={theme.palette.text.primary}
                 lineHeight="1.1"
                 maxWidth="85%"
                 letterSpacing="-1px"
                 sx={{
+                  wordBreak: 'break-word',
                   WebkitTextStroke: '1px black',
                 }}
               >
-                {getTitle()}
+                {`${movieTitle}`}
               </Typography>
               <Typography
                 component="p"
                 fontSize="7.5vh"
                 fontFamily="League Spartan"
                 fontWeight="500"
-                color="primary.main"
+                color={theme.palette.text.primary}
                 lineHeight="0.9"
                 position="relative"
                 top="5px"
@@ -270,7 +241,11 @@ const SwipeContent = ({
               >
                 <SwiperSlide style={{ width: '88vw' }}>
                   <div ref={firstSlideRef}>
-                    <SwipeCredits movie={movie} movieDetails={movieDetails} />
+                    <SwipeCredits 
+                      isMovieOrSerie={isMovieOrSerie}  
+                      movie={movie} 
+                      movieDetails={movieDetails} 
+                    />
                   </div>
                 </SwiperSlide>
                 <SwiperSlide

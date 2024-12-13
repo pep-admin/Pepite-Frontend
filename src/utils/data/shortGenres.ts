@@ -1,9 +1,9 @@
 // Liste des genres proposés
 export const shortGenresMovieList = [
-  {
-    id: 0,
-    name: 'Tous',
-  },
+  // {
+  //   id: 0,
+  //   name: 'Tous',
+  // },
   {
     id: 28,
     name: 'Action',
@@ -50,7 +50,7 @@ export const shortGenresMovieList = [
   },
   {
     id: 10402,
-    name: 'Musique',
+    name: 'Musical',
   },
   {
     id: 9648,
@@ -64,10 +64,10 @@ export const shortGenresMovieList = [
     id: 878,
     name: 'SF',
   },
-  {
-    id: 10770,
-    name: 'Téléfilm',
-  },
+  // {
+  //   id: 10770,
+  //   name: 'Téléfilm',
+  // },
   {
     id: 53,
     name: 'Thriller',

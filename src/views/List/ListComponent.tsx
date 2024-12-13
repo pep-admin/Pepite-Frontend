@@ -10,9 +10,9 @@ import {
 import { useEffect, useState } from 'react';
 
 // Import des composants internes
-import Header from '@utils/components/Header';
 import SuggestedGoldNuggets2 from '@utils/components/SuggestedGoldNuggets';
 import ListMoviesSeries from './ListMoviesSeries';
+import Header2 from '@utils/components/Header/Header2';
 
 const ListComponent2 = () => {
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
@@ -32,7 +32,7 @@ const ListComponent2 = () => {
 
   return (
     <>
-      <Header page={'list'} />
+      <Header2 page={'Ma liste'} isTrailerFullscreen={null} />
       <Container
         sx={{
           height: 'calc(100vh - 65px)',
@@ -115,8 +115,8 @@ const ListComponent2 = () => {
                   {`${alignment}`}
                 </Typography>
               </Stack>
-              <ListMoviesSeries movieOrSerie={'movie'} alignment={alignment} />
-              <ListMoviesSeries movieOrSerie={'tv'} alignment={alignment} />
+              {/* <ListMoviesSeries movieOrSerie={'movie'} alignment={alignment} />
+              <ListMoviesSeries movieOrSerie={'tv'} alignment={alignment} /> */}
             </Stack>
           </Box>
         </Stack>

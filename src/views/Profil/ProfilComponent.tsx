@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 // Import des composants internes
 import Header from '@utils/components/Header';
 import UserAvatar from '@utils/components/UserAvatar';
-import ProfilRank from '@views/Profil/ProfilRank';
+import ProfilRank from './ProfilRank';
 import CriticAdvicesComponent from '@views/CriticAdvices/CriticAdvicesComponent';
 import GradientBtn from '@views/CriticAdvices/GradientBtn';
 import SuggestedGoldNuggets from '@utils/components/SuggestedGoldNuggets';
@@ -22,8 +22,8 @@ import useVerticalScroll from '@hooks/useVerticalScroll';
 
 // Import des requêtes
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
-import { getUser } from '@utils/request/users/getUser';
-import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
+import { getUserRequest } from '@utils/request/users/getUserRequest';
+import { countCriticsAndGoldUser } from '@utils/request/users/countUserAdditionalInfosRequest';
 import { getCriticsAdvices } from '@utils/functions/criticsAdvicesActions';
 
 interface Picture {
@@ -95,7 +95,7 @@ const ProfilComponent = () => {
   // Récupère les informations de l'utilisateur autres que l'utilisateur connecté
   const fetchChosenUser = async user_id => {
     setIsChosenUserLoaded(false);
-    const user = await getUser(user_id);
+    const user = await getUserRequest(user_id);
     setChosenUser(user);
     setIsChosenUserLoaded(true);
   };

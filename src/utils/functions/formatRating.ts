@@ -1,10 +1,11 @@
-export const formatRating = rating => {
-  if (!rating) return;
+export const formatRating = (rating: number) => {
+  if (isNaN(rating)) return '?';
 
   // Si la note a une partie décimale autre que .0, retourner la note telle quelle
-  if (rating % 1 !== 0) {
+  if (rating % 1 !== 0) {    
     return rating.toString();
   }
+  
   // Sinon, retourner la note sans la partie décimale
   return Math.floor(rating).toString();
 };

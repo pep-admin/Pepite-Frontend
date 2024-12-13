@@ -14,7 +14,7 @@ import { useData } from '@hooks/DataContext';
 import { apiBaseUrl, assetsBaseUrl } from '@utils/request/config';
 
 // Import des requêtes
-import { countCriticsAndGoldUser } from '@utils/functions/countCriticsAndGoldUser';
+import { countCriticsAndGoldUser } from '@utils/request/users/countUserAdditionalInfosRequest';
 import { getCommonNuggetsRequest } from '@utils/request/goldNugget/getCommonNuggetsRequest';
 
 const ContactsUserFeatures = ({

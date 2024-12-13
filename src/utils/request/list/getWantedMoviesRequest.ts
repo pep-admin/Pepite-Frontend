@@ -14,7 +14,7 @@ export const getWantedMoviesRequest = async (userId, type) => {
   }
 
   const parsedData = response.data.map(data =>
-    parseDatabaseData(data, type, 'list'),
+    parseDatabaseData(data),
   );
 
   return parsedData;

@@ -20,7 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 // Import des requêtes
-import { getUser } from '@utils/request/users/getUser';
+import { getUserRequest } from '@utils/request/users/getUserRequest';
 
 // Import des fonctions utilitaires
 import { getRelationStatusRequest } from '@utils/request/friendship/getRelationStatusRequest';
@@ -108,7 +108,7 @@ const CriticAdvicesModal = ({
     try {
       console.log('recup infos user');
 
-      const userInfosPromises = userIds.map(userId => getUser(userId));
+      const userInfosPromises = userIds.map(userId => getUserRequest(userId));
       const usersInfos = await Promise.all(userInfosPromises);
       setGoldNuggetUserInfos(usersInfos);
     } catch (error) {

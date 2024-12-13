@@ -1,4 +1,4 @@
-import ListComponent2 from '@views/List/ListComponent';
+import ListComponent2 from '@views/List/ListComponent2';
 
 const ListContainer = () => {
   return <ListComponent2 />;

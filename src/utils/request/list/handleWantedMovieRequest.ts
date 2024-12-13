@@ -7,22 +7,23 @@ export const handleWantedMovieRequest = async (
   type: string,
   wanted: boolean,
 ) => {
-  try {
-    if (wanted) {
-      await axios.post(
-        `${apiBaseUrl}/list/add_wanted`,
-        { movie_id: movieId, type: type },
-        { withCredentials: true },
-      );
-    } else {
-      await axios.delete(`${apiBaseUrl}/list/cancel_wanted`, {
-        data: { movie_id: movieId, type: type },
-        withCredentials: true,
-      });
-    }
+  if (wanted) {      
+    console.log(movieId, type);
+    
+    await axios.post(
+      `${apiBaseUrl}/list/add_wanted`,
+      { movie_id: movieId, type: type },
+      { withCredentials: true },
+    );
 
-    return { error: null };
-  } catch {
-    return { error: "Erreur serveur : Impossible d'effectuer l'action." };
+    return { message: `a été ajouté à votre liste.` };
+
+  } else {
+    await axios.delete(`${apiBaseUrl}/list/cancel_wanted`, {
+      data: { movie_id: movieId, type: type },
+      withCredentials: true,
+    });
+
+    return { message: `a été retiré de votre liste.` };
   }
 };

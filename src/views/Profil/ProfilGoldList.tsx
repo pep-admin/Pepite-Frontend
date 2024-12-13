@@ -43,7 +43,7 @@ const ProfilGoldList = ({ isProfilLoggedUser, userInfos, goldNuggetsCount, goldN
       <Stack spacing={3}>
         {
           !goldNuggetsMovies.length ? (
-            <Typography color='#555555' lineHeight='1'>
+            <Typography color='#555555' lineHeight='1' padding='0 5vw'>
               {isProfilLoggedUser ? 'Vous n\'avez encore ajouté aucune pépite.' : `${userInfos.first_name} n'a encore ajouté aucune pépite.`}
             </Typography>
           ) : (

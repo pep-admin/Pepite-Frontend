@@ -6,7 +6,7 @@ import RegisterFormComponent from '@views/Auth/RegistrationFormComponent';
 
 // Import des variables d'environnement
 import { apiBaseUrl } from '@utils/request/config';
-import CustomAlert from '@utils/components/CustomAlert';
+import CustomAlert from '@utils/components/Infos/CustomAlert';
 
 // Schéma de vérification Yup
 const validationSchema = Yup.object({

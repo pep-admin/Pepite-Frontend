@@ -62,7 +62,12 @@ const CustomAlert = ({
             textAlign: 'center',
             marginBottom: '0',
             borderRadius: '0',
-            bgcolor: alertType === 'error' ? '#390c0c' : '#063506',
+            bgcolor: 
+              alertType === 'error' 
+              ? '#390c0c' 
+              : alertType === 'success' 
+              ? '#063506'
+              : '#0f3434',
             color: '#fff',
           }}
         >

@@ -41,15 +41,20 @@ const AuthHeader2 = ({ backgroundMovieTitle }) => {
           </Typography>
         </Stack>
       </Stack>
-      <Stack height='45px' justifyContent='center'>
-        <Typography
-          fontWeight='200'
-          fontStyle='italic'
-          color='#B8B8B8'
-        >
-          {`${backgroundMovieTitle}`}
-        </Typography>
-      </Stack>
+      {
+        backgroundMovieTitle ?
+        <Stack height='45px' justifyContent='center'>
+          <Typography
+            fontWeight='200'
+            fontStyle='italic'
+            color='#B8B8B8'
+          >
+            {`${backgroundMovieTitle}`}
+          </Typography>
+        </Stack>
+        :
+        null
+      }
     </Stack>
   );
 };

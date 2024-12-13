@@ -10,7 +10,7 @@ import LoginFormComponent from '@views/Auth/LoginFormComponent';
 // Import des variables d'environnement
 import { apiBaseUrl } from '@utils/request/config';
 import { useEffect, useState } from 'react';
-import CustomAlert from '@utils/components/CustomAlert';
+import CustomAlert from '@utils/components/Infos/CustomAlert';
 
 // Schéma de vérification Yup
 const validationSchema = Yup.object({
@@ -32,9 +32,7 @@ const LoginFormContainer = ({ setAuthPage }) => {
 
   // Envoie les données utilisateurs pour connexion
   const login = async values => {
-    try {
-      console.log('login');
-      
+    try {      
       setIsSubmitted(true);
 
       const response = await axios({
@@ -52,7 +50,7 @@ const LoginFormContainer = ({ setAuthPage }) => {
       localStorage.setItem('user_infos', JSON.stringify(response.data));
 
       if (response.data.last_login_date === null) {
-        navigate('/about');
+        navigate('/preferences');
       } else {
         navigate(`/home/${response.data.id}`);
       }

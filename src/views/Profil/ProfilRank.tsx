@@ -15,6 +15,8 @@ const ProfilRank = ({ userInfos }) => {
   const currentRank = ranks[currentRankIndex];
   const nextRank = ranks[currentRankIndex + 1] || currentRank; // Si c'est le dernier grade, il n'y a pas de suivant
 
+  console.log('grade actuel =>', currentRank);
+  
   // Calculer la progression vers le prochain grade
   const currentPoints = userInfos.progression;
   const pointsForCurrentRank = currentRank.points_required;

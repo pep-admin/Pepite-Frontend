@@ -12,7 +12,7 @@ const ProfilReviews = ({ isProfilLoggedUser, userInfos, criticsCount, criticsMov
         <CustomBadge
           value={criticsCount}
           max={999}
-          showZero={false}
+          showZero
           bgColor={'#835F00'}
         >
           <Typography
@@ -34,7 +34,7 @@ const ProfilReviews = ({ isProfilLoggedUser, userInfos, criticsCount, criticsMov
         <Stack spacing={3}>
           {
             !criticsMovies.length ? (
-              <Typography color='#555555' lineHeight='1'>
+              <Typography color='#555555' lineHeight='1' padding='0 5vw'>
                 {isProfilLoggedUser ? 'Vous n\'avez encore posté aucune critique.' : `${userInfos.first_name} n'a encore posté aucune critique.`}
               </Typography>
             ) : (

@@ -12,7 +12,6 @@ import { SnackbarProvider } from '@hooks/SnackbarContext';
 import PrivateRoute from './PrivateRoute';
 // import Film from '@views/Film';
 import AuthContainer from './containers/Auth/AuthContainer';
-import About from '@views/About/About';
 import SwipeContainer from './containers/Swipe/SwipeContainer';
 import ProfilContainer from './containers/Profil/ProfilContainer';
 import AccountContainer from './containers/Account/AccountContainer';
@@ -23,6 +22,7 @@ import ListContainer from './containers/List/ListContainer';
 import FilmContainer from './containers/Film/FilmContainer';
 import RatingContainer from './containers/Rating/RatingContainer';
 import { AlertProvider } from '@hooks/AlertContext';
+import PreferencesContainer from './containers/Preferences/PreferencesContainer';
 
 export function App() {
   // Permet d'afficher la page dès que les polices sont chargées
@@ -41,10 +41,10 @@ export function App() {
                   <Route path="/login" element={<AuthContainer authType={'login'} />} />
                   <Route path="/register" element={<AuthContainer authType={'register'} />} />
                   <Route
-                    path="/about"
+                    path="/preferences"
                     element={
                       <PrivateRoute>
-                        <About />
+                        <PreferencesContainer />
                       </PrivateRoute>
                     }
                   />

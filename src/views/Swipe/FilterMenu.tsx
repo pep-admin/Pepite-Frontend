@@ -133,6 +133,7 @@ const FilterMenu = ({
                 value={rating.number}
                 readOnly={true}
                 precision={0.5}
+                fontSize={'inherit'}
               />
             )}
             {rating.value}

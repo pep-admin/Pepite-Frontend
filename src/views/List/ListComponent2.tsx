@@ -1,4 +1,4 @@
-import { Box, Container, Stack } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import Header2 from '@utils/components/Header/Header2';
 import { useEffect, useRef, useState } from 'react';
 import ListNav from './ListNav';
@@ -104,8 +104,10 @@ const ListComponent2 = () => {
               />
             ))
           ) : (
-            <Box sx={{ color: '#fff', textAlign: 'center', marginTop: '20px' }}>
-              Aucun film dans cette liste.
+            <Box sx={{ textAlign: 'center', marginTop: '20px' }}>
+              <Typography align='center' color='#555555' fontSize='1.05em' padding='0 5vw'>
+                {`Il n'y a encore aucun film / série ${listSectionIndex === 0 ? 'à voir' : listSectionIndex === 1 ? 'à noter' : 'notés'}.`}
+              </Typography>
             </Box>
           )}
         </Stack>

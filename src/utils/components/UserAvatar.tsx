@@ -9,52 +9,56 @@ const UserAvatar = ({
   picHeight,
   sx,
   redirection,
-  onSelect
+  onSelect,
 }) => {
-
   const navigate = useNavigate();
 
   const fullName = `${userInfos.first_name} ${userInfos.last_name}`;
 
   let activeProfilPic = null;
 
-  if(userInfos.profilPics) {
-    activeProfilPic = userInfos.profilPics.find(pic => pic.isActive === 1)?.filePath;
+  if (userInfos.profilPics) {
+    activeProfilPic = userInfos.profilPics.find(pic => pic.isActive === 1)
+      ?.filePath;
   } else {
     activeProfilPic = userInfos.profile_pic;
   }
-  
+
   return (
     <Avatar
       variant="circular"
       alt={`Photo de ${fullName}`}
-      src={activeProfilPic ? `${apiBaseUrl}/uploads/${activeProfilPic}` : undefined}
+      src={
+        activeProfilPic ? `${apiBaseUrl}/uploads/${activeProfilPic}` : undefined
+      }
       sx={{
         height: `${picHeight}`,
         width: `${picWidth}`,
         border: '1px solid #2E2E2E',
-        fontSize: `calc(0.4 * ${picHeight})`, 
+        fontSize: `calc(0.4 * ${picHeight})`,
         backgroundColor: activeProfilPic ? 'inherit' : '#0c6666',
         color: '#011212',
         maxHeight: '150px',
         maxWidth: '150px',
-        ...sx
+        ...sx,
       }}
-      onClick={ () => 
-        redirection ? 
-          navigate(`/profil/${userInfos.id}`)
-        : onSelect ? 
-          onSelect(userInfos)
-        : null
+      onClick={() =>
+        redirection
+          ? navigate(`/profil/${userInfos.id}`)
+          : onSelect
+          ? onSelect(userInfos)
+          : null
       }
     >
       {/* Si pas de photo de profil */}
-      {!activeProfilPic && fullName
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2) // Limiter à 2 lettres
+      {
+        !activeProfilPic &&
+          fullName
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2) // Limiter à 2 lettres
       }
     </Avatar>
   );

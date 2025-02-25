@@ -10,22 +10,17 @@ import {
 } from '@mui/material';
 
 const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
-
   return (
     <Container
       sx={{
-        padding: '0 9vw'
+        padding: '0 9vw',
       }}
     >
-      <Typography
-        fontSize='1.25em'
-        fontWeight='800'
-        color='#E7E7E7'
-      >
+      <Typography fontSize="1.25em" fontWeight="800" color="#E7E7E7">
         {'Connexion'}
       </Typography>
       <form onSubmit={formik.handleSubmit}>
-        <Stack spacing={5} marginTop='12px'>
+        <Stack spacing={5} marginTop="12px">
           <TextField
             fullWidth
             label="Email"
@@ -39,13 +34,14 @@ const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
             FormHelperTextProps={{
               sx: {
                 position: 'absolute',
-                bottom: '-22px'
-              }
+                bottom: '-22px',
+              },
             }}
             sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #c5c5c5'
-              }
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
+                {
+                  border: '1px solid #c5c5c5',
+                },
             }}
           />
           <TextField
@@ -56,20 +52,19 @@ const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
             autoComplete="current-password"
             required
             {...formik.getFieldProps('password')}
-            error={
-              isSubmitted && Boolean(formik.errors.password)
-            }
+            error={isSubmitted && Boolean(formik.errors.password)}
             helperText={isSubmitted && formik.errors.password}
             FormHelperTextProps={{
               sx: {
                 position: 'absolute',
-                bottom: '-22px'
-              }
+                bottom: '-22px',
+              },
             }}
             sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #c5c5c5'
-              }
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
+                {
+                  border: '1px solid #c5c5c5',
+                },
             }}
           />
           <Button
@@ -89,12 +84,12 @@ const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
         </Stack>
         <Box sx={{ marginTop: '13px' }}>
           {formik.status && formik.status.state === 'error' ? (
-            <Typography align='center' color="error.main">
+            <Typography align="center" color="error.main">
               {formik.status.message}
             </Typography>
           ) : null}
           <Typography
-            align='center'
+            align="center"
             sx={{
               color: '#8E8E8E',
               cursor: 'pointer',
@@ -105,8 +100,8 @@ const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
           </Typography>
         </Box>
       </form>
-      <Divider sx={{ borderColor: '#616161', margin: '17px 0' }}/>
-      <Stack direction='row'>
+      <Divider sx={{ borderColor: '#616161', margin: '17px 0' }} />
+      <Stack direction="row">
         <Typography
           variant="body1"
           sx={{
@@ -114,12 +109,12 @@ const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
             marginBottom: '11px',
           }}
         >
-          {"Pas de compte ?"}
+          {'Pas de compte ?'}
         </Typography>
         <Typography
-          color='primary.light'
-          fontWeight='500'
-          marginLeft='5px'
+          color="primary.light"
+          fontWeight="500"
+          marginLeft="5px"
           onClick={() => setAuthPage('register')}
         >
           {'Inscription'}

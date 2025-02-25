@@ -5,16 +5,18 @@ import { Movie } from 'types/interface';
 const HomeSection = ({ movies, homeSectionRef, setShowFilmDetails }) => {
   return (
     <Grid container>
-      {movies.filter(movie => movie.poster_path).map((movie: Movie, index: number) => {
-        return (
-          <HomeCard
-            key={`${movie.id}-${index}`}
-            homeSectionRef={homeSectionRef}
-            movie={movie}
-            setShowFilmDetails={setShowFilmDetails}
-          />
-        );
-      })}
+      {movies
+        .filter(movie => movie.poster_path)
+        .map((movie: Movie, index: number) => {
+          return (
+            <HomeCard
+              key={`${movie.id}-${index}`}
+              homeSectionRef={homeSectionRef}
+              movie={movie}
+              setShowFilmDetails={setShowFilmDetails}
+            />
+          );
+        })}
     </Grid>
   );
 };

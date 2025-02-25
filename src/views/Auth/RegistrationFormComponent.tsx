@@ -12,7 +12,6 @@ import { useState } from 'react';
 import '../../styles/autofill.css';
 
 function RegistrationFormComponent({ formik, setAuthPage }) {
-
   // Status de l'autocomplétion de chrome sur les inputs
   const [isAutoFill, setIsAutoFill] = useState({
     lastName: false,
@@ -39,18 +38,14 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
   return (
     <Container
       sx={{
-        padding: '0 9vw'
+        padding: '0 9vw',
       }}
     >
-      <Typography
-        fontSize='1.25em'
-        fontWeight='800'
-        color='#E7E7E7'
-      >
+      <Typography fontSize="1.25em" fontWeight="800" color="#E7E7E7">
         {'Inscription'}
       </Typography>
       <form onSubmit={formik.handleSubmit}>
-        <Stack spacing={5} marginTop='12px'>
+        <Stack spacing={5} marginTop="12px">
           <TextField
             fullWidth
             label="Nom"
@@ -67,22 +62,19 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
               shrink: isAutoFill.firstName || undefined,
             }}
             {...formik.getFieldProps('lastName')}
-            error={
-              formik.touched.lastName && Boolean(formik.errors.lastName)
-            }
-            helperText={
-              formik.touched.lastName && formik.errors.lastName
-            }
+            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+            helperText={formik.touched.lastName && formik.errors.lastName}
             FormHelperTextProps={{
               sx: {
                 position: 'absolute',
-                bottom: '-22px'
-              }
+                bottom: '-22px',
+              },
             }}
             sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #c5c5c5'
-              }
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
+                {
+                  border: '1px solid #c5c5c5',
+                },
             }}
           />
           <TextField
@@ -101,23 +93,19 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
               shrink: isAutoFill.lastName || undefined,
             }}
             {...formik.getFieldProps('firstName')}
-            error={
-              formik.touched.firstName &&
-              Boolean(formik.errors.firstName)
-            }
-            helperText={
-              formik.touched.firstName && formik.errors.firstName
-            }
+            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+            helperText={formik.touched.firstName && formik.errors.firstName}
             FormHelperTextProps={{
               sx: {
                 position: 'absolute',
-                bottom: '-22px'
-              }
+                bottom: '-22px',
+              },
             }}
             sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #c5c5c5'
-              }
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
+                {
+                  border: '1px solid #c5c5c5',
+                },
             }}
           />
           <TextField
@@ -133,13 +121,14 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
             FormHelperTextProps={{
               sx: {
                 position: 'absolute',
-                bottom: '-22px'
-              }
+                bottom: '-22px',
+              },
             }}
             sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #c5c5c5'
-              }
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
+                {
+                  border: '1px solid #c5c5c5',
+                },
             }}
           />
           <TextField
@@ -150,22 +139,19 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
             autoComplete="new-password"
             required
             {...formik.getFieldProps('password')}
-            error={
-              formik.touched.password && Boolean(formik.errors.password)
-            }
-            helperText={
-              formik.touched.password && formik.errors.password
-            }
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
             FormHelperTextProps={{
               sx: {
                 position: 'absolute',
-                bottom: '-22px'
-              }
+                bottom: '-22px',
+              },
             }}
             sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #c5c5c5'
-              }
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
+                {
+                  border: '1px solid #c5c5c5',
+                },
             }}
           />
           <TextField
@@ -181,19 +167,19 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
               Boolean(formik.errors.passwordConfirm)
             }
             helperText={
-              formik.touched.passwordConfirm &&
-              formik.errors.passwordConfirm
+              formik.touched.passwordConfirm && formik.errors.passwordConfirm
             }
             FormHelperTextProps={{
               sx: {
                 position: 'absolute',
-                bottom: '-22px'
-              }
+                bottom: '-22px',
+              },
             }}
             sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #c5c5c5'
-              }
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
+                {
+                  border: '1px solid #c5c5c5',
+                },
             }}
           />
           <Button
@@ -208,7 +194,7 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
               padding: '2px 0 0 0',
             }}
           >
-            {'S\'inscrire'}
+            {"S'inscrire"}
           </Button>
         </Stack>
         <Box sx={{ marginTop: '13px' }}>
@@ -219,8 +205,8 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
           ) : null}
         </Box>
       </form>
-      <Divider sx={{ borderColor: '#616161', margin: '23px 0 17px 0' }}/>
-      <Stack direction='row'>
+      <Divider sx={{ borderColor: '#616161', margin: '23px 0 17px 0' }} />
+      <Stack direction="row">
         <Typography
           variant="body1"
           sx={{
@@ -228,12 +214,12 @@ function RegistrationFormComponent({ formik, setAuthPage }) {
             marginBottom: '11px',
           }}
         >
-          {"Déjà un compte ?"}
+          {'Déjà un compte ?'}
         </Typography>
         <Typography
-          color='primary.light'
-          fontWeight='500'
-          marginLeft='5px'
+          color="primary.light"
+          fontWeight="500"
+          marginLeft="5px"
           onClick={() => setAuthPage('login')}
         >
           {'Connexion'}

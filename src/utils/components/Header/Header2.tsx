@@ -15,30 +15,24 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import NavigationPresentation from './NavigationPresentation';
 import HeaderNavigation from './HeaderNavigation';
-import { handleLogout } from '@utils/request/authRequest';
 
 const Header2 = ({ page, isTrailerFullscreen }) => {
-
   const loggedUserInfos = JSON.parse(localStorage.getItem('user_infos'));
 
   const [menuDrawerOpen, setMenuDrawerOpen] = React.useState(false);
   const [searchDrawerOpen, setSearchDrawerOpen] = React.useState(false);
 
-  const toggleMenuDrawer = (open) => (_) => {
+  const toggleMenuDrawer = open => _ => {
     setMenuDrawerOpen(open);
   };
 
-  const toggleSearchDrawer = (open) => (_) => {
+  const toggleSearchDrawer = open => _ => {
     setSearchDrawerOpen(open);
   };
 
   return (
     <AppBar
-      position={
-        page === 'Swipe'
-          ? 'absolute'
-          : 'static'
-      }
+      position={page === 'Swipe' ? 'absolute' : 'static'}
       elevation={page === 'Swipe' ? 2 : 0}
       sx={{
         visibility: isTrailerFullscreen ? 'hidden' : 'visible',
@@ -101,20 +95,17 @@ const Header2 = ({ page, isTrailerFullscreen }) => {
           '& .MuiDrawer-paper': {
             width: '60vw',
             backgroundColor: '#011212',
-            padding: '25px 0 0 0'
+            padding: '25px 0 0 0',
           },
         }}
       >
         <Stack
           sx={{
-            flexGrow: '1'
+            flexGrow: '1',
           }}
         >
           <NavigationPresentation loggedUserInfos={loggedUserInfos} />
-          <HeaderNavigation 
-            page={page} 
-              
-          />
+          <HeaderNavigation page={page} />
         </Stack>
         {/* Ajoutez le contenu du menu ici */}
       </SwipeableDrawer>

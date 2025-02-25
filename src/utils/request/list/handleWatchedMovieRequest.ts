@@ -15,7 +15,6 @@ export const handleWatchedMovieRequest = async (
     );
 
     return { message: `Vous avez déjà vu` };
-
   } else {
     await axios.delete(`${apiBaseUrl}/list/watched/remove`, {
       data: { movie_id: movieId, type: type },

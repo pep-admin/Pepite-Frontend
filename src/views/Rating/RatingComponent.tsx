@@ -7,8 +7,11 @@ import RatingReview from './RatingReview';
 import RatingPublish from './RatingPublish';
 import RatingFriendSelected from './RatingFriendSelected';
 
-const RatingComponent = ({ ratingSectionIndex, movieSelected, setMovieSelected }) => {
-
+const RatingComponent = ({
+  ratingSectionIndex,
+  movieSelected,
+  setMovieSelected,
+}) => {
   const [friendSelected, setFriendSelected] = useState(null);
   const [movieRating, setMovieRating] = useState(null);
   const [criticText, setCriticText] = useState(null);
@@ -20,7 +23,7 @@ const RatingComponent = ({ ratingSectionIndex, movieSelected, setMovieSelected }
   // Reset si l'utilisateur sélectionne un nouveau film à noter
   useEffect(() => {
     console.log('film sélectionné ?', movieSelected);
-    
+
     setMovieRating(null);
     setCriticText(null);
     setIsGoldNugget(false);
@@ -28,12 +31,12 @@ const RatingComponent = ({ ratingSectionIndex, movieSelected, setMovieSelected }
   }, [movieSelected]);
 
   useEffect(() => {
-    if(ratingSectionIndex === 0) {
+    if (ratingSectionIndex === 0) {
       setPublicationChoice('publique');
     } else {
       setPublicationChoice('privée');
     }
-  }, [ratingSectionIndex])
+  }, [ratingSectionIndex]);
 
   return (
     <Container
@@ -43,62 +46,61 @@ const RatingComponent = ({ ratingSectionIndex, movieSelected, setMovieSelected }
         overflow: 'auto',
       }}
     >
-      <RatingSearch 
+      <RatingSearch
         searchType={'movie'}
         setMovieSelected={setMovieSelected}
         friendSelected={null}
         setFriendSelected={null}
       />
-      {
-        movieSelected &&
+      {movieSelected && (
         <>
           <RatingMovieSelected movie={movieSelected} />
-          { ratingSectionIndex === 1 && 
-            <RatingSearch 
-              searchType={'friend'} 
-              setMovieSelected={null} 
+          {ratingSectionIndex === 1 && (
+            <RatingSearch
+              searchType={'friend'}
+              setMovieSelected={null}
               friendSelected={friendSelected}
               setFriendSelected={setFriendSelected}
             />
-          }
-          { ratingSectionIndex === 1 && friendSelected &&
+          )}
+          {ratingSectionIndex === 1 && friendSelected && (
             <RatingFriendSelected
               friendSelected={friendSelected}
               setFriendSelected={setFriendSelected}
               movieSelected={movieSelected}
             />
-          }
-          <RatingStars 
+          )}
+          <RatingStars
             ratingSectionIndex={ratingSectionIndex}
             isGoldNugget={isGoldNugget}
             setIsGoldNugget={setIsGoldNugget}
             isTurnip={isTurnip}
             setIsTurnip={setIsTurnip}
-            movieRating={movieRating} 
-            setMovieRating={setMovieRating} 
+            movieRating={movieRating}
+            setMovieRating={setMovieRating}
           />
-          <RatingReview 
+          <RatingReview
             ratingSectionIndex={ratingSectionIndex}
-            movie={movieSelected} 
-            criticText={criticText} 
+            movie={movieSelected}
+            criticText={criticText}
             setCriticText={setCriticText}
             friendSelected={friendSelected}
           />
-          <RatingPublish 
+          <RatingPublish
             ratingSectionIndex={ratingSectionIndex}
             publicationChoice={publicationChoice}
             setPublicationChoice={setPublicationChoice}
             isCriticOrAdvice={ratingSectionIndex === 0 ? 'critic' : 'advice'}
-            movie={movieSelected} 
+            movie={movieSelected}
             isGoldNugget={isGoldNugget}
             isTurnip={isTurnip}
             movieRating={movieRating}
-            criticText={criticText}  
+            criticText={criticText}
             friendSelected={friendSelected}
             setMovieSelected={setMovieSelected}
           />
         </>
-      }
+      )}
     </Container>
   );
 };

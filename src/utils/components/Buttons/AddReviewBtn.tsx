@@ -4,7 +4,6 @@ import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 
 const AddReviewBtn = ({ containerRef }) => {
-
   const navigate = useNavigate();
 
   const [showButton, setShowButton] = useState(true);
@@ -13,7 +12,7 @@ const AddReviewBtn = ({ containerRef }) => {
   // Fonction pour gérer le défilement
   const handleScroll = () => {
     let scrollTop: number;
-    
+
     // Si containerRef est défini, on attache au conteneur, sinon à window
     if (containerRef && containerRef.current) {
       scrollTop = containerRef.current.scrollTop;
@@ -26,7 +25,7 @@ const AddReviewBtn = ({ containerRef }) => {
     } else {
       setShowButton(true); // Afficher le bouton si l'utilisateur remonte
     }
-    
+
     setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop);
   };
 
@@ -49,20 +48,21 @@ const AddReviewBtn = ({ containerRef }) => {
 
   return (
     showButton && (
-      <Fab 
-        aria-label="add" 
+      <Fab
+        aria-label="add"
         sx={{
           height: '50px',
           width: '50px',
-          position: 'fixed', 
-          bottom: 18, 
+          position: 'fixed',
+          bottom: 18,
           right: 17,
-          background: 'linear-gradient(310deg, rgba(21,21,21,1) 0%, rgba(40,40,40,1) 100%)',
-          border: '1px solid #131313'
+          background:
+            'linear-gradient(310deg, rgba(21,21,21,1) 0%, rgba(40,40,40,1) 100%)',
+          border: '1px solid #131313',
         }}
         onClick={() => navigate('/rating')}
       >
-        <AddIcon fontSize='large' sx={{ color: '#f1f1f1' }}/>
+        <AddIcon fontSize="large" sx={{ color: '#f1f1f1' }} />
       </Fab>
     )
   );

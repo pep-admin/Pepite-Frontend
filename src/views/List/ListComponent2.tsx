@@ -15,7 +15,7 @@ const ListComponent2 = () => {
   const scrollableContainerRef = useRef(null);
 
   const skeletonCount = useCardCount(scrollableContainerRef, 118.8, 18); // Hauteur de la card skeleton : 118.80px, Espacement : 18px
-  const { fetchWithMinDelay, isLoading, error } = useFetchWithMinDelay(1000);
+  const { fetchWithMinDelay, isLoading } = useFetchWithMinDelay(1000);
 
   const [moviesList, setMoviesList] = useState([]);
   const [listSectionIndex, setListSectionIndex] = useState(0);
@@ -29,11 +29,11 @@ const ListComponent2 = () => {
       let movies = [];
       if (listType === 'rated') {
         movies = await fetchWithMinDelay(() =>
-          getCriticsOfUserRequest('movie', loggedUserInfos.id)
+          getCriticsOfUserRequest('movie', loggedUserInfos.id),
         );
       } else {
         movies = await fetchWithMinDelay(() =>
-          getMoviesListRequest(listType, 'movie')
+          getMoviesListRequest(listType, 'movie'),
         );
       }
 
@@ -94,19 +94,33 @@ const ListComponent2 = () => {
                 movie={movie}
                 isFirstCard={index === 0}
                 isLastCard={index === moviesList.length - 1}
-                onComplete={() => 
-                  getMoviesList(listSectionIndex === 0 
-                    ? 'wanted' 
-                    : listSectionIndex === 1 
-                    ? 'watched' 
-                    : 'rated'
-                    , false)} // Ne pas activer les Skeletons lors des actions des boutons
+                onComplete={() =>
+                  getMoviesList(
+                    listSectionIndex === 0
+                      ? 'wanted'
+                      : listSectionIndex === 1
+                      ? 'watched'
+                      : 'rated',
+                    false,
+                  )
+                } // Ne pas activer les Skeletons lors des actions des boutons
               />
             ))
           ) : (
             <Box sx={{ textAlign: 'center', marginTop: '20px' }}>
-              <Typography align='center' color='#555555' fontSize='1.05em' padding='0 5vw'>
-                {`Il n'y a encore aucun film / série ${listSectionIndex === 0 ? 'à voir' : listSectionIndex === 1 ? 'à noter' : 'notés'}.`}
+              <Typography
+                align="center"
+                color="#555555"
+                fontSize="1.05em"
+                padding="0 5vw"
+              >
+                {`Il n'y a encore aucun film / série ${
+                  listSectionIndex === 0
+                    ? 'à voir'
+                    : listSectionIndex === 1
+                    ? 'à noter'
+                    : 'notés'
+                }.`}
               </Typography>
             </Box>
           )}

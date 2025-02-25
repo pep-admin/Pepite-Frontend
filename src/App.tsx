@@ -38,8 +38,14 @@ export function App() {
               <BrowserRouter>
                 {/* <ScrollToTop /> */}
                 <Routes>
-                  <Route path="/login" element={<AuthContainer authType={'login'} />} />
-                  <Route path="/register" element={<AuthContainer authType={'register'} />} />
+                  <Route
+                    path="/login"
+                    element={<AuthContainer authType={'login'} />}
+                  />
+                  <Route
+                    path="/register"
+                    element={<AuthContainer authType={'register'} />}
+                  />
                   <Route
                     path="/preferences"
                     element={
@@ -64,14 +70,14 @@ export function App() {
                       </PrivateRoute>
                     }
                   />
-                  {/* <Route
-                    path="/account/:id"
+                  <Route
+                    path="/account"
                     element={
                       <PrivateRoute>
                         <AccountContainer />
                       </PrivateRoute>
                     }
-                  /> */}
+                  />
                   <Route
                     path="/contacts/:id"
                     element={
@@ -112,17 +118,17 @@ export function App() {
                       </PrivateRoute>
                     }
                   />
-                  <Route 
-                    path="/film/:movieOrSerie/:id" 
+                  <Route
+                    path="/film/:movieOrSerie/:id"
                     element={
                       <PrivateRoute>
-                        <FilmContainer 
-                          display={'full-page'} 
-                          movie={null} 
-                          onClose={null} 
+                        <FilmContainer
+                          display={'full-page'}
+                          movie={null}
+                          onClose={null}
                         />
                       </PrivateRoute>
-                    } 
+                    }
                   />
                 </Routes>
               </BrowserRouter>

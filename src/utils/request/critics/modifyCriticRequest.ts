@@ -8,9 +8,8 @@ export const modifyCriticRequest = async (
   text: string,
   isGoldNugget: boolean,
   isTurnip: boolean,
-  isPrivate: boolean
+  isPrivate: boolean,
 ) => {
-  
   await axios.put(
     `${apiBaseUrl}/critics/modify/${criticId}`,
     {
@@ -19,7 +18,7 @@ export const modifyCriticRequest = async (
       text: text,
       is_gold_nugget: isGoldNugget,
       is_turnip: isTurnip,
-      isPrivate: isPrivate
+      isPrivate: isPrivate,
     },
     { withCredentials: true },
   );

@@ -7,21 +7,21 @@ export const listButtons = [
   {
     id: 0,
     action: 'set_watched',
-    icon: VisibilityOffIcon 
+    icon: VisibilityOffIcon,
   },
   {
     id: 1,
     action: 'set_unwatched',
-    icon: VisibilityIcon 
+    icon: VisibilityIcon,
   },
   {
     id: 2,
     action: 'note',
-    icon: StarIcon 
+    icon: StarIcon,
   },
   {
     id: 3,
     action: 'delete',
-    icon: DeleteForeverIcon 
+    icon: DeleteForeverIcon,
   },
 ];

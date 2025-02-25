@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 
-const useSwipeZIndex = (initialDirection) => {
+const useSwipeZIndex = initialDirection => {
   const [zIndexes, setZIndexes] = useState({
     current: 3,
     previous: 1,
@@ -8,7 +8,7 @@ const useSwipeZIndex = (initialDirection) => {
   });
   const dragDirectionRef = useRef(initialDirection);
 
-  const setZIndexForSwipe = useCallback((direction) => {
+  const setZIndexForSwipe = useCallback(direction => {
     if (dragDirectionRef.current !== direction) {
       dragDirectionRef.current = direction;
       setZIndexes({

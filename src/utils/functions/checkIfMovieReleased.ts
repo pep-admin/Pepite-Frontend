@@ -1,9 +1,10 @@
-import { findIfMovieOrSerie } from "./findIfMovieOrSerie";
+import { findIfMovieOrSerie } from './findIfMovieOrSerie';
 
-export const checkIfMovieReleased = (movie) => {
+export const checkIfMovieReleased = movie => {
   const isMovieOrSerie = findIfMovieOrSerie(movie);
-  
-  const movieOrSerieDate = isMovieOrSerie === 'movie' ? movie.release_date : movie.first_air_date;
+
+  const movieOrSerieDate =
+    isMovieOrSerie === 'movie' ? movie.release_date : movie.first_air_date;
 
   const today = new Date();
   const releaseDate = new Date(movieOrSerieDate);
@@ -15,4 +16,4 @@ export const checkIfMovieReleased = (movie) => {
   } else {
     return false;
   }
-}
+};

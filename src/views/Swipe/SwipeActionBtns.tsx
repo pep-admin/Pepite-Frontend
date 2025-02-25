@@ -3,11 +3,7 @@ import ChoiceBtn from './ChoiceBtn';
 import { handleSwipeBtns } from '@utils/functions/handleSwipeBtns';
 import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 
-const SwipeActionBtns = ({ 
-  showTrailer, 
-  currentMovie, 
-}) => {
-
+const SwipeActionBtns = ({ showTrailer, currentMovie }) => {
   const isMovieOrSerie = findIfMovieOrSerie(currentMovie);
 
   return (

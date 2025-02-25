@@ -1,5 +1,5 @@
-import { getMovieDetailsRequest } from "@utils/request/getMovieDetailsRequest";
-import { storeMovieDataRequest } from "@utils/request/store/storeMovieDataRequest";
+import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
+import { storeMovieDataRequest } from '@utils/request/store/storeMovieDataRequest';
 
 /*
   Cette fonction permet selon l'usage :
@@ -19,30 +19,35 @@ type MovieDetailsType = {
   // ajoutez d'autres propriétés si nécessaire
 };
 
-export const getAndStoreMovieDetails = async(
+export const getAndStoreMovieDetails = async (
   isMovieOrSerie: string,
   movieId: number,
-  setMovieDetails: React.Dispatch<React.SetStateAction<MovieDetailsType | null>>
-  ) => {
+  setMovieDetails: React.Dispatch<
+    React.SetStateAction<MovieDetailsType | null>
+  >,
+) => {
   // Récupération des détails du film
   const details = await getMovieDetailsRequest(isMovieOrSerie, movieId);
-  
-  if(setMovieDetails) setMovieDetails(details);
 
-  // Enregistrement des données du film nécessaires dans la base de données 
+  if (setMovieDetails) setMovieDetails(details);
+
+  // Enregistrement des données du film nécessaires dans la base de données
   const necessaryDetails = {
     id: details.id,
     title: isMovieOrSerie === 'movie' ? details.title : details.name,
     overview: details.overview,
-    release_date: isMovieOrSerie === 'movie' ? details.release_date : details.first_air_date,
+    release_date:
+      isMovieOrSerie === 'movie'
+        ? details.release_date
+        : details.first_air_date,
     poster_path: details.poster_path,
     backdrop_path: details.backdrop_path,
     genres: details.genres,
     production_countries: details.production_countries,
-    vote_average: details.vote_average
-  }
-  
+    vote_average: details.vote_average,
+  };
+
   await storeMovieDataRequest(isMovieOrSerie, necessaryDetails);
 
   // console.log('les détails du film =>', necessaryDetails);
-}
+};

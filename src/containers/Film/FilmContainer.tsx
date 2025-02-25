@@ -15,7 +15,7 @@ const FilmContainer = ({ display, movie, onClose }) => {
   let movieId = parseInt(id, 10);
 
   // Si le composant est monté depuis la page Home
-  if (display !== 'full-page') {        
+  if (display !== 'full-page') {
     isMovieOrSerie = findIfMovieOrSerie(movie);
     movieId = movie.id;
   }
@@ -24,7 +24,7 @@ const FilmContainer = ({ display, movie, onClose }) => {
   const [areDetailsLoading, setAreDetailsLoading] = useState(true);
   const [error, setError] = useState<ErrorState>({
     state: null,
-    message: ''
+    message: '',
   });
 
   const getMovieDetails = async () => {
@@ -47,48 +47,55 @@ const FilmContainer = ({ display, movie, onClose }) => {
 
   useEffect(() => {
     console.log('RESET');
-    
+
     setAreDetailsLoading(true);
     setMovieDetails({});
     getMovieDetails();
   }, [isMovieOrSerie, movieId]); // Ajout de `isMovieOrSerie` comme dépendance
 
   return (
-    <Box height='auto' minHeight='100vh' width='100vw' bgcolor='#011212'>
-      { display === 'full-page' ? (
-          <>
-            <Header2 page={'Film'} isTrailerFullscreen={null} />
-            {!areDetailsLoading ? (
-              <FilmComponent
-                display={display}
-                movie={movieDetails}
-                movieDetails={movieDetails}
-                isMovieOrSerie={isMovieOrSerie}
-                areDetailsLoading={areDetailsLoading}
-                onClose={onClose}
-                error={error}
-                setError={setError}
-                onNavigate={handleNavigateToMovie}
+    <Box height="auto" minHeight="100vh" width="100vw" bgcolor="#011212">
+      {display === 'full-page' ? (
+        <>
+          <Header2 page={'Film'} isTrailerFullscreen={null} />
+          {!areDetailsLoading ? (
+            <FilmComponent
+              display={display}
+              movie={movieDetails}
+              movieDetails={movieDetails}
+              isMovieOrSerie={isMovieOrSerie}
+              areDetailsLoading={areDetailsLoading}
+              onClose={onClose}
+              error={error}
+              setError={setError}
+              onNavigate={handleNavigateToMovie}
+            />
+          ) : (
+            <Stack
+              height="calc(100vh - 56px)"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CircularProgress
+                color="secondary"
+                sx={{ height: '15vw', width: '15vw' }}
               />
-            ) : (
-              <Stack height='calc(100vh - 56px)' justifyContent='center' alignItems='center'>
-                <CircularProgress color='secondary' sx={{ height: '15vw', width: '15vw' }} />
-              </Stack>
-            )}
-          </>
-        ) : (
-          <FilmComponent
-            display={display}
-            movie={movie}
-            movieDetails={movieDetails}
-            isMovieOrSerie={isMovieOrSerie}
-            areDetailsLoading={areDetailsLoading}
-            onClose={onClose}
-            error={error}
-            setError={setError}
-            onNavigate={handleNavigateToMovie}
-          />
-        )}
+            </Stack>
+          )}
+        </>
+      ) : (
+        <FilmComponent
+          display={display}
+          movie={movie}
+          movieDetails={movieDetails}
+          isMovieOrSerie={isMovieOrSerie}
+          areDetailsLoading={areDetailsLoading}
+          onClose={onClose}
+          error={error}
+          setError={setError}
+          onNavigate={handleNavigateToMovie}
+        />
+      )}
     </Box>
   );
 };

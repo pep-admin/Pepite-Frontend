@@ -28,7 +28,7 @@ interface ChoiceBtn2Props {
     choice: string,
     movie: Movie,
     isMovieOrSerie: string,
-    rating: number | undefined,
+    // rating: number | undefined,
     handleOpenSnackbar: (message: string) => void,
     isActive: boolean,
     setIsActive: React.Dispatch<React.SetStateAction<boolean>>,
@@ -36,32 +36,25 @@ interface ChoiceBtn2Props {
 }
 
 const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
-  ({
-    currentMovie,
-    isMovieOrSerie,
-    choice,
-    handleSwipeBtns,
-  }) => {
-
-    const handleOpenSnackbar = useSnackbar(); 
+  ({ currentMovie, isMovieOrSerie, choice, handleSwipeBtns }) => {
+    const handleOpenSnackbar = useSnackbar();
 
     const [isActive, setIsActive] = useState(false);
 
     const handleClick = (_: React.MouseEvent<HTMLButtonElement>) => {
       console.log('faire un swipe venant du côté pour noter le film');
-      
     };
 
     useEffect(() => {
       // Vérifie si l'ID du film est dans le tableau correspondant dans le local storage
       const updateIsActive = () => {
-        const storedMovies = JSON.parse(localStorage.getItem(`${choice}Movies`)) || [];
-        setIsActive(storedMovies.includes(currentMovie.id)); 
+        const storedMovies =
+          JSON.parse(localStorage.getItem(`${choice}Movies`)) || [];
+        setIsActive(storedMovies.includes(currentMovie.id));
       };
-  
+
       // Appel initial
       updateIsActive();
-  
     }, [currentMovie.id, choice]);
 
     return (
@@ -82,7 +75,7 @@ const ChoiceBtn: FC<ChoiceBtn2Props> = React.memo(
                       choice,
                       currentMovie,
                       isMovieOrSerie,
-                      null,
+                      // null,
                       handleOpenSnackbar,
                       isActive,
                       setIsActive,

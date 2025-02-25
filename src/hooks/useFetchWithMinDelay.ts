@@ -4,7 +4,7 @@ const useFetchWithMinDelay = (delay = 1000) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchWithMinDelay = async (fetchFunction) => {
+  const fetchWithMinDelay = async fetchFunction => {
     setIsLoading(true);
     setError(null);
     const startTime = Date.now();
@@ -15,7 +15,7 @@ const useFetchWithMinDelay = (delay = 1000) => {
 
       // Attendre que le délai minimum soit respecté
       if (elapsedTime < delay) {
-        await new Promise((resolve) => setTimeout(resolve, delay - elapsedTime));
+        await new Promise(resolve => setTimeout(resolve, delay - elapsedTime));
       }
 
       return data;

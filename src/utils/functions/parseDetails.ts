@@ -52,7 +52,7 @@ export const parseDatabaseData = data => {
       is_turnip,
       text,
       post_date,
-      critic_id
+      critic_id,
     };
   }
 
@@ -81,7 +81,7 @@ export const parseDatabaseData = data => {
       is_turnip,
       text,
       post_date,
-      critic_id
+      critic_id,
     };
   }
 };

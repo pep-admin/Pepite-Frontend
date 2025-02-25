@@ -1,6 +1,6 @@
 // Icônes amitié
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import AccessTimeIcon from '@mui/icons-material/AccessTime'; 
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DoneIcon from '@mui/icons-material/Done';
 
 // Autres icônes
@@ -13,19 +13,19 @@ export const friendshipButtons = [
     id: 0,
     action: 'send',
     color: '#4d4d4d',
-    icon: PersonAddIcon // Demander en ami
+    icon: PersonAddIcon, // Demander en ami
   },
   {
     id: 1,
     action: 'accept',
     color: 'green',
-    icon: DoneIcon // Validation de la demande reçue
+    icon: DoneIcon, // Validation de la demande reçue
   },
   {
     id: 2,
     action: 'cancel',
     color: '#aa9a70',
-    icon: AccessTimeIcon // Acceptation en attente
+    icon: AccessTimeIcon, // Acceptation en attente
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ export const friendshipButtons = [
     action: 'decline',
     color: '#4d4d4d',
     icon: ClearIcon,
-  }
+  },
 ];
 
 export const otherButtons = [

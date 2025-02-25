@@ -1,4 +1,4 @@
-export const findDirectorName = crew => {  
+export const findDirectorName = crew => {
   const director = crew.find(member => member.job === 'Director');
   return director ? director.name : 'Réalisateur inconnu';
 };

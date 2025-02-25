@@ -40,7 +40,8 @@ const SwipeComponent = ({
 }) => {
   console.log('rendu swipe component !');
 
-  const { zIndexes, dragDirectionRef, setZIndexForSwipe } = useSwipeZIndex('right');
+  const { zIndexes, dragDirectionRef, setZIndexForSwipe } =
+    useSwipeZIndex('right');
 
   // Clés uniques pour chaque carte
   const [currentCardKey, setCurrentCardKey] = useState(uuidv4());
@@ -224,7 +225,7 @@ const SwipeComponent = ({
           )}
         </Box>
         {movies.length > 0 && (
-          <SwipeActionBtns 
+          <SwipeActionBtns
             showTrailer={showTrailer}
             currentMovie={currentMovie}
           />

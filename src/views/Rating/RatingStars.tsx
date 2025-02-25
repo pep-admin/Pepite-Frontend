@@ -1,27 +1,32 @@
-import { Divider, Rating, Slider, Stack, Typography, useTheme } from '@mui/material';
+import {
+  Divider,
+  Rating,
+  Slider,
+  Stack,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import MovieInterestBtn from '@utils/components/Buttons/MovieInterestBtn';
 import { useEffect } from 'react';
 
-
-const RatingStars = ({ 
-  ratingSectionIndex, 
-  isGoldNugget, 
-  setIsGoldNugget, 
-  isTurnip, 
-  setIsTurnip, 
-  movieRating, 
-  setMovieRating 
+const RatingStars = ({
+  ratingSectionIndex,
+  isGoldNugget,
+  setIsGoldNugget,
+  isTurnip,
+  setIsTurnip,
+  movieRating,
+  setMovieRating,
 }) => {
-
   const theme = useTheme();
 
-  const handleSliderChange = (_: Event, newValue: number) => {    
+  const handleSliderChange = (_: Event, newValue: number) => {
     setMovieRating(newValue as number);
   };
 
-  const handleGoldOrTurnip = (btnType) => {
-    if(btnType === 'gold') {
+  const handleGoldOrTurnip = btnType => {
+    if (btnType === 'gold') {
       setIsGoldNugget(!isGoldNugget);
       setIsTurnip(false);
     } else {
@@ -34,93 +39,92 @@ const RatingStars = ({
 
   useEffect(() => {
     console.log('pépite ?', isGoldNugget);
-    
   }, [isGoldNugget]);
 
   return (
-    <Stack
-      spacing={5}
-      padding='30px 0 0 0'
-    >
+    <Stack spacing={5} padding="30px 0 0 0">
       <Stack>
-        <Stack direction='row' justifyContent='space-between'>
+        <Stack direction="row" justifyContent="space-between">
           <Typography
-            component='h2'
-            color='text.primary'
-            fontSize='1.15em'
-            fontWeight='400'
-            textTransform='uppercase'
+            component="h2"
+            color="text.primary"
+            fontSize="1.15em"
+            fontWeight="400"
+            textTransform="uppercase"
           >
             {'VOTRE NOTE'}
           </Typography>
           <Typography
-            component='span'
-            fontSize='1em'
-            fontWeight='200'
-            color={ ratingSectionIndex === 0 ? 
-              'secondary'
-              : theme.palette.primary.light
+            component="span"
+            fontSize="1em"
+            fontWeight="200"
+            color={
+              ratingSectionIndex === 0
+                ? 'secondary'
+                : theme.palette.primary.light
             }
           >
-            { ratingSectionIndex === 0 ?
-              '* obligatoire'
-              : '* facultatif'
-            }
+            {ratingSectionIndex === 0 ? '* obligatoire' : '* facultatif'}
           </Typography>
         </Stack>
         <Typography
-          component='h2'
-          color='gray'
-          fontSize='1em'
-          fontWeight='400'
-          lineHeight='1'
-          marginTop='4px'
+          component="h2"
+          color="gray"
+          fontSize="1em"
+          fontWeight="400"
+          lineHeight="1"
+          marginTop="4px"
         >
           {'Pépite ou navet'}
         </Typography>
       </Stack>
-      <Stack direction='row' spacing={2} justifyContent='space-evenly' alignItems='center'>
-        <MovieInterestBtn 
-          btnFrom={'rating'} 
-          btnType={'gold'} 
-          value={null} 
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-evenly"
+        alignItems="center"
+      >
+        <MovieInterestBtn
+          btnFrom={'rating'}
+          btnType={'gold'}
+          value={null}
           disabled={isTurnip}
-          handleBtn={handleGoldOrTurnip} 
+          handleBtn={handleGoldOrTurnip}
         />
-        <MovieInterestBtn 
-          btnFrom={'rating'} 
-          btnType={'turnip'} 
-          value={null} 
+        <MovieInterestBtn
+          btnFrom={'rating'}
+          btnType={'turnip'}
+          value={null}
           disabled={isGoldNugget}
-          handleBtn={handleGoldOrTurnip} 
+          handleBtn={handleGoldOrTurnip}
         />
       </Stack>
-      <Stack spacing={5} >
+      <Stack spacing={5}>
         <Stack>
           <Typography
-            component='h2'
-            color='gray'
-            fontSize='1em'
-            fontWeight='400'
-            lineHeight='1'
-            marginTop='4px'
+            component="h2"
+            color="gray"
+            fontSize="1em"
+            fontWeight="400"
+            lineHeight="1"
+            marginTop="4px"
           >
             {'Note de 0 à 5'}
           </Typography>
         </Stack>
-        <Stack 
-          spacing={2} 
-          alignItems='center'
+        <Stack
+          spacing={2}
+          alignItems="center"
           sx={{
-            filter: isGoldNugget || isTurnip ? 'grayscale(1)' : 'none'
-          }}  
+            filter: isGoldNugget || isTurnip ? 'grayscale(1)' : 'none',
+          }}
         >
-          <Stack 
-            width='75%' 
-            direction='row' 
-            justifyContent='center' 
-            alignItems='center'
-            position='relative'
+          <Stack
+            width="75%"
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            position="relative"
           >
             <Rating
               name="half-rating-read"
@@ -132,31 +136,30 @@ const RatingStars = ({
                   fontSize: '2em',
                 },
               }}
-              icon={
-                <StarIcon sx={{ color: '#E7AE1A' }} fontSize="inherit" />
-              }
+              icon={<StarIcon sx={{ color: '#E7AE1A' }} fontSize="inherit" />}
               emptyIcon={
                 <StarIcon sx={{ color: '#627171' }} fontSize="inherit" />
               }
             />
             <Typography
               color="#E7AE1A"
-              whiteSpace='nowrap'
-              position='absolute'
-              top='6px'
-              right='-9px'
+              whiteSpace="nowrap"
+              position="absolute"
+              top="6px"
+              right="-9px"
               sx={{
-                textDecoration: isGoldNugget || isTurnip ? 'line-through' : 'none'
+                textDecoration:
+                  isGoldNugget || isTurnip ? 'line-through' : 'none',
               }}
             >
               {`${movieRating === null ? '?' : movieRating} / 5`}
             </Typography>
           </Stack>
           <Stack
-            width='75%' 
-            direction='row' 
-            justifyContent='center' 
-            alignItems='center'
+            width="75%"
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
           >
             <Slider
               aria-label="Note"

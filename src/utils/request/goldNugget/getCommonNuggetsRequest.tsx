@@ -17,7 +17,7 @@ export const getCommonNuggetsRequest = async (targetUserId, type) => {
   }
 
   const parsedData = response.data.map(critic =>
-    parseDatabaseData(critic, type, 'critic'),
+    parseDatabaseData(critic)
   );
 
   return parsedData;

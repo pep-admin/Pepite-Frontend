@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { apiBaseUrl } from '../config';
 
-export const handleFollowedRequest = async (follow: boolean, followed_id: number) => {
-
-  if(follow) {
+export const handleFollowedRequest = async (
+  follow: boolean,
+  followed_id: number,
+) => {
+  if (follow) {
     await axios.post(
       `${apiBaseUrl}/followed/follow`,
       { followed_id: followed_id },
@@ -15,5 +17,4 @@ export const handleFollowedRequest = async (follow: boolean, followed_id: number
       withCredentials: true,
     });
   }
-
 };

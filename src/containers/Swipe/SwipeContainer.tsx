@@ -8,11 +8,13 @@ import SwipeComponent from '@views/Swipe/SwipeComponent';
 import { getMoviesSwipe } from '@utils/request/swipe/getMoviesSwipe';
 import { getMovieDetailsRequest } from '@utils/request/getMovieDetailsRequest';
 import { getMovieCreditsRequest } from '@utils/request/film/getMovieCreditsRequest';
-import { findDirectorName, findTopActors } from '@utils/functions/findCrewAndCast';
+import {
+  findDirectorName,
+  findTopActors,
+} from '@utils/functions/findCrewAndCast';
 // import { storeDetailsData } from '@utils/request/swipe/storeDetailsData';
 
 const SwipeContainer = () => {
-  
   // Gestions des films
   const [movies, setMovies] = useState([]); // tableau des films / séries pour laisser une marge de swipe
   const [moviePage, setMoviePage] = useState(null); // Numéro de la page de l'API
@@ -93,19 +95,22 @@ const SwipeContainer = () => {
   const fetchMovieDetails = async movieId => {
     try {
       console.log('chargement des données détaillées');
-      
+
       const details = await getMovieDetailsRequest(typeChosen, movieId);
       const credits = await getMovieCreditsRequest(typeChosen, movieId);
 
       const director = findDirectorName(credits.crew);
       const topActors = findTopActors(credits.cast);
 
-      const detailsData = {...details, director: director, topActors: topActors};      
+      const detailsData = {
+        ...details,
+        director: director,
+        topActors: topActors,
+      };
 
       setMovieDetails(detailsData);
     } catch (err) {
       console.log(err);
-      
     }
   };
 

@@ -29,11 +29,11 @@ const ListNav = ({ setListSectionIndex, listSectionIndex }) => {
         aria-label="full width tabs example"
         sx={{
           '& .MuiTab-root': {
-            color: theme.palette.common.white, 
+            color: theme.palette.common.white,
             overflow: 'visible',
           },
           '& .Mui-selected': {
-            color: `${theme.palette.secondary.main} !important`, 
+            color: `${theme.palette.secondary.main} !important`,
           },
         }}
       >

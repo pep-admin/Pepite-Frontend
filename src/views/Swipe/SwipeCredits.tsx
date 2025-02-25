@@ -5,7 +5,6 @@ import { Skeleton, Stack, Typography, useTheme } from '@mui/material';
 import { findFrenchNameCountry } from '@utils/functions/getFrenchNameCountry';
 
 const SwipeCredits = ({ isMovieOrSerie, movie, movieDetails }) => {
-
   const theme = useTheme();
 
   return (
@@ -23,7 +22,9 @@ const SwipeCredits = ({ isMovieOrSerie, movie, movieDetails }) => {
           fontSize="2.1vh"
         >
           {movie.overview === null || movie.overview === ''
-            ? `Aucun synopsis disponible pour ${isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'}.`
+            ? `Aucun synopsis disponible pour ${
+                isMovieOrSerie === 'movie' ? 'ce film' : 'cette série'
+              }.`
             : movie.overview}
         </Typography>
       </Stack>

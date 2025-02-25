@@ -37,13 +37,32 @@ interface Collection {
 }
 
 interface Cast {
-  // Ajoute les types spécifiques de chaque acteur si nécessaire
-  [key: string]: any;
+  adult: boolean;
+  gender: number; // 1 = femme, 2 = homme, 0 = inconnu
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string | null; // Peut être null si l'acteur n'a pas d'image
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  order: number;
 }
 
 interface Crew {
-  // Ajoute les types spécifiques de chaque membre d'équipe si nécessaire
-  [key: string]: any;
+  adult: boolean;
+  gender: number; // 1 = femme, 2 = homme, 0 = inconnu
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string | null; // Peut être null si l'image est absente
+  credit_id: string;
+  department: string; // Département de travail (ex: "Directing", "Production")
+  job: string; // Poste exact (ex: "Director", "Producer")
 }
 
 interface Genre {

@@ -12,12 +12,14 @@ import AddReviewBtn from '@utils/components/Buttons/AddReviewBtn';
 import FilmContainer from '../../containers/Film/FilmContainer';
 
 const HomeComponent = () => {
-  
   const [homeSectionIndex, setHomeSectionIndex] = useState(0);
   const [movies, setMovies] = useState([]);
   const [loadingMovies, setLoadingMovies] = useState([]); // Films en cours de chargement
   const [hasMore, setHasMore] = useState(true);
-  const [showFilmDetails, setShowFilmDetails] = useState({ display: false, movie: null }); 
+  const [showFilmDetails, setShowFilmDetails] = useState({
+    display: false,
+    movie: null,
+  });
 
   const homeSectionRef = useRef('popular');
   const pageRef = useRef(1);
@@ -25,7 +27,7 @@ const HomeComponent = () => {
 
   const getMovies = async () => {
     setLoadingMovies(Array(20).fill({})); // Ajoute 20 films fictifs en tant que placeholders pour le Skeleton
-    
+
     let newMovies = [];
 
     switch (homeSectionRef.current) {
@@ -46,7 +48,7 @@ const HomeComponent = () => {
     }
 
     if (newMovies && newMovies.length > 0) {
-      setMovies((prevMovies) => [...prevMovies, ...newMovies]); // Ajout direct des films de la nouvelle section
+      setMovies(prevMovies => [...prevMovies, ...newMovies]); // Ajout direct des films de la nouvelle section
       pageRef.current++;
     } else {
       setHasMore(false); // S'il n'y a plus de films à charger
@@ -56,7 +58,6 @@ const HomeComponent = () => {
   };
 
   useEffect(() => {
-    
     setMovies([]);
     setHasMore(true);
     pageRef.current = 1;
@@ -87,13 +88,12 @@ const HomeComponent = () => {
 
   useEffect(() => {
     console.log('les films ! =>', movies);
-    
   }, [movies]);
 
   return (
     <>
       <Header2 page={'Accueil'} isTrailerFullscreen={null} />
-      <Box paddingTop='5px' sx={{ backgroundColor: '#052525' }}>
+      <Box paddingTop="5px" sx={{ backgroundColor: '#052525' }}>
         <HomeNav
           homeSectionIndex={homeSectionIndex}
           setHomeSectionIndex={setHomeSectionIndex}
@@ -128,22 +128,25 @@ const HomeComponent = () => {
           anchor={'left'}
           open={showFilmDetails.display}
           onClose={() => setShowFilmDetails({ display: false, movie: null })}
-          onOpen={() => setShowFilmDetails({ display: false, movie: showFilmDetails.movie })}
+          onOpen={() =>
+            setShowFilmDetails({ display: false, movie: showFilmDetails.movie })
+          }
           sx={{
             '& .MuiDrawer-paper': {
-              width: '100vw', 
-              backgroundColor: '#011212'
-            }
+              width: '100vw',
+              backgroundColor: '#011212',
+            },
           }}
         >
-          {
-            showFilmDetails.display &&
+          {showFilmDetails.display && (
             <FilmContainer
               display={'swipeable'}
-              movie={showFilmDetails.movie} 
-              onClose={() => setShowFilmDetails({ display: false, movie: null })}
+              movie={showFilmDetails.movie}
+              onClose={() =>
+                setShowFilmDetails({ display: false, movie: null })
+              }
             />
-          }
+          )}
         </SwipeableDrawer>
       </Container>
       <AddReviewBtn containerRef={scrollableContainerRef} />

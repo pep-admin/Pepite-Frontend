@@ -3,18 +3,13 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import UserAvatar from '../UserAvatar';
 
 const NavigationPresentation = ({ loggedUserInfos }) => {
-
   const theme = useTheme();
 
   const fullName = `${loggedUserInfos.first_name} ${loggedUserInfos.last_name}`;
 
   return (
     <Stack>
-      <Stack
-        spacing={2}
-        justifyContent='center'
-        alignItems='center'
-      >
+      <Stack spacing={2} justifyContent="center" alignItems="center">
         <UserAvatar
           userInfos={loggedUserInfos}
           picHeight={'100px'}
@@ -23,34 +18,34 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
           onSelect={null}
           sx={null}
         />
-        <Stack alignItems='center'>
+        <Stack alignItems="center">
           <Typography
-            align='center'
-            fontFamily='Pragati Narrow, sans-serif'
-            fontSize='1.4em'
+            align="center"
+            fontFamily="Pragati Narrow, sans-serif"
+            fontSize="1.4em"
           >
             {`${fullName}`}
           </Typography>
-          <Stack 
-            direction='row' 
-            justifyContent='center'
-            width='fit-content'
-            position='relative'
+          <Stack
+            direction="row"
+            justifyContent="center"
+            width="fit-content"
+            position="relative"
           >
-            <MilitaryTechIcon 
+            <MilitaryTechIcon
               sx={{
                 color: theme.palette.secondary.light,
                 position: 'absolute',
-                left: '-29px'
+                left: '-29px',
               }}
             />
             <Typography
-              align='center'
-              fontFamily='Pragati Narrow, sans-serif'
-              color='secondary.light'
-              fontSize='0.9em'
-              position='relative'
-              top='3px'
+              align="center"
+              fontFamily="Pragati Narrow, sans-serif"
+              color="secondary.light"
+              fontSize="0.9em"
+              position="relative"
+              top="3px"
             >
               {`${loggedUserInfos.rank}`}
             </Typography>
@@ -58,7 +53,6 @@ const NavigationPresentation = ({ loggedUserInfos }) => {
         </Stack>
       </Stack>
     </Stack>
-
   );
 };
 

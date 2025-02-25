@@ -7,7 +7,7 @@ export const handleUnwantedMovieRequest = async (
   type: string,
   unwanted: boolean,
 ) => {
-  if (unwanted) {      
+  if (unwanted) {
     await axios.post(
       `${apiBaseUrl}/list/unwanted`,
       { movie_id: movieId, type: type },
@@ -23,5 +23,4 @@ export const handleUnwantedMovieRequest = async (
 
     return { message: `pourra vous être proposé.` };
   }
-
 };

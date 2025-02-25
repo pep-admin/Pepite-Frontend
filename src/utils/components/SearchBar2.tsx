@@ -8,7 +8,7 @@ const SearchBar2 = ({ placeHolder, onSearch, boxMargin }) => {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       console.log('search query => ', searchQuery);
-      
+
       if (searchQuery) {
         onSearch(searchQuery);
       } else {
@@ -19,7 +19,7 @@ const SearchBar2 = ({ placeHolder, onSearch, boxMargin }) => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     setSearchQuery(event.target.value);
   };
 
@@ -35,7 +35,7 @@ const SearchBar2 = ({ placeHolder, onSearch, boxMargin }) => {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton disabled>
-                <SearchIcon sx={{ color: '#3a3a3a' }}/>
+                <SearchIcon sx={{ color: '#3a3a3a' }} />
               </IconButton>
             </InputAdornment>
           ),

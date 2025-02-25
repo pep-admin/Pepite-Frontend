@@ -13,9 +13,7 @@ export const getWantedMoviesRequest = async (userId, type) => {
     return [];
   }
 
-  const parsedData = response.data.map(data =>
-    parseDatabaseData(data),
-  );
+  const parsedData = response.data.map(data => parseDatabaseData(data));
 
   return parsedData;
 };

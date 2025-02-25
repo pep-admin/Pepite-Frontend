@@ -28,11 +28,16 @@ const LoginFormContainer = ({ setAuthPage }) => {
   const navigate = useNavigate();
 
   const [isSubmitted, setIsSubmitted] = useState(false); // Ajout de l'état pour suivre si le formulaire a été soumis
-  const [showAlert, setShowAlert] = useState({ display: false, error: false, severity: '', message: '' });
+  const [showAlert, setShowAlert] = useState({
+    display: false,
+    error: false,
+    severity: '',
+    message: '',
+  });
 
   // Envoie les données utilisateurs pour connexion
   const login = async values => {
-    try {      
+    try {
       setIsSubmitted(true);
 
       const response = await axios({
@@ -56,21 +61,21 @@ const LoginFormContainer = ({ setAuthPage }) => {
       }
     } catch (error) {
       console.log('erreur login');
-      
+
       if (error.response && error.response.data) {
         setShowAlert({
           display: true,
           error: true,
           severity: 'error',
-          message: `${error.response.data}`
-        })
+          message: `${error.response.data}`,
+        });
       } else {
         setShowAlert({
           display: true,
           error: true,
           severity: 'error',
-          message: 'Erreur serveur: impossible de se connecter.'
-        })
+          message: 'Erreur serveur: impossible de se connecter.',
+        });
       }
     }
   };
@@ -83,16 +88,22 @@ const LoginFormContainer = ({ setAuthPage }) => {
 
   useEffect(() => {
     console.log(showAlert);
-    
-  }, [showAlert])
+  }, [showAlert]);
 
   return (
     <>
-      <LoginFormComponent formik={formik} isSubmitted={isSubmitted} setAuthPage={setAuthPage} />
-      { isSubmitted && showAlert.display ?
-        <CustomAlert alertType={showAlert.severity} message={showAlert.message} setShowAlert={setShowAlert} />
-        : null
-      }
+      <LoginFormComponent
+        formik={formik}
+        isSubmitted={isSubmitted}
+        setAuthPage={setAuthPage}
+      />
+      {isSubmitted && showAlert.display ? (
+        <CustomAlert
+          alertType={showAlert.severity}
+          message={showAlert.message}
+          setShowAlert={setShowAlert}
+        />
+      ) : null}
     </>
   );
 };

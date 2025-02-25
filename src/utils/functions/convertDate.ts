@@ -18,12 +18,12 @@ export function convertDate(mode, timestamp) {
 
   const year = date.getFullYear(); // Obtient l'année
 
-  if(mode === 'year') {
-    return `${year}`
+  if (mode === 'year') {
+    return `${year}`;
   } else {
     const day = date.getDate(); // Obtient le jour du mois
     const month = months[date.getMonth()]; // Obtient le mois (0-11, donc nécessite un tableau pour la conversion)
-  
+
     return `${day} ${month} ${year}`; // Formate la date
   }
 }

@@ -1,6 +1,10 @@
 import { Box, Tab, Tabs, Badge, useTheme } from '@mui/material';
 
-const ContactsNav = ({ setContactsSectionIndex, contactsSectionIndex, friendRequestsCount }) => {
+const ContactsNav = ({
+  setContactsSectionIndex,
+  contactsSectionIndex,
+  friendRequestsCount,
+}) => {
   const theme = useTheme();
 
   function a11yProps(index) {
@@ -29,34 +33,40 @@ const ContactsNav = ({ setContactsSectionIndex, contactsSectionIndex, friendRequ
         aria-label="full width tabs example"
         sx={{
           '& .MuiTab-root': {
-            color: theme.palette.common.white, 
+            color: theme.palette.common.white,
             overflow: 'visible',
           },
           '& .Mui-selected': {
-            color: `${theme.palette.secondary.main} !important`, 
+            color: `${theme.palette.secondary.main} !important`,
           },
         }}
       >
-        <Tab 
+        <Tab
           label={
-            <Box sx={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+              }}
+            >
               DEMANDES
               {friendRequestsCount > 0 && (
-                <Badge 
-                  badgeContent={friendRequestsCount} 
+                <Badge
+                  badgeContent={friendRequestsCount}
                   sx={{
                     '& .MuiBadge-badge': {
                       backgroundColor: '#835F00',
                       color: '#fff',
                       top: '-12px',
                       right: '-18px',
-                    }
+                    },
                   }}
                 />
               )}
             </Box>
-          } 
-          {...a11yProps(0)} 
+          }
+          {...a11yProps(0)}
         />
         <Tab label="AMIS" {...a11yProps(1)} />
         <Tab label="SUIVIS" {...a11yProps(2)} />

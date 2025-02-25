@@ -5,11 +5,7 @@ import { useState, useEffect } from 'react';
 // Import des icônes
 import CloseIcon from '@mui/icons-material/Close';
 
-const CustomAlert = ({
-  alertType,
-  message,
-  setShowAlert,
-}) => {
+const CustomAlert = ({ alertType, message, setShowAlert }) => {
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
@@ -18,8 +14,13 @@ const CustomAlert = ({
       const timer = setTimeout(() => {
         if (setShowAlert) {
           console.log('reset');
-          
-          setShowAlert({ display: false, error: false, severity: '', message: '' });
+
+          setShowAlert({
+            display: false,
+            error: false,
+            severity: '',
+            message: '',
+          });
         }
       }, 300);
 
@@ -62,12 +63,12 @@ const CustomAlert = ({
             textAlign: 'center',
             marginBottom: '0',
             borderRadius: '0',
-            bgcolor: 
-              alertType === 'error' 
-              ? '#390c0c' 
-              : alertType === 'success' 
-              ? '#063506'
-              : '#0f3434',
+            bgcolor:
+              alertType === 'error'
+                ? '#390c0c'
+                : alertType === 'success'
+                ? '#063506'
+                : '#0f3434',
             color: '#fff',
           }}
         >

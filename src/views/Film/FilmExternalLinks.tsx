@@ -10,7 +10,6 @@ import instagramLogo from '../../utils/icons/instagramLogo.svg';
 import xLogo from '../../utils/icons/xLogo.svg';
 
 const FilmExternalLinks = ({ isMovieOrSerie, movie }) => {
-
   const [externalLinks, setExternalLinks] = useState<ExternalIds>({});
   const [areLinksLoading, setAreLinksLoading] = useState(true);
   const [skeletonCount, setSkeletonCount] = useState(0);
@@ -18,7 +17,10 @@ const FilmExternalLinks = ({ isMovieOrSerie, movie }) => {
   const getMovieExternalLinks = async () => {
     try {
       setAreLinksLoading(true);
-      const links = await getMovieExternalLinksRequest(isMovieOrSerie, movie.id);
+      const links = await getMovieExternalLinksRequest(
+        isMovieOrSerie,
+        movie.id,
+      );
       console.log('les fournisseurs =>', links);
       setExternalLinks(links);
     } catch (error) {
@@ -47,162 +49,213 @@ const FilmExternalLinks = ({ isMovieOrSerie, movie }) => {
 
   // Tableau de mappage des liens externes
   const externalInfoLinksMapping = [
-    { id: 'imdb_id', name: 'IMDb', url: `https://www.imdb.com/title/${externalLinks.imdb_id}`, logo: imdbLogo },
-    { id: 'wikidata_id', name: 'Wikidata', url: `https://www.wikidata.org/wiki/${externalLinks.wikidata_id}`, logo: wikidataLogo}
+    {
+      id: 'imdb_id',
+      name: 'IMDb',
+      url: `https://www.imdb.com/title/${externalLinks.imdb_id}`,
+      logo: imdbLogo,
+    },
+    {
+      id: 'wikidata_id',
+      name: 'Wikidata',
+      url: `https://www.wikidata.org/wiki/${externalLinks.wikidata_id}`,
+      logo: wikidataLogo,
+    },
   ];
 
   // Tableau de mappage des liens externes
   const socialNetworksLinksMapping = [
-    { id: 'facebook_id', name: 'Facebook', url: `https://www.facebook.com/${externalLinks.facebook_id}`, logo: facebookLogo },
-    { id: 'instagram_id', name: 'Instagram', url: `https://www.instagram.com/${externalLinks.instagram_id}`, logo: instagramLogo },
-    { id: 'twitter_id', name: 'X', url: `https://x.com/${externalLinks.twitter_id}`, logo: xLogo },
+    {
+      id: 'facebook_id',
+      name: 'Facebook',
+      url: `https://www.facebook.com/${externalLinks.facebook_id}`,
+      logo: facebookLogo,
+    },
+    {
+      id: 'instagram_id',
+      name: 'Instagram',
+      url: `https://www.instagram.com/${externalLinks.instagram_id}`,
+      logo: instagramLogo,
+    },
+    {
+      id: 'twitter_id',
+      name: 'X',
+      url: `https://x.com/${externalLinks.twitter_id}`,
+      logo: xLogo,
+    },
   ];
 
   return (
     <Container
       sx={{
         paddingLeft: '5vw',
-        paddingRight: '5vw'
+        paddingRight: '5vw',
       }}
     >
-      <Stack spacing={3} padding='30px 0 40px 0'>
+      <Stack spacing={3} padding="30px 0 40px 0">
         <Typography
-          component='h2'
-          color='text.primary'
-          fontSize='1.15em'
-          fontWeight='400'
-          textTransform='uppercase'
+          component="h2"
+          color="text.primary"
+          fontSize="1.15em"
+          fontWeight="400"
+          textTransform="uppercase"
         >
           {`En savoir +`}
         </Typography>
         <Stack spacing={5}>
           <Stack spacing={3}>
             <Typography
-              component='h2'
-              color='gray'
-              fontSize='1em'
-              fontWeight='400'
-              lineHeight='1'
+              component="h2"
+              color="gray"
+              fontSize="1em"
+              fontWeight="400"
+              lineHeight="1"
             >
               {`Informations détaillées`}
             </Typography>
-            <Stack 
-              direction='row' 
+            <Stack
+              direction="row"
               spacing={4}
               sx={{
                 overflowY: 'hidden',
-                overflowX: 'auto'
-              }}  
+                overflowX: 'auto',
+              }}
             >
-              {areLinksLoading ? (
-                Array.from({ length: skeletonCount }).map((_, index) => (
-                  <Stack
-                    key={index}
-                    alignItems='center'
-                    width='80px'
-                    flexShrink={0}
-                  >
-                    <Skeleton variant="circular" animation='wave' width={65} height={65} />
-                    <Skeleton width="60%" animation='wave' sx={{ margin: '8px auto' }} />
-                  </Stack>
-                ))
-              ) : (
-                externalInfoLinksMapping.map((link) => (
-                  externalLinks[link.id] && (
+              {areLinksLoading
+                ? Array.from({ length: skeletonCount }).map((_, index) => (
                     <Stack
-                      key={link.id}
-                      alignItems='center'
-                      width='80px'
-                      flexShrink='0'
-                      component="a"
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{
-                        textDecoration: 'none',
-                        color: 'inherit',
-                      }}
+                      key={index}
+                      alignItems="center"
+                      width="80px"
+                      flexShrink={0}
                     >
-                      <img src={link.logo} alt={`Logo de ${link.name}`} height='65px' width='65px' />
-                      <Typography
-                        align='center'
-                        fontFamily='Pragati Narrow, sans-serif'
-                        fontSize='0.9em'
-                        lineHeight='1.3'
-                        marginTop='10px'
-                      >
-                        {link.name}
-                      </Typography>
+                      <Skeleton
+                        variant="circular"
+                        animation="wave"
+                        width={65}
+                        height={65}
+                      />
+                      <Skeleton
+                        width="60%"
+                        animation="wave"
+                        sx={{ margin: '8px auto' }}
+                      />
                     </Stack>
-                  )
-                ))
-              )}
+                  ))
+                : externalInfoLinksMapping.map(
+                    link =>
+                      externalLinks[link.id] && (
+                        <Stack
+                          key={link.id}
+                          alignItems="center"
+                          width="80px"
+                          flexShrink="0"
+                          component="a"
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            textDecoration: 'none',
+                            color: 'inherit',
+                          }}
+                        >
+                          <img
+                            src={link.logo}
+                            alt={`Logo de ${link.name}`}
+                            height="65px"
+                            width="65px"
+                          />
+                          <Typography
+                            align="center"
+                            fontFamily="Pragati Narrow, sans-serif"
+                            fontSize="0.9em"
+                            lineHeight="1.3"
+                            marginTop="10px"
+                          >
+                            {link.name}
+                          </Typography>
+                        </Stack>
+                      ),
+                  )}
             </Stack>
           </Stack>
-          <Stack spacing={3} >
+          <Stack spacing={3}>
             <Typography
-              component='h2'
-              color='gray'
-              fontSize='1em'
-              fontWeight='400'
-              lineHeight='1'
+              component="h2"
+              color="gray"
+              fontSize="1em"
+              fontWeight="400"
+              lineHeight="1"
             >
               {`Réseaux sociaux`}
             </Typography>
-            <Stack 
-              direction='row' 
+            <Stack
+              direction="row"
               spacing={4}
               sx={{
                 overflowY: 'hidden',
-                overflowX: 'auto'
-              }} 
+                overflowX: 'auto',
+              }}
             >
-              {areLinksLoading ? (
-                Array.from({ length: skeletonCount }).map((_, index) => (
-                  <Stack
-                    key={index}
-                    alignItems='center'
-                    width='80px'
-                    flexShrink={0}
-                  >
-                    <Skeleton variant="circular" animation='wave' width={65} height={65} />
-                    <Skeleton width="60%" animation='wave' sx={{ margin: '8px auto' }} />
-                  </Stack>
-                ))
-              ) : (
-                socialNetworksLinksMapping.map((link) => (
-                  externalLinks[link.id] && (
+              {areLinksLoading
+                ? Array.from({ length: skeletonCount }).map((_, index) => (
                     <Stack
-                      key={link.id}
-                      alignItems='center'
-                      width='80px'
-                      flexShrink='0'
-                      component="a"
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{
-                        textDecoration: 'none',
-                        color: 'inherit',
-                      }}
+                      key={index}
+                      alignItems="center"
+                      width="80px"
+                      flexShrink={0}
                     >
-                      <img src={link.logo} alt={`Logo de ${link.name}`} height='65px' width='65px' />
-                      <Typography
-                        align='center'
-                        fontFamily='Pragati Narrow, sans-serif'
-                        fontSize='0.9em'
-                        lineHeight='1.3'
-                        marginTop='10px'
-                      >
-                        {link.name}
-                      </Typography>
+                      <Skeleton
+                        variant="circular"
+                        animation="wave"
+                        width={65}
+                        height={65}
+                      />
+                      <Skeleton
+                        width="60%"
+                        animation="wave"
+                        sx={{ margin: '8px auto' }}
+                      />
                     </Stack>
-                  )
-                ))
-              )}
+                  ))
+                : socialNetworksLinksMapping.map(
+                    link =>
+                      externalLinks[link.id] && (
+                        <Stack
+                          key={link.id}
+                          alignItems="center"
+                          width="80px"
+                          flexShrink="0"
+                          component="a"
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            textDecoration: 'none',
+                            color: 'inherit',
+                          }}
+                        >
+                          <img
+                            src={link.logo}
+                            alt={`Logo de ${link.name}`}
+                            height="65px"
+                            width="65px"
+                          />
+                          <Typography
+                            align="center"
+                            fontFamily="Pragati Narrow, sans-serif"
+                            fontSize="0.9em"
+                            lineHeight="1.3"
+                            marginTop="10px"
+                          >
+                            {link.name}
+                          </Typography>
+                        </Stack>
+                      ),
+                  )}
             </Stack>
           </Stack>
-        </Stack> 
+        </Stack>
       </Stack>
     </Container>
   );

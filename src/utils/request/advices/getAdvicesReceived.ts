@@ -16,7 +16,7 @@ export const getAdvicesReceived = async (userId, type, page, limit) => {
   }
 
   const parsedData = response.data.map(critic =>
-    parseDatabaseData(critic, type, 'advice'),
+    parseDatabaseData(critic),
   );
 
   return parsedData;

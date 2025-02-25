@@ -7,9 +7,9 @@ export const handleWantedMovieRequest = async (
   type: string,
   wanted: boolean,
 ) => {
-  if (wanted) {      
+  if (wanted) {
     console.log(movieId, type);
-    
+
     await axios.post(
       `${apiBaseUrl}/list/add_wanted`,
       { movie_id: movieId, type: type },
@@ -17,7 +17,6 @@ export const handleWantedMovieRequest = async (
     );
 
     return { message: `a été ajouté à votre liste.` };
-
   } else {
     await axios.delete(`${apiBaseUrl}/list/cancel_wanted`, {
       data: { movie_id: movieId, type: type },

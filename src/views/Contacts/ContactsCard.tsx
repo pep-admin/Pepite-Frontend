@@ -11,14 +11,14 @@ import { handleFollowedRequest } from '@utils/request/followed/handleFollowedReq
 import ContactsSkeleton from './ContactsSkeleton';
 
 const ContactsCard = ({ user, isLastCard, onUpdate }) => {
-  const handleOpenSnackbar = useSnackbar();  
+  const handleOpenSnackbar = useSnackbar();
 
   const [isRelationLoading, setIsRelationLoading] = useState(true);
   const [relationship, setRelationship] = useState({
     friendship: null,
     follow: null,
     block: null,
-    user_id: null
+    user_id: null,
   });
 
   const userFullName = `${user.first_name} ${user.last_name}`;
@@ -28,33 +28,31 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
     try {
       setIsRelationLoading(true);
       const relation = await getRelationStatusRequest(user.id);
-      setRelationship(({ 
-          friendship: relation.friendship, 
-          follow: relation.follow, 
-          block: false,
-          user_id: relation.user_id 
-      }));
-
+      setRelationship({
+        friendship: relation.friendship,
+        follow: relation.follow,
+        block: false,
+        user_id: relation.user_id,
+      });
     } catch (error) {
       console.error(error);
-
     } finally {
       setIsRelationLoading(false);
     }
   };
 
-  const handleBtnAction = async (actionType) => {
-    
+  const handleBtnAction = async actionType => {
     try {
       // console.log('action =>', actionType);
-      
-      switch (actionType) {
 
+      switch (actionType) {
         // Envoyer une demande d'ami
         case 'send':
           setRelationship({ ...relationship, friendship: 'sent' });
           await handleFriendshipRequest('send', user.id);
-          handleOpenSnackbar(`Vous avez envoyé une demande d'amitié à ${userFullName}.`);
+          handleOpenSnackbar(
+            `Vous avez envoyé une demande d'amitié à ${userFullName}.`,
+          );
           break;
 
         // Annuler une demande d'ami
@@ -63,12 +61,14 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
           await handleFriendshipRequest('cancel', user.id);
           handleOpenSnackbar(`Demande d'amitié annulée.`);
           break;
-        
+
         // Accepter une demande d'ami
         case 'accept':
           setRelationship({ ...relationship, friendship: 'accepted' });
           await handleFriendshipRequest('accept', user.id);
-          handleOpenSnackbar(`Vous avez accepté la demande d'amitié de ${userFullName}.`);
+          handleOpenSnackbar(
+            `Vous avez accepté la demande d'amitié de ${userFullName}.`,
+          );
           break;
 
         // Refuser une demande d'ami
@@ -97,16 +97,14 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
           await handleFollowedRequest(false, user.id);
           handleOpenSnackbar(`Vous ne suivez plus ${userFullName}.`);
           break;
-  
+
         default:
           break;
       }
 
       onUpdate();
-        
     } catch (error) {
       console.log(error);
-      
     }
   };
 
@@ -116,103 +114,104 @@ const ContactsCard = ({ user, isLastCard, onUpdate }) => {
 
   return (
     <>
-      {
-        isRelationLoading ?
-          <ContactsSkeleton />
-        :
-        <Stack spacing={3} direction='row'>
-          <Stack spacing={2} direction='row' alignItems='center' width='150px'>
-            <UserAvatar 
-              userInfos={user} 
-              picHeight={'50px'} 
-              picWidth={'50px'} 
-              sx={null} 
-              redirection={true} 
+      {isRelationLoading ? (
+        <ContactsSkeleton />
+      ) : (
+        <Stack spacing={3} direction="row">
+          <Stack spacing={2} direction="row" alignItems="center" width="150px">
+            <UserAvatar
+              userInfos={user}
+              picHeight={'50px'}
+              picWidth={'50px'}
+              sx={null}
+              redirection={true}
               onSelect={null}
             />
-            <Typography fontFamily='Pragati Narrow, sans-serif' color='#d3d3d3'>
+            <Typography fontFamily="Pragati Narrow, sans-serif" color="#d3d3d3">
               {userFullName}
             </Typography>
           </Stack>
-          <Stack direction='row' justifyContent='space-between' flexGrow='1'>
-            <Stack spacing={2} direction='row' alignItems='center'>
+          <Stack direction="row" justifyContent="space-between" flexGrow="1">
+            <Stack spacing={2} direction="row" alignItems="center">
               {
                 // Si les deux utilisateurs sont amis
-                relationship.friendship === 'accepted' ?
-                  <HowToRegIcon 
-                    sx={{ 
-                      color: '#e7ae1ad9', 
-                      fontSize: '30px', 
-                      position: 'relative', 
-                      left: '2px' 
-                    }} 
+                relationship.friendship === 'accepted' ? (
+                  <HowToRegIcon
+                    sx={{
+                      color: '#e7ae1ad9',
+                      fontSize: '30px',
+                      position: 'relative',
+                      left: '2px',
+                    }}
                   />
-                
-                // Si l'utilisateur a envoyé une demande
-                : relationship.friendship === 'sent' ?
-                  <ContactsButton 
-                    btn={friendshipButtons[2]} 
-                    handleBtnAction={handleBtnAction} 
+                ) : // Si l'utilisateur a envoyé une demande
+                relationship.friendship === 'sent' ? (
+                  <ContactsButton
+                    btn={friendshipButtons[2]}
+                    handleBtnAction={handleBtnAction}
                   />
-
-                // Si l'utilisateur a reçu une demande
-                : relationship.friendship === 'received' ?
+                ) : // Si l'utilisateur a reçu une demande
+                relationship.friendship === 'received' ? (
                   // Boutons pour accepter et décliner l'invitation
                   <>
-                    <ContactsButton 
-                      btn={friendshipButtons[1]} 
+                    <ContactsButton
+                      btn={friendshipButtons[1]}
                       handleBtnAction={handleBtnAction}
                     />
-                    <ContactsButton   
-                      btn={friendshipButtons[4]} 
+                    <ContactsButton
+                      btn={friendshipButtons[4]}
                       handleBtnAction={handleBtnAction}
                     />
-                  </> 
-                : <ContactsButton 
-                    btn={friendshipButtons[0]} 
+                  </>
+                ) : (
+                  <ContactsButton
+                    btn={friendshipButtons[0]}
                     handleBtnAction={handleBtnAction}
                   />
+                )
               }
             </Stack>
-            <Stack spacing={2} direction='row' alignItems='center'>
+            <Stack spacing={2} direction="row" alignItems="center">
               {
                 // Si ami, on affiche le bouton pour supprimer l'amitié
-                relationship.friendship === 'accepted' ?
-                  <ContactsButton 
-                    btn={friendshipButtons[3]} 
+                relationship.friendship === 'accepted' ? (
+                  <ContactsButton
+                    btn={friendshipButtons[3]}
                     handleBtnAction={handleBtnAction}
                   />
-                
-                // Si suivi, on affiche l'icône "suivi"
-                : relationship.follow === 'followed' ?
-                  <ContactsButton 
-                    btn={otherButtons[1]} 
+                ) : // Si suivi, on affiche l'icône "suivi"
+                relationship.follow === 'followed' ? (
+                  <ContactsButton
+                    btn={otherButtons[1]}
                     handleBtnAction={handleBtnAction}
                   />
-
-                // Si non ami et non suivi, on affiche l'icône "non suivi"
-                : <ContactsButton 
-                    btn={otherButtons[0]} 
+                ) : (
+                  // Si non ami et non suivi, on affiche l'icône "non suivi"
+                  <ContactsButton
+                    btn={otherButtons[0]}
                     handleBtnAction={handleBtnAction}
                   />
+                )
               }
-              { // Icône utilisateur bloqué
-                relationship.block === 'blocked' ?
-                  <ContactsButton 
-                    btn={otherButtons[3]} 
+              {
+                // Icône utilisateur bloqué
+                relationship.block === 'blocked' ? (
+                  <ContactsButton
+                    btn={otherButtons[3]}
                     handleBtnAction={handleBtnAction}
                   />
-
-                // Icône pour bloquer
-                : <ContactsButton 
-                  btn={otherButtons[2]} 
-                  handleBtnAction={handleBtnAction}
-                /> 
+                ) : (
+                  // Icône pour bloquer
+                  <ContactsButton
+                    btn={otherButtons[2]}
+                    handleBtnAction={handleBtnAction}
+                  />
+                )
               }
             </Stack>
           </Stack>
         </Stack>
-      }
+      )}
       {!isLastCard && <Divider sx={{ borderColor: '#122727' }} />}
     </>
   );

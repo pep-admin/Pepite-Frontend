@@ -1,5 +1,13 @@
 import { useAlert } from '@hooks/AlertContext';
-import { Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from '@mui/material';
 
 const ConfirmationAlert = () => {
   const { alert, hideAlert } = useAlert();
@@ -15,8 +23,8 @@ const ConfirmationAlert = () => {
   };
 
   return (
-    <Dialog 
-      open={alert.open} 
+    <Dialog
+      open={alert.open}
       onClose={hideAlert}
       sx={{
         '& .MuiDialog-paper': {
@@ -24,45 +32,43 @@ const ConfirmationAlert = () => {
         },
       }}
     >
-      <Alert 
-        severity={alert.severity} 
+      <Alert
+        severity={alert.severity}
         sx={{ width: '100%', backgroundColor: '#191919' }}
       >
         {alert.title && (
-          <AlertTitle 
+          <AlertTitle
             color={
-              alert.severity === 'info' 
-              ? 'info.main' 
-              : alert.severity === 'warning' 
-              ? '#d86304'
-              : '#c02c2c'
-            } 
-            sx={{ 
-              margin: (alert.onConfirm || alert.onCancel) ? '0 0 24px 0' : '0 0 14px 0' 
+              alert.severity === 'info'
+                ? 'info.main'
+                : alert.severity === 'warning'
+                ? '#d86304'
+                : '#c02c2c'
+            }
+            sx={{
+              margin:
+                alert.onConfirm || alert.onCancel ? '0 0 24px 0' : '0 0 14px 0',
             }}
           >
             {alert.title}
           </AlertTitle>
         )}
-        <DialogContent 
-          sx={{ 
+        <DialogContent
+          sx={{
             padding: 0,
-            marginBottom: (alert.onConfirm || alert.onCancel) ? '0' : '5px'
+            marginBottom: alert.onConfirm || alert.onCancel ? '0' : '5px',
           }}
         >
-          <DialogContentText 
-            color="text.primary" 
-            lineHeight="1.8"
-          >
+          <DialogContentText color="text.primary" lineHeight="1.8">
             {alert.message}
           </DialogContentText>
         </DialogContent>
-        
+
         {/* Boutons affichés uniquement si onConfirm et onCancel existent */}
         {(alert.onConfirm || alert.onCancel) && (
           <DialogActions sx={{ padding: 0, marginTop: '15px' }}>
-            <Button 
-              onClick={handleCancel} 
+            <Button
+              onClick={handleCancel}
               sx={{
                 color: '#757575',
               }}

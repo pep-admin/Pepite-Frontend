@@ -1,5 +1,11 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module "@mui/material/styles" {
+  interface TypeText {
+    lightWhite?: string;
+  }
+}
+
 const theme = createTheme({
   spacing: factor => `${factor * 6}px`,
 

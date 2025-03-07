@@ -60,7 +60,7 @@ const LoginFormContainer = ({ setAuthPage }) => {
         navigate(`/home/${response.data.id}`);
       }
     } catch (error) {
-      console.log('erreur login');
+      console.log('erreur login =>', error);
 
       if (error.response && error.response.data) {
         setShowAlert({

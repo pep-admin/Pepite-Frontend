@@ -70,7 +70,7 @@ const AuthContainer = ({ authType }) => {
           <Typography
             align="center"
             fontWeight="400"
-            fontSize="1.2em"
+            fontSize="1.4em"
             color="#E7E7E7"
             lineHeight="1.7"
           >

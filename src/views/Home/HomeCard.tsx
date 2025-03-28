@@ -7,7 +7,6 @@ import { TurnipIcon } from '@utils/components/styledComponent';
 import { formatRating } from '@utils/functions/formatRating';
 
 const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
-  
   const isSkeleton = !movie.id; // Si l'objet film n'a pas d'ID, c'est un skeleton
 
   const formatDate = (dateString: string) => {
@@ -17,51 +16,49 @@ const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
 
   // Affiche conditionnellement l'information de pépite OU navet OU note
   const getAverageInfos = () => {
-
     const totalCritics = movie.grouped_critics.length;
-    const goldCount = movie.grouped_critics.filter(critic => critic.is_gold_nugget === 1).length;
-    const turnipCount = movie.grouped_critics.filter(critic => critic.is_turnip === 1).length;
+    const goldCount = movie.grouped_critics.filter(
+      critic => critic.is_gold_nugget === 1,
+    ).length;
+    const turnipCount = movie.grouped_critics.filter(
+      critic => critic.is_turnip === 1,
+    ).length;
 
     // Définir le seuil de ratio de pépites
-    const goldThreshold = 0.5;  // Si 50% ou plus de pépites pour afficher l'icône pépite
+    const goldThreshold = 0.5; // Si 50% ou plus de pépites pour afficher l'icône pépite
 
     // Conditions de choix entre pépite, navet, et note moyenne
     if (goldCount / totalCritics >= goldThreshold && goldCount > turnipCount) {
       return (
         <Stack direction="row" columnGap="5px">
-          <GoldNuggetIcon 
-            width='17px'
-            height='17px'
+          <GoldNuggetIcon
+            width="17px"
+            height="17px"
             strokeWidth={4}
             isShadowed={false}
             sx={null}
           />
-          <Typography
-            fontSize="0.8em"
-            fontWeight="500"
-            color='#e1a813'
-          >
+          <Typography fontSize="0.8em" fontWeight="500" color="#e1a813">
             {`${goldCount}`}
           </Typography>
         </Stack>
-      )
-    } else if (turnipCount / totalCritics >= goldThreshold && turnipCount > goldCount) {
+      );
+    } else if (
+      turnipCount / totalCritics >= goldThreshold &&
+      turnipCount > goldCount
+    ) {
       return (
         <Stack direction="row" columnGap="4px">
           <TurnipIcon
             sx={{
-              fontSize: '17px'
+              fontSize: '17px',
             }}
           />
-          <Typography
-            fontSize="0.8em"
-            fontWeight="500"
-            color='#d1127b'
-          >
+          <Typography fontSize="0.8em" fontWeight="500" color="#d1127b">
             {`${turnipCount}`}
           </Typography>
         </Stack>
-      )
+      );
     } else if (movie.pepite_vote_average) {
       return (
         <Stack direction="row" columnGap="2px">
@@ -69,9 +66,7 @@ const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
             sx={{
               fontSize: '18px',
               color:
-                homeSectionRef.current === 'friends'
-                  ? '#d9ae3c'
-                  : '#009696',
+                homeSectionRef.current === 'friends' ? '#d9ae3c' : '#009696',
             }}
           />
           <Typography
@@ -79,20 +74,18 @@ const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
             fontWeight="500"
             sx={{
               color:
-                homeSectionRef.current === 'friends'
-                  ? '#d9ae3c'
-                  : '#0daaaa',
+                homeSectionRef.current === 'friends' ? '#d9ae3c' : '#0daaaa',
             }}
           >
             {`${formatRating(movie.pepite_vote_average)}`}
           </Typography>
         </Stack>
-      )
+      );
     } else {
       return '?';
     }
-  }
-  
+  };
+
   return (
     <Grid
       item
@@ -141,7 +134,7 @@ const HomeCard = ({ homeSectionRef, movie, setShowFilmDetails }) => {
           {movie && homeSectionRef.current !== 'popular' && (
             <Stack
               height="100%"
-              justifyContent='flex-end'
+              justifyContent="flex-end"
               alignItems="flex-start"
               padding="5px 5px 4px 5px"
             >

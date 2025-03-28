@@ -17,7 +17,7 @@ export const getAllCriticsOfAcquaintances = async (page, userId, type) => {
   }
 
   const parsedData = response.data.map(critic =>
-    parseDatabaseData(critic, type, 'critic'),
+    parseDatabaseData(critic)
   );
 
   return parsedData;

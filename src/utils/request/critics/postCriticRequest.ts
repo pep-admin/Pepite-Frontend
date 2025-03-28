@@ -9,21 +9,21 @@ export const postCriticRequest = async (
   text: string,
   isGoldNugget: boolean,
   isTurnip: boolean,
-  isPrivate: boolean
+  isPrivate: boolean,
 ) => {
-
   const response = await axios.post(
     `${apiBaseUrl}/critics/add`,
-    { movie_id: movieId, 
-      type: isMovieOrSerie, 
-      rating: rating, 
+    {
+      movie_id: movieId,
+      type: isMovieOrSerie,
+      rating: rating,
       text: text,
       isGoldNugget: isGoldNugget,
       isTurnip: isTurnip,
-      isPrivate: isPrivate
+      isPrivate: isPrivate,
     },
     { withCredentials: true },
   );
-  
+
   return response.data;
 };

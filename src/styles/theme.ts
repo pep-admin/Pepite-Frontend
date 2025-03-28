@@ -1,5 +1,11 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module "@mui/material/styles" {
+  interface TypeText {
+    lightWhite?: string;
+  }
+}
+
 const theme = createTheme({
   spacing: factor => `${factor * 6}px`,
 
@@ -31,9 +37,10 @@ const theme = createTheme({
     },
     secondary: {
       main: '#E7AE1A',
-      light: '#AA9A70'
+      light: '#AA9A70',
     },
-    purple: { // Navet
+    purple: {
+      // Navet
       main: '#9C27B0',
       light: '#EB3C98',
       dark: '#5E103D',
@@ -48,12 +55,12 @@ const theme = createTheme({
       main: '#5AC164',
     },
     info: {
-      main: '#24A5A5'
+      main: '#24A5A5',
     },
     text: {
       primary: '#F1F1F1',
       secondary: '#AA9A70',
-      lightWhite: '#bfbfbf'
+      lightWhite: '#bfbfbf',
     },
   },
   components: {

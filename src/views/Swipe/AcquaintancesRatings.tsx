@@ -25,7 +25,7 @@ const AcquaintancesRatings = () => {
             value={4.3}
             readOnly={true}
             precision={0.1}
-            fontSize='inherit'
+            fontSize="inherit"
           />
           <Typography
             fontSize="2.4vh"
@@ -57,7 +57,7 @@ const AcquaintancesRatings = () => {
             value={4.1}
             readOnly={true}
             precision={0.1}
-            fontSize='inherit'
+            fontSize="inherit"
           />
           <Typography
             fontSize="2.4vh"

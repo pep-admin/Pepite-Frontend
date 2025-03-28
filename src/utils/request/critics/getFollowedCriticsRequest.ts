@@ -13,9 +13,7 @@ export const getFollowedCriticsRequest = async (page: number, type: string) => {
     return [];
   }
 
-  const parsedData = response.data.map(critic =>
-    parseDatabaseData(critic),
-  );
+  const parsedData = response.data.map(critic => parseDatabaseData(critic));
 
   return parsedData;
 };

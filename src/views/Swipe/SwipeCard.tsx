@@ -52,7 +52,7 @@ const SwipeCard: FC<SwipeCard3Props> = React.memo(
     isTrailerFullscreen,
     setIsTrailerFullscreen,
   }) => {
-    if(showMovieInfos && !isCurrent) return;
+    // if (showMovieInfos && !isCurrent) return;
 
     // const [showMovieInfos, setShowMovieInfos] = useState(false);
     const [isSwiping, setIsSwiping] = useState(false);

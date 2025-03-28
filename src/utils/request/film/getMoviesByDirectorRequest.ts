@@ -6,21 +6,17 @@ export const getMoviesByDirectorRequest = async (
   type: string,
   page: number,
   director: string,
-  movieId: number
+  movieId: number,
 ) => {
-
-  const response = await axios.get(
-    `${apiBaseUrl}/movies/similar`,
-    { 
-      params: { 
-        type: type, 
-        page: page, 
-        director: director,
-        movieId: movieId
-      },
-      withCredentials: true 
+  const response = await axios.get(`${apiBaseUrl}/movies/similar`, {
+    params: {
+      type: type,
+      page: page,
+      director: director,
+      movieId: movieId,
     },
-  );    
+    withCredentials: true,
+  });
 
   return response.data.movies;
 };

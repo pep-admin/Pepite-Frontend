@@ -7,5 +7,5 @@ export const deleteCriticRequest = async (critic_id: number, type: string) => {
     params: { type: type },
     withCredentials: true,
   });
-  return { message: `a été retiré de votre liste.` }
+  return { message: `a été retiré de votre liste.` };
 };

@@ -1,8 +1,13 @@
-import { Stack, TextField, Typography, useTheme } from "@mui/material";
-import { findIfMovieOrSerie } from "@utils/functions/findIfMovieOrSerie";
+import { Stack, TextField, Typography, useTheme } from '@mui/material';
+import { findIfMovieOrSerie } from '@utils/functions/findIfMovieOrSerie';
 
-const RatingReview = ({ ratingSectionIndex, movie, criticText, setCriticText, friendSelected }) => {
-
+const RatingReview = ({
+  ratingSectionIndex,
+  movie,
+  criticText,
+  setCriticText,
+  friendSelected,
+}) => {
   const theme = useTheme();
 
   const isMovieOrSerie = findIfMovieOrSerie(movie);
@@ -10,31 +15,26 @@ const RatingReview = ({ ratingSectionIndex, movie, criticText, setCriticText, fr
   const friendFullname = `${friendSelected?.first_name} ${friendSelected?.last_name}`;
 
   // Gestion du changement de texte
-  const handleTextChange = (event) => {
+  const handleTextChange = event => {
     setCriticText(event.target.value);
   };
 
   return (
-    <Stack
-      padding='30px 0 0 0'
-    >
-      <Stack direction='row' justifyContent='space-between'>
+    <Stack padding="30px 0 0 0">
+      <Stack direction="row" justifyContent="space-between">
         <Typography
-          component='h2'
-          color='text.primary'
-          fontSize='1.15em'
-          fontWeight='400'
-          textTransform='uppercase'
+          component="h2"
+          color="text.primary"
+          fontSize="1.15em"
+          fontWeight="400"
+          textTransform="uppercase"
         >
-          { ratingSectionIndex === 0 ?
-            `VOTRE CRITIQUE`
-            : `VOTRE CONSEIL`
-          }
+          {ratingSectionIndex === 0 ? `VOTRE CRITIQUE` : `VOTRE CONSEIL`}
         </Typography>
         <Typography
-          component='span'
-          fontSize='1em'
-          fontWeight='200'
+          component="span"
+          fontSize="1em"
+          fontWeight="200"
           color={theme.palette.primary.light}
         >
           {'* facultatif'}
@@ -42,9 +42,10 @@ const RatingReview = ({ ratingSectionIndex, movie, criticText, setCriticText, fr
       </Stack>
       <Stack>
         <TextField
-          label={ ratingSectionIndex === 1 && friendSelected ?
-            `Dites quelque chose à ${friendFullname} !`
-            : `Qu'avez vous pensé de "${movieTitle}" ?`
+          label={
+            ratingSectionIndex === 1 && friendSelected
+              ? `Dites quelque chose à ${friendFullname} !`
+              : `Qu'avez vous pensé de "${movieTitle}" ?`
           }
           multiline
           rows={5}

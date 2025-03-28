@@ -4,7 +4,6 @@ import { apiBaseUrl } from '../config';
 
 // Récupération de toutes films / séries souhaitées d'un utilisateur
 export const getMoviesListRequest = async (listType, type) => {
-
   const response = await axios.get(`${apiBaseUrl}/list/${listType}`, {
     params: { type: type },
     withCredentials: true,
@@ -14,9 +13,7 @@ export const getMoviesListRequest = async (listType, type) => {
     return [];
   }
 
-  const parsedData = response.data.map(data =>
-    parseDatabaseData(data),
-  );
+  const parsedData = response.data.map(data => parseDatabaseData(data));
 
   return parsedData;
 };

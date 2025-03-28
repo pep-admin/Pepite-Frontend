@@ -8,7 +8,6 @@ import ContactsTopContent from './ContactsTopContent';
 import { getUserInteractionRequest } from '@utils/request/contacts/getUserInteractionRequest';
 
 const ContactsComponent2 = () => {
-
   const [friendRequestList, setFriendRequestList] = useState([]);
   const [friendsList, setFriendsList] = useState([]);
   const [followedList, setFollowedList] = useState([]);
@@ -17,7 +16,7 @@ const ContactsComponent2 = () => {
 
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [contactsSectionIndex, setContactsSectionIndex] = useState(0);
-  const [contactsSection, setContactsSection] = useState('Demandes'); 
+  const [contactsSection, setContactsSection] = useState('Demandes');
 
   const scrollableContainerRef = useRef(null);
 
@@ -29,10 +28,8 @@ const ContactsComponent2 = () => {
       setFriendRequestList(contacts.receivedFriendRequests);
       setFriendsList(contacts.friends);
       setFollowedList(contacts.followed);
-
     } catch (error) {
       console.log(error);
-      
     } finally {
       setLoadingContacts(false);
     }
@@ -65,17 +62,18 @@ const ContactsComponent2 = () => {
     }
 
     getContacts();
-
   }, [contactsSectionIndex]);
 
   return (
     <>
       <Header2 page={'Mes contacts'} isTrailerFullscreen={null} />
-      <Box paddingTop='5px' sx={{ backgroundColor: '#052525' }}>
+      <Box paddingTop="5px" sx={{ backgroundColor: '#052525' }}>
         <ContactsNav
           contactsSectionIndex={contactsSectionIndex}
           setContactsSectionIndex={setContactsSectionIndex}
-          friendRequestsCount={!loadingContacts ? friendRequestList.length : null}
+          friendRequestsCount={
+            !loadingContacts ? friendRequestList.length : null
+          }
         />
       </Box>
       <Container
@@ -92,32 +90,36 @@ const ContactsComponent2 = () => {
           overflow: 'auto',
         }}
       >
-        {
-          !loadingContacts &&
+        {!loadingContacts && (
           <>
             <ContactsTopContent
               contactsFrom={contactsSection}
-              contactsSectionIndex={contactsSectionIndex} 
-              friendsRequests={friendRequestList} 
+              contactsSectionIndex={contactsSectionIndex}
+              friendsRequests={friendRequestList}
               onUpdate={handleUpdate}
             />
-            {
-              contactsSectionIndex === 1 || contactsSectionIndex === 2 ?
-              <ContactsList 
+            {contactsSectionIndex === 1 || contactsSectionIndex === 2 ? (
+              <ContactsList
                 contactsFrom={contactsSection}
-                contactListCount={contactsSectionIndex === 1 ? friendsList.length : followedList.length} 
-                contactList={contactsSectionIndex === 1 ? friendsList : followedList}
+                contactListCount={
+                  contactsSectionIndex === 1
+                    ? friendsList.length
+                    : followedList.length
+                }
+                contactList={
+                  contactsSectionIndex === 1 ? friendsList : followedList
+                }
                 onUpdate={handleUpdate}
               />
-              :
-              <ContactsAdd 
+            ) : (
+              <ContactsAdd
                 searchResults={searchResults}
                 setSearchResults={setSearchResults}
-                onUpdate={handleUpdate} 
+                onUpdate={handleUpdate}
               />
-            }
+            )}
           </>
-        }
+        )}
       </Container>
     </>
   );

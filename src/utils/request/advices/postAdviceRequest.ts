@@ -28,6 +28,6 @@ export const postAdviceRequest = async (
     },
     { withCredentials: true },
   );
-  
+
   return response.data;
 };

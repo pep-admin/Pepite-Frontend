@@ -35,7 +35,13 @@ export const AlertProvider = ({ children }) => {
     onCancel: null,
   });
 
-  const showAlert = ({ title, message, severity, onConfirm, onCancel }: AlertParams) => {
+  const showAlert = ({
+    title,
+    message,
+    severity,
+    onConfirm,
+    onCancel,
+  }: AlertParams) => {
     setAlert({
       open: true,
       title,
@@ -47,7 +53,11 @@ export const AlertProvider = ({ children }) => {
   };
 
   // Fonction pour afficher une alerte simple sans onConfirm ni onCancel
-  const showSimpleAlert = (title: string, message: string, severity: AlertColor) => {
+  const showSimpleAlert = (
+    title: string,
+    message: string,
+    severity: AlertColor,
+  ) => {
     setAlert({
       open: true,
       title,
@@ -58,10 +68,13 @@ export const AlertProvider = ({ children }) => {
     });
   };
 
-  const hideAlert = () => setAlert((prevAlert) => ({ ...prevAlert, open: false }));
+  const hideAlert = () =>
+    setAlert(prevAlert => ({ ...prevAlert, open: false }));
 
   return (
-    <AlertContext.Provider value={{ alert, showAlert, showSimpleAlert, hideAlert }}>
+    <AlertContext.Provider
+      value={{ alert, showAlert, showSimpleAlert, hideAlert }}
+    >
       {children}
       {alert.open && <ConfirmationAlert />}
     </AlertContext.Provider>

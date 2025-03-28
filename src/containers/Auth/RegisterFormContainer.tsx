@@ -48,13 +48,17 @@ const initialValues = {
 };
 
 const RegisterFormContainer = ({ setAuthPage }) => {
-
-  const [showAlert, setShowAlert] = useState({ display: false, error: false, severity: '', message: '' });
+  const [showAlert, setShowAlert] = useState({
+    display: false,
+    error: false,
+    severity: '',
+    message: '',
+  });
 
   const register = async values => {
     try {
       console.log('submit register');
-      
+
       // Envoie les données utilisateurs pour inscription
       const response = await axios({
         method: 'post',
@@ -72,18 +76,17 @@ const RegisterFormContainer = ({ setAuthPage }) => {
         display: true,
         error: false,
         severity: 'success',
-        message: `${response.data.message}`
-      })
-
+        message: `${response.data.message}`,
+      });
     } catch (error) {
       console.log(error);
-      
+
       setShowAlert({
         display: true,
         error: true,
         severity: 'error',
-        message: `${error.message}`
-      })
+        message: `${error.message}`,
+      });
     }
   };
 
@@ -96,11 +99,13 @@ const RegisterFormContainer = ({ setAuthPage }) => {
   return (
     <>
       <RegisterFormComponent formik={formik} setAuthPage={setAuthPage} />
-      {
-        showAlert.display ?
-          <CustomAlert alertType={showAlert.severity} message={showAlert.message} setShowAlert={setShowAlert} />
-        : null
-      }
+      {showAlert.display ? (
+        <CustomAlert
+          alertType={showAlert.severity}
+          message={showAlert.message}
+          setShowAlert={setShowAlert}
+        />
+      ) : null}
     </>
   );
 };

@@ -1,10 +1,7 @@
-import PreferencesComponent from "@views/Preferences/PreferencesComponent";
-
+import PreferencesComponent from '@views/Preferences/PreferencesComponent';
 
 const PreferencesContainer = () => {
-  return (
-    <PreferencesComponent />
-  );
+  return <PreferencesComponent />;
 };
 
 export default PreferencesContainer;

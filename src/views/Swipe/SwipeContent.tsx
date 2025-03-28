@@ -1,5 +1,12 @@
 // Import des libs externes
-import { Stack, Typography, Divider, CardContent, Box, useTheme } from '@mui/material';
+import {
+  Stack,
+  Typography,
+  Divider,
+  CardContent,
+  Box,
+  useTheme,
+} from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
@@ -241,10 +248,10 @@ const SwipeContent = ({
               >
                 <SwiperSlide style={{ width: '88vw' }}>
                   <div ref={firstSlideRef}>
-                    <SwipeCredits 
-                      isMovieOrSerie={isMovieOrSerie}  
-                      movie={movie} 
-                      movieDetails={movieDetails} 
+                    <SwipeCredits
+                      isMovieOrSerie={isMovieOrSerie}
+                      movie={movie}
+                      movieDetails={movieDetails}
                     />
                   </div>
                 </SwiperSlide>

@@ -74,7 +74,7 @@ const AuthContainer = ({ authType }) => {
             color="#E7E7E7"
             lineHeight="1.7"
           >
-            Partagez vos films et séries <br /> préférées avec vos amis.
+            Partagez vos films et séries <br /> préférés avec vos amis.
           </Typography>
           <Divider
             sx={{

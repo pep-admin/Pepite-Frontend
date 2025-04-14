@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import AddReviewBtn from '@utils/components/Buttons/AddReviewBtn';
 import { getGoldNuggetsOfUserRequest } from '@utils/request/goldNugget/getGoldNuggetsOfUserRequest';
 import { getCriticsOfUserRequest } from '@utils/request/critics/getCriticsOfUserRequest';
+import ProfilModifyPics from './ProfilModifyPics';
 
 const ProfilComponent2 = ({
   isProfilLoggedUser,
@@ -20,6 +21,7 @@ const ProfilComponent2 = ({
   const [hasFetchedGoldNuggets, setHasFetchedGoldNuggets] = useState(false);
   const [criticsMovies, setCriticsMovies] = useState([]);
   const [hasFetchedCritics, setHasFetchedCritics] = useState(false);
+  const [showPicModifier, setShowPicModifier] = useState({ show: false, type: '' })
 
   const goldListRef = useRef(null);
   const reviewsRef = useRef(null);
@@ -114,7 +116,7 @@ const ProfilComponent2 = ({
         }}
       >
         <Stack spacing={6}>
-          <ProfilPresentation userInfos={userInfos} />
+          <ProfilPresentation userInfos={userInfos} showPicModifier={showPicModifier} setShowPicModifier={setShowPicModifier} />
           {!isProfilLoggedUser && <ProfilRequestButtons />}
           <ProfilAdditionalInfos additionalInfos={additionalInfos} />
           <ProfilTopMovies />
@@ -141,6 +143,7 @@ const ProfilComponent2 = ({
         </div>
       </Box>
       <AddReviewBtn containerRef={null} />
+      <ProfilModifyPics showPicModifier={showPicModifier} setShowPicModifier={setShowPicModifier} />
     </>
   );
 };

@@ -8,6 +8,7 @@ import {
   Container,
   Divider,
 } from '@mui/material';
+import PasswordEye from '@utils/components/Inputs/PasswordEye';
 
 const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
   return (
@@ -44,29 +45,7 @@ const LoginFormComponent = ({ formik, isSubmitted, setAuthPage }) => {
                 },
             }}
           />
-          <TextField
-            fullWidth
-            label="Mot de passe"
-            type="password"
-            variant="outlined"
-            autoComplete="current-password"
-            required
-            {...formik.getFieldProps('password')}
-            error={isSubmitted && Boolean(formik.errors.password)}
-            helperText={isSubmitted && formik.errors.password}
-            FormHelperTextProps={{
-              sx: {
-                position: 'absolute',
-                bottom: '-22px',
-              },
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':
-                {
-                  border: '1px solid #c5c5c5',
-                },
-            }}
-          />
+          <PasswordEye formik={formik} name="password" isSubmitted={isSubmitted} autoComplete={'current-password'} />
           <Button
             type="submit"
             variant="contained"
